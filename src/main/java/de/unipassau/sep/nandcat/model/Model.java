@@ -43,10 +43,18 @@ public class Model {
 
     }
 
+    /**
+     * Adds a listener to the set of listeners, which will be notified using events.
+     * @param l Modellistener
+     */
     public void addListener(ModelListener l) {
         listeners.add(l);
     }
 
+    /**
+     * Removes a listener from the set of listeners.
+     * @param l  Modellistener
+     */
     public void removeListener(ModelListener l) {
         listeners.remove(l);
     }
@@ -55,6 +63,7 @@ public class Model {
 
     }
 
+    // TODO missing parameter?
     public void selectElements() {
 
     }
