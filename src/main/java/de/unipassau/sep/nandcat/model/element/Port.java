@@ -10,11 +10,9 @@ import de.unipassau.sep.nandcat.model.Clock;
 public class Port {
 
     public void setState(boolean state, Clock clock) {
-
     }
 
     public boolean getState() {
         return false;
     }
-
 }

@@ -10,8 +10,6 @@ public class SimulateTool implements Tool {
 
     public void setActive(boolean active) {
         // TODO Auto-generated method stub
-
     }
     // TODO Implements modellistener anonym.
-
 }

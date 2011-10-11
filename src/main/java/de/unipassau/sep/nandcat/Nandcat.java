@@ -1,7 +1,6 @@
 package de.unipassau.sep.nandcat;
 
 import javax.swing.SwingUtilities;
-
 import de.unipassau.sep.nandcat.model.Model;
 
 /**
@@ -10,41 +9,40 @@ import de.unipassau.sep.nandcat.model.Model;
  * @version 0.1
  * 
  */
-public class Nandcat {
-	// private View view;
-	// private Model model;
-	// private Controller controller;
-	// TODO Creates model, view, controller but only holds instances
-	// temporarily, no fields.
+public final class Nandcat {
 
-	/**
-	 * 
-	 */
-	private Nandcat(){
-		 throw new UnsupportedOperationException();
-	}
-	
-	/**
-	 * Main method, executed while application start.
-	 * 
-	 * Starts Swingthread and application.
-	 * @param args Command-line arguments.
-	 */
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				Nandcat.initApp();
-			}
-		});
-	}
-	
-	/**
-	 * Init application.
-	 */
-	private static void initApp(){
-		Model model = new Model();
-		// TODO View und Controller entsprechend initialisieren und Konstruktoren schreiben.
-		
-	}
+    // private View view;
+    // private Model model;
+    // private Controller controller;
+    // TODO Creates model, view, controller but only holds instances
+    // temporarily, no fields.
+    private Nandcat() {
+        throw new UnsupportedOperationException();
+    }
 
+    /**
+     * Main method, executed while application start.
+     * 
+     * Starts Swingthread and application.
+     * 
+     * @param args
+     *            Command-line arguments.
+     */
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                Nandcat.initApp();
+            }
+        });
+    }
+
+    /**
+     * Init application.
+     */
+    private static void initApp() {
+        Model model = new Model();
+        // TODO View und Controller entsprechend initialisieren und
+        // Konstruktoren schreiben.
+    }
 }

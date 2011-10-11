@@ -9,6 +9,7 @@ import de.unipassau.sep.nandcat.model.element.Circuit;
  * 
  */
 public interface CircuitCheck {
+
     /**
      * 
      * @return

@@ -1,7 +1,6 @@
 package de.unipassau.sep.nandcat.view;
 
 import javax.swing.JFrame;
-
 import de.unipassau.sep.nandcat.controller.Controller;
 import de.unipassau.sep.nandcat.model.Model;
 import de.unipassau.sep.nandcat.model.check.CheckManager;
@@ -13,33 +12,27 @@ import de.unipassau.sep.nandcat.model.check.CheckManager;
  * 
  */
 public class View extends JFrame {
+
     // TODO Implements modellistener
     /**
      * Default serial version uid.
      */
     private static final long serialVersionUID = 1L;
-
     private CheckManager checkManager;
-
     private Workspace workspace;
 
     public View(Model model, Controller controller) {
-
     }
 
     private void setupGui() {
-
     }
 
     public void redraw() {
-
     }
 
     public void enableButtons() {
-
     }
 
     public void disableButtons() {
-
     }
 }

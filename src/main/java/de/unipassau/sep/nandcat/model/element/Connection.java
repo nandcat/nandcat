@@ -16,7 +16,6 @@ public class Connection implements Element { // Connection meldet Baustein bei C
 
     public void setName(String name) {
         // TODO Auto-generated method stub
-
     }
 
     public String getName() {
@@ -26,6 +25,5 @@ public class Connection implements Element { // Connection meldet Baustein bei C
 
     public void clockTicked(Clock clock) { // entspricht notify()
         // TODO Auto-generated method stub
-
     }
 }

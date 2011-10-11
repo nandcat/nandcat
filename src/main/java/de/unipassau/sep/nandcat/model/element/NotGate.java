@@ -1,7 +1,6 @@
 package de.unipassau.sep.nandcat.model.element;
 
 import java.util.Set;
-
 import de.unipassau.sep.nandcat.model.Clock;
 
 /**
@@ -29,7 +28,6 @@ public class NotGate implements Gate {
 
     public void setName(String name) {
         // TODO Auto-generated method stub
-
     }
 
     public String getName() {
@@ -39,7 +37,5 @@ public class NotGate implements Gate {
 
     public void clockTicked(Clock clock) {
         // TODO Auto-generated method stub
-
     }
-
 }

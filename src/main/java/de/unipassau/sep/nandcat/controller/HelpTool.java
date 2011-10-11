@@ -10,7 +10,5 @@ public class HelpTool implements Tool {
 
     public void setActive(boolean active) {
         // TODO Auto-generated method stub
-
     }
-
 }

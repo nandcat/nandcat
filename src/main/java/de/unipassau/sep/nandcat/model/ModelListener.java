@@ -7,6 +7,6 @@ package de.unipassau.sep.nandcat.model;
  * 
  */
 public interface ModelListener {
-    void elementsChanged(ModelEvent e);
 
+    void elementsChanged(ModelEvent e);
 }

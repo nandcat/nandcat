@@ -9,6 +9,7 @@ import javax.swing.JFrame;
  * 
  */
 public class CheckManager extends JFrame {
+
     /**
      * Default serial version uid.
      */
@@ -16,7 +17,5 @@ public class CheckManager extends JFrame {
 
     // TODO Implements checklistener
     public void changeSymbol() {
-
     }
-
 }

@@ -9,6 +9,7 @@ import java.io.File;
  * 
  */
 public interface Importer {
+
     void setFile(File file);
 
     void getElements();
@@ -19,5 +20,4 @@ public interface Importer {
     String getFileExtension();
 
     String getFileDescription();
-
 }

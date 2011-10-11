@@ -27,12 +27,9 @@ public class SourceCheck implements CircuitCheck {
 
     public void addListener(CheckListener l) {
         // TODO Auto-generated method stub
-
     }
 
     public void removeListener(CheckListener l) {
         // TODO Auto-generated method stub
-
     }
-
 }

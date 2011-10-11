@@ -10,11 +10,10 @@ import de.unipassau.sep.nandcat.model.element.Gate;
  * 
  */
 public interface ElementDrawer {
+
     // TODO holds an instance of workspace. Constructor or setter?
     // TODO Add a lot of draw methods.
-
     public void draw(Connection connection);
 
     public void draw(Gate gate);
-
 }

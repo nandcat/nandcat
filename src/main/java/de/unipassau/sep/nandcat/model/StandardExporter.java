@@ -11,7 +11,6 @@ public class StandardExporter implements Exporter {
 
     public void setFile(File file) {
         // TODO Auto-generated method stub
-
     }
 
     public boolean exportElements() {
@@ -28,5 +27,4 @@ public class StandardExporter implements Exporter {
         // TODO Auto-generated method stub
         return null;
     }
-
 }

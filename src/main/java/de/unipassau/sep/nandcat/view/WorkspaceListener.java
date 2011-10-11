@@ -7,6 +7,7 @@ package de.unipassau.sep.nandcat.view;
  * 
  */
 public interface WorkspaceListener {
+
     void mouseClicked(WorkspaceEvent e);
 
     void mouseReleased(WorkspaceEvent e);
@@ -16,5 +17,4 @@ public interface WorkspaceListener {
     void mouseDragged(WorkspaceEvent e);
 
     void mouseMoved(WorkspaceEvent e);
-
 }

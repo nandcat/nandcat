@@ -11,12 +11,10 @@ public class StandardImporter implements Importer {
 
     public void setFile(File file) {
         // TODO Auto-generated method stub
-
     }
 
     public void getElements() {
         // TODO Auto-generated method stub
-
     }
 
     public boolean importElements() {
@@ -33,5 +31,4 @@ public class StandardImporter implements Importer {
         // TODO Auto-generated method stub
         return null;
     }
-
 }

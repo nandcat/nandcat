@@ -9,6 +9,7 @@ import java.io.File;
  * 
  */
 public interface Exporter {
+
     void setFile(File file);
 
     boolean exportElements();
@@ -16,5 +17,4 @@ public interface Exporter {
     String getFileExtension();
 
     String getFileDescription();
-
 }

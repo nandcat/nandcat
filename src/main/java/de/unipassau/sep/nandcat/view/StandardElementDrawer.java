@@ -13,7 +13,6 @@ public class StandardElementDrawer implements ElementDrawer {
 
     public void draw(Connection connection) {
         // TODO Auto-generated method stub
-
     }
 
     public void draw(Gate gate) {

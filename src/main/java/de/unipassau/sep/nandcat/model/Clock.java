@@ -8,14 +8,12 @@ import java.util.Set;
  * @version 0.1
  */
 public class Clock { // TODO How do Modules know about clock? Singleton?
-                     // getInstance()
 
+    // getInstance()
     private int cycle;
-
     private Set<ClockListener> listeners;
 
     public void simulate() {
-
     }
 
     public void addListener(ClockListener listener) {
@@ -25,5 +23,4 @@ public class Clock { // TODO How do Modules know about clock? Singleton?
     public void removeListener(ClockListener listener) {
         listeners.remove(listener);
     }
-
 }

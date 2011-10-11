@@ -1,7 +1,6 @@
 package de.unipassau.sep.nandcat.model.element;
 
 import java.util.Set;
-
 import de.unipassau.sep.nandcat.model.Clock;
 
 /**
@@ -14,7 +13,6 @@ public class ImpulseGenerator implements Module {
 
     public void setName(String name) {
         // TODO Auto-generated method stub
-
     }
 
     public String getName() {
@@ -39,7 +37,5 @@ public class ImpulseGenerator implements Module {
 
     public void clockTicked(Clock clock) {
         // TODO Auto-generated method stub
-
     }
-
 }

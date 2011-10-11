@@ -7,11 +7,11 @@ package de.unipassau.sep.nandcat.controller;
  * 
  */
 public interface Tool {
+
     // TODO Implements workspace listener anonym.
     // TODO Add methods: getListener
     // TODO Create ListenerInterface for getListener
     // TODO Tool needs an instance of Controller for requestActivation.
-
     /**
      * Activates or deactivates tool.
      * 

@@ -10,7 +10,5 @@ public class StateTool implements Tool {
 
     public void setActive(boolean active) {
         // TODO Auto-generated method stub
-
     }
-
 }

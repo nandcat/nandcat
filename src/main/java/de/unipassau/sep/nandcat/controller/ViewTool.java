@@ -10,7 +10,5 @@ public class ViewTool implements Tool {
 
     public void setActive(boolean active) {
         // TODO Auto-generated method stub
-
     }
-
 }

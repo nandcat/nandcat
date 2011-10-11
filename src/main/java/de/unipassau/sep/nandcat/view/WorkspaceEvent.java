@@ -9,11 +9,11 @@ import java.awt.Point;
  * 
  */
 public class WorkspaceEvent {
+
     public Point getLocation() {
         return null;
     }
 
     public void setLocation(Point p) {
-
     }
 }

@@ -7,5 +7,4 @@ package de.unipassau.sep.nandcat.model.element;
  * 
  */
 public interface Gate extends Module {
-
 }

@@ -7,9 +7,8 @@ package de.unipassau.sep.nandcat.controller;
  * 
  */
 public class CreateTool implements Tool {
+
     public void setActive(boolean active) {
         // TODO Auto-generated method stub
-
     }
-
 }

@@ -1,7 +1,6 @@
 package de.unipassau.sep.nandcat.model.element;
 
 import java.util.Set;
-
 import de.unipassau.sep.nandcat.model.ClockListener;
 
 /**
@@ -15,7 +14,6 @@ public interface Module extends ClockListener, Element {
     // TODO Parameter for checks needed -> mark the Module as visited, etc.
     // inner class?
     // Object!
-
     /**
      * Calculates the result.
      * 

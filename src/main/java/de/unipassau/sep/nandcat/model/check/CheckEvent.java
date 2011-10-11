@@ -3,8 +3,8 @@ package de.unipassau.sep.nandcat.model.check;
 /**
  * @(#) CheckEvent.java
  */
-
 public class CheckEvent {
+
     public CircuitCheck getSource() {
         return null;
     }
@@ -12,5 +12,4 @@ public class CheckEvent {
     public int getState() {
         return 0;
     }
-
 }
