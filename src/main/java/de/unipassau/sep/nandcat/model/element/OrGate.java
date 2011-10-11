@@ -2,6 +2,8 @@ package de.unipassau.sep.nandcat.model.element;
 
 import java.util.Set;
 
+import de.unipassau.sep.nandcat.model.Clock;
+
 /**
  * Or Gate.
  * 
@@ -10,7 +12,7 @@ import java.util.Set;
  */
 public class OrGate implements Gate {
 
-    public boolean getResult() {
+    public boolean calculate() {
         // TODO Auto-generated method stub
         return false;
     }
@@ -35,7 +37,7 @@ public class OrGate implements Gate {
         return null;
     }
 
-    public void clockTicked(int cycle) {
+    public void clockTicked(Clock clock) {
         // TODO Auto-generated method stub
 
     }

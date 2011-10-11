@@ -7,7 +7,9 @@ import java.util.Set;
  * 
  * @version 0.1
  */
-public class Clock {
+public class Clock { // TODO How do Modules know about clock? Singleton?
+                     // getInstance()
+
     private int cycle;
 
     private Set<ClockListener> listeners;

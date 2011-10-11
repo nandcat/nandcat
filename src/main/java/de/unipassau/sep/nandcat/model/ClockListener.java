@@ -7,6 +7,7 @@ package de.unipassau.sep.nandcat.model;
  * 
  */
 public interface ClockListener {
-    void clockTicked(int cycle);
+
+    void clockTicked(Clock clock); // clock wird an setState() von Port, dann von Connection und dann Port weitergereicht.
 
 }
