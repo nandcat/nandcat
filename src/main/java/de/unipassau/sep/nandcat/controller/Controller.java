@@ -19,14 +19,17 @@ public class Controller {
      * Collection of available tools.
      */
     private Set<Tool> tools = new LinkedHashSet<Tool>();
+
     /**
      * Currently active tool.
      */
     private Tool activeTool = null;
+
     /**
      * Current View instance.
      */
     private View view = null;
+
     /**
      * Current Model instance.
      */
@@ -36,9 +39,9 @@ public class Controller {
      * Constructs the Controller.
      * 
      * @param view
-     *            Application View
+     *            View component of the application.
      * @param model
-     *            Application Model
+     *            Model component of the application.
      */
     public Controller(View view, Model model) {
         this.view = view;
