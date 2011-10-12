@@ -1,41 +1,48 @@
 package de.unipassau.sep.nandcat.model.element;
 
-import java.util.Set;
 import de.unipassau.sep.nandcat.model.Clock;
 
 /**
  * Or Gate.
  * 
- * @version 0.1
+ * @version 0.5
  * 
  */
 public class OrGate extends Gate {
 
-    public boolean calculate() {
-        // TODO Auto-generated method stub
-        return false;
+    /**
+     * Default constructor. Create new identity gate with 1 incoming and 2 outcoming ports.
+     */
+    public OrGate() {
+        super(2, 1);
     }
 
-    public Set<Port> getInPorts() {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Advanced constructor. Creates new Or with inPorts incoming and outPorts outgoing Ports.
+     * 
+     * @param inPorts
+     *            int number of inPorts to append
+     * @param outPorts
+     *            int number of outPorts to append
+     */
+    public OrGate(int inPorts, int outPorts) {
+        // if() not allowed as super has to be the first statement
+        super(inPorts, outPorts);
     }
 
-    public Set<Port> getOutPorts() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public void setName(String name) {
-        // TODO Auto-generated method stub
-    }
-
-    public String getName() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public void clockTicked(Clock clock) {
-        // TODO Auto-generated method stub
+    /**
+     * {@inheritDoc}
+     */
+    protected void calculate(Clock clock) {
+        boolean result = false;
+        for (Port p : getInPorts()) {
+            if (p.getState()) {
+                result = true;
+                break;
+            }
+        }
+        for (Port p : getOutPorts()) {
+            p.setState(result, clock);
+        }
     }
 }

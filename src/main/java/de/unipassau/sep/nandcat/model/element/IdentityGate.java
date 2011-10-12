@@ -1,41 +1,46 @@
 package de.unipassau.sep.nandcat.model.element;
 
-import java.util.Set;
 import de.unipassau.sep.nandcat.model.Clock;
 
 /**
  * Identity Gate.
  * 
- * @version 0.1
+ * @version 0.5
  * 
  */
 public class IdentityGate extends Gate {
 
-    public boolean calculate() {
-        // TODO Auto-generated method stub
-        return false;
+    /**
+     * Default constructor. Create new identity gate with 1 incoming and 2 outcoming ports.
+     */
+    public IdentityGate() {
+        super(1, 2);
     }
 
-    public Set<Port> getInPorts() {
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Advanced constructor. Creates new Identity with inPorts incoming and outPorts outgoing Ports.
+     * 
+     * @param inPorts
+     *            int number of inPorts to append
+     * @param outPorts
+     *            int number of outPorts to append
+     */
+    public IdentityGate(int inPorts, int outPorts) {
+        // if() not allowed as super has to be the first statement
+        super(inPorts != 1 ? -1 : 1, outPorts);
     }
 
-    public Set<Port> getOutPorts() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public void setName(String name) {
-        // TODO Auto-generated method stub
-    }
-
-    public String getName() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public void clockTicked(Clock clock) {
-        // TODO Auto-generated method stub
+    /**
+     * {@inheritDoc}
+     */
+    protected void calculate(Clock clock) {
+        if (getInPorts().size() != 1) {
+            throw new IllegalStateException("Illegal number of inPorts");
+        }
+        // TODO double check
+        Port port = getInPorts().iterator().next();
+        for (Port p : getOutPorts()) {
+            p.setState(port.getState(), clock);
+        }
     }
 }

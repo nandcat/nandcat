@@ -11,19 +11,19 @@ import de.unipassau.sep.nandcat.model.Clock;
  */
 public class Lamp implements Module {
 
-    public void setName(String name) {
-        // TODO Auto-generated method stub
-    }
+    /**
+     * Lamp's name.
+     */
+    private String name;
 
-    public String getName() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public boolean calculate() {
-        // TODO Auto-generated method stub
-        return false;
-    }
+    /**
+     * Lamp's port.
+     */
+    private Port port;
+    /**
+     * Lamp's state.
+     */
+    private boolean state;
 
     public Set<Port> getInPorts() {
         // TODO Auto-generated method stub
@@ -35,7 +35,25 @@ public class Lamp implements Module {
         return null;
     }
 
+    /**
+     * Set lamp's name.
+     * 
+     * @param name
+     *            String to set lamp's name to
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Return lamp's name.
+     * 
+     * @return String representing lamp's name
+     */
+    public String getName() {
+        return name;
+    }
+
     public void clockTicked(Clock clock) {
-        // TODO Auto-generated method stub
     }
 }

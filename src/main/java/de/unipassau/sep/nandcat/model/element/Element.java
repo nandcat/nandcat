@@ -8,7 +8,7 @@ import de.unipassau.sep.nandcat.model.ClockListener;
  * @version 0.1
  * 
  */
-public interface Element extends ClockListener {
+public interface Element {
 
     void setName(String name);
 
