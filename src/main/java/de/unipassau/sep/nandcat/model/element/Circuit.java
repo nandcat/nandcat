@@ -12,8 +12,6 @@ import de.unipassau.sep.nandcat.model.ClockListener;
  */
 public class Circuit implements ClockListener, Element {
 
-    // TODO private Model model; ? For have reference to clock.
-    // unnecessary if Clock is singleton.
     public Set<Element> getStartingElements() {
         return null;
     }
@@ -31,8 +29,8 @@ public class Circuit implements ClockListener, Element {
         // TODO Auto-generated method stub
     }
 
-    // Circuit contains more elements than module
-    // Is called from the clock - only once.
+    // TODO Circuit contains more elements than module
+    // TODO Is called from the clock - only once.
     public boolean calculate() {
         return false;
     }
