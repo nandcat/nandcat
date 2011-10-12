@@ -8,6 +8,9 @@ package de.unipassau.sep.nandcat.model;
  */
 public interface ClockListener {
 
+    /**
+     * {@inheritDoc}
+     */
     void clockTicked(Clock clock); // TODO clock wird an setState() von Port, dann von Connection und dann Port
                                    // TODO weitergereicht.
 }
