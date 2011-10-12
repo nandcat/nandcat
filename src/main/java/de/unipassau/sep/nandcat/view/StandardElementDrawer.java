@@ -19,42 +19,72 @@ import de.unipassau.sep.nandcat.model.element.Port;
  */
 public class StandardElementDrawer implements ElementDrawer {
 
+    /**
+     * {@inheritDoc}
+     */
     public void draw(Connection connection) {
         // TODO Auto-generated method stub
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void draw(Gate gate) {
         // TODO Auto-generated method stub
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setGraphics(Graphics g) {
         // TODO Auto-generated method stub
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void draw(Circuit circuit) {
         // TODO Auto-generated method stub
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void draw(Port port) {
         // TODO Auto-generated method stub
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void draw(IdentityGate gate) {
         // TODO Auto-generated method stub
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void draw(NotGate gate) {
         // TODO Auto-generated method stub
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void draw(AndGate gate) {
         // TODO Auto-generated method stub
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void draw(OrGate gate) {
         // TODO Auto-generated method stub
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void draw(Lamp lamp) {
         // TODO Auto-generated method stub
     }
