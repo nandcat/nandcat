@@ -1,7 +1,6 @@
 package de.unipassau.sep.nandcat.view;
 
 import javax.swing.JFrame;
-import de.unipassau.sep.nandcat.controller.Controller;
 import de.unipassau.sep.nandcat.model.Model;
 import de.unipassau.sep.nandcat.model.check.CheckManager;
 
@@ -21,7 +20,7 @@ public class View extends JFrame {
     private CheckManager checkManager;
     private Workspace workspace;
 
-    public View(Model model, Controller controller) {
+    public View(Model model) {
     }
 
     private void setupGui() {
