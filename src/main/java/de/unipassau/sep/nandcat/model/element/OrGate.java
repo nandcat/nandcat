@@ -9,7 +9,7 @@ import de.unipassau.sep.nandcat.model.Clock;
  * @version 0.1
  * 
  */
-public class OrGate implements Gate {
+public class OrGate extends Gate {
 
     public boolean calculate() {
         // TODO Auto-generated method stub
