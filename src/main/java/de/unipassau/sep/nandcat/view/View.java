@@ -7,7 +7,8 @@ import de.unipassau.sep.nandcat.model.check.CheckManager;
 /**
  * View.
  * 
- * Displays all graphical components including the workspace. 
+ * Displays all graphical components including the workspace.
+ * 
  * @version 0.1
  */
 public class View extends JFrame {
@@ -63,5 +64,14 @@ public class View extends JFrame {
      */
     public void disableButtons() {
         // TODO Wirklich disable Buttons?
+    }
+
+    /**
+     * Gets the current workspace instance.
+     * 
+     * @return Workspace Instance.
+     */
+    public Workspace getWorkspace() {
+        return workspace;
     }
 }
