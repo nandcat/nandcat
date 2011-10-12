@@ -2,6 +2,7 @@ package de.unipassau.sep.nandcat.model;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+//import java.util.HashSet;
 import java.util.Set;
 import de.unipassau.sep.nandcat.model.check.CircuitCheck;
 import de.unipassau.sep.nandcat.model.element.Circuit;
@@ -44,6 +45,11 @@ public class Model {
      */
     public void startChecks() {
         //TODO implement
+//        for (CircuitCheck check : checks) {
+//            if (check.isActive()) {
+//                check.test(circuit);
+//            }
+//        }
     }
 
     /**
@@ -57,6 +63,7 @@ public class Model {
     // TODO public method? why?
     public void setCheckActive(CircuitCheck check, boolean isActive) {
         // TODO implement
+        //check.setActive(isActive);
     }
 
     /**
@@ -68,6 +75,7 @@ public class Model {
      */
     public void loadFile(String fileName) {
         // TODO implement
+        // Importer anstoßen.
     }
 
     /**
@@ -78,6 +86,7 @@ public class Model {
      */
     public void saveFile(String fileName) {
         // TODO implement
+        // Exporter anstoßen.
     }
 
     /**
@@ -109,6 +118,12 @@ public class Model {
      * @return Set of Elements at the given location.
      */
     public Set<Element> getElementsAt(Point point) {
+//        Set<Element> elementsAt = new HashSet<Element>();
+//        for (Element element : circuit.getElements()) {
+//            if (element.getRectangle.contains(point) {
+        // TODO Get position of Element
+//                  elementsAt.add(element);
+//        }
         return null;
         // TODO implement
     }
@@ -123,6 +138,12 @@ public class Model {
      */
     public Set<Element> selectElements(Rectangle rect) {
         // TODO implement
+//        Set<Element> selectedElements = new HashSet<Element>();
+//        for (Element element : circuit.getElements()) {
+            // if (rect.contains(element.getRectangle)){
+                // selectedElements.add(element);
+            // }
+//        }
         return null;
     }
 
@@ -131,6 +152,7 @@ public class Model {
      * 
      * @return A Set of all elements.
      */
+    // TODO Check if needed. You can call circuit.getElements()
     public Set<Element> getElements() {
         // TODO implement
         return null;
@@ -142,6 +164,9 @@ public class Model {
      */
     public void startSimulation() {
         // TODO implement
+//         for (Element element : circuit.getStartingElements()) {
+                //clock.register(element)
+//         }
     }
 
     /**
@@ -149,5 +174,6 @@ public class Model {
      */
     public void clearCircuit() {
         // TODO implement
+        //circuit.getElements().clear();
     }
 }

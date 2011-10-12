@@ -1,7 +1,8 @@
 package de.unipassau.sep.nandcat.model;
 
 /**
- * Clock listener.
+ * This class represents a listener on the Clock. It notifies all implementing classes
+ * about changes in the Clock.
  * 
  * @version 0.1
  * 

@@ -12,6 +12,8 @@ import de.unipassau.sep.nandcat.model.ClockListener;
  */
 public class Circuit implements ClockListener, Element {
 
+    private Set<Element> elements;
+
     public Set<Element> getStartingElements() {
         return null;
     }
@@ -33,5 +35,45 @@ public class Circuit implements ClockListener, Element {
     // TODO Is called from the clock - only once.
     public boolean calculate() {
         return false;
+    }
+
+    /**
+     * Getter for Elements.
+     * 
+     * @return The Elements
+     */
+    public Set<Element> getElements() {
+        return elements;
+    }
+
+    /**
+     * Setter for Elements.
+     * 
+     * @param elements
+     *            The Elements to set
+     */
+    // TODO check if needed. Maybe for importing.
+    public void setElements(Set<Element> elements) {
+        this.elements = elements;
+    }
+
+    /**
+     * Add an Element to Set of Elements.
+     * 
+     * @param element
+     *            The Element to be added.
+     */
+    public void addElement(Element element) {
+        elements.add(element);
+    }
+
+    /**
+     * Remove a given Element from Set of Elements.
+     * 
+     * @param element
+     *            Element to be removed.
+     */
+    public void removeElement(Element element) {
+        elements.remove(element);
     }
 }
