@@ -1,21 +1,24 @@
 package de.unipassau.sep.nandcat;
 
 import javax.swing.SwingUtilities;
+import de.unipassau.sep.nandcat.controller.Controller;
 import de.unipassau.sep.nandcat.model.Model;
+import de.unipassau.sep.nandcat.view.View;
 
 /**
  * NandCat Main Class.
  * 
- * @version 0.1
+ * Main class with main method.
  * 
+ * @version 0.1
  */
 public final class Nandcat {
 
-    // private View view;
-    // private Model model;
-    // private Controller controller;
-    // TODO Creates model, view, controller but only holds instances
-    // temporarily, no fields.
+    /**
+     * Private constructor.
+     * 
+     * Prevents instantiation.
+     */
     private Nandcat() {
         throw new UnsupportedOperationException();
     }
@@ -38,11 +41,14 @@ public final class Nandcat {
     }
 
     /**
-     * Init application.
+     * Initializes application components.
+     * 
+     * Creates Model, View, Controller instances and shows the gui.
      */
     private static void initApp() {
         Model model = new Model();
-        // TODO View und Controller entsprechend initialisieren und
-        // Konstruktoren schreiben.
+        View view = new View(model);
+        new Controller(view, model);
+        view.setVisible(true);
     }
 }
