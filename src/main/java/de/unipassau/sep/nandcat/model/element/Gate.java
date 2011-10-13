@@ -6,15 +6,15 @@ import de.unipassau.sep.nandcat.model.Clock;
 
 /**
  * Gate class. Representing the minimum consent between the basic gates.
- * 
+ *
  * @version 0.1
- * 
+ *
  */
 public abstract class Gate implements Module {
 
     /**
      * Advanced constructor. Creates new Gate with inPorts incoming and outPorts outgoing Ports.
-     * 
+     *
      * @param inPorts
      *            int <b>positive</b> number of inPorts to append
      * @param outPorts
@@ -106,30 +106,6 @@ public abstract class Gate implements Module {
     }
 
     /**
-     * Set outgoing ports.
-     * 
-     * @param outPorts
-     *            Set containing outgoing ports to set
-     */
-    public void setOutPorts(Set<Port> outPorts) {
-        if (outPorts != null && outBoundaries(outPorts.size())) {
-            this.outPorts = outPorts;
-        }
-    }
-
-    /**
-     * Set incoming ports.
-     * 
-     * @param inPorts
-     *            Set containing incoming ports to set
-     */
-    public void setInPorts(Set<Port> inPorts) {
-        if (inPorts != null && inBoundaries(inPorts.size())) {
-            this.inPorts = inPorts;
-        }
-    }
-
-    /**
      * Check if given number of ports contains a legal number of outPorts.
      * 
      * @param outPorts
@@ -161,11 +137,11 @@ public abstract class Gate implements Module {
         for (int i = 0; i < inPorts; i++) {
             ports.add(new Port(this));
         }
-        setInPorts(ports);
+        this.inPorts = ports;
         ports = new LinkedHashSet<Port>();
         for (int i = 0; i < outPorts; i++) {
             ports.add(new Port(this));
         }
-        setOutPorts(ports);
+        this.outPorts = ports;
     }
 }

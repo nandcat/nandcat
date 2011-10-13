@@ -12,8 +12,16 @@ import de.unipassau.sep.nandcat.model.ClockListener;
  */
 public class Circuit implements ClockListener, Element {
 
+    /**
+     * Contains the Elements in this circuit.
+     */
     private Set<Element> elements;
 
+    /**
+     * Returns the "first" Elements in this Circuit. These 
+     *
+     * @return
+     */
     public Set<Element> getStartingElements() {
         return null;
     }
