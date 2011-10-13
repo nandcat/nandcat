@@ -51,7 +51,11 @@ public class Port {
      */
     public void setState(boolean state, Clock clock) {
         this.state = state;
-        getConnection().setState(state, clock);
+        // TODO total falsch, nur, falls Port outPort ist..
+        // wie stellen wir das fest?
+        if (getConnection().getPreviousModule().getOutPorts().contains(this)) {
+            getConnection().setState(state, clock);
+        }
     }
 
     /**
@@ -80,6 +84,7 @@ public class Port {
      */
     public void setConnection(Connection connection) {
         this.connection = connection;
+        setState(state, null); // FIXME was muss hier passieren, keine Uhr..
     }
 
     /**

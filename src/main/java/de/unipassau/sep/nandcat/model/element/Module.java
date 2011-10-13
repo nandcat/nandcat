@@ -14,6 +14,10 @@ public interface Module extends ClockListener, Element {
     // TODO diskussion: was ist mit set{In,Out}Ports hier?
     // nicht alle Elemente haben EingangsPorts
     // nicht alle Elemente haben AusgangsPorts
+    // TODO sollen wir wirklich auf Set<Port> arbeiten?
+    // ist das Verbinden beim Laden von Schaltungen dann
+    // optisch deterministisch? (Leitung landet immer am obersten
+    // Port, wenn sie auch dort urspruenglich hingelegt wurde)
     /**
      * Gets incoming ports.
      * 

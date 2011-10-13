@@ -157,15 +157,15 @@ public abstract class Gate implements Module {
      *            int number of outports to append
      */
     private void createPorts(int inPorts, int outPorts) {
-        setInPorts(new LinkedHashSet<Port>());
+        LinkedHashSet<Port> ports = new LinkedHashSet<Port>();
         for (int i = 0; i < inPorts; i++) {
-            setInPorts(new LinkedHashSet<Port>());
-            getInPorts().add(new Port(this));
+            ports.add(new Port(this));
         }
-        setOutPorts(new LinkedHashSet<Port>());
+        setInPorts(ports);
+        ports = new LinkedHashSet<Port>();
         for (int i = 0; i < outPorts; i++) {
-            setOutPorts(new LinkedHashSet<Port>());
-            getOutPorts().add(new Port(this));
+            ports.add(new Port(this));
         }
+        setOutPorts(ports);
     }
 }

@@ -99,5 +99,6 @@ public class Lamp implements Module {
      */
     public void clockTicked(Clock clock) {
         this.state = inPort.getState();
+        System.out.println("state set to " + state);
     }
 }

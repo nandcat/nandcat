@@ -15,17 +15,32 @@ public class Connection implements Element {
      */
     private String name;
     /**
-     * Connection's state.
-     */
-    private boolean state;
-    /**
-     * port (of type <b>outPort</b>) the connection is attached to. Set to one of the modules's outPorts.
+     * port (a module's <b>outPort</b>) the connection is attached to. Set to one of the modules's outPorts.
      */
     private Port inPort;
     /**
-     * port (of type <b>inPort</b>) the connection is attached to. Set to one of the modules's inPorts.
+     * port (a module's <b>inPort</b>) the connection is attached to. Set to one of the modules's inPorts.
      */
     private Port outPort;
+
+    /**
+     * Default constructor.
+     */
+    public Connection() {
+    }
+
+    /**
+     * Create and attach new connection.
+     * 
+     * @param inPort
+     *            Port (a module's <b>outPort</b>) the connection is attached to. Set to one of the modules's outPorts
+     * @param outPort
+     *            Port (a module's <b>inPort</b>) the connection is attached to. Set to one of the modules's inPorts
+     */
+    public Connection(Port inPort, Port outPort) {
+        this.inPort = inPort;
+        this.outPort = outPort;
+    }
 
     /**
      * Set connection's name.
@@ -55,8 +70,10 @@ public class Connection implements Element {
      *            Clock that has strikken(!)
      */
     public void setState(boolean state, Clock clock) {
-        this.state = state;
-        clock.addListener(getNextModule());
+        if (getNextModule() != null) {
+            outPort.setState(getState(), clock);
+            clock.addListener(getNextModule());
+        }
     }
 
     /**
@@ -65,18 +82,21 @@ public class Connection implements Element {
      * @return the state
      */
     public boolean getState() {
-        return state;
+        if (inPort == null) {
+            return false;
+        }
+        return inPort.getState();
     }
 
-    // FIXME weg DAMIT! Des Teufels Tand!
+    // FIXME weg DAMIT! Des Teufels Tand! (setState() ohne Clock)
     /**
      * Set connection's state.
      * 
      * @param state
      *            to set
      */
-    public void setState1(boolean state) {
-        this.state = state;
+    public void setState(boolean state) {
+        // this.state = state;
     }
 
     /**
@@ -86,6 +106,9 @@ public class Connection implements Element {
      * @return Module whose inPort is attached to this connection
      */
     public Module getNextModule() {
+        if (outPort == null) {
+            return null;
+        }
         return outPort.getModule();
     }
 
