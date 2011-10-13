@@ -3,12 +3,12 @@ package de.unipassau.sep.nandcat.model.element;
 import de.unipassau.sep.nandcat.model.Clock;
 
 /**
- * Connection.
+ * Connection. // TODO konstruktor fehlt
  * 
  * @version 0.1
  * 
  */
-public class Connection implements Element { // Connection meldet Baustein bei Clock an! Über Port.
+public class Connection implements Element {
 
     /**
      * Connection's name.
@@ -19,30 +19,28 @@ public class Connection implements Element { // Connection meldet Baustein bei C
      */
     private boolean state;
     /**
-     * port (of type <u><b>outPort</b></u>) the connection is attached to.
-     * Set to on of the modules's outPorts.
+     * port (of type <b>outPort</b>) the connection is attached to. Set to one of the modules's outPorts.
      */
     private Port inPort;
     /**
-     * port (of type <u><b>inPort</b></u>) the connection is attached to.
-     * Set to on of the modules's inPorts.
+     * port (of type <b>inPort</b>) the connection is attached to. Set to one of the modules's inPorts.
      */
     private Port outPort;
 
     /**
-     * Set lamp's name.
+     * Set connection's name.
      * 
      * @param name
-     *            String to set lamp's name to
+     *            String to set connection's name to
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * Return lamp's name.
+     * Return connection's name.
      * 
-     * @return String representing lamp's name
+     * @return String representing connection's name
      */
     public String getName() {
         return name;
@@ -58,7 +56,7 @@ public class Connection implements Element { // Connection meldet Baustein bei C
      */
     public void setState(boolean state, Clock clock) {
         this.state = state;
-        clock.addListener(inPort.getGate());
+        clock.addListener(getNextModule());
     }
 
     /**
@@ -70,41 +68,34 @@ public class Connection implements Element { // Connection meldet Baustein bei C
         return state;
     }
 
+    // FIXME weg DAMIT! Des Teufels Tand!
     /**
      * Set connection's state.
      * 
      * @param state
      *            to set
      */
-    public void setState(boolean state) {
+    public void setState1(boolean state) {
         this.state = state;
     }
 
     /**
-     * Return connection's inPort.
+     * Return the next module (the Connection is attached to). Next: going from one element's outPort to the other
+     * element's inPort
      * 
-     * @return connection's inPort
+     * @return Module whose inPort is attached to this connection
      */
-    private Port getInPort() {
-        return inPort;
+    public Module getNextModule() {
+        return outPort.getModule();
     }
 
     /**
-     * Return connection's outPort.
+     * Return the previous module (the Connection is attached to). Previous: going from one element's inPort to the
+     * other element's outPort
      * 
-     * @return connection's outPort
+     * @return Module whose outPort is attached to this connection
      */
-    private Port getOutPort() {
-        return outPort;
-    }
-
-    /**
-     * Return the next element (the Connection is attached to).
-     * Next: going from one element's outPort to the other element's inPort
-     * 
-     * @return Gate
-     */
-    public Gate getNextElement() {
-        return outPort.getGate();
+    public Module getPreviousModule() {
+        return inPort.getModule();
     }
 }

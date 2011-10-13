@@ -3,7 +3,7 @@ package de.unipassau.sep.nandcat.model.element;
 import de.unipassau.sep.nandcat.model.Clock;
 
 /**
- * Identity Gate.
+ * Identity gate implementation.
  * 
  * @version 0.5
  * 
@@ -18,7 +18,7 @@ public class IdentityGate extends Gate {
     }
 
     /**
-     * Advanced constructor. Creates new Identity with inPorts incoming and outPorts outgoing Ports.
+     * Advanced constructor. Creates new Identity gate with inPorts incoming and outPorts outgoing Ports.
      * 
      * @param inPorts
      *            int number of inPorts to append
@@ -26,21 +26,30 @@ public class IdentityGate extends Gate {
      *            int number of outPorts to append
      */
     public IdentityGate(int inPorts, int outPorts) {
-        // if() not allowed as super has to be the first statement
-        super(inPorts != 1 ? -1 : 1, outPorts);
+        super(inPorts, outPorts);
     }
 
     /**
      * {@inheritDoc}
      */
     protected void calculate(Clock clock) {
-        if (getInPorts().size() != 1) {
-            throw new IllegalStateException("Illegal number of inPorts");
-        }
-        // TODO double check
         Port port = getInPorts().iterator().next();
         for (Port p : getOutPorts()) {
             p.setState(port.getState(), clock);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean outBoundaries(int outPorts) {
+        return (outPorts == 1);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean inBoundaries(int inPorts) {
+        return (inPorts >= 1);
     }
 }

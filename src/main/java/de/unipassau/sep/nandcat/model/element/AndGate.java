@@ -1,10 +1,9 @@
 package de.unipassau.sep.nandcat.model.element;
 
-import java.util.LinkedHashSet;
 import de.unipassau.sep.nandcat.model.Clock;
 
 /**
- * And Gate.
+ * AND gate implementation.
  * 
  * @version 0.5
  * 
@@ -28,6 +27,9 @@ public class AndGate extends Gate {
      */
     public AndGate(int inPorts, int outPorts) {
         super(inPorts, outPorts);
+        if (inPorts < 2 || outPorts < 1) {
+            throw new IllegalStateException("Illegal amount of in or out ports.");
+        }
     }
 
     /**
@@ -44,5 +46,19 @@ public class AndGate extends Gate {
         for (Port p : getOutPorts()) {
             p.setState(result, clock);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean outBoundaries(int outPorts) {
+        return (outPorts == 1);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean inBoundaries(int inPorts) {
+        return (inPorts == 2);
     }
 }

@@ -16,7 +16,7 @@ public class Port {
     /**
      * Gate this port is attached to.
      */
-    private final Gate gate;
+    private final Module module;
     /**
      * Connection attached to port.
      */
@@ -25,20 +25,20 @@ public class Port {
     /**
      * Default constructor.
      * 
-     * @param gate
-     *            Gate to attach port to
+     * @param module
+     *            Module to attach port to
      */
-    public Port(Gate gate) {
-        this.gate = gate;
+    public Port(Module module) {
+        this.module = module;
     }
 
     /**
-     * Get port gate.
+     * Get port module.
      * 
-     * @return Gate belonging to this port
+     * @return Module belonging to this port
      */
-    public Gate getGate() {
-        return gate;
+    public Module getModule() {
+        return module;
     }
 
     /**
@@ -60,7 +60,7 @@ public class Port {
      * @return state of the port
      */
     public boolean getState() {
-        return false;
+        return state;
     }
 
     /**
@@ -88,6 +88,6 @@ public class Port {
      * @return port is outport or not
      */
     public boolean isOutPort() {
-        return gate.getOutPorts().contains(this);
+        return module.getOutPorts().contains(this);
     }
 }

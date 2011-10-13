@@ -3,7 +3,7 @@ package de.unipassau.sep.nandcat.model.element;
 import de.unipassau.sep.nandcat.model.Clock;
 
 /**
- * Or Gate.
+ * OR gate implementation.
  * 
  * @version 0.5
  * 
@@ -11,14 +11,14 @@ import de.unipassau.sep.nandcat.model.Clock;
 public class OrGate extends Gate {
 
     /**
-     * Default constructor. Create new identity gate with 1 incoming and 2 outcoming ports.
+     * Default constructor. Create new OR gate with 1 incoming and 2 outcoming ports.
      */
     public OrGate() {
         super(2, 1);
     }
 
     /**
-     * Advanced constructor. Creates new Or with inPorts incoming and outPorts outgoing Ports.
+     * Advanced constructor. Creates new OR with inPorts incoming and outPorts outgoing Ports.
      * 
      * @param inPorts
      *            int number of inPorts to append
@@ -26,7 +26,6 @@ public class OrGate extends Gate {
      *            int number of outPorts to append
      */
     public OrGate(int inPorts, int outPorts) {
-        // if() not allowed as super has to be the first statement
         super(inPorts, outPorts);
     }
 
@@ -44,5 +43,19 @@ public class OrGate extends Gate {
         for (Port p : getOutPorts()) {
             p.setState(result, clock);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean outBoundaries(int outPorts) {
+        return (outPorts == 1);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean inBoundaries(int inPorts) {
+        return (inPorts == 2);
     }
 }

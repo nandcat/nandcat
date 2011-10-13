@@ -3,7 +3,7 @@ package de.unipassau.sep.nandcat.model.element;
 import de.unipassau.sep.nandcat.model.Clock;
 
 /**
- * Not Gate.
+ * NOT gate implementation.
  * 
  * @version 0.5
  * 
@@ -11,36 +11,44 @@ import de.unipassau.sep.nandcat.model.Clock;
 public class NotGate extends Gate {
 
     /**
-     * Default constructor. Create new identity gate with 1 incoming and 2 outcoming ports.
+     * Default constructor. Create new not gate with 1 incoming and 1 outgoing ports.
      */
     public NotGate() {
         super(1, 1);
     }
 
     /**
-     * Advanced constructor. Creates new Not with inPorts incoming and outPorts outgoing Ports.
+     * Advanced constructor. Creates new Not with 1 incoming and outPorts outgoing Ports. outPorts has to be a positive
+     * integer
      * 
-     * @param inPorts
-     *            int number of inPorts to append
      * @param outPorts
      *            int number of outPorts to append
      */
-    public NotGate(int inPorts, int outPorts) {
-        // if() not allowed as super has to be the first statement
-        super(inPorts != 1 ? -1 : 1, outPorts != 1 ? -1 : 1);
+    public NotGate(int outPorts) {
+        super(1, outPorts);
     }
 
     /**
      * {@inheritDoc}
      */
     protected void calculate(Clock clock) {
-        if (getInPorts().size() != 1) {
-            throw new IllegalStateException("Illegal number of inPorts");
-        }
-        // TODO double check
-        Port port = getInPorts().iterator().next();
+        Port inPort = getInPorts().iterator().next();
         for (Port p : getOutPorts()) {
-            p.setState(!port.getState(), clock);
+            p.setState(!inPort.getState(), clock);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean outBoundaries(int outPorts) {
+        return (outPorts == 1);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected boolean inBoundaries(int inPorts) {
+        return (inPorts == 1);
     }
 }

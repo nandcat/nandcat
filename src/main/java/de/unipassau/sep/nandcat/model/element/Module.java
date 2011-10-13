@@ -1,17 +1,19 @@
 package de.unipassau.sep.nandcat.model.element;
 
 import java.util.Set;
-import de.unipassau.sep.nandcat.model.Clock;
 import de.unipassau.sep.nandcat.model.ClockListener;
 
 /**
- * Module.
+ * Module interface.
  * 
  * @version 0.1
  * 
  */
 public interface Module extends ClockListener, Element {
 
+    // TODO diskussion: was ist mit set{In,Out}Ports hier?
+    // nicht alle Elemente haben EingangsPorts
+    // nicht alle Elemente haben AusgangsPorts
     /**
      * Gets incoming ports.
      * 

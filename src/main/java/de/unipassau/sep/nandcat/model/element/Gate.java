@@ -21,7 +21,7 @@ public abstract class Gate implements Module {
      *            int <b>positive</b> number of outPorts to append
      */
     public Gate(int inPorts, int outPorts) {
-        if (inPorts <= 0 || outPorts <= 0) {
+        if (!inBoundaries(inPorts) || !outBoundaries(outPorts)) {
             throw new IllegalArgumentException("Illegal amount of in or out ports.");
         }
         createPorts(inPorts, outPorts);
@@ -46,7 +46,7 @@ public abstract class Gate implements Module {
      * @param clock
      *            Clock that ticked
      */
-    protected abstract void calculate(Clock clock); // called more often than calculate in circuit.
+    protected abstract void calculate(Clock clock);
 
     /**
      * Return Elements connected to outgoing port(s).
@@ -56,7 +56,7 @@ public abstract class Gate implements Module {
     Set<Module> getNextElements() {
         Set<Module> result = new LinkedHashSet<Module>();
         for (Port p : getOutPorts()) {
-            result.add(p.getConnection().getNextElement());
+            result.add(p.getConnection().getNextModule());
         }
         return result;
     }
@@ -112,7 +112,9 @@ public abstract class Gate implements Module {
      *            Set containing outgoing ports to set
      */
     public void setOutPorts(Set<Port> outPorts) {
-        this.outPorts = outPorts;
+        if (outPorts != null && outBoundaries(outPorts.size())) {
+            this.outPorts = outPorts;
+        }
     }
 
     /**
@@ -122,8 +124,28 @@ public abstract class Gate implements Module {
      *            Set containing incoming ports to set
      */
     public void setInPorts(Set<Port> inPorts) {
-        this.inPorts = inPorts;
+        if (inPorts != null && inBoundaries(inPorts.size())) {
+            this.inPorts = inPorts;
+        }
     }
+
+    /**
+     * Check if given number of ports contains a legal number of outPorts.
+     * 
+     * @param outPorts
+     *            number of ports to check for legality
+     * @return given outPorts are within our boundaries
+     */
+    protected abstract boolean outBoundaries(int outPorts);
+
+    /**
+     * Check if given number of ports contains a legal number of inPorts.
+     * 
+     * @param inPorts
+     *            number of ports to check for legality
+     * @return given inPorts are within our boundaries
+     */
+    protected abstract boolean inBoundaries(int inPorts);
 
     /**
      * Set arbitrary (positive) number of <b>new</b> in and out ports to append. Note that any existing ports will be
