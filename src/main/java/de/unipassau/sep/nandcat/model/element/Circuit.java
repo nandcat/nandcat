@@ -1,5 +1,6 @@
 package de.unipassau.sep.nandcat.model.element;
 
+import java.awt.Point;
 import java.util.Set;
 import de.unipassau.sep.nandcat.model.Clock;
 import de.unipassau.sep.nandcat.model.ClockListener;
@@ -100,5 +101,15 @@ public class Circuit implements ClockListener, Element {
     public void addConnection(Port inPort, Port outPort) {
         Connection connection = new Connection(inPort, outPort);
         elements.add(connection);
+    }
+
+    /**
+     * Adds a Module to the Circuit.
+     * 
+     * @param p Point specifying the location of the Module
+     */
+    public void addModule(Module m, Point p) {
+        elements.add(m);
+        m.setLocation(p);
     }
 }
