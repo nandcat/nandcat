@@ -32,7 +32,7 @@ public abstract class Gate implements Module {
      * Point specifying the Location of the Gate.
      */
     private Point location;
-    
+
     /**
      * String defining the Gates' name.
      */
