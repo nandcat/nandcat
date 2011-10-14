@@ -41,4 +41,11 @@ public interface Module extends ClockListener, Element {
      *            Point containing the new Location of this Module.
      */
     void setLocation(Point p);
+
+    /**
+     * Get the Location of this Module.
+     *
+     * @return Point containing the Location of this Module
+     */
+    Point getLocation();
 }
