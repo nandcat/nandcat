@@ -192,8 +192,8 @@ public class Model {
 
     /**
      * Adds a new Module to the Model.
-     *
-     * @param p the Location of the Module.
+     * @param m the Module to be added
+     * @param p the Location of the Module
      */
     public void addModule(Module m, Point p) {
         circuit.addModule(m, p);
