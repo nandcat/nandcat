@@ -1,6 +1,7 @@
 package de.unipassau.sep.nandcat.model.element;
 
 import java.awt.Point;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +37,23 @@ public class Circuit implements ClockListener, Module {
      * @return Set<Element> containing the starting Elements of this Circuit.
      */
     public Set<Module> getStartingModules() {
-        return null;
+        Set<Module> result = new LinkedHashSet<Module>();
+        for (Element e : elements) {
+            if(e instanceof Module) {
+                Module m = (Module) e;
+                boolean isStartingModule = false;
+                for (Port p : m.getInPorts()) {
+                    if (p.getConnection() == null) {
+                        break;
+                    }
+                    isStartingModule = true;
+                }
+                if (isStartingModule) {
+                    result.add(m);
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -50,8 +67,7 @@ public class Circuit implements ClockListener, Module {
      * {@inheritDoc}
      */
     public String getName() {
-        // TODO Auto-generated method stub
-        return null;
+        return name;
     }
 
     /**
