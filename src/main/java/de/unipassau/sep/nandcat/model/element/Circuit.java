@@ -1,6 +1,7 @@
 package de.unipassau.sep.nandcat.model.element;
 
 import java.awt.Point;
+import java.util.List;
 import java.util.Set;
 import de.unipassau.sep.nandcat.model.Clock;
 import de.unipassau.sep.nandcat.model.ClockListener;
@@ -25,7 +26,7 @@ public class Circuit implements ClockListener, Module {
 
     /**
      * Returns the "first" Elements in this Circuit.
-     *
+     * 
      * @return Set<Element> containing the starting Elements of this Circuit.
      */
     public Set<Element> getStartingElements() {
@@ -51,12 +52,11 @@ public class Circuit implements ClockListener, Module {
         // TODO Auto-generated method stub
     }
 
-//    // TODO Circuit contains more elements than module
-//    // TODO Is called from the clock - only once.
-//    public boolean calculate() {
-//        return false;
-//    }
-
+    // // TODO Circuit contains more elements than module
+    // // TODO Is called from the clock - only once.
+    // public boolean calculate() {
+    // return false;
+    // }
     /**
      * Getter for Elements.
      * 
@@ -77,32 +77,33 @@ public class Circuit implements ClockListener, Module {
         this.elements = elements;
     }
 
-// TODO prüfen ob notwendig. Obsolet imho.
-//    /**
-//     * Add an Element to Set of Elements.
-//     * 
-//     * @param element
-//     *            The Element to be added.
-//     */
-//    public void addElement(Element element) {
-//        elements.add(element);
-//    }
-//
-//    /**
-//     * Remove a given Element from Set of Elements.
-//     * 
-//     * @param element
-//     *            Element to be removed.
-//     */
-//    public void removeElement(Element element) {
-//        elements.remove(element);
-//    }
-
+    // TODO prüfen ob notwendig. Obsolet imho.
+    // /**
+    // * Add an Element to Set of Elements.
+    // *
+    // * @param element
+    // * The Element to be added.
+    // */
+    // public void addElement(Element element) {
+    // elements.add(element);
+    // }
+    //
+    // /**
+    // * Remove a given Element from Set of Elements.
+    // *
+    // * @param element
+    // * Element to be removed.
+    // */
+    // public void removeElement(Element element) {
+    // elements.remove(element);
+    // }
     /**
      * Adds a connection between two ports to this Circuit.
-     *
-     * @param inPort Port the Connection will get attached to
-     * @param outPort Port the Connection will get attached to
+     * 
+     * @param inPort
+     *            Port the Connection will get attached to
+     * @param outPort
+     *            Port the Connection will get attached to
      */
     public void addConnection(Port inPort, Port outPort) {
         Connection connection = new Connection(inPort, outPort);
@@ -112,8 +113,10 @@ public class Circuit implements ClockListener, Module {
     /**
      * Adds a Module to the Circuit.
      * 
-     * @param m Module to add
-     * @param p Point specifying the location of the Module
+     * @param m
+     *            Module to add
+     * @param p
+     *            Point specifying the location of the Module
      */
     public void addModule(Module m, Point p) {
         elements.add(m);
@@ -123,7 +126,7 @@ public class Circuit implements ClockListener, Module {
     /**
      * {@inheritDoc}
      */
-    public Set<Port> getInPorts() {
+    public List<Port> getInPorts() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -131,7 +134,7 @@ public class Circuit implements ClockListener, Module {
     /**
      * {@inheritDoc}
      */
-    public Set<Port> getOutPorts() {
+    public List<Port> getOutPorts() {
         // TODO Auto-generated method stub
         return null;
     }

@@ -32,15 +32,13 @@ public class AndGateTest extends TestCase {
     public void testApp() {
         AndGate and = new AndGate(2, 1);
         Lamp lamp = new Lamp();
-        Connection conn = new Connection();
         assertNotNull(and);
         assertNotNull(lamp);
-        assertNotNull(conn);
-        and.getOutPorts().iterator().next().setConnection(conn);
-        lamp.getInPorts().iterator().next().setConnection(conn);
         for (Port p : and.getInPorts()) {
             p.setState(true, null);
         }
+        Connection conn = new Connection(and.getOutPorts().get(0), lamp.getInPorts().get(0));
+        assertNotNull(conn);
         // before the first tick, every outport has to be false
         for (Port p : and.getOutPorts()) {
             assertFalse(p.getState());
