@@ -106,7 +106,6 @@ public class Lamp implements Module {
      */
     public void clockTicked(Clock clock) {
         this.state = inPort.getState();
-        System.out.println("state set to " + state);
     }
 
     /**
@@ -114,5 +113,12 @@ public class Lamp implements Module {
      */
     public void setLocation(Point p) {
         location = p;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Point getLocation() {
+        return location;
     }
 }

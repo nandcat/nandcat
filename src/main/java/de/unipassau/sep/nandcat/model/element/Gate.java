@@ -159,4 +159,11 @@ public abstract class Gate implements Module {
     public void setLocation(Point p) {
         this.location = p;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Point getLocation() {
+        return location;
+    }
 }
