@@ -11,7 +11,7 @@ import de.unipassau.sep.nandcat.model.ClockListener;
  * @version 0.1
  * 
  */
-public class Circuit implements ClockListener, Element {
+public class Circuit implements ClockListener, Module {
 
     /**
      * The name of this Circuit.
@@ -26,12 +26,15 @@ public class Circuit implements ClockListener, Element {
     /**
      * Returns the "first" Elements in this Circuit.
      *
-     * @return
+     * @return Set<Element> containing the starting Elements of this Circuit.
      */
     public Set<Element> getStartingElements() {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setName(String name) {
         this.name = name;
     }
@@ -41,15 +44,18 @@ public class Circuit implements ClockListener, Element {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void clockTicked(Clock clock) {
         // TODO Auto-generated method stub
     }
 
-    // TODO Circuit contains more elements than module
-    // TODO Is called from the clock - only once.
-    public boolean calculate() {
-        return false;
-    }
+//    // TODO Circuit contains more elements than module
+//    // TODO Is called from the clock - only once.
+//    public boolean calculate() {
+//        return false;
+//    }
 
     /**
      * Getter for Elements.
@@ -112,5 +118,28 @@ public class Circuit implements ClockListener, Element {
     public void addModule(Module m, Point p) {
         elements.add(m);
         m.setLocation(p);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Set<Port> getInPorts() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Set<Port> getOutPorts() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setLocation(Point p) {
+        // TODO Auto-generated method stub
     }
 }

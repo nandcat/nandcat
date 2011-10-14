@@ -19,6 +19,7 @@ public interface Module extends ClockListener, Element {
     // ist das Verbinden beim Laden von Schaltungen dann
     // optisch deterministisch? (Leitung landet immer am obersten
     // Port, wenn sie auch dort urspruenglich hingelegt wurde)
+
     /**
      * Gets incoming ports.
      * 
