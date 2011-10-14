@@ -1,6 +1,7 @@
 package de.unipassau.sep.nandcat.model.element;
 
 import java.awt.Point;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import de.unipassau.sep.nandcat.model.Clock;
@@ -13,6 +14,11 @@ import de.unipassau.sep.nandcat.model.ClockListener;
  * 
  */
 public class Circuit implements ClockListener, Module {
+
+    /**
+     * Contains the Location in this Circuit.
+     */
+    private Point location;
 
     /**
      * The name of this Circuit.
@@ -29,7 +35,7 @@ public class Circuit implements ClockListener, Module {
      * 
      * @return Set<Element> containing the starting Elements of this Circuit.
      */
-    public Set<Element> getStartingElements() {
+    public Set<Module> getStartingModules() {
         return null;
     }
 
@@ -40,6 +46,9 @@ public class Circuit implements ClockListener, Module {
         this.name = name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getName() {
         // TODO Auto-generated method stub
         return null;
@@ -127,22 +136,41 @@ public class Circuit implements ClockListener, Module {
      * {@inheritDoc}
      */
     public List<Port> getInPorts() {
-        // TODO Auto-generated method stub
-        return null;
+        List<Port> result = new LinkedList<Port>();
+        for (Module m : getStartingModules()) {
+            for (Port p : m.getInPorts()) {
+                result.add(p);
+            }
+        }
+        return result;
     }
 
     /**
      * {@inheritDoc}
      */
     public List<Port> getOutPorts() {
-        // TODO Auto-generated method stub
-        return null;
+        List<Port> result = new LinkedList<Port>();
+        for (Element e : elements) {
+            if (e instanceof Module) {
+                for (Port p : ((Module) e).getOutPorts()) {
+                    result.add(p);
+                }
+            }
+        }
+        return result;
     }
 
     /**
      * {@inheritDoc}
      */
     public void setLocation(Point p) {
-        // TODO Auto-generated method stub
+        this.location = p;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Point getLocation() {
+        return location;
     }
 }
