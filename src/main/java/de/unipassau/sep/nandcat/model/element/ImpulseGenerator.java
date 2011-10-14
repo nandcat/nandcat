@@ -47,6 +47,9 @@ public class ImpulseGenerator implements Module {
      *            frequency of the generator
      */
     public ImpulseGenerator(int frequency) {
+        if (frequency < 0) {
+            new IllegalArgumentException("invalid frequency for impulsegenerator");
+        }
         this.frequency = frequency;
     }
 
@@ -120,5 +123,9 @@ public class ImpulseGenerator implements Module {
      */
     public Point getLocation() {
         return location;
+    }
+
+    public int getFrequency() {
+        return frequency;
     }
 }

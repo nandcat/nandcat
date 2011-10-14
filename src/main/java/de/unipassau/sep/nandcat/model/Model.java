@@ -2,11 +2,9 @@ package de.unipassau.sep.nandcat.model;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-//import java.util.HashSet;
 import java.util.Set;
 import de.unipassau.sep.nandcat.model.check.CircuitCheck;
 import de.unipassau.sep.nandcat.model.element.Circuit;
-import de.unipassau.sep.nandcat.model.element.Connection;
 import de.unipassau.sep.nandcat.model.element.Element;
 import de.unipassau.sep.nandcat.model.element.Module;
 import de.unipassau.sep.nandcat.model.element.Port;
@@ -20,14 +18,13 @@ public class Model {
 
     // TODO Implements clocklistener anonymously.
     /**
-     * A set of checks which can be performed on the current circuit before
-     * starting the simulation.
+     * A set of checks which can be performed on the current circuit before starting the simulation.
      */
     private Set<CircuitCheck> checks;
 
     /**
-     * A set of all model listeners on the model. The listener informs the
-     * implementing class about changes in the model.
+     * A set of all model listeners on the model. The listener informs the implementing class about changes in the
+     * model.
      */
     private Set<ModelListener> listeners;
 
@@ -47,12 +44,12 @@ public class Model {
      * Start the selected checks on the current circuit.
      */
     public void startChecks() {
-        //TODO implement
-//        for (CircuitCheck check : checks) {
-//            if (check.isActive()) {
-//                check.test(circuit);
-//            }
-//        }
+        // TODO implement
+        // for (CircuitCheck check : checks) {
+        // if (check.isActive()) {
+        // check.test(circuit);
+        // }
+        // }
     }
 
     /**
@@ -66,12 +63,11 @@ public class Model {
     // TODO public method? why?
     public void setCheckActive(CircuitCheck check, boolean isActive) {
         // TODO implement
-        //check.setActive(isActive);
+        // check.setActive(isActive);
     }
 
     /**
-     * Load an existing file into the program. The file has to be imported by an
-     * importer.
+     * Load an existing file into the program. The file has to be imported by an importer.
      * 
      * @param fileName
      *            String defining the name of the file to be loaded.
@@ -93,14 +89,13 @@ public class Model {
     }
 
     /**
-     * Adds a listener to the set of listeners, which will be notified using
-     * events.
+     * Adds a listener to the set of listeners, which will be notified using events.
      * 
      * @param l
      *            Modellistener
      */
     public void addListener(ModelListener l) {
-        //listeners.add(l);
+        // listeners.add(l);
     }
 
     /**
@@ -110,7 +105,7 @@ public class Model {
      *            Modellistener
      */
     public void removeListener(ModelListener l) {
-        //listeners.remove(l);
+        // listeners.remove(l);
     }
 
     /**
@@ -121,19 +116,18 @@ public class Model {
      * @return Set of Elements at the given location.
      */
     public Set<Element> getElementsAt(Point point) {
-//        Set<Element> elementsAt = new HashSet<Element>();
-//        for (Element element : circuit.getElements()) {
-//            if (element.getRectangle.contains(point) {
+        // Set<Element> elementsAt = new HashSet<Element>();
+        // for (Element element : circuit.getElements()) {
+        // if (element.getRectangle.contains(point) {
         // TODO Get position of Element
-//                  elementsAt.add(element);
-//        }
+        // elementsAt.add(element);
+        // }
         return null;
         // TODO implement
     }
 
     /**
-     * Select elements from the circuit. An element is selected when it lies
-     * within a given rectangle.
+     * Select elements from the circuit. An element is selected when it lies within a given rectangle.
      * 
      * @param rect
      *            The Rectangle defining the zone where elements are selected.
@@ -141,12 +135,12 @@ public class Model {
      */
     public Set<Element> selectElements(Rectangle rect) {
         // TODO implement
-//        Set<Element> selectedElements = new HashSet<Element>();
-//        for (Element element : circuit.getElements()) {
-            // if (rect.contains(element.getRectangle)){
-                // selectedElements.add(element);
-            // }
-//        }
+        // Set<Element> selectedElements = new HashSet<Element>();
+        // for (Element element : circuit.getElements()) {
+        // if (rect.contains(element.getRectangle)){
+        // selectedElements.add(element);
+        // }
+        // }
         return null;
     }
 
@@ -162,14 +156,14 @@ public class Model {
     }
 
     /**
-     * Start the simulation on the current circuit. The starting elements are
-     * registered at the clock and compute their output.
+     * Start the simulation on the current circuit. The starting elements are registered at the clock and compute their
+     * output.
      */
     public void startSimulation() {
         // TODO implement
-//         for (Element element : circuit.getStartingElements()) {
-                //clock.register(element)
-//         }
+        // for (Element element : circuit.getStartingElements()) {
+        // clock.register(element)
+        // }
     }
 
     /**
@@ -177,23 +171,28 @@ public class Model {
      */
     public void clearCircuit() {
         // TODO implement
-        //circuit.getElements().clear();
+        // circuit.getElements().clear();
     }
 
     /**
      * Adds a Connection between two Ports to this Model.
-     *
-     * @param inPort the Port carrying the input Signal of the Connection
-     * @param outPort the Port carrying the output Signal of the Connection
+     * 
+     * @param inPort
+     *            the Port carrying the input Signal of the Connection
+     * @param outPort
+     *            the Port carrying the output Signal of the Connection
      */
     public void addConnection(Port inPort, Port outPort) {
-       circuit.addConnection(inPort, outPort);
+        circuit.addConnection(inPort, outPort);
     }
 
     /**
      * Adds a new Module to the Model.
-     * @param m the Module to be added
-     * @param p the Location of the Module
+     * 
+     * @param m
+     *            the Module to be added
+     * @param p
+     *            the Location of the Module
      */
     public void addModule(Module m, Point p) {
         circuit.addModule(m, p);

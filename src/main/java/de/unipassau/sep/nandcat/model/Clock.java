@@ -1,6 +1,7 @@
 package de.unipassau.sep.nandcat.model;
 
 import java.util.Set;
+import de.unipassau.sep.nandcat.model.element.ImpulseGenerator;
 
 /**
  * The Clock class represents a global clock. The Clock is simulated in a separate thread.
@@ -27,10 +28,14 @@ public class Clock {
     }
 
     /**
-     * Set of ClockListeners which inform the implementing classes about changes in the Clock. During simulation the
-     * listeners notify the elements when a new cycle starts.
+     * Set of ClockListeners that want to get notified of changes in the Clock.
      */
     private Set<ClockListener> listeners;
+
+    /**
+     * List of (starting elements, i.e. ImpulseGenerators, TODO anything else?).
+     */
+    private Set<ClockListener> alwaysListeners;
 
     /**
      * Start the simulation of the Clock in a separate thread. The Clock sleeps until the time has reached a new cycle.
@@ -39,17 +44,18 @@ public class Clock {
     public void simulate() {
         // TODO implement
         // new WorkerThread;
-        int sleep = cycle;
-        while (sleep > 0) {
-            // sleep();
-            sleep--;
-        }
+        // int sleep = cycle;
+        // while (sleep > 0) {
+        // sleep();
+        // sleep--;
+        // }
         // for (ClockListener listener : listeners) {
         // listener.clockTicked(this);
         // }
         // then restart
     }
 
+    // TODO Lancetekk: FIXIERUNG++
     /**
      * Add a ClockListener to the Clock. It will be notified if the Clock ticks.
      * 
@@ -57,7 +63,14 @@ public class Clock {
      *            ClockListener to be added.
      */
     public void addListener(ClockListener listener) {
-        listeners.add(listener);
+        if (listener == null) {
+            return;
+        }
+        if (listener instanceof ImpulseGenerator) {
+            alwaysListeners.add(listener);
+        } else {
+            listeners.add(listener);
+        }
     }
 
     /**
@@ -67,6 +80,19 @@ public class Clock {
      *            ClockListener to be removed.
      */
     public void removeListener(ClockListener listener) {
-        listeners.remove(listener);
+        if (listener instanceof ImpulseGenerator) {
+            alwaysListeners.remove(listener);
+        } else {
+            listeners.remove(listener);
+        }
+    }
+
+    /**
+     * Makes the clock notify the listeners. TODO Public for testing
+     */
+    public void cycle() {
+        for (ClockListener listener : listeners) {
+            listener.clockTicked(this);
+        }
     }
 }
