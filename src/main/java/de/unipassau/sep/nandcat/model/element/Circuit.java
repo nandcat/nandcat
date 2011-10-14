@@ -106,6 +106,7 @@ public class Circuit implements ClockListener, Element {
     /**
      * Adds a Module to the Circuit.
      * 
+     * @param m Module to add
      * @param p Point specifying the location of the Module
      */
     public void addModule(Module m, Point p) {
