@@ -39,7 +39,7 @@ public class Circuit implements ClockListener, Module {
     public Set<Module> getStartingModules() {
         Set<Module> result = new LinkedHashSet<Module>();
         for (Element e : elements) {
-            if(e instanceof Module) {
+            if (e instanceof Module) {
                 Module m = (Module) e;
                 boolean isStartingModule = false;
                 for (Port p : m.getInPorts()) {
