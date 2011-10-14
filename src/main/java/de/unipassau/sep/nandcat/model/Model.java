@@ -8,6 +8,7 @@ import de.unipassau.sep.nandcat.model.check.CircuitCheck;
 import de.unipassau.sep.nandcat.model.element.Circuit;
 import de.unipassau.sep.nandcat.model.element.Connection;
 import de.unipassau.sep.nandcat.model.element.Element;
+import de.unipassau.sep.nandcat.model.element.Module;
 import de.unipassau.sep.nandcat.model.element.Port;
 
 /**
@@ -188,8 +189,13 @@ public class Model {
     public void addConnection(Port inPort, Port outPort) {
        circuit.addConnection(inPort, outPort);
     }
-    
-    public void addModule(Point p) {
-        
+
+    /**
+     * Adds a new Module to the Model.
+     *
+     * @param p the Location of the Module.
+     */
+    public void addModule(Module m, Point p) {
+        circuit.addModule(m, p);
     }
 }
