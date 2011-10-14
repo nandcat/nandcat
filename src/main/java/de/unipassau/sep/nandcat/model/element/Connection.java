@@ -14,10 +14,12 @@ public class Connection implements Element {
      * Connection's name.
      */
     private String name;
+
     /**
      * port (a module's <b>outPort</b>) the connection is attached to. Set to one of the modules's outPorts.
      */
     private Port inPort;
+
     /**
      * port (a module's <b>inPort</b>) the connection is attached to. Set to one of the modules's inPorts.
      */
@@ -40,6 +42,8 @@ public class Connection implements Element {
     public Connection(Port inPort, Port outPort) {
         this.inPort = inPort;
         this.outPort = outPort;
+        inPort.setConnection(this);
+        outPort.setConnection(this);
     }
 
     /**
@@ -72,7 +76,9 @@ public class Connection implements Element {
     public void setState(boolean state, Clock clock) {
         if (getNextModule() != null) {
             outPort.setState(getState(), clock);
-            clock.addListener(getNextModule());
+            if (clock != null) {
+                clock.addListener(getNextModule());
+            }
         }
     }
 
@@ -88,17 +94,7 @@ public class Connection implements Element {
         return inPort.getState();
     }
 
-    // FIXME weg DAMIT! Des Teufels Tand! (setState() ohne Clock)
-    /**
-     * Set connection's state.
-     * 
-     * @param state
-     *            to set
-     */
-    public void setState(boolean state) {
-        // this.state = state;
-    }
-
+    // TODO noetig?
     /**
      * Return the next module (the Connection is attached to). Next: going from one element's outPort to the other
      * element's inPort
@@ -112,6 +108,7 @@ public class Connection implements Element {
         return outPort.getModule();
     }
 
+    // TODO noetig?
     /**
      * Return the previous module (the Connection is attached to). Previous: going from one element's inPort to the
      * other element's outPort

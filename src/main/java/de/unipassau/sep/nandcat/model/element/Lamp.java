@@ -1,9 +1,8 @@
 package de.unipassau.sep.nandcat.model.element;
 
 import java.awt.Point;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 import de.unipassau.sep.nandcat.model.Clock;
 
 /**
@@ -18,15 +17,17 @@ public class Lamp implements Module {
      * Point specifying the Location of the Gate.
      */
     private Point location;
-    
+
     /**
      * Lamp's name.
      */
     private String name;
+
     /**
      * Lamp's port.
      */
     private Port inPort;
+
     /**
      * Lamp's state.
      */
@@ -64,8 +65,8 @@ public class Lamp implements Module {
      * 
      * @return Set containing all outgoing ports
      */
-    public Set<Port> getOutPorts() {
-        return new LinkedHashSet<Port>();
+    public List<Port> getOutPorts() {
+        return new LinkedList<Port>();
     }
 
     /**
@@ -73,8 +74,8 @@ public class Lamp implements Module {
      * 
      * @return Set containing all incoming ports
      */
-    public Set<Port> getInPorts() {
-        HashSet<Port> ports = new HashSet<Port>();
+    public List<Port> getInPorts() {
+        LinkedList<Port> ports = new LinkedList<Port>();
         ports.add(inPort);
         return ports;
     }
@@ -85,7 +86,7 @@ public class Lamp implements Module {
      * @param inPorts
      *            Set containing incoming ports to set
      */
-    public void setInPorts(Set<Port> inPorts) {
+    public void setInPorts(List<Port> inPorts) {
         if (inPorts != null && inPorts.size() == 1) {
             this.inPort = inPorts.iterator().next();
         }
@@ -113,8 +114,5 @@ public class Lamp implements Module {
      */
     public void setLocation(Point p) {
         location = p;
-        
     }
-    
-    
 }

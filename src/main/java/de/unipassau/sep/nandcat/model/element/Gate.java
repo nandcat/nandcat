@@ -1,21 +1,21 @@
 package de.unipassau.sep.nandcat.model.element;
 
 import java.awt.Point;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 import de.unipassau.sep.nandcat.model.Clock;
 
 /**
  * Gate class. Representing the minimum consent between the basic gates.
- *
+ * 
  * @version 0.1
- *
+ * 
  */
 public abstract class Gate implements Module {
 
     /**
      * Advanced constructor. Creates new Gate with inPorts incoming and outPorts outgoing Ports.
-     *
+     * 
      * @param inPorts
      *            int <b>positive</b> number of inPorts to append
      * @param outPorts
@@ -37,14 +37,16 @@ public abstract class Gate implements Module {
      * String defining the Gates' name.
      */
     private String name;
+
     /**
-     * Set containing outgoing ports.
+     * List containing outgoing ports.
      */
-    private Set<Port> outPorts;
+    private List<Port> outPorts;
+
     /**
-     * Set containing incoming ports.
+     * List containing incoming ports.
      */
-    private Set<Port> inPorts;
+    private List<Port> inPorts;
 
     /**
      * Trigger calculation of new output values.
@@ -57,10 +59,10 @@ public abstract class Gate implements Module {
     /**
      * Return Elements connected to outgoing port(s).
      * 
-     * @return Set containing the Next Elements
+     * @return List containing the Next Elements
      */
-    Set<Module> getNextElements() {
-        Set<Module> result = new LinkedHashSet<Module>();
+    List<Module> getNextElements() {
+        List<Module> result = new LinkedList<Module>();
         for (Port p : getOutPorts()) {
             result.add(p.getConnection().getNextModule());
         }
@@ -96,18 +98,18 @@ public abstract class Gate implements Module {
     /**
      * Return out ports.
      * 
-     * @return Set containing all outgoing ports
+     * @return List containing all outgoing ports
      */
-    public Set<Port> getOutPorts() {
+    public List<Port> getOutPorts() {
         return outPorts;
     }
 
     /**
      * Return in ports.
      * 
-     * @return Set containing all incoming ports
+     * @return List containing all incoming ports
      */
-    public Set<Port> getInPorts() {
+    public List<Port> getInPorts() {
         return inPorts;
     }
 
@@ -139,12 +141,12 @@ public abstract class Gate implements Module {
      *            int number of outports to append
      */
     private void createPorts(int inPorts, int outPorts) {
-        LinkedHashSet<Port> ports = new LinkedHashSet<Port>();
+        LinkedList<Port> ports = new LinkedList<Port>();
         for (int i = 0; i < inPorts; i++) {
             ports.add(new Port(this));
         }
         this.inPorts = ports;
-        ports = new LinkedHashSet<Port>();
+        ports = new LinkedList<Port>();
         for (int i = 0; i < outPorts; i++) {
             ports.add(new Port(this));
         }

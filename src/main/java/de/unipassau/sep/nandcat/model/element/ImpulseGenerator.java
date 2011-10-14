@@ -1,8 +1,8 @@
 package de.unipassau.sep.nandcat.model.element;
 
 import java.awt.Point;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 import de.unipassau.sep.nandcat.model.Clock;
 
 /**
@@ -20,78 +20,78 @@ public class ImpulseGenerator implements Module {
      */
     private Point location;
 
-    /**
-     * Impulsegenerator's name.
-     */
-    private String name;
-    /**
-     * Impulsegenerator's frequency.
-     */
-    private int frequency;
-    /**
-     * Outgoing port used for signal propagation.
-     */
-    private Port outPort;
-    /**
-     * Impulsegenerator's state.
-     */
-    private boolean state;
+	/**
+	 * Impulsegenerator's name.
+	 */
+	private String name;
+	/**
+	 * Impulsegenerator's frequency.
+	 */
+	private int frequency;
+	/**
+	 * Outgoing port used for signal propagation.
+	 */
+	private Port outPort;
+	/**
+	 * Impulsegenerator's state.
+	 */
+	private boolean state;
 
-    /**
-     * Constructor with frequency.
-     * 
-     * @param frequency
-     *            frequency of the generator
-     */
-    public ImpulseGenerator(int frequency) {
-        this.frequency = frequency;
-    }
+	/**
+	 * Constructor with frequency.
+	 * 
+	 * @param frequency
+	 *            frequency of the generator
+	 */
+	public ImpulseGenerator(int frequency) {
+		this.frequency = frequency;
+	}
 
-    /**
-     * Set impulsegenerator's name.
-     * 
-     * @param name
-     *            String to set impulsegenerator's name to
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * Set impulsegenerator's name.
+	 * 
+	 * @param name
+	 *            String to set impulsegenerator's name to
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    /**
-     * Return impulsegenerator's name.
-     * 
-     * @return String representing impulsegenerator's name
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Return impulsegenerator's name.
+	 * 
+	 * @return String representing impulsegenerator's name
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * Get state of the impulsegenerator.
-     * 
-     * @return state of the impulsegenerator
-     */
-    public boolean getState() {
-        return state;
-    }
+	/**
+	 * Get state of the impulsegenerator.
+	 * 
+	 * @return state of the impulsegenerator
+	 */
+	public boolean getState() {
+		return state;
+	}
 
-    /**
-     * {@inheritDoc}
-     * 
-     * Always empty.
-     */
-    public Set<Port> getInPorts() {
-        return new LinkedHashSet<Port>();
-    }
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * Always empty.
+	 */
+	public List<Port> getInPorts() {
+		return new LinkedList<Port>();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public Set<Port> getOutPorts() {
-        LinkedHashSet<Port> outPorts = new LinkedHashSet<Port>();
-        outPorts.add(outPort);
-        return outPorts;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Port> getOutPorts() {
+		LinkedList<Port> outPorts = new LinkedList<Port>();
+		outPorts.add(outPort);
+		return outPorts;
+	}
 
     /**
      * {@inheritDoc}
