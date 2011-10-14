@@ -1,5 +1,6 @@
 package de.unipassau.sep.nandcat.model.element;
 
+import java.awt.Point;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import de.unipassau.sep.nandcat.model.Clock;
@@ -13,6 +14,11 @@ import de.unipassau.sep.nandcat.model.Clock;
 // TODO wie wird manuell klicken zur Zustandsaenderung weiterpropagiert?
 // gibt es da eine Uhr?
 public class ImpulseGenerator implements Module {
+    
+    /**
+     * Point specifying the Location of the Gate.
+     */
+    private Point location;
 
     /**
      * Impulsegenerator's name.
@@ -97,5 +103,12 @@ public class ImpulseGenerator implements Module {
             frequency = 1;
         }
         outPort.setState(!state, clock);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setLocation(Point p) {
+        location = p;
     }
 }

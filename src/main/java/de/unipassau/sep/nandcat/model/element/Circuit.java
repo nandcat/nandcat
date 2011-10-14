@@ -13,12 +13,17 @@ import de.unipassau.sep.nandcat.model.ClockListener;
 public class Circuit implements ClockListener, Element {
 
     /**
+     * The name of this Circuit.
+     */
+    private String name;
+
+    /**
      * Contains the Elements in this circuit.
      */
     private Set<Element> elements;
 
     /**
-     * Returns the "first" Elements in this Circuit. These 
+     * Returns the "first" Elements in this Circuit.
      *
      * @return
      */
@@ -27,7 +32,7 @@ public class Circuit implements ClockListener, Element {
     }
 
     public void setName(String name) {
-        // TODO Auto-generated method stub
+        this.name = name;
     }
 
     public String getName() {
@@ -65,23 +70,35 @@ public class Circuit implements ClockListener, Element {
         this.elements = elements;
     }
 
-    /**
-     * Add an Element to Set of Elements.
-     * 
-     * @param element
-     *            The Element to be added.
-     */
-    public void addElement(Element element) {
-        elements.add(element);
-    }
+// TODO prüfen ob notwendig. Obsolet imho.
+//    /**
+//     * Add an Element to Set of Elements.
+//     * 
+//     * @param element
+//     *            The Element to be added.
+//     */
+//    public void addElement(Element element) {
+//        elements.add(element);
+//    }
+//
+//    /**
+//     * Remove a given Element from Set of Elements.
+//     * 
+//     * @param element
+//     *            Element to be removed.
+//     */
+//    public void removeElement(Element element) {
+//        elements.remove(element);
+//    }
 
     /**
-     * Remove a given Element from Set of Elements.
-     * 
-     * @param element
-     *            Element to be removed.
+     * Adds a connection between two ports to this Circuit.
+     *
+     * @param inPort Port the Connection will get attached to
+     * @param outPort Port the Connection will get attached to
      */
-    public void removeElement(Element element) {
-        elements.remove(element);
+    public void addConnection(Port inPort, Port outPort) {
+        Connection connection = new Connection(inPort, outPort);
+        elements.add(connection);
     }
 }

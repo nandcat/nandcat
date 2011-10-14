@@ -1,5 +1,6 @@
 package de.unipassau.sep.nandcat.model.element;
 
+import java.awt.Point;
 import de.unipassau.sep.nandcat.model.Clock;
 
 /**
@@ -9,6 +10,7 @@ import de.unipassau.sep.nandcat.model.Clock;
  * 
  */
 public class NotGate extends Gate {
+    
 
     /**
      * Default constructor. Create new not gate with 1 incoming and 1 outgoing ports.

@@ -1,5 +1,6 @@
 package de.unipassau.sep.nandcat.model.element;
 
+import java.awt.Point;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import de.unipassau.sep.nandcat.model.Clock;
@@ -27,6 +28,11 @@ public abstract class Gate implements Module {
         createPorts(inPorts, outPorts);
     }
 
+    /**
+     * Point specifying the Location of the Gate.
+     */
+    private Point location;
+    
     /**
      * String defining the Gates' name.
      */
@@ -143,5 +149,12 @@ public abstract class Gate implements Module {
             ports.add(new Port(this));
         }
         this.outPorts = ports;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setLocation(Point p) {
+        this.location = p;
     }
 }

@@ -1,5 +1,6 @@
 package de.unipassau.sep.nandcat.model.element;
 
+import java.awt.Point;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -13,6 +14,11 @@ import de.unipassau.sep.nandcat.model.Clock;
  */
 public class Lamp implements Module {
 
+    /**
+     * Point specifying the Location of the Gate.
+     */
+    private Point location;
+    
     /**
      * Lamp's name.
      */
@@ -101,4 +107,14 @@ public class Lamp implements Module {
         this.state = inPort.getState();
         System.out.println("state set to " + state);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setLocation(Point p) {
+        location = p;
+        
+    }
+    
+    
 }

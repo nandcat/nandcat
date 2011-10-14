@@ -6,7 +6,9 @@ import java.awt.Rectangle;
 import java.util.Set;
 import de.unipassau.sep.nandcat.model.check.CircuitCheck;
 import de.unipassau.sep.nandcat.model.element.Circuit;
+import de.unipassau.sep.nandcat.model.element.Connection;
 import de.unipassau.sep.nandcat.model.element.Element;
+import de.unipassau.sep.nandcat.model.element.Port;
 
 /**
  * The model class is a wrapper for the logic of the program.
@@ -175,5 +177,19 @@ public class Model {
     public void clearCircuit() {
         // TODO implement
         //circuit.getElements().clear();
+    }
+
+    /**
+     * Adds a Connection between two Ports to this Model.
+     *
+     * @param inPort the Port carrying the input Signal of the Connection
+     * @param outPort the Port carrying the output Signal of the Connection
+     */
+    public void addConnection(Port inPort, Port outPort) {
+       circuit.addConnection(inPort, outPort);
+    }
+    
+    public void addModule(Point p) {
+        
     }
 }

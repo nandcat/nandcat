@@ -1,5 +1,6 @@
 package de.unipassau.sep.nandcat.model.element;
 
+import java.awt.Point;
 import java.util.Set;
 import de.unipassau.sep.nandcat.model.ClockListener;
 
@@ -31,4 +32,11 @@ public interface Module extends ClockListener, Element {
      * @return outgoing ports.
      */
     Set<Port> getOutPorts();
+
+    /**
+     * Set the Location of this Module.
+     *
+     * @param p Point containing the new Location of this Module.
+     */
+    void setLocation(Point p);
 }
