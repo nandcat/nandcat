@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.util.Set;
 import de.unipassau.sep.nandcat.model.check.CircuitCheck;
 import de.unipassau.sep.nandcat.model.element.Circuit;
+import de.unipassau.sep.nandcat.model.element.Connection;
 import de.unipassau.sep.nandcat.model.element.Element;
 import de.unipassau.sep.nandcat.model.element.Module;
 import de.unipassau.sep.nandcat.model.element.Port;
@@ -111,7 +112,7 @@ public class Model {
      *            Modellistener
      */
     public void removeListener(ModelListener l) {
-        // listeners.remove(l);
+        listeners.remove(l);
     }
 
     /**
@@ -204,9 +205,9 @@ public class Model {
      *            the Port carrying the output Signal of the Connection
      */
     public void addConnection(Port inPort, Port outPort) {
-        // TODO Fuege die connection auch in die Gatter ein?
-        // inPort.setconnection(...)
-        circuit.addConnection(inPort, outPort);
+        Connection connection = circuit.addConnection(inPort, outPort);
+        inPort.setConnection(connection);
+        outPort.setConnection(connection);
     }
 
     /**
