@@ -183,6 +183,8 @@ public class Model {
      *            the Port carrying the output Signal of the Connection
      */
     public void addConnection(Port inPort, Port outPort) {
+        // TODO Fuege die connection auch in die Gatter ein?
+        // inPort.setconnection(...)
         circuit.addConnection(inPort, outPort);
     }
 
