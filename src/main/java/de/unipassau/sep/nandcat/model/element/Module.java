@@ -12,14 +12,6 @@ import de.unipassau.sep.nandcat.model.ClockListener;
  */
 public interface Module extends ClockListener, Element {
 
-    // TODO diskussion: was ist mit set{In,Out}Ports hier?
-    // nicht alle Elemente haben EingangsPorts
-    // nicht alle Elemente haben AusgangsPorts
-    // TODO sollen wir wirklich auf Set<Port> arbeiten?
-    // ist das Verbinden beim Laden von Schaltungen dann
-    // optisch deterministisch? (Leitung landet immer am obersten
-    // Port, wenn sie auch dort urspruenglich hingelegt wurde)
-
     /**
      * Gets incoming ports.
      * 
@@ -44,7 +36,7 @@ public interface Module extends ClockListener, Element {
 
     /**
      * Get the Location of this Module.
-     *
+     * 
      * @return Point containing the Location of this Module
      */
     Point getLocation();
