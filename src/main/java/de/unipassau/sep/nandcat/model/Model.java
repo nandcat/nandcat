@@ -182,6 +182,13 @@ public class Model {
     }
 
     /**
+     * Stops the simulation on the current circuit.
+     */
+    public void stopSimulation() {
+        // TODO Auto-generated method stub
+    }
+
+    /**
      * Remove all objects from the current circuit.
      */
     public void clearCircuit() {

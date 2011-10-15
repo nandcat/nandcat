@@ -1,6 +1,6 @@
 package de.unipassau.sep.nandcat;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import java.awt.Point;
 import java.util.List;
 import org.junit.Ignore;
@@ -27,6 +27,18 @@ public class SimulationTest {
 
     private ClockListener clocklistener;
 
+    private Port outPortButton1;
+
+    private Port outPortButton2;
+
+    private Port inPort1Or;
+
+    private Port inPort2Or;
+
+    private Port outPortOr;
+
+    private Port inPortLamp;
+
     @Ignore
     // @Before
     public void setUp() throws Exception {
@@ -36,6 +48,7 @@ public class SimulationTest {
         Lamp lamp = new Lamp();
         model.addModule(lamp, new Point(1, 2));
         ImpulseGenerator button1 = new ImpulseGenerator(0);
+        // TODO Impulse Generator how to activate?
         ImpulseGenerator button2 = new ImpulseGenerator(0);
         // Lists of ports
         List<Port> outPortsButton1 = button1.getOutPorts();
@@ -43,13 +56,12 @@ public class SimulationTest {
         List<Port> inPortsOr = orGate.getInPorts();
         List<Port> outPortsOr = orGate.getOutPorts();
         List<Port> inPortsLamp = lamp.getInPorts();
-        // Ports
-        Port outPortButton1 = outPortsButton1.get(0);
-        Port outPortButton2 = outPortsButton2.get(0);
-        Port inPort1Or = inPortsOr.get(0);
-        Port inPort2Or = inPortsOr.get(1);
-        Port outPortOr = outPortsOr.get(0);
-        Port inPortLamp = inPortsLamp.get(0);
+        outPortButton1 = outPortsButton1.get(0);
+        outPortButton2 = outPortsButton2.get(0);
+        inPort1Or = inPortsOr.get(0);
+        inPort2Or = inPortsOr.get(1);
+        outPortOr = outPortsOr.get(0);
+        inPortLamp = inPortsLamp.get(0);
         // Connection conButton1ToOr = new Connection(outPortButton1, inPort1Or);
         // Connection conButton2ToOr = new Connection(outPortButton2, inPort2Or);
         // Connection conOrToLamp = new Connection(outPortOr, inPortLamp);
@@ -62,16 +74,19 @@ public class SimulationTest {
             private int counter = 0;
 
             public void clockTicked(Clock clock) {
-                if (counter == CORRECT_AFTER_CYCLE) {
+                // TODO Test all states
+                if (counter == CORRECT_AFTER_CYCLE || counter == CORRECT_AFTER_CYCLE + 1) {
                     test();
                 }
                 counter++;
+                if (counter == CORRECT_AFTER_CYCLE + 2) {
+                    model.stopSimulation();
+                }
             }
         };
         model.getClock().addListener(clocklistener);
         model.startSimulation();
         // TODO Set Button1 on!
-        // TODO Weiter machen
     }
 
     @Ignore
@@ -82,6 +97,11 @@ public class SimulationTest {
 
     @Ignore
     public void test() {
-        fail("Not yet implemented");
+        assertTrue(outPortButton1.getState());
+        assertFalse(outPortButton2.getState());
+        assertTrue(inPort1Or.getState());
+        assertFalse(inPort2Or.getState());
+        assertTrue(outPortOr.getState());
+        assertTrue(inPortLamp.getState());
     }
 }
