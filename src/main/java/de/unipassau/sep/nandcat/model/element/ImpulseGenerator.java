@@ -125,6 +125,11 @@ public class ImpulseGenerator implements Module {
         return location;
     }
 
+    /**
+     * Return the frequency of this Imp.Gen.
+     * 
+     * @return the frequency
+     */
     public int getFrequency() {
         return frequency;
     }
