@@ -34,6 +34,11 @@ public class Model {
     private Circuit circuit;
 
     /**
+     * The current clock instance used for simulation.
+     */
+    private Clock clock;
+
+    /**
      * The constructor for the model class.
      */
     public Model() {
@@ -124,6 +129,16 @@ public class Model {
         // }
         return null;
         // TODO implement
+    }
+
+    /**
+     * Gets the current clock.
+     * 
+     * @return Clock used for simulation.
+     */
+    public Clock getClock() {
+        // TODO Man braucht ne Clock auf die man sich registrieren kann
+        return clock;
     }
 
     /**
