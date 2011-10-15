@@ -1,7 +1,11 @@
 package de.unipassau.sep.nandcat.controller;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
+import de.unipassau.sep.nandcat.view.View;
+import de.unipassau.sep.nandcat.view.WorkspaceEvent;
+import de.unipassau.sep.nandcat.view.WorkspaceListener;
 
 /**
  * The Help Tool is responsible for the Help Dialogs given to the User while using the Program.
@@ -12,33 +16,116 @@ import javax.swing.ImageIcon;
 public class HelpTool implements Tool {
 
     /**
+     * Current View instance.
+     */
+    private View view;
+
+    /**
+     * Current Controller instance.
+     */
+    private Controller controller;
+
+    /**
+     * Icon representation of the Tool.
+     */
+    private ImageIcon icon; // TODO icon setzen
+
+    /**
+     * String representation of the Tool.
+     */
+    private String represent; // TODO beschreibung schreiben
+
+    /**
+     * ActionListener of the Tool on the Buttons.
+     */
+    private ActionListener buttonListener;
+
+    /**
+     * WorkspaceListener of the Tool on the Model.
+     */
+    private WorkspaceListener workspaceListener;
+
+    /**
+     * Constructs the HelpTool.
+     * 
+     * @param controller
+     *            Controller component of the application.
+     */
+    public HelpTool(Controller controller) {
+        this.controller = controller;
+        this.view = controller.getView();
+    }
+
+    /**
      * {@inheritDoc}
      */
     public void setActive(boolean active) {
-        // TODO Auto-generated method stub
+        if (active) {
+            if (workspaceListener == null) {
+                view.getWorkspace().addListener(workspaceListener = new WorkspaceListener() {
+
+                    @Override
+                    public void mouseReleased(WorkspaceEvent e) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @Override
+                    public void mousePressed(WorkspaceEvent e) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @Override
+                    public void mouseMoved(WorkspaceEvent e) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @Override
+                    public void mouseDragged(WorkspaceEvent e) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @Override
+                    public void mouseClicked(WorkspaceEvent e) {
+                        // TODO Auto-generated method stub
+                    }
+                });
+            } else {
+                view.getWorkspace().addListener(workspaceListener);
+            }
+        } else {
+            view.getWorkspace().removeListener(workspaceListener);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public ActionListener getListener() {
-        // TODO Auto-generated method stub
-        return null;
+        if (buttonListener != null) {
+            return buttonListener;
+        } else {
+            buttonListener = new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // TODO Auto-generated method stub
+                }
+            };
+        }
+        return buttonListener;
     }
 
     /**
      * {@inheritDoc}
      */
     public String getText() {
-        // TODO Auto-generated method stub
-        return null;
+        return represent;
     }
 
     /**
      * {@inheritDoc}
      */
     public ImageIcon getIcon() {
-        // TODO Auto-generated method stub
-        return null;
+        return icon;
     }
 }

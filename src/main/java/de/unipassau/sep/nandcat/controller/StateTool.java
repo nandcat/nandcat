@@ -4,11 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import de.unipassau.sep.nandcat.model.Model;
+import de.unipassau.sep.nandcat.view.View;
+import de.unipassau.sep.nandcat.view.WorkspaceEvent;
+import de.unipassau.sep.nandcat.view.WorkspaceListener;
 
 /**
  * The StateTool is responsible for setting the states (true or false) at the ImpulseGenerator.
  * 
- * @version 0.1
+ * @version 0.4
  * 
  */
 public class StateTool implements Tool {
@@ -16,44 +19,99 @@ public class StateTool implements Tool {
     /**
      * Current Model instance.
      */
-    private Model model = null;
+    private Model model;
+
     /**
      * Current Controller instance.
      */
     private Controller controller;
+
+    /**
+     * Current View instance.
+     */
+    private View view;
+
     /**
      * Icon representation of the Tool.
      */
-    private ImageIcon icon;// TODO icon setzen
+    private ImageIcon icon; // TODO icon setzen
+
     /**
      * String representation of the Tool.
      */
     private String represent; // TODO beschreibung schreiben
-    /**
-     * ActionListerner of the Tool.
-     */
-    private ActionListener stateListener;
 
-    public StateTool(Model model, Controller controller) {
-        this.model = model;
+    /**
+     * ActionListerner of the Tool for the Buttons and the Menu.
+     */
+    private ActionListener buttonListener;
+
+    /**
+     * WorkspaceListener of the Tool on the Workspace.
+     */
+    private WorkspaceListener workspaceListener;
+
+    /**
+     * Constructs the StateTool.
+     * 
+     * @param controller
+     *            Controller component of the application.
+     */
+    public StateTool(Controller controller) {
         this.controller = controller;
+        view = controller.getView();
+        model = controller.getModel();
     }
 
     /**
      * {@inheritDoc}
      */
     public void setActive(boolean active) {
-        // TODO Auto-generated method stub
+        if (active) {
+            if (workspaceListener == null) {
+                view.getWorkspace().addListener(workspaceListener = new WorkspaceListener() {
+
+                    @Override
+                    public void mouseReleased(WorkspaceEvent e) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @Override
+                    public void mousePressed(WorkspaceEvent e) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @Override
+                    public void mouseMoved(WorkspaceEvent e) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @Override
+                    public void mouseDragged(WorkspaceEvent e) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @Override
+                    public void mouseClicked(WorkspaceEvent e) {
+                        // TODO Auto-generated method stub
+                    }
+                });
+            } else {
+                view.getWorkspace().addListener(workspaceListener);
+            }
+        } else {
+            view.getWorkspace().removeListener(workspaceListener);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public ActionListener getListener() {
-        if (stateListener != null) {
-            return stateListener;
+        if (buttonListener != null) {
+            return buttonListener;
         } else {
-            stateListener = new ActionListener() {
+            buttonListener = new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -61,7 +119,7 @@ public class StateTool implements Tool {
                 }
             };
         }
-        return stateListener;
+        return buttonListener;
     }
 
     /**

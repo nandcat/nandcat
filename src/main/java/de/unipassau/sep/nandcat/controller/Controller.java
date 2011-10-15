@@ -66,4 +66,22 @@ public class Controller {
         activeTool = tool;
         activeTool.setActive(true);
     }
+
+    /**
+     * Returns the current Model instance.
+     * 
+     * @return model the current Model instance
+     */
+    public Model getModel() {
+        return model;
+    }
+
+    /**
+     * Returns the current View instance.
+     * 
+     * @return view the current View instance
+     */
+    public View getView() {
+        return view;
+    }
 }
