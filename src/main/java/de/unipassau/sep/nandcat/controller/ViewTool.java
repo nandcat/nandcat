@@ -62,36 +62,30 @@ public class ViewTool implements Tool {
     public void setActive(boolean active) {
         if (active) {
             if (workspaceListener == null) {
-                view.getWorkspace().addListener(workspaceListener = new WorkspaceListener() {
+                workspaceListener = new WorkspaceListener() {
 
-                    @Override
                     public void mouseReleased(WorkspaceEvent e) {
                         // TODO Auto-generated method stub
                     }
 
-                    @Override
                     public void mousePressed(WorkspaceEvent e) {
                         // TODO Auto-generated method stub
                     }
 
-                    @Override
                     public void mouseMoved(WorkspaceEvent e) {
                         // TODO Auto-generated method stub
                     }
 
-                    @Override
                     public void mouseDragged(WorkspaceEvent e) {
                         // TODO Auto-generated method stub
                     }
 
-                    @Override
                     public void mouseClicked(WorkspaceEvent e) {
                         // TODO Auto-generated method stub
                     }
-                });
-            } else {
-                view.getWorkspace().addListener(workspaceListener);
+                };
             }
+            view.getWorkspace().addListener(workspaceListener);
         } else {
             view.getWorkspace().removeListener(workspaceListener);
         }
@@ -106,7 +100,6 @@ public class ViewTool implements Tool {
         } else {
             buttonListener = new ActionListener() {
 
-                @Override
                 public void actionPerformed(ActionEvent e) {
                     // TODO Auto-generated method stub
                 }

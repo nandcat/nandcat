@@ -62,17 +62,15 @@ public class SimulateTool implements Tool {
     public void setActive(boolean active) {
         if (active) {
             if (modelListener == null) {
-                model.addListener(modelListener = new ModelListener() {
+                modelListener = new ModelListener() {
 
                     // TODO wirklich elementsChanged? was ist mit checks started, simulation started etc.?
-                    @Override
                     public void elementsChanged(ModelEvent e) {
                         // TODO Auto-generated method stub
                     }
-                });
-            } else {
-                model.addListener(modelListener);
+                };
             }
+            model.addListener(modelListener);
         } else {
             model.removeListener(modelListener);
         }
@@ -87,7 +85,6 @@ public class SimulateTool implements Tool {
         } else {
             buttonListener = new ActionListener() {
 
-                @Override
                 public void actionPerformed(ActionEvent e) {
                     // TODO Auto-generated method stub
                 }
