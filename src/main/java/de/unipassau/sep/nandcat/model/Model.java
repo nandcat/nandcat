@@ -17,6 +17,7 @@ import de.unipassau.sep.nandcat.model.element.Port;
 public class Model {
 
     // TODO Implements clocklistener anonymously.
+    // NEIN WIRD ES NICHT !
     /**
      * A set of checks which can be performed on the current circuit before starting the simulation.
      */
@@ -164,10 +165,8 @@ public class Model {
      * 
      * @return A Set of all elements.
      */
-    // TODO Check if needed. You can call circuit.getElements()
     public Set<Element> getElements() {
-        // TODO implement
-        return null;
+        return circuit.getElements();
     }
 
     /**
