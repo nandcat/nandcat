@@ -118,4 +118,22 @@ public class Connection implements Element {
     public Module getPreviousModule() {
         return inPort.getModule();
     }
+
+    /**
+     * Getter for inPort.
+     * 
+     * @return Port inPort
+     */
+    public Port getInPort() {
+        return inPort;
+    }
+
+    /**
+     * Getter for outPort.
+     * 
+     * @return Port outPort
+     */
+    public Port getOutPort() {
+        return outPort;
+    }
 }
