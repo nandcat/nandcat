@@ -141,6 +141,7 @@ public class Circuit implements ClockListener, Module {
     /**
      * {@inheritDoc}
      */
+    // FIXME implement correctly
     public List<Port> getOutPorts() {
         List<Port> result = new LinkedList<Port>();
         for (Element e : elements) {
@@ -165,5 +166,37 @@ public class Circuit implements ClockListener, Module {
      */
     public Point getLocation() {
         return location;
+    }
+
+    /**
+     * Remove element from circuit.
+     * 
+     * @param e
+     *            Element to remove
+     */
+    public void removeElement(Element e) {
+        if (e == null) {
+            return;
+        }
+        if (e instanceof Connection) {
+            Connection c = (Connection) e;
+            c.getInPort().setConnection(null);
+            c.getOutPort().setConnection(null);
+            elements.remove(c);
+        }
+        if (e instanceof Module) {
+            Module m = (Module) e;
+            for (Port p : m.getInPorts()) {
+                if (p.getConnection() != null) {
+                    removeElement(p.getConnection());
+                }
+            }
+            for (Port p : m.getOutPorts()) {
+                if (p.getConnection() != null) {
+                    removeElement(p.getConnection());
+                }
+            }
+            elements.remove(m);
+        }
     }
 }
