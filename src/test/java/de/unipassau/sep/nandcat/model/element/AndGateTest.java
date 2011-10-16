@@ -27,7 +27,7 @@ public class AndGateTest extends TestCase {
     }
 
     /**
-     * Rigourous Test :-).
+     * Test: TRUE,TRUE->AND->LAMP.
      */
     public void testApp() {
         AndGate and = new AndGate(2, 1);
@@ -46,12 +46,8 @@ public class AndGateTest extends TestCase {
         // simulate ticking clock
         and.clockTicked(null);
         for (Port p : and.getOutPorts()) {
-            System.out.println("AND: " + p.getState());
             assertTrue(p.getState());
         }
-        // before 1st calculation
-        assertFalse(lamp.getState());
-        lamp.clockTicked(null);
         // after 1st tick
         assertTrue(lamp.getState());
     }

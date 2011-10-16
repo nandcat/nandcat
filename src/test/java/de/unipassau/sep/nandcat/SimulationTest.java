@@ -1,6 +1,7 @@
 package de.unipassau.sep.nandcat;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.awt.Point;
 import java.util.List;
 import org.junit.Ignore;
@@ -21,6 +22,9 @@ import de.unipassau.sep.nandcat.model.element.Port;
  */
 public class SimulationTest {
 
+    /**
+     * TODO Missing doc comment.
+     */
     private static final int CORRECT_AFTER_CYCLE = 3;
 
     private Model model;
@@ -65,7 +69,6 @@ public class SimulationTest {
         // Connection conButton1ToOr = new Connection(outPortButton1, inPort1Or);
         // Connection conButton2ToOr = new Connection(outPortButton2, inPort2Or);
         // Connection conOrToLamp = new Connection(outPortOr, inPortLamp);
-        // TODO Model sollte connection auch zu den Ports hinzufügen
         model.addConnection(outPortButton1, inPort1Or);
         model.addConnection(outPortButton2, inPort2Or);
         model.addConnection(outPortOr, inPortLamp);
