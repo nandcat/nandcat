@@ -1,5 +1,8 @@
 package de.unipassau.sep.nandcat.model;
 
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 import de.unipassau.sep.nandcat.model.element.ImpulseGenerator;
 
@@ -13,8 +16,6 @@ public class Clock {
     /**
      * Representing a clock cycle. A new cycle is reached when the sleep time is a multiple of the cycle.
      */
-    // TODO Diskussion: cycle muss eine Art Laufvariable sein, damit man im Impulsegenerator nachsehen kann, ob man
-    // schon wieder dran ist mit pulsieren (if (clock.getCycle() % frequency) == 0)) -> Lancetekk+teK bitte klaeren :)
     private int cycle;
 
     /**
@@ -25,17 +26,19 @@ public class Clock {
      */
     public Clock(int cycle) {
         this.cycle = cycle;
+        listeners = new LinkedList<ClockListener>();
+        generators = new LinkedHashSet<ImpulseGenerator>();
     }
 
     /**
-     * Set of ClockListeners that want to get notified of changes in the Clock.
+     * List of ClockListeners that want to get notified of changes in the Clock. It may not contain duplicates.
      */
-    private Set<ClockListener> listeners;
+    private Queue<ClockListener> listeners;
 
     /**
      * List of (starting elements, i.e. ImpulseGenerators, TODO anything else?).
      */
-    private Set<ClockListener> alwaysListeners;
+    private Set<ImpulseGenerator> generators;
 
     /**
      * Start the simulation of the Clock in a separate thread. The Clock sleeps until the time has reached a new cycle.
@@ -67,9 +70,11 @@ public class Clock {
             return;
         }
         if (listener instanceof ImpulseGenerator) {
-            alwaysListeners.add(listener);
+            generators.add((ImpulseGenerator) listener);
         } else {
-            listeners.add(listener);
+            if (!listeners.contains(listener)) {
+                listeners.add(listener);
+            }
         }
     }
 
@@ -81,7 +86,7 @@ public class Clock {
      */
     public void removeListener(ClockListener listener) {
         if (listener instanceof ImpulseGenerator) {
-            alwaysListeners.remove(listener);
+            generators.remove(listener);
         } else {
             listeners.remove(listener);
         }
@@ -91,8 +96,14 @@ public class Clock {
      * Makes the clock notify the listeners. TODO Public for testing
      */
     public void cycle() {
+        // never ever refactor name listener
         for (ClockListener listener : listeners) {
             listener.clockTicked(this);
+        }
+        for (ImpulseGenerator listener : generators) {
+            if (cycle % listener.getFrequency() == 0) {
+                listener.clockTicked(this);
+            }
         }
     }
 }
