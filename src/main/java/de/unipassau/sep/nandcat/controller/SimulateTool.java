@@ -6,6 +6,7 @@ import javax.swing.ImageIcon;
 import de.unipassau.sep.nandcat.model.Model;
 import de.unipassau.sep.nandcat.model.ModelEvent;
 import de.unipassau.sep.nandcat.model.ModelListener;
+import de.unipassau.sep.nandcat.view.CheckManager;
 
 /**
  * The SimulateTool is responsible for handling the Simulation and Checks.
@@ -24,6 +25,11 @@ public class SimulateTool implements Tool {
      * Current Controller instance.
      */
     private Controller controller;
+    
+    /**
+     * Current CheckManager instance.
+     */
+    private CheckManager checkManager;
 
     /**
      * Icon representation of the Tool.

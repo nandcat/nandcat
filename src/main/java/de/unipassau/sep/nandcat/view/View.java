@@ -2,7 +2,6 @@ package de.unipassau.sep.nandcat.view;
 
 import javax.swing.JFrame;
 import de.unipassau.sep.nandcat.model.Model;
-import de.unipassau.sep.nandcat.model.check.CheckManager;
 
 /**
  * View.
@@ -13,6 +12,7 @@ import de.unipassau.sep.nandcat.model.check.CheckManager;
  */
 public class View extends JFrame {
 
+    // TODO brauchen methode um den Fenster-Ausschnitt über dem Workespace zu setzen.
     // TODO Implements modellistener
     /**
      * Default serial version uid.
@@ -57,6 +57,7 @@ public class View extends JFrame {
      */
     public void enableButtons() {
         // TODO Wirklich enable Buttons, weil simulation buttons ja noch laufen?...
+        // TODO Naja ich glaub der FAll is ja eh nur in der Simulation relevant -> Alle anderen Buttons Disabeln
     }
 
     /**
