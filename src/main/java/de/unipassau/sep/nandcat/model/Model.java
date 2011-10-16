@@ -25,8 +25,7 @@ public class Model {
     private Set<CircuitCheck> checks;
 
     /**
-     * A set of all model listeners on the model. The listener informs the implementing class about changes in the
-     * model.
+     * Set of all model listeners on the model. The listener informs the implementing class about changes in the model.
      */
     private Set<ModelListener> listeners;
 
@@ -220,5 +219,15 @@ public class Model {
      */
     public void addModule(Module m, Point p) {
         circuit.addModule(m, p);
+    }
+
+    /**
+     * Remove given element.
+     * 
+     * @param e
+     *            Element to remove
+     */
+    public void removeElement(Element e) {
+        circuit.removeElement(e);
     }
 }
