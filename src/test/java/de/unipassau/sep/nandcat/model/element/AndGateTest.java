@@ -49,6 +49,10 @@ public class AndGateTest extends TestCase {
             assertTrue(p.getState());
         }
         // after 1st tick
+        assertNotNull(lamp.getInPorts().get(0));
+        assertTrue(lamp.getInPorts().get(0).getState());
+        // obviously clock ticked nach der änderung aufrufen, DERRRRRP
+        lamp.clockTicked(null);
         assertTrue(lamp.getState());
     }
 }
