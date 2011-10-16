@@ -94,7 +94,6 @@ public class Connection implements Element {
         return inPort.getState();
     }
 
-    // TODO noetig?
     /**
      * Return the next module (the Connection is attached to). Next: going from one element's outPort to the other
      * element's inPort
@@ -108,7 +107,6 @@ public class Connection implements Element {
         return outPort.getModule();
     }
 
-    // TODO noetig?
     /**
      * Return the previous module (the Connection is attached to). Previous: going from one element's inPort to the
      * other element's outPort
