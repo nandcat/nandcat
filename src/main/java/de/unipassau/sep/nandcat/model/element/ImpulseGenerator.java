@@ -36,11 +36,6 @@ public class ImpulseGenerator implements Module {
     private Port outPort;
 
     /**
-     * Impulsegenerator's state.
-     */
-    private boolean state;
-
-    /**
      * Constructor with frequency.
      * 
      * @param frequency
@@ -78,7 +73,10 @@ public class ImpulseGenerator implements Module {
      * @return state of the impulsegenerator
      */
     public boolean getState() {
-        return state;
+        if (outPort == null) {
+            return false;
+        }
+        return outPort.getState();
     }
 
     /**
@@ -103,12 +101,7 @@ public class ImpulseGenerator implements Module {
      * {@inheritDoc}
      */
     public void clockTicked(Clock clock) {
-        // if (clock.getCycle() % frequency) == 0)
-        // stub to remove warning...
-        if (frequency == 0) {
-            frequency = 1;
-        }
-        outPort.setState(!state, clock);
+        toggleState(clock);
     }
 
     /**
@@ -132,5 +125,18 @@ public class ImpulseGenerator implements Module {
      */
     public int getFrequency() {
         return frequency;
+    }
+
+    /**
+     * Toggle state.
+     * 
+     * @param clock
+     *            Clock that has strikken(!)
+     */
+    public void toggleState(Clock clock) {
+        if (outPort == null) {
+            return;
+        }
+        outPort.setState(!outPort.getState(), clock);
     }
 }
