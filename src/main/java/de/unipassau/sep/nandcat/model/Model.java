@@ -2,6 +2,7 @@ package de.unipassau.sep.nandcat.model;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import de.unipassau.sep.nandcat.model.check.CircuitCheck;
 import de.unipassau.sep.nandcat.model.element.Circuit;
@@ -15,7 +16,7 @@ import de.unipassau.sep.nandcat.model.element.Port;
  * 
  * @version 0.1
  */
-public class Model {
+public class Model implements ClockListener {
 
     // TODO Implements clocklistener anonymously.
     // NEIN WIRD ES NICHT !
@@ -43,7 +44,11 @@ public class Model {
      * The constructor for the model class.
      */
     public Model() {
-        // TODO implement
+        // TODO
+        circuit = new Circuit();
+        checks = new LinkedHashSet<CircuitCheck>();
+        listeners = new LinkedHashSet<ModelListener>();
+        clock = new Clock(0, this);
     }
 
     /**
@@ -132,13 +137,13 @@ public class Model {
         // TODO implement
     }
 
+    // TODO ONLY FOR TESTING !!!
     /**
      * Gets the current clock.
      * 
      * @return Clock used for simulation.
      */
     public Clock getClock() {
-        // TODO Man braucht ne Clock auf die man sich registrieren kann
         return clock;
     }
 
@@ -174,10 +179,10 @@ public class Model {
      * output.
      */
     public void startSimulation() {
-        // TODO implement
-        // for (Element element : circuit.getStartingElements()) {
-        // clock.register(element)
-        // }
+        for (Module m : circuit.getStartingModules()) {
+            clock.addListener(m);
+        }
+        clock.startSimulation();
     }
 
     /**
@@ -191,8 +196,7 @@ public class Model {
      * Remove all objects from the current circuit.
      */
     public void clearCircuit() {
-        // TODO implement
-        // circuit.getElements().clear();
+        circuit.getElements().clear();
     }
 
     /**
@@ -229,5 +233,12 @@ public class Model {
      */
     public void removeElement(Element e) {
         circuit.removeElement(e);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clockTicked(Clock clock) {
+        // TODO
     }
 }
