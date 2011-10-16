@@ -141,13 +141,17 @@ public class Circuit implements ClockListener, Module {
     /**
      * {@inheritDoc}
      */
-    // FIXME implement correctly
     public List<Port> getOutPorts() {
         List<Port> result = new LinkedList<Port>();
         for (Element e : elements) {
             if (e instanceof Module) {
-                for (Port p : ((Module) e).getOutPorts()) {
-                    result.add(p);
+                Module m = (Module) e;
+                for (Port p : m.getOutPorts()) {
+                    // empty ports are outPorts
+                    // not-emptyports with connections leading to modules outside the circuit are also outPorts
+                    if ((p.getConnection() == null) || !(this.elements.contains(p.getConnection().getNextModule()))) {
+                        result.add(p);
+                    }
                 }
             }
         }
