@@ -19,15 +19,23 @@ public class Clock {
     private int cycle;
 
     /**
+     * Model this clock refers to.
+     */
+    private Model model;
+
+    /**
      * Constructor for Clock.
      * 
      * @param cycle
      *            The cycle for the new clock.
+     * @param model
+     *            The model for the new clock.
      */
-    public Clock(int cycle) {
+    public Clock(int cycle, Model model) {
         this.cycle = cycle;
         listeners = new LinkedList<ClockListener>();
         generators = new LinkedHashSet<ImpulseGenerator>();
+        this.model = model;
     }
 
     /**
@@ -105,5 +113,21 @@ public class Clock {
                 listener.clockTicked(this);
             }
         }
+        model.clockTicked(this);
+    }
+
+    /**
+     * Start the simulation on this clock.
+     */
+    public void startSimulation() {
+        // TODO start the frakking simulation.
+        // starting elements already added.
+    }
+
+    /**
+     * Stop the simulation on this clock.
+     */
+    public void stopSimulation() {
+        // TODO clear listeners, reset cycle, blabla
     }
 }
