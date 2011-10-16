@@ -29,16 +29,11 @@ public class Lamp implements Module {
     private Port inPort;
 
     /**
-     * Lamp's state.
-     */
-    private boolean state;
-
-    /**
      * Default constructor.
      */
     public Lamp() {
-        state = false;
         inPort = new Port(this);
+        inPort.setState(false, null);
     }
 
     /**
@@ -98,14 +93,19 @@ public class Lamp implements Module {
      * @return state of the lamp
      */
     public boolean getState() {
-        return state;
+        if (inPort == null) {
+            return false;
+        }
+        return inPort.getState();
     }
 
     /**
      * {@inheritDoc}
      */
     public void clockTicked(Clock clock) {
-        this.state = inPort.getState();
+        /*
+         * left empty for good reason (no action needed)
+         */
     }
 
     /**
