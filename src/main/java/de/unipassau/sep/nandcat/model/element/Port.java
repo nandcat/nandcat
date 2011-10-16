@@ -9,88 +9,89 @@ import de.unipassau.sep.nandcat.model.Clock;
  */
 public class Port {
 
-	/**
-	 * Port's state.
-	 */
-	private boolean state;
-	/**
-	 * Module this port is attached to.
-	 */
-	private final Module module;
-	/**
-	 * Connection attached to port. Note that this reference may be null.
-	 */
-	private Connection connection;
+    /**
+     * Port's state.
+     */
+    private boolean state;
 
-	/**
-	 * Default constructor.
-	 * 
-	 * @param module
-	 *            Module to attach port to
-	 */
-	public Port(Module module) {
-		this.module = module;
-	}
+    /**
+     * Module this port is attached to.
+     */
+    private final Module module;
 
-	/**
-	 * Get port module.
-	 * 
-	 * @return Module belonging to this port
-	 */
-	public Module getModule() {
-		return module;
-	}
+    /**
+     * Connection attached to port. Note that this reference may be null.
+     */
+    private Connection connection;
 
-	/**
-	 * Set state of port.
-	 * 
-	 * @param state
-	 *            state to set
-	 * @param clock
-	 *            Clock that has strikken(!)
-	 */
-	public void setState(boolean state, Clock clock) {
-		this.state = state;
-		if (isOutPort() && getConnection() != null) {
-			getConnection().setState(state, clock);
-		}
-	}
+    /**
+     * Default constructor.
+     * 
+     * @param module
+     *            Module to attach port to
+     */
+    public Port(Module module) {
+        this.module = module;
+    }
 
-	/**
-	 * Get state of port.
-	 * 
-	 * @return state of the port
-	 */
-	public boolean getState() {
-		return state;
-	}
+    /**
+     * Get port module.
+     * 
+     * @return Module belonging to this port
+     */
+    public Module getModule() {
+        return module;
+    }
 
-	/**
-	 * Return attached connection.
-	 * 
-	 * @return Connection attached to this port
-	 */
-	public Connection getConnection() {
-		return connection;
-	}
+    /**
+     * Set state of port.
+     * 
+     * @param state
+     *            state to set
+     * @param clock
+     *            Clock that has strikken(!)
+     */
+    public void setState(boolean state, Clock clock) {
+        this.state = state;
+        if (isOutPort() && getConnection() != null) {
+            getConnection().setState(state, clock);
+        }
+    }
 
-	/**
-	 * Attach connection to port.
-	 * 
-	 * @param connection
-	 *            Connection to attach to port
-	 */
-	public void setConnection(Connection connection) {
-		this.connection = connection;
-		setState(state, null); // FIXME was muss hier passieren, keine Uhr..
-	}
+    /**
+     * Get state of port.
+     * 
+     * @return state of the port
+     */
+    public boolean getState() {
+        return state;
+    }
 
-	/**
-	 * Return wether port is outport or not.
-	 * 
-	 * @return port is outport or not
-	 */
-	public boolean isOutPort() {
-		return module.getOutPorts().contains(this);
-	}
+    /**
+     * Return attached connection.
+     * 
+     * @return Connection attached to this port
+     */
+    public Connection getConnection() {
+        return connection;
+    }
+
+    /**
+     * Attach connection to port.
+     * 
+     * @param connection
+     *            Connection to attach to port
+     */
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+
+    /**
+     * Return wether port is outport or not.
+     * 
+     * @return port is outport or not
+     */
+    public boolean isOutPort() {
+        return module.getOutPorts().contains(this);
+    }
 }
