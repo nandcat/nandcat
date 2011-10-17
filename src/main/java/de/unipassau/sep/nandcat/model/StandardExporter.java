@@ -1,6 +1,7 @@
 package de.unipassau.sep.nandcat.model;
 
 import java.io.File;
+import de.unipassau.sep.nandcat.model.element.Circuit;
 
 /**
  * StandardExporter.
@@ -9,20 +10,39 @@ import java.io.File;
  */
 public class StandardExporter implements Exporter {
 
+    /**
+     * {@inheritDoc}
+     */
     public void setFile(File file) {
         // TODO Auto-generated method stub
     }
 
-    public boolean exportElements() {
+    /**
+     * {@inheritDoc}
+     */
+    public boolean exportCircuit() {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public String getFileExtension() {
+    /**
+     * {@inheritDoc}
+     */
+    public void setCircuit(Circuit c) {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String[] getFileExtension() {
         // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getFileDescription() {
         // TODO Auto-generated method stub
         return null;
