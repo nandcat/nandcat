@@ -11,29 +11,28 @@ import de.unipassau.sep.nandcat.model.Clock;
  * @version 0.1
  * 
  */
-// TODO wie wird manuell klicken zur Zustandsaenderung weiterpropagiert?
-// gibt es da eine Uhr?
 public class ImpulseGenerator implements Module {
 
     /**
      * Point specifying the Location of the Gate.
      */
     private Point location;
-
     /**
      * Impulsegenerator's name.
      */
     private String name;
-
     /**
      * Impulsegenerator's frequency.
      */
     private int frequency;
-
     /**
      * Outgoing port used for signal propagation.
      */
     private Port outPort;
+    /**
+     * Impulsegenerator's state.
+     */
+    private boolean state;
 
     /**
      * Constructor with frequency.
@@ -46,6 +45,7 @@ public class ImpulseGenerator implements Module {
             new IllegalArgumentException("invalid frequency for impulsegenerator");
         }
         this.frequency = frequency;
+        outPort = new Port(this);
     }
 
     /**
@@ -73,10 +73,7 @@ public class ImpulseGenerator implements Module {
      * @return state of the impulsegenerator
      */
     public boolean getState() {
-        if (outPort == null) {
-            return false;
-        }
-        return outPort.getState();
+        return state;
     }
 
     /**
@@ -101,7 +98,11 @@ public class ImpulseGenerator implements Module {
      * {@inheritDoc}
      */
     public void clockTicked(Clock clock) {
-        toggleState(clock);
+        toggleState();
+        if (outPort == null) {
+            return;
+        }
+        outPort.setState(state, clock);
     }
 
     /**
@@ -129,14 +130,8 @@ public class ImpulseGenerator implements Module {
 
     /**
      * Toggle state.
-     * 
-     * @param clock
-     *            Clock that has strikken(!)
      */
-    public void toggleState(Clock clock) {
-        if (outPort == null) {
-            return;
-        }
-        outPort.setState(!outPort.getState(), clock);
+    public void toggleState() {
+        state = !state;
     }
 }

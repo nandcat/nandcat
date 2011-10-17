@@ -17,21 +17,24 @@ public class Lamp implements Module {
      * Point specifying the Location of the Gate.
      */
     private Point location;
-
     /**
      * Lamp's name.
      */
     private String name;
-
     /**
      * Lamp's port.
      */
     private Port inPort;
+    /**
+     * Lamp's state.
+     */
+    private boolean state;
 
     /**
-     * Default constructor.
+     * /** Default constructor.
      */
     public Lamp() {
+        state = false;
         inPort = new Port(this);
         inPort.setState(false, null);
     }
@@ -93,19 +96,14 @@ public class Lamp implements Module {
      * @return state of the lamp
      */
     public boolean getState() {
-        if (inPort == null) {
-            return false;
-        }
-        return inPort.getState();
+        return state;
     }
 
     /**
      * {@inheritDoc}
      */
     public void clockTicked(Clock clock) {
-        /*
-         * left empty for good reason (no action needed)
-         */
+        this.state = inPort.getState();
     }
 
     /**

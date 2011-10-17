@@ -24,9 +24,11 @@ public class AndGate extends Gate {
      *            int number of inPorts to append
      * @param outPorts
      *            int number of outPorts to append
+     * 
      */
     public AndGate(int inPorts, int outPorts) {
         super(inPorts, outPorts);
+        // TODO ueberfluesig?
         if (inPorts < 2 || outPorts < 1) {
             throw new IllegalStateException("Illegal amount of in or out ports.");
         }
