@@ -19,27 +19,22 @@ public class CheckManager extends JFrame {
      * Default serial version uid.
      */
     private static final long serialVersionUID = 1L;
-
     /**
      * CheckListener of the Checkmanager, listening on the Checks.
      */
     private CheckListener checkListener;
-
     /**
      * Icon representing a check has not started yet.
      */
     private ImageIcon checkPending;
-
     /**
      * Icon representing a check has started but did not finish yet.
      */
     private ImageIcon checkStarted;
-
     /**
      * Icon representing a check passed succsessful.
      */
     private ImageIcon checkSuccsessful;
-
     /**
      * Icon representing a check failed.
      */
@@ -55,12 +50,10 @@ public class CheckManager extends JFrame {
         setupCheckmanager(checksToDo);
         checkListener = new CheckListener() {
 
-            @Override
             public void checkStarted() {
                 changeSymbol(checkStarted);
             }
 
-            @Override
             public void checkChanged(CheckEvent e) {
                 // TODO Auto-generated method stub
             }
