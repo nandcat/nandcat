@@ -2,20 +2,15 @@ package de.unipassau.sep.nandcat.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.ImageIcon;
+
 import de.unipassau.sep.nandcat.model.Model;
 import de.unipassau.sep.nandcat.model.ModelEvent;
 import de.unipassau.sep.nandcat.model.ModelListener;
 import de.unipassau.sep.nandcat.view.CheckManager;
 
-/**
- * The SimulateTool is responsible for handling the Simulation and Checks.
- * 
- * @version 0.1
- * 
- */
-public class SimulateTool implements Tool {
-
+public class CheckTool implements Tool{
 	/**
 	 * Current Model instance.
 	 */
@@ -57,7 +52,7 @@ public class SimulateTool implements Tool {
 	 * @param controller
 	 *            Controller component of the application.
 	 */
-	public SimulateTool(Controller controller) {
+	public CheckTool(Controller controller) {
 		this.controller = controller;
 		model = controller.getModel();
 	}
@@ -113,4 +108,5 @@ public class SimulateTool implements Tool {
 	public ImageIcon getIcon() {
 		return icon;
 	}
+
 }

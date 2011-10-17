@@ -2,20 +2,19 @@ package de.unipassau.sep.nandcat.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.ImageIcon;
+
 import de.unipassau.sep.nandcat.model.Model;
-import de.unipassau.sep.nandcat.model.ModelEvent;
-import de.unipassau.sep.nandcat.model.ModelListener;
-import de.unipassau.sep.nandcat.view.CheckManager;
+import de.unipassau.sep.nandcat.view.WorkspaceListener;
 
 /**
- * The SimulateTool is responsible for handling the Simulation and Checks.
+ * Tool for exporting files. Includes saving.
  * 
  * @version 0.1
  * 
  */
-public class SimulateTool implements Tool {
-
+public class ExportTool implements Tool {
 	/**
 	 * Current Model instance.
 	 */
@@ -25,11 +24,6 @@ public class SimulateTool implements Tool {
 	 * Current Controller instance.
 	 */
 	private Controller controller;
-
-	/**
-	 * Current CheckManager instance.
-	 */
-	private CheckManager checkManager;
 
 	/**
 	 * Icon representation of the Tool.
@@ -42,45 +36,31 @@ public class SimulateTool implements Tool {
 	private String represent; // TODO beschreibung schreiben
 
 	/**
-	 * ActionListener of the Tool on the Buttons.
+	 * ActionListerner of the Tool on the Buttons.
 	 */
 	private ActionListener buttonListener;
 
 	/**
-	 * ModelListener of the Tool on the Model.
+	 * WorkspaceListener of the Tool.
 	 */
-	private ModelListener modelListener;
+	private WorkspaceListener workspaceListener;
 
 	/**
-	 * Constructs the SimulateTool.
+	 * Constructs the SelectTool.
 	 * 
 	 * @param controller
 	 *            Controller component of the application.
 	 */
-	public SimulateTool(Controller controller) {
+	public ExportTool(Controller controller) {
 		this.controller = controller;
-		model = controller.getModel();
+		this.model = controller.getModel();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void setActive(boolean active) {
-		if (active) {
-			if (modelListener == null) {
-				modelListener = new ModelListener() {
-
-					// TODO wirklich elementsChanged? was ist mit checks
-					// started, simulation started etc.?
-					public void elementsChanged(ModelEvent e) {
-						// TODO Auto-generated method stub
-					}
-				};
-			}
-			model.addListener(modelListener);
-		} else {
-			model.removeListener(modelListener);
-		}
+		// Always active
 	}
 
 	/**
