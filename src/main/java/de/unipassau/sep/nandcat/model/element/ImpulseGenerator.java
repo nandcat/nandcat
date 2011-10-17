@@ -98,11 +98,11 @@ public class ImpulseGenerator implements Module {
      * {@inheritDoc}
      */
     public void clockTicked(Clock clock) {
-        toggleState();
         if (outPort == null) {
             return;
         }
         outPort.setState(state, clock);
+        toggleState();
     }
 
     /**
