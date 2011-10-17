@@ -1,20 +1,50 @@
 package de.unipassau.sep.nandcat.view;
 
 /**
- * Workspacelistener.
+ * Interface WorkspaceListener defines the methods the Listener offers and must be implemented.
  * 
- * @version 0.1
+ * @version 0.5
  * 
  */
 public interface WorkspaceListener {
 
+    /**
+     * Invoked when the mouse button has been clicked (pressed and released) on a component.
+     * 
+     * @param e
+     *            WorkspaceEvent containing informations about the Location.
+     */
     void mouseClicked(WorkspaceEvent e);
 
+    /**
+     * Invoked when the mouse button has been released on a component.
+     * 
+     * @param e
+     *            WorkspaceEvent containing informations about the Location.
+     */
     void mouseReleased(WorkspaceEvent e);
 
+    /**
+     * Invoked when the mouse button has been pressed on a component.
+     * 
+     * @param e
+     *            WorkspaceEvent containing informations about the Location.
+     */
     void mousePressed(WorkspaceEvent e);
 
+    /**
+     * Invoked when the mouse button has been dragged (pressed and moved) on a component.
+     * 
+     * @param e
+     *            WorkspaceEvent containing informations about the Location.
+     */
     void mouseDragged(WorkspaceEvent e);
 
+    /**
+     * Invoked when the mouse button has been moved.
+     * 
+     * @param e
+     *            WorkspaceEvent containing informations about the Location.
+     */
     void mouseMoved(WorkspaceEvent e);
 }

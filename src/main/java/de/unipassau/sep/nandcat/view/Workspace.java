@@ -1,7 +1,10 @@
 package de.unipassau.sep.nandcat.view;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import de.unipassau.sep.nandcat.model.ModelEvent;
 
 /**
  * Workspace.
@@ -28,9 +31,31 @@ public class Workspace {
     private Set<WorkspaceListener> listeners = new LinkedHashSet<WorkspaceListener>();
 
     /**
-     * Redraws the workspace.
+     * MouseListener of the Workspace on itself.
      */
-    public void redraw() {
+    private MouseAdapter mouseListener;
+
+    public Workspace() {
+        setupWorkspace();
+        mouseListener = new MouseAdapter() {
+            // TODO implement
+        };
+    }
+
+    /**
+     * set up the Workspace.
+     */
+    private void setupWorkspace() {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     * Redraws the workspace with its elements.
+     * 
+     * @param e
+     *            ModelEvent with the elements to be redrawed.
+     */
+    public void redraw(ModelEvent e) {
         // TODO Wo kommen die Elements her?
     }
 
@@ -57,10 +82,9 @@ public class Workspace {
     /**
      * Notifies listeners of mouse click events on the workspace.
      */
-    private void notifyMouseClicked() {
+    private void notifyMouseClicked(MouseEvent altE) {
         WorkspaceEvent e = new WorkspaceEvent();
-        // e.setLocation(p);
-        // TODO Fehlender Parameter -> Übergabe des ursprünglichen Mousevents..?
+        e.setLocation(altE.getPoint());
         for (WorkspaceListener l : listeners) {
             l.mouseClicked(e);
         }
@@ -69,24 +93,24 @@ public class Workspace {
     /**
      * Notifies listeners of mouse pressed events on the workspace.
      */
-    private void notifyMousePressed() {
+    private void notifyMousePressed(MouseEvent altE) {
     }
 
     /**
      * Notifies listeners of mouse released events on the workspace.
      */
-    private void notifyMouseReleased() {
+    private void notifyMouseReleased(MouseEvent altE) {
     }
 
     /**
      * Notifies listeners of mouse moved events on the workspace.
      */
-    private void notifyMouseMoved() {
+    private void notifyMouseMoved(MouseEvent altE) {
     }
 
     /**
      * Notifies listeners of mouse dragged events on the workspace.
      */
-    private void notifyMouseDragged() {
+    private void notifyMouseDragged(MouseEvent altE) {
     }
 }

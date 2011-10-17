@@ -2,6 +2,7 @@ package de.unipassau.sep.nandcat.view;
 
 import javax.swing.JFrame;
 import de.unipassau.sep.nandcat.model.Model;
+import de.unipassau.sep.nandcat.model.ModelEvent;
 
 /**
  * View.
@@ -47,8 +48,11 @@ public class View extends JFrame {
 
     /**
      * Redraws the workspace with its elements.
+     * 
+     * @param e
+     *            ModelEvent with the elements to be redrawed.
      */
-    public void redraw() {
+    public void redraw(ModelEvent e) {
         // TODO Missing parameter
     }
 
