@@ -3,7 +3,7 @@ package nandcat.model.element;
 import nandcat.model.Clock;
 
 /**
- * AND gate implementation.
+ * AND gate implementation. It represents the boolean AND-operator.
  * 
  * @version 0.5
  * 

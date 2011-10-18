@@ -3,7 +3,7 @@ package nandcat.model.element;
 import nandcat.model.Clock;
 
 /**
- * NOT gate implementation.
+ * NOT gate implementation. It represents the boolean NOT-operator.
  * 
  * @version 0.5
  * 

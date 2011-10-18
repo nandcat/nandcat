@@ -1,7 +1,7 @@
 package nandcat.model;
 
 /**
- * View-friendly representation of all available module Objects.
+ * View-friendly representation of all available module Objects. Contains no logic.
  * 
  */
 public class ViewModule {
@@ -33,6 +33,24 @@ public class ViewModule {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Sets the file extension for this ViewModule.
+     * 
+     * @param s
+     *            String containing the file extension
+     */
+    public void setFileExtension(String s) {
+    }
+
+    /**
+     * Returns the file extension.
+     * 
+     * @return String containing the file extension
+     */
+    public String getFileExtension() {
+        return null;
     }
 
     /**

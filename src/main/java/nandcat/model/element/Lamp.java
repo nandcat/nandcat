@@ -7,7 +7,7 @@ import java.util.List;
 import nandcat.model.Clock;
 
 /**
- * Lamp implementation.
+ * Lamp implementation. The lamp is shiny if the input signal is true. It has no output ports.
  * 
  * @version 0.1
  * 
@@ -141,5 +141,20 @@ public class Lamp implements Module {
      */
     public void setRectangle(Rectangle rectangle) {
         this.rectangle = rectangle;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSelected(boolean b) {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSelected() {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

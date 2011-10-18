@@ -6,7 +6,7 @@ import java.util.List;
 import nandcat.model.ClockListener;
 
 /**
- * Module interface.
+ * Module interface. A Module is an Element with Ports. They can be connected by Connections.
  * 
  * @version 0.1
  * 

@@ -3,7 +3,8 @@ package nandcat.model.element;
 import nandcat.model.Clock;
 
 /**
- * Connection.
+ * Connection between two Modules. Propagates the signal from the first Module to the second. Is responsible for
+ * registering the next Module on the clock.
  * 
  * @version 0.1
  * 
@@ -133,5 +134,20 @@ public class Connection implements Element {
      */
     public Port getOutPort() {
         return outPort;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSelected(boolean b) {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSelected() {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

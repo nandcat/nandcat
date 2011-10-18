@@ -7,7 +7,7 @@ import java.util.Set;
 import nandcat.model.element.ImpulseGenerator;
 
 /**
- * The Clock class represents a global clock. The Clock is simulated in a separate thread.
+ * The Clock class represents a global clock. The Clock's tact is simulated in a separate thread.
  * 
  * @version 0.1
  */

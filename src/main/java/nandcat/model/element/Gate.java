@@ -186,4 +186,19 @@ public abstract class Gate implements Module {
     public void setRectangle(Rectangle rectangle) {
         this.rectangle = rectangle;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSelected(boolean b) {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSelected() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

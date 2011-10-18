@@ -9,7 +9,9 @@ import nandcat.model.Clock;
 import nandcat.model.ClockListener;
 
 /**
- * Circuit.
+ * This class represents a circuit. It could be a customized Module or the main circuit displayed in the GUI. A circuit
+ * representing a custom Module will not be displayed in its full extent. Note that this leads to a recursive
+ * datastructure, where a circuit could contain more circuits.
  * 
  * @version 0.1
  * 
@@ -252,5 +254,32 @@ public class Circuit implements ClockListener, Module {
      */
     public void setSymbol(byte[] symbol) {
         this.symbol = symbol;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSelected(boolean b) {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSelected() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /**
+     * Selects or deselects a Module. Note that this should not be used to set <code>this</code> Module's selected
+     * state. Use <code>setSelected(boolean b)</code> for that.
+     * 
+     * @param m
+     *            Module that will be selected
+     * @param b
+     *            true if selected, false if not selected
+     */
+    public void setModuleSelected(Module m, boolean b) {
     }
 }

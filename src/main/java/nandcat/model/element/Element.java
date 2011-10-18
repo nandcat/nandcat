@@ -1,16 +1,17 @@
 package nandcat.model.element;
 
 /**
- * Element interface.
- *
+ * Element interface. An Element contains getters and setters for the most basic attributes a visible (or under specific
+ * circumstances invisible) on the workspave component can have.
+ * 
  * @version 0.1
- *
+ * 
  */
 public interface Element {
 
     /**
      * Set element's name.
-     *
+     * 
      * @param name
      *            set element's name to name
      */
@@ -18,8 +19,23 @@ public interface Element {
 
     /**
      * Return element's name.
-     *
+     * 
      * @return element's name
      */
     String getName();
+
+    /**
+     * Sets the Element's selected state.
+     * 
+     * @param b
+     *            new state
+     */
+    void setSelected(boolean b);
+
+    /**
+     * Returns the Element's selected state.
+     * 
+     * @return true if the Element is selected, false if not
+     */
+    boolean isSelected();
 }

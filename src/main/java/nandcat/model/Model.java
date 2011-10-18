@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import nandcat.model.check.CircuitCheck;
@@ -15,7 +16,8 @@ import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 
 /**
- * The model class is a wrapper for the logic of the program.
+ * The model class contains the logic and data of the program as well as methods to manipulate said data. It is one of
+ * the big three parts in NANDcat. Every query regarding data will be directed to this class.
  * 
  * @version 0.1
  */
@@ -44,7 +46,7 @@ public class Model implements ClockListener {
     /**
      * 
      */
-    private HashMap<ViewModule, Module> ViewModule2Module;
+    private HashMap<ViewModule, Module> viewModule2Module;
 
     /**
      * The constructor for the model class.
@@ -56,6 +58,11 @@ public class Model implements ClockListener {
         listeners = new LinkedHashSet<ModelListener>();
         clock = new Clock(0, this);
     }
+
+    /**
+     * List of all custom circuits.
+     */
+    private List<Circuit> loadedCircuits;
 
     /**
      * Start the selected checks on the current circuit.
@@ -116,6 +123,12 @@ public class Model implements ClockListener {
     }
 
     /**
+     * Loads or reloads the List containing the custom-circuits.
+     */
+    public void loadCustomList() {
+    }
+
+    /**
      * Removes a listener from the set of listeners.
      * 
      * @param l
@@ -123,6 +136,17 @@ public class Model implements ClockListener {
      */
     public void removeListener(ModelListener l) {
         listeners.remove(l);
+    }
+
+    /**
+     * Selects or deselects a Module.
+     * 
+     * @param m
+     *            Module that will be selected
+     * @param b
+     *            true if selected, false if not selected
+     */
+    public void setModuleSelected(Module m, boolean b) {
     }
 
     /**
@@ -248,7 +272,7 @@ public class Model implements ClockListener {
      */
     public void addModule(ViewModule m, Point p) {
         // TODO Fehlerpruefung++
-        circuit.addModule(ViewModule2Module.get(m), p);
+        circuit.addModule(viewModule2Module.get(m), p);
     }
 
     /**

@@ -7,7 +7,7 @@ import java.util.List;
 import nandcat.model.Clock;
 
 /**
- * Impulse Generator.
+ * Impulse Generator. Cycles between outgoing signals. An Impulse Generator with frequency 0 is basically a Switch.
  * 
  * @version 0.1
  * 
@@ -157,5 +157,20 @@ public class ImpulseGenerator implements Module {
      */
     public void setRectangle(Rectangle rectangle) {
         this.rectangle = rectangle;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setSelected(boolean b) {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isSelected() {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

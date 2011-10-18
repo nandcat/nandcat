@@ -3,7 +3,7 @@ package nandcat.model.element;
 import java.awt.Point;
 
 /**
- * FlipFlop implementation.
+ * FlipFlop implementation. A FlipFlop is used to "hold" a boolean state for a certain amount of time.
  * 
  * @version 0.1
  * 

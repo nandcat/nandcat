@@ -3,7 +3,7 @@ package nandcat.model.element;
 import nandcat.model.Clock;
 
 /**
- * Identity gate implementation.
+ * Identity gate implementation. The output equals the input.
  * 
  * @version 0.5
  * 
