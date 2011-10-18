@@ -5,6 +5,7 @@ import java.awt.Point;
 import javax.swing.JFrame;
 import de.unipassau.sep.nandcat.model.Model;
 import de.unipassau.sep.nandcat.model.ModelEvent;
+import de.unipassau.sep.nandcat.model.ModelListener;
 
 /**
  * View.
@@ -15,7 +16,6 @@ import de.unipassau.sep.nandcat.model.ModelEvent;
  */
 public class View extends JFrame {
 
-	// TODO Implements modellistener
 	/**
 	 * Default serial version uid.
 	 */
@@ -45,6 +45,20 @@ public class View extends JFrame {
 	 * Sets up GUI elements.
 	 */
 	private void setupGui(Model model) {
+		model.addListener(new ModelListener() {
+
+			public void simulationChanged(ModelEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			public void elementsChanged(ModelEvent e) {
+				redraw(e);
+			}
+
+			public void checksChanged(ModelEvent e) {
+			}
+		});
 	}
 
 	/**
@@ -86,7 +100,7 @@ public class View extends JFrame {
 	 * Set the ViewportPosition over the Workspace.
 	 * 
 	 * @param p
-	 *            Point where to be set.s
+	 *            Point where to be set.
 	 */
 	public void setViewportPosition(Point p) {
 

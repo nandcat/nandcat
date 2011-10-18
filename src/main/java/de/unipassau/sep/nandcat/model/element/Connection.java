@@ -3,7 +3,7 @@ package de.unipassau.sep.nandcat.model.element;
 import de.unipassau.sep.nandcat.model.Clock;
 
 /**
- * Connection. // TODO konstruktor fehlt
+ * Connection.
  * 
  * @version 0.1
  * 

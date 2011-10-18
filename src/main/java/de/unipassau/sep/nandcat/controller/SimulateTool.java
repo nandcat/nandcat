@@ -20,118 +20,117 @@ import de.unipassau.sep.nandcat.view.CheckManager;
  */
 public class SimulateTool implements Tool {
 
-    /**
-     * Current Model instance.
-     */
-    private Model model;
+	/**
+	 * Current Model instance.
+	 */
+	private Model model;
 
-    /**
-     * Current Controller instance.
-     */
-    private Controller controller;
+	/**
+	 * Current Controller instance.
+	 */
+	private Controller controller;
 
-    /**
-     * Current CheckManager instance.
-     */
-    private CheckManager checkManager;
+	/**
+	 * Current CheckManager instance.
+	 */
+	private CheckManager checkManager;
 
-    /**
-     * Icon representation of the Tool.
-     */
-    private ImageIcon icon; // TODO icon setzen
+	/**
+	 * Icon representation of the Tool.
+	 */
+	private ImageIcon icon; // TODO icon setzen
 
-    /**
-     * String representation of the Tool.
-     */
-    private List<String> represent; // TODO beschreibung schreiben
+	/**
+	 * String representation of the Tool.
+	 */
+	private List<String> represent; // TODO beschreibung schreiben
 
-    /**
-     * ActionListener of the Tool on the Buttons.
-     */
-    private ActionListener buttonListener;
+	/**
+	 * ActionListener of the Tool on the Buttons.
+	 */
+	private ActionListener buttonListener;
 
-    /**
-     * ModelListener of the Tool on the Model.
-     */
-    private ModelListener modelListener;
-    
-    /**
-     * ItemHanlder of the Tool the the ComboBox in the CheckManager.
-     */
-    private ItemHandler comboboxListener;
+	/**
+	 * ModelListener of the Tool on the Model.
+	 */
+	private ModelListener modelListener;
 
-    /**
-     * Constructs the SimulateTool.
-     * 
-     * @param controller
-     *            Controller component of the application.
-     */
-    public SimulateTool(Controller controller) {
-        this.controller = controller;
-        model = controller.getModel();
-    }
+	/**
+	 * ItemHanlder of the Tool the the ComboBox in the CheckManager.
+	 */
+	private ItemHandler comboboxListener;
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setActive(boolean active) {
-        if (active) {
-            if (modelListener == null) {
-                modelListener = new ModelListener() {
+	/**
+	 * Constructs the SimulateTool.
+	 * 
+	 * @param controller
+	 *            Controller component of the application.
+	 */
+	public SimulateTool(Controller controller) {
+		this.controller = controller;
+		model = controller.getModel();
+	}
 
-                    // started, simulation started etc.?
-                    public void elementsChanged(ModelEvent e) {
-                    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setActive(boolean active) {
+		if (active) {
+			if (modelListener == null) {
+				modelListener = new ModelListener() {
 
-					@Override
+					public void elementsChanged(ModelEvent e) {
+					}
+
 					public void checksChanged(ModelEvent e) {
 						// TODO Auto-generated method stub
-						
+
 					}
 
-					@Override
 					public void simulationChanged(ModelEvent e) {
 						// TODO Auto-generated method stub
-						
+
 					}
-                };
-            }
-            model.addListener(modelListener);
-        } else {
-            model.removeListener(modelListener);
-        }
-    }
+				};
+			}
+			model.addListener(modelListener);
+		} else {
+			model.removeListener(modelListener);
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public ActionListener getListener() {
-        if (buttonListener != null) {
-            return buttonListener;
-        } else {
-            buttonListener = new ActionListener() {
+	/**
+	 * {@inheritDoc}
+	 */
+	public ActionListener getListener() {
+		if (buttonListener != null) {
+			return buttonListener;
+		} else {
+			buttonListener = new ActionListener() {
 
-                public void actionPerformed(ActionEvent e) {
-                	// nur zum beispiel actionCommands sind defaultmäßig die namen der Buttons/menüpunkte
-                    if(e.getActionCommand() == "checkstating");
-                    checkManager = new CheckManager(model.getChecks());
-                }
-            };
-        }
-        return buttonListener;
-    }
+				public void actionPerformed(ActionEvent e) {
+					// nur zum beispiel actionCommands sind defaultmäßig die
+					// namen der Buttons/menüpunkte
+					if (e.getActionCommand() == "checkstating")
+						;
+					checkManager = new CheckManager(model.getChecks());
+				}
+			};
+		}
+		return buttonListener;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public List<String> getText() {
-        return represent;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<String> getText() {
+		return represent;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public ImageIcon getIcon() {
-        return icon;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public ImageIcon getIcon() {
+		return icon;
+	}
 }

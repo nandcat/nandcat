@@ -17,110 +17,110 @@ import de.unipassau.sep.nandcat.view.WorkspaceListener;
  */
 public class ViewTool implements Tool {
 
-    /**
-     * Current View instance.
-     */
-    private View view = null;
+	/**
+	 * Current View instance.
+	 */
+	private View view = null;
 
-    /**
-     * Current Controller instance.
-     */
-    private Controller controller;
+	/**
+	 * Current Controller instance.
+	 */
+	private Controller controller;
 
-    /**
-     * Icon representation of the Tool.
-     */
-    private ImageIcon icon; // TODO icon setzen
+	/**
+	 * Icon representation of the Tool.
+	 */
+	private ImageIcon icon; // TODO icon setzen
 
-    /**
-     * String representation of the Tool.
-     */
-    private List<String> represent; // TODO beschreibung schreiben
+	/**
+	 * String representation of the Tool.
+	 */
+	private List<String> represent; // TODO beschreibung schreiben
 
-    /**
-     * ActionListerner of the Tool on the Buttons.
-     */
-    private ActionListener buttonListener;
+	/**
+	 * ActionListerner of the Tool on the Buttons.
+	 */
+	private ActionListener buttonListener;
 
-    /**
-     * WorkspaceListener of the Tools on the Workspace.
-     */
-    private WorkspaceListener workspaceListener;
+	/**
+	 * WorkspaceListener of the Tools on the Workspace.
+	 */
+	private WorkspaceListener workspaceListener;
 
-    /**
-     * Constructs the ViewTool.
-     * 
-     * @param controller
-     *            Controller component of the application.
-     */
-    public ViewTool(Controller controller) {
-        this.controller = controller;
-        view = controller.getView();
-    }
+	/**
+	 * Constructs the ViewTool.
+	 * 
+	 * @param controller
+	 *            Controller component of the application.
+	 */
+	public ViewTool(Controller controller) {
+		this.controller = controller;
+		view = controller.getView();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setActive(boolean active) {
-        if (active) {
-            if (workspaceListener == null) {
-                workspaceListener = new WorkspaceListener() {
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setActive(boolean active) {
+		if (active) {
+			if (workspaceListener == null) {
+				workspaceListener = new WorkspaceListener() {
 
-                    public void mouseReleased(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
+					public void mouseReleased(WorkspaceEvent e) {
+						// TODO Auto-generated method stub
+					}
 
-                    public void mousePressed(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
+					public void mousePressed(WorkspaceEvent e) {
+						// TODO Auto-generated method stub
+					}
 
-                    public void mouseMoved(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
+					public void mouseMoved(WorkspaceEvent e) {
+						// TODO Auto-generated method stub
+					}
 
-                    public void mouseDragged(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
+					public void mouseDragged(WorkspaceEvent e) {
+						// TODO Auto-generated method stub
+					}
 
-                    public void mouseClicked(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-                };
-            }
-            view.getWorkspace().addListener(workspaceListener);
-        } else {
-            view.getWorkspace().removeListener(workspaceListener);
-        }
-    }
+					public void mouseClicked(WorkspaceEvent e) {
+						// TODO Auto-generated method stub
+					}
+				};
+			}
+			view.getWorkspace().addListener(workspaceListener);
+		} else {
+			view.getWorkspace().removeListener(workspaceListener);
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public ActionListener getListener() {
-        if (buttonListener != null) {
-            return buttonListener;
-        } else {
-            buttonListener = new ActionListener() {
+	/**
+	 * {@inheritDoc}
+	 */
+	public ActionListener getListener() {
+		if (buttonListener != null) {
+			return buttonListener;
+		} else {
+			buttonListener = new ActionListener() {
 
-                public void actionPerformed(ActionEvent e) {
-                    // TODO Auto-generated method stub
-                }
-            };
-        }
-        return buttonListener;
-    }
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+				}
+			};
+		}
+		return buttonListener;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public List<String> getText() {
-        return represent;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<String> getText() {
+		return represent;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public ImageIcon getIcon() {
-        return icon;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public ImageIcon getIcon() {
+		return icon;
+	}
 }

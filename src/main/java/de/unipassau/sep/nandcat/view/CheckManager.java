@@ -10,7 +10,7 @@ import de.unipassau.sep.nandcat.model.check.CheckListener;
 import de.unipassau.sep.nandcat.model.check.CircuitCheck;
 
 /**
- * Checkmanager is responsible for selecting and deselecting Checks and showing their stats.
+ * CheckManager is responsible for selecting and deselecting Checks and showing their stats.
  * 
  * @version 0.1
  * 
