@@ -2,7 +2,7 @@
 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>de.unipassau.sep.nandcat</groupId>
+	<groupId>nandcat</groupId>
 	<artifactId>nandcat</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -94,7 +94,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>de.unipassau.sep.nandcat.Nandcat</mainClass>
+							<mainClass>nandcat.Nandcat</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
