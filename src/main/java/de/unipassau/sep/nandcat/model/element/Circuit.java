@@ -1,7 +1,7 @@
 package de.unipassau.sep.nandcat.model.element;
 
 import java.awt.Point;
-import java.util.LinkedHashSet;
+import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -32,12 +32,24 @@ public class Circuit implements ClockListener, Module {
     private Set<Element> elements;
 
     /**
-     * Returns the "first" Elements in this Circuit.
-     * 
-     * @return Set<Element> containing the starting Elements of this Circuit.
+     * Rectangle representing the circuit's shape.
      */
-    public Set<Module> getStartingModules() {
-        Set<Module> result = new LinkedHashSet<Module>();
+    private Rectangle rectangle;
+
+    /**
+     * (Base64 encoded) byte-arrray representation of the Circuit symbol (if used as Module).
+     */
+    private byte[] symbol;
+
+    // NOTE nice to have: durchlauf sortiert nach Y-Koordinate, sodass die in/outPorts entsprechend
+    // als Ein/Ausgaenge eines (Circuit)Bausteins auftauchen
+    /**
+     * Returns the "first" Modules in this Circuit.
+     * 
+     * @return List<Module> containing the starting Modules of this Circuit.
+     */
+    public List<Module> getStartingModules() {
+        List<Module> result = new LinkedList<Module>();
         for (Element e : elements) {
             if (e instanceof Module) {
                 Module m = (Module) e;
@@ -132,7 +144,10 @@ public class Circuit implements ClockListener, Module {
         List<Port> result = new LinkedList<Port>();
         for (Module m : getStartingModules()) {
             for (Port p : m.getInPorts()) {
-                result.add(p);
+                // Port is not connected or connted to a module outside the circuit
+                if (p.getConnection() == null || !elements.contains(p.getConnection().getPreviousModule())) {
+                    result.add(p);
+                }
             }
         }
         return result;
@@ -202,5 +217,39 @@ public class Circuit implements ClockListener, Module {
             }
             elements.remove(m);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Rectangle getRectangle() {
+        return rectangle;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setRectangle(Rectangle rectangle) {
+        this.rectangle = rectangle;
+    }
+
+    /**
+     * Returns base64-encoded PNG symbol representation of the circuit. Conversion to a BufferedImage via<br />
+     * <b>BufferedImage image = ImageIO.read(new ByteArrayInputStream(circuit.getSymbol()));</b>
+     * 
+     * @return byte[] representation of PNG symbol
+     */
+    public byte[] getSymbol() {
+        return symbol;
+    }
+
+    /**
+     * Set the Circuit's <b>base64-encoded</b> symbol.
+     * 
+     * @param symbol
+     *            byte[] encoded PNG symbol
+     */
+    public void setSymbol(byte[] symbol) {
+        this.symbol = symbol;
     }
 }
