@@ -2,7 +2,11 @@ package de.unipassau.sep.nandcat.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+
 import javax.swing.ImageIcon;
+import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
+
 import de.unipassau.sep.nandcat.model.Model;
 import de.unipassau.sep.nandcat.model.ModelEvent;
 import de.unipassau.sep.nandcat.model.ModelListener;
@@ -39,7 +43,7 @@ public class SimulateTool implements Tool {
     /**
      * String representation of the Tool.
      */
-    private String represent; // TODO beschreibung schreiben
+    private List<String> represent; // TODO beschreibung schreiben
 
     /**
      * ActionListener of the Tool on the Buttons.
@@ -50,6 +54,11 @@ public class SimulateTool implements Tool {
      * ModelListener of the Tool on the Model.
      */
     private ModelListener modelListener;
+    
+    /**
+     * ItemHanlder of the Tool the the ComboBox in the CheckManager.
+     */
+    private ItemHandler comboboxListener;
 
     /**
      * Constructs the SimulateTool.
@@ -70,11 +79,21 @@ public class SimulateTool implements Tool {
             if (modelListener == null) {
                 modelListener = new ModelListener() {
 
-                    // TODO wirklich elementsChanged? was ist mit checks
                     // started, simulation started etc.?
                     public void elementsChanged(ModelEvent e) {
-                        // TODO Auto-generated method stub
                     }
+
+					@Override
+					public void checksChanged(ModelEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void simulationChanged(ModelEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
                 };
             }
             model.addListener(modelListener);
@@ -93,7 +112,9 @@ public class SimulateTool implements Tool {
             buttonListener = new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    // TODO Auto-generated method stub
+                	// nur zum beispiel actionCommands sind defaultmäßig die namen der Buttons/menüpunkte
+                    if(e.getActionCommand() == "checkstating");
+                    checkManager = new CheckManager(model.getChecks());
                 }
             };
         }
@@ -103,7 +124,7 @@ public class SimulateTool implements Tool {
     /**
      * {@inheritDoc}
      */
-    public String getText() {
+    public List<String> getText() {
         return represent;
     }
 

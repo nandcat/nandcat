@@ -1,6 +1,8 @@
 package de.unipassau.sep.nandcat.controller;
 
 import java.awt.event.ActionListener;
+import java.util.List;
+
 import javax.swing.ImageIcon;
 
 /**
@@ -35,7 +37,7 @@ public interface Tool {
      * 
      * @return String representing the Tool
      */
-    String getText();
+    List<String> getText();
 
     /**
      * Returns a Icon representation of the Tool.

@@ -1,6 +1,8 @@
 package de.unipassau.sep.nandcat.view;
 
 import java.util.List;
+import java.util.Set;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import de.unipassau.sep.nandcat.model.check.CheckEvent;
@@ -8,7 +10,7 @@ import de.unipassau.sep.nandcat.model.check.CheckListener;
 import de.unipassau.sep.nandcat.model.check.CircuitCheck;
 
 /**
- * Checkmanager.
+ * Checkmanager is responsible for selecting and deselecting Checks and showing their stats.
  * 
  * @version 0.1
  * 
@@ -32,9 +34,9 @@ public class CheckManager extends JFrame {
      */
     private ImageIcon checkStarted;
     /**
-     * Icon representing a check passed succsessful.
+     * Icon representing a check passed successful.
      */
-    private ImageIcon checkSuccsessful;
+    private ImageIcon checkSuccessful;
     /**
      * Icon representing a check failed.
      */
@@ -43,11 +45,11 @@ public class CheckManager extends JFrame {
     /**
      * Constructs the CheckManager.
      * 
-     * @param checksToDo
+     * @param set
      *            List with all checks to be performed.
      */
-    public CheckManager(List<CircuitCheck> checksToDo) {
-        setupCheckmanager(checksToDo);
+    public CheckManager(Set<CircuitCheck> set) {
+        setupCheckmanager(set);
         checkListener = new CheckListener() {
 
             public void checkStarted() {
@@ -58,7 +60,7 @@ public class CheckManager extends JFrame {
                 // TODO Auto-generated method stub
             }
         };
-        for (CircuitCheck c : checksToDo) {
+        for (CircuitCheck c : set) {
             c.addListener(checkListener);
         }
     }
@@ -73,10 +75,10 @@ public class CheckManager extends JFrame {
     /**
      * Sets up CheckManager elements.
      * 
-     * @param checksToDo
+     * @param set
      *            List with Checks to be listed in the Frame.
      */
-    private void setupCheckmanager(List<CircuitCheck> checksToDo) {
+    private void setupCheckmanager(Set<CircuitCheck> set) {
         // TODO Auto-generated method stub
     }
 

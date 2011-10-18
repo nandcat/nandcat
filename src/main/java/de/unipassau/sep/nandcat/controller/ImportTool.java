@@ -2,6 +2,8 @@ package de.unipassau.sep.nandcat.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+
 import javax.swing.ImageIcon;
 import de.unipassau.sep.nandcat.model.Model;
 import de.unipassau.sep.nandcat.view.WorkspaceListener;
@@ -32,7 +34,7 @@ public class ImportTool implements Tool {
     /**
      * String representation of the Tool.
      */
-    private String represent; // TODO beschreibung schreiben
+    private List<String> represent; // TODO beschreibung schreiben
 
     /**
      * ActionListerner of the Tool on the Buttons.
@@ -82,7 +84,7 @@ public class ImportTool implements Tool {
     /**
      * {@inheritDoc}
      */
-    public String getText() {
+    public List<String> getText() {
         return represent;
     }
 
