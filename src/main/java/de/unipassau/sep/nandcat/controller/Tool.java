@@ -1,8 +1,7 @@
 package de.unipassau.sep.nandcat.controller;
 
 import java.awt.event.ActionListener;
-import java.util.List;
-
+import java.util.*;
 import javax.swing.ImageIcon;
 
 /**
@@ -24,18 +23,12 @@ public interface Tool {
 	void setActive(boolean active);
 
 	/**
-	 * Returns the Listener of the Tool-Class.
+	 * Returns a Map with the functionalities as Strings (key) and their
+	 * Listeners as ActionListeners (value).
 	 * 
-	 * @return ActionListener implemented by the specific tool
+	 * @return Map<String, ActionListener> Map representing the Functionalities,
 	 */
-	ActionListener getListener();
-
-	/**
-	 * Returns a String representation of the Tool.
-	 * 
-	 * @return String representing the Tool
-	 */
-	List<String> getText();
+	Map<String, ActionListener> getFunctionalities();
 
 	/**
 	 * Returns a Icon representation of the Tool.

@@ -3,6 +3,7 @@ package de.unipassau.sep.nandcat.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.*;
 
 import javax.swing.ImageIcon;
 import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
@@ -123,8 +124,19 @@ public class SimulateTool implements Tool {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<String> getText() {
-		return represent;
+	public Map<String, ActionListener> getFunctionalities() {
+		buttonListener = new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		};
+		Map<String, ActionListener> map = new HashMap<String, ActionListener>();
+		for (String functionality : represent) {
+			map.put(functionality, buttonListener);
+		}
+		return map;
 	}
 
 	/**

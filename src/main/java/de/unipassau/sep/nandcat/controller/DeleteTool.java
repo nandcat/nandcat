@@ -4,7 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import de.unipassau.sep.nandcat.model.Model;
@@ -86,25 +88,19 @@ public class DeleteTool implements Tool {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ActionListener getListener() {
-		if (buttonListener != null) {
-			return buttonListener;
-		} else {
-			buttonListener = new ActionListener() {
+	public Map<String, ActionListener> getFunctionalities() {
+		buttonListener = new ActionListener() {
 
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-				}
-			};
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		};
+		Map<String, ActionListener> map = new HashMap<String, ActionListener>();
+		for (String functionality : represent) {
+			map.put(functionality, buttonListener);
 		}
-		return buttonListener;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<String> getText() {
-		return represent;
+		return map;
 	}
 
 	/**

@@ -1,11 +1,13 @@
 package de.unipassau.sep.nandcat.view;
 
 import java.awt.Point;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import de.unipassau.sep.nandcat.model.Model;
 import de.unipassau.sep.nandcat.model.ModelEvent;
 import de.unipassau.sep.nandcat.model.ModelListener;
+import java.util.*;
 
 /**
  * View.
@@ -30,6 +32,11 @@ public class View extends JFrame {
 	 * Workspace displays model elements.
 	 */
 	private Workspace workspace;
+	
+	/**
+	 * A Map with all the Tool functionalities and their Listeners.
+	 */
+	private Map<String, ActionListener> toolFunctionalities;
 
 	/**
 	 * Constructs the view.
@@ -104,5 +111,9 @@ public class View extends JFrame {
 	 */
 	public void setViewportPosition(Point p) {
 
+	}
+	
+	public void setFunctionalities(Map<String, ActionListener> map){
+		this.toolFunctionalities = map;
 	}
 }
