@@ -1,6 +1,7 @@
 package de.unipassau.sep.nandcat.model.element;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
 import de.unipassau.sep.nandcat.model.Clock;
@@ -17,18 +18,26 @@ public class Lamp implements Module {
      * Point specifying the Location of the Gate.
      */
     private Point location;
+
     /**
      * Lamp's name.
      */
     private String name;
+
     /**
      * Lamp's port.
      */
     private Port inPort;
+
     /**
      * Lamp's state.
      */
     private boolean state;
+
+    /**
+     * Rectangle specifying the Lamp's shape.
+     */
+    private Rectangle rectangle;
 
     /**
      * /** Default constructor.
@@ -118,5 +127,19 @@ public class Lamp implements Module {
      */
     public Point getLocation() {
         return location;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Rectangle getRectangle() {
+        return rectangle;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setRectangle(Rectangle rectangle) {
+        this.rectangle = rectangle;
     }
 }

@@ -1,6 +1,7 @@
 package de.unipassau.sep.nandcat.model.element;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
 import de.unipassau.sep.nandcat.model.Clock;
@@ -17,22 +18,31 @@ public class ImpulseGenerator implements Module {
      * Point specifying the Location of the Gate.
      */
     private Point location;
+
     /**
      * Impulsegenerator's name.
      */
     private String name;
+
     /**
      * Impulsegenerator's frequency.
      */
     private int frequency;
+
     /**
      * Outgoing port used for signal propagation.
      */
     private Port outPort;
+
     /**
      * Impulsegenerator's state.
      */
     private boolean state;
+
+    /**
+     * Rectangle specifying the ImpulseGenerator's shape.
+     */
+    private Rectangle rectangle;
 
     /**
      * Constructor with frequency.
@@ -133,5 +143,19 @@ public class ImpulseGenerator implements Module {
      */
     public void toggleState() {
         state = !state;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Rectangle getRectangle() {
+        return rectangle;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setRectangle(Rectangle rectangle) {
+        this.rectangle = rectangle;
     }
 }

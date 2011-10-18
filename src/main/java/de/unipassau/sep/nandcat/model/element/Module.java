@@ -1,6 +1,7 @@
 package de.unipassau.sep.nandcat.model.element;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.List;
 import de.unipassau.sep.nandcat.model.ClockListener;
 
@@ -40,4 +41,19 @@ public interface Module extends ClockListener, Element {
      * @return Point containing the Location of this Module
      */
     Point getLocation();
+
+    /**
+     * Return the module's rectangle.
+     * 
+     * @return Rectangle representing the module's shape.
+     */
+    Rectangle getRectangle();
+
+    /**
+     * Set the module's rectangle.
+     * 
+     * @param rectangle
+     *            Rectangle to set module's shape to.
+     */
+    void setRectangle(Rectangle rectangle);
 }

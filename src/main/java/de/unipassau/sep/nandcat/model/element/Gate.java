@@ -1,6 +1,7 @@
 package de.unipassau.sep.nandcat.model.element;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
 import de.unipassau.sep.nandcat.model.Clock;
@@ -12,21 +13,6 @@ import de.unipassau.sep.nandcat.model.Clock;
  * 
  */
 public abstract class Gate implements Module {
-
-    /**
-     * Advanced constructor. Creates new Gate with inPorts incoming and outPorts outgoing Ports.
-     * 
-     * @param inPorts
-     *            int <b>positive</b> number of inPorts to append
-     * @param outPorts
-     *            int <b>positive</b> number of outPorts to append
-     */
-    public Gate(int inPorts, int outPorts) {
-        if (!inBoundaries(inPorts) || !outBoundaries(outPorts)) {
-            throw new IllegalArgumentException("Illegal amount of in or out ports.");
-        }
-        createPorts(inPorts, outPorts);
-    }
 
     /**
      * Point specifying the Location of the Gate.
@@ -47,6 +33,26 @@ public abstract class Gate implements Module {
      * List containing incoming ports.
      */
     private List<Port> inPorts;
+
+    /**
+     * Rectangle representing the gate's shape.
+     */
+    private Rectangle rectangle;
+
+    /**
+     * Advanced constructor. Creates new Gate with inPorts incoming and outPorts outgoing Ports.
+     * 
+     * @param inPorts
+     *            int <b>positive</b> number of inPorts to append
+     * @param outPorts
+     *            int <b>positive</b> number of outPorts to append
+     */
+    public Gate(int inPorts, int outPorts) {
+        if (!inBoundaries(inPorts) || !outBoundaries(outPorts)) {
+            throw new IllegalArgumentException("Illegal amount of in or out ports.");
+        }
+        createPorts(inPorts, outPorts);
+    }
 
     /**
      * Trigger calculation of new output values.
@@ -165,5 +171,19 @@ public abstract class Gate implements Module {
      */
     public Point getLocation() {
         return location;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Rectangle getRectangle() {
+        return rectangle;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setRectangle(Rectangle rectangle) {
+        this.rectangle = rectangle;
     }
 }
