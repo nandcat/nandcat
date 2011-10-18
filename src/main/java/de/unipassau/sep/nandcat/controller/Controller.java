@@ -1,6 +1,9 @@
 package de.unipassau.sep.nandcat.controller;
 
+import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import de.unipassau.sep.nandcat.model.Model;
 import de.unipassau.sep.nandcat.view.View;
@@ -97,11 +100,15 @@ public class Controller {
 	}
 
 	/**
-	 * Returns a Set of available Tools.
+	 * Gives the Functionalities and Listeners of the Tools to the View.
 	 * 
 	 * @return Set<Tool> a Set of the available Tools.
 	 */
-	public Set<Tool> getTools() {
-		return tools;
+	public void giveFunctionalities() {
+		Map<String, ActionListener> map = new HashMap<String, ActionListener>();
+		for (Tool tool : tools) {
+			map.putAll(tool.getFunctionalities());
+		}
+		view.setFunctionalities(map);
 	}
 }
