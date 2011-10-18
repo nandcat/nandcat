@@ -11,14 +11,33 @@ public class CheckEvent {
     /**
      * Possbile states of the check.
      */
-    public enum state {
-        RUNNING, SUCCEEDED, FAILED, UNKNOWN
+    public static enum State {
+
+        /**
+         * Running.
+         */
+        RUNNING, 
+
+        /**
+         * Test was successfull. 
+         */
+        SUCCEEDED, 
+
+        /**
+         * Test Failed.
+         */
+        FAILED,
+
+        /**
+         * Test not initialized.
+         */
+        UNKNOWN
     }
 
     /**
      * State of the check.
      */
-    private state state;
+    private State state;
 
     /**
      * List of elements that may have caused the check to fail. If these cannot be identified, this list may be empty.
@@ -41,7 +60,7 @@ public class CheckEvent {
      *            CircuitCheck firing the event
      * 
      */
-    public CheckEvent(state state, Set<Element> elements, CircuitCheck source) {
+    public CheckEvent(State state, Set<Element> elements, CircuitCheck source) {
         this.state = state;
         this.elements = elements;
         this.source = source;
@@ -56,7 +75,7 @@ public class CheckEvent {
         return source;
     }
 
-    public state getState() {
+    public State getState() {
         return state;
     }
 

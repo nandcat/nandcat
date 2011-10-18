@@ -27,32 +27,61 @@ public class SimulationTest {
      */
     private static final int CORRECT_AFTER_CYCLE = 3;
 
+    /**
+     * Model used for testing.
+     */
     private Model model;
 
-    private ClockListener clocklistener;
-
+    /**
+     * Outgoing port of button1.
+     */
     private Port outPortButton1;
 
+    /**
+     * Outgoing port of button2.
+     */
     private Port outPortButton2;
 
+    /**
+     * Incoming first port of or gate.
+     */
     private Port inPort1Or;
 
+    /**
+     * Incoming second port of or gate.
+     */
     private Port inPort2Or;
 
+    /**
+     * Outgoing port of or gate.
+     */
     private Port outPortOr;
 
-    private Port inPortLamp;
+    /**
+     * Lamp.
+     */
+    private Lamp lamp;
 
+    /**
+     * Button.
+     */
+    private ImpulseGenerator button1;
+
+    /**
+     * Sets the model and components up.
+     * 
+     * @throws Exception
+     *             Any Exception should fail the test.
+     */
     @Ignore
     // @Before
     public void setUp() throws Exception {
         model = new Model();
         OrGate orGate = new OrGate();
         model.addModule(orGate, new Point(1, 1));
-        Lamp lamp = new Lamp();
+        lamp = new Lamp();
         model.addModule(lamp, new Point(1, 2));
-        ImpulseGenerator button1 = new ImpulseGenerator(0);
-        // TODO Impulse Generator how to activate?
+        button1 = new ImpulseGenerator(0);
         ImpulseGenerator button2 = new ImpulseGenerator(0);
         // Lists of ports
         List<Port> outPortsButton1 = button1.getOutPorts();
@@ -65,46 +94,53 @@ public class SimulationTest {
         inPort1Or = inPortsOr.get(0);
         inPort2Or = inPortsOr.get(1);
         outPortOr = outPortsOr.get(0);
-        inPortLamp = inPortsLamp.get(0);
+        Port inPortLamp = inPortsLamp.get(0);
         // Connection conButton1ToOr = new Connection(outPortButton1, inPort1Or);
         // Connection conButton2ToOr = new Connection(outPortButton2, inPort2Or);
         // Connection conOrToLamp = new Connection(outPortOr, inPortLamp);
         model.addConnection(outPortButton1, inPort1Or);
         model.addConnection(outPortButton2, inPort2Or);
         model.addConnection(outPortOr, inPortLamp);
-        clocklistener = new ClockListener() {
+    }
 
+    /**
+     * Tests the simulation.
+     */
+    @Ignore
+    // @Test
+    public void test() {
+        model.getClock().addListener(new ClockListener() {
+
+            /**
+             * Counts the cycle.
+             */
             private int counter = 0;
 
             public void clockTicked(Clock clock) {
-                // TODO Test all states
                 if (counter == CORRECT_AFTER_CYCLE || counter == CORRECT_AFTER_CYCLE + 1) {
-                    test();
+                    testCorrectValuesAfter3Cycles();
                 }
-                counter++;
                 if (counter == CORRECT_AFTER_CYCLE + 2) {
                     model.stopSimulation();
                 }
+                counter++;
             }
-        };
-        model.getClock().addListener(clocklistener);
+        });
+        button1.toggleState();
+        assertTrue(button1.getState());
         model.startSimulation();
-        // TODO Set Button1 on!
     }
 
-    @Ignore
-    // @After
-    public void tearDown() {
-        model.getClock().removeListener(clocklistener);
-    }
-
-    @Ignore
-    public void test() {
+    /**
+     * Tests correct values after 3 cycles.
+     */
+    private void testCorrectValuesAfter3Cycles() {
+        assertTrue(button1.getState());
         assertTrue(outPortButton1.getState());
         assertFalse(outPortButton2.getState());
         assertTrue(inPort1Or.getState());
         assertFalse(inPort2Or.getState());
         assertTrue(outPortOr.getState());
-        assertTrue(inPortLamp.getState());
+        assertTrue(lamp.getState());
     }
 }
