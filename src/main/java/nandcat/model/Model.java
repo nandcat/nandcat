@@ -113,6 +113,15 @@ public class Model implements ClockListener {
     }
 
     /**
+     * Returns the list of ViewModules that are necessary for the view.
+     * 
+     * @return List of ViewModules
+     */
+    public List<ViewModule> getViewModules() {
+        return null;
+    }
+
+    /**
      * Adds a listener to the set of listeners, which will be notified using events.
      * 
      * @param l
@@ -307,7 +316,7 @@ public class Model implements ClockListener {
      * @param p
      *            Point specifying the relative positional change
      */
-    public void moveBy(Set<Module> modules, Point p) {
+    public void moveBy(Point p) {
         // TODO implement
     }
 
