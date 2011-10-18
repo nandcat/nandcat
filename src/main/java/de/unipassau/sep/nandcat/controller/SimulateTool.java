@@ -16,101 +16,101 @@ import de.unipassau.sep.nandcat.view.CheckManager;
  */
 public class SimulateTool implements Tool {
 
-	/**
-	 * Current Model instance.
-	 */
-	private Model model;
+    /**
+     * Current Model instance.
+     */
+    private Model model;
 
-	/**
-	 * Current Controller instance.
-	 */
-	private Controller controller;
+    /**
+     * Current Controller instance.
+     */
+    private Controller controller;
 
-	/**
-	 * Current CheckManager instance.
-	 */
-	private CheckManager checkManager;
+    /**
+     * Current CheckManager instance.
+     */
+    private CheckManager checkManager;
 
-	/**
-	 * Icon representation of the Tool.
-	 */
-	private ImageIcon icon; // TODO icon setzen
+    /**
+     * Icon representation of the Tool.
+     */
+    private ImageIcon icon; // TODO icon setzen
 
-	/**
-	 * String representation of the Tool.
-	 */
-	private String represent; // TODO beschreibung schreiben
+    /**
+     * String representation of the Tool.
+     */
+    private String represent; // TODO beschreibung schreiben
 
-	/**
-	 * ActionListener of the Tool on the Buttons.
-	 */
-	private ActionListener buttonListener;
+    /**
+     * ActionListener of the Tool on the Buttons.
+     */
+    private ActionListener buttonListener;
 
-	/**
-	 * ModelListener of the Tool on the Model.
-	 */
-	private ModelListener modelListener;
+    /**
+     * ModelListener of the Tool on the Model.
+     */
+    private ModelListener modelListener;
 
-	/**
-	 * Constructs the SimulateTool.
-	 * 
-	 * @param controller
-	 *            Controller component of the application.
-	 */
-	public SimulateTool(Controller controller) {
-		this.controller = controller;
-		model = controller.getModel();
-	}
+    /**
+     * Constructs the SimulateTool.
+     * 
+     * @param controller
+     *            Controller component of the application.
+     */
+    public SimulateTool(Controller controller) {
+        this.controller = controller;
+        model = controller.getModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setActive(boolean active) {
-		if (active) {
-			if (modelListener == null) {
-				modelListener = new ModelListener() {
+    /**
+     * {@inheritDoc}
+     */
+    public void setActive(boolean active) {
+        if (active) {
+            if (modelListener == null) {
+                modelListener = new ModelListener() {
 
-					// TODO wirklich elementsChanged? was ist mit checks
-					// started, simulation started etc.?
-					public void elementsChanged(ModelEvent e) {
-						// TODO Auto-generated method stub
-					}
-				};
-			}
-			model.addListener(modelListener);
-		} else {
-			model.removeListener(modelListener);
-		}
-	}
+                    // TODO wirklich elementsChanged? was ist mit checks
+                    // started, simulation started etc.?
+                    public void elementsChanged(ModelEvent e) {
+                        // TODO Auto-generated method stub
+                    }
+                };
+            }
+            model.addListener(modelListener);
+        } else {
+            model.removeListener(modelListener);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public ActionListener getListener() {
-		if (buttonListener != null) {
-			return buttonListener;
-		} else {
-			buttonListener = new ActionListener() {
+    /**
+     * {@inheritDoc}
+     */
+    public ActionListener getListener() {
+        if (buttonListener != null) {
+            return buttonListener;
+        } else {
+            buttonListener = new ActionListener() {
 
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-				}
-			};
-		}
-		return buttonListener;
-	}
+                public void actionPerformed(ActionEvent e) {
+                    // TODO Auto-generated method stub
+                }
+            };
+        }
+        return buttonListener;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getText() {
-		return represent;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getText() {
+        return represent;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public ImageIcon getIcon() {
-		return icon;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public ImageIcon getIcon() {
+        return icon;
+    }
 }

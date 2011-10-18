@@ -75,10 +75,18 @@ public class CheckEvent {
         return source;
     }
 
+    /**
+     * Gets the state of the check.
+     * @return State of the check.
+     */
     public State getState() {
         return state;
     }
 
+    /**
+     * Gets affected elements if check fails.
+     * @return Affected elements.
+     */
     public Set<Element> getElements() {
         return elements;
     }

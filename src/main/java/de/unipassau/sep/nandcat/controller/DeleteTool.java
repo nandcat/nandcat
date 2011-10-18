@@ -4,12 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 import javax.swing.ImageIcon;
 import de.unipassau.sep.nandcat.model.Model;
 import de.unipassau.sep.nandcat.view.View;
-import de.unipassau.sep.nandcat.view.WorkspaceEvent;
-import de.unipassau.sep.nandcat.view.WorkspaceListener;
 
 /**
  * A tool for deleting Elements from the circuit.
@@ -19,103 +16,98 @@ import de.unipassau.sep.nandcat.view.WorkspaceListener;
  */
 public class DeleteTool implements Tool {
 
-	/**
-	 * Current Model instance.
-	 */
-	private Model model;
+    /**
+     * Current Model instance.
+     */
+    private Model model;
 
-	/**
-	 * Current Controller instance.
-	 */
-	private Controller controller;
+    /**
+     * Current Controller instance.
+     */
+    private Controller controller;
 
-	/**
-	 * Current View instance.
-	 */
-	private View view;
+    /**
+     * Current View instance.
+     */
+    private View view;
 
-	/**
-	 * Icon representation of the Tool.
-	 */
-	private ImageIcon icon; // TODO icon setzen
+    /**
+     * Icon representation of the Tool.
+     */
+    private ImageIcon icon; // TODO icon setzen
 
-	/**
-	 * String representation of the Tool.
-	 */
-	private String represent; // TODO beschreibung schreiben
+    /**
+     * String representation of the Tool.
+     */
+    private String represent; // TODO beschreibung schreiben
 
-	/**
-	 * ActionListerner of the Tool on the Buttons.
-	 */
-	private ActionListener buttonListener;
+    /**
+     * ActionListerner of the Tool on the Buttons.
+     */
+    private ActionListener buttonListener;
 
-	/**
-	 * Constructs the DeleteTool.
-	 * 
-	 * @param controller
-	 *            Controller component of the application.
-	 */
-	public DeleteTool(Controller controller) {
-		this.controller = controller;
-		this.model = controller.getModel();
-		this.view = controller.getView();
-		this.view.addKeyListener(new KeyListener() {
+    /**
+     * Constructs the DeleteTool.
+     * 
+     * @param controller
+     *            Controller component of the application.
+     */
+    public DeleteTool(Controller controller) {
+        this.controller = controller;
+        this.model = controller.getModel();
+        this.view = controller.getView();
+        // TODO Funktioniert das mit dem Keylistener so? Ich würde den Keymanager nehmen - Ben
+        this.view.addKeyListener(new KeyListener() {
 
-			@Override
-			public void keyTyped(KeyEvent e) {
-				// TODO Auto-generated method stub
+            public void keyTyped(KeyEvent e) {
+                // TODO Auto-generated method stub
+            }
 
-			}
+            public void keyReleased(KeyEvent e) {
+                // TODO Auto-generated method stub
+            }
 
-			@Override
-			public void keyReleased(KeyEvent e) {
-				// TODO Auto-generated method stub
+            public void keyPressed(KeyEvent e) {
+                // TODO Auto-generated method stub
+            }
+        });
+    }
 
-			}
+    /**
+     * {@inheritDoc}
+     */
+    public void setActive(boolean active) {
+        // Always active
+    }
 
-			@Override
-			public void keyPressed(KeyEvent e) {
-				// TODO Auto-generated method stub
+    /**
+     * {@inheritDoc}
+     */
+    public ActionListener getListener() {
+        if (buttonListener != null) {
+            return buttonListener;
+        } else {
+            buttonListener = new ActionListener() {
 
-			}
-		});
-	}
+                public void actionPerformed(ActionEvent e) {
+                    // TODO Auto-generated method stub
+                }
+            };
+        }
+        return buttonListener;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setActive(boolean active) {
-		// Always active
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getText() {
+        return represent;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public ActionListener getListener() {
-		if (buttonListener != null) {
-			return buttonListener;
-		} else {
-			buttonListener = new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-				}
-			};
-		}
-		return buttonListener;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getText() {
-		return represent;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public ImageIcon getIcon() {
-		return icon;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public ImageIcon getIcon() {
+        return icon;
+    }
 }

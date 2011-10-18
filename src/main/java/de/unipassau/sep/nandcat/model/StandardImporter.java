@@ -6,6 +6,7 @@ import de.unipassau.sep.nandcat.model.element.Circuit;
 /**
  * StandardImporter.
  * 
+ * Supports standard SEP format.
  * @version 0.1
  */
 public class StandardImporter implements Importer {

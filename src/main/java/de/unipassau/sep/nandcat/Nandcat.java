@@ -8,9 +8,9 @@ import de.unipassau.sep.nandcat.view.View;
 /**
  * NandCat Main Class.
  * 
- * Main class with main method.
+ * Initializes Model, View, Controller and starts the application.
  * 
- * @version 0.1
+ * @version 0.5
  */
 public final class Nandcat {
 
@@ -26,7 +26,7 @@ public final class Nandcat {
     /**
      * Main method, executed while application start.
      * 
-     * Starts Swingthread and application.
+     * Starts Swingthread and application within.
      * 
      * @param args
      *            Command-line arguments.

@@ -208,10 +208,10 @@ public class Model implements ClockListener {
      *            the Port carrying the output Signal of the Connection
      */
     public void addConnection(Port inPort, Port outPort) {
-        if(inPort == null){
+        if (inPort == null) {
             throw new IllegalArgumentException();
         }
-        if(outPort == null){
+        if (outPort == null) {
             throw new IllegalArgumentException();
         }
         // TODO Testen ob die Bausteine dieser Verbindung auch im Model enthalten?
@@ -251,6 +251,7 @@ public class Model implements ClockListener {
 
     /**
      * Gets available checks.
+     * 
      * @return Available CircuitChecks.
      */
     public Set<CircuitCheck> getChecks() {

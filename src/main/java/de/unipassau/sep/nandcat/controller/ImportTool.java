@@ -2,12 +2,8 @@ package de.unipassau.sep.nandcat.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.ImageIcon;
-
 import de.unipassau.sep.nandcat.model.Model;
-import de.unipassau.sep.nandcat.view.View;
-import de.unipassau.sep.nandcat.view.WorkspaceEvent;
 import de.unipassau.sep.nandcat.view.WorkspaceListener;
 
 /**
@@ -17,82 +13,83 @@ import de.unipassau.sep.nandcat.view.WorkspaceListener;
  * 
  */
 public class ImportTool implements Tool {
-	/**
-	 * Current Model instance.
-	 */
-	private Model model;
 
-	/**
-	 * Current Controller instance.
-	 */
-	private Controller controller;
+    /**
+     * Current Model instance.
+     */
+    private Model model;
 
-	/**
-	 * Icon representation of the Tool.
-	 */
-	private ImageIcon icon; // TODO icon setzen
+    /**
+     * Current Controller instance.
+     */
+    private Controller controller;
 
-	/**
-	 * String representation of the Tool.
-	 */
-	private String represent; // TODO beschreibung schreiben
+    /**
+     * Icon representation of the Tool.
+     */
+    private ImageIcon icon; // TODO icon setzen
 
-	/**
-	 * ActionListerner of the Tool on the Buttons.
-	 */
-	private ActionListener buttonListener;
+    /**
+     * String representation of the Tool.
+     */
+    private String represent; // TODO beschreibung schreiben
 
-	/**
-	 * WorkspaceListener of the Tool.
-	 */
-	private WorkspaceListener workspaceListener;
+    /**
+     * ActionListerner of the Tool on the Buttons.
+     */
+    private ActionListener buttonListener;
 
-	/**
-	 * Constructs the SelectTool.
-	 * 
-	 * @param controller
-	 *            Controller component of the application.
-	 */
-	public ImportTool(Controller controller) {
-		this.controller = controller;
-		this.model = controller.getModel();
-	}
+    /**
+     * WorkspaceListener of the Tool.
+     */
+    private WorkspaceListener workspaceListener;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setActive(boolean active) {
-		// Always active
-	}
+    /**
+     * Constructs the SelectTool.
+     * 
+     * @param controller
+     *            Controller component of the application.
+     */
+    public ImportTool(Controller controller) {
+        this.controller = controller;
+        this.model = controller.getModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public ActionListener getListener() {
-		if (buttonListener != null) {
-			return buttonListener;
-		} else {
-			buttonListener = new ActionListener() {
+    /**
+     * {@inheritDoc}
+     */
+    public void setActive(boolean active) {
+        // Always active
+    }
 
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-				}
-			};
-		}
-		return buttonListener;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public ActionListener getListener() {
+        if (buttonListener != null) {
+            return buttonListener;
+        } else {
+            buttonListener = new ActionListener() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getText() {
-		return represent;
-	}
+                public void actionPerformed(ActionEvent e) {
+                    // TODO Auto-generated method stub
+                }
+            };
+        }
+        return buttonListener;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public ImageIcon getIcon() {
-		return icon;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getText() {
+        return represent;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ImageIcon getIcon() {
+        return icon;
+    }
 }

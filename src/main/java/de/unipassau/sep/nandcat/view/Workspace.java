@@ -4,6 +4,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import javax.swing.JPanel;
 import de.unipassau.sep.nandcat.model.ModelEvent;
 
 /**
@@ -12,7 +13,12 @@ import de.unipassau.sep.nandcat.model.ModelEvent;
  * @version 0.1
  * 
  */
-public class Workspace {
+public class Workspace extends JPanel {
+
+    /**
+     * Default serial version uid.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * ElementDrawer handles drawing of elements on the workspace.
@@ -35,6 +41,9 @@ public class Workspace {
      */
     private MouseAdapter mouseListener;
 
+    /**
+     * Constructs the workspace.
+     */
     public Workspace() {
         setupWorkspace();
         mouseListener = new MouseAdapter() {

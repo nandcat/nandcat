@@ -6,6 +6,8 @@ import de.unipassau.sep.nandcat.model.element.Circuit;
 /**
  * StandardExporter.
  * 
+ * Supports standard SEP format.
+ * 
  * @version 0.1
  */
 public class StandardExporter implements Exporter {
