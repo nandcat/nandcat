@@ -4,7 +4,7 @@ import java.util.Set;
 import nandcat.model.element.Element;
 
 /**
- * @(#) CheckEvent.java
+ * CheckEvent the Event fired when something changes in the Clock.
  */
 public class CheckEvent {
 
@@ -12,22 +12,18 @@ public class CheckEvent {
      * Possbile states of the check.
      */
     public static enum State {
-
         /**
          * Running.
          */
-        RUNNING, 
-
+        RUNNING,
         /**
-         * Test was successfull. 
+         * Test was successfull.
          */
-        SUCCEEDED, 
-
+        SUCCEEDED,
         /**
          * Test Failed.
          */
         FAILED,
-
         /**
          * Test not initialized.
          */
@@ -77,6 +73,7 @@ public class CheckEvent {
 
     /**
      * Gets the state of the check.
+     * 
      * @return State of the check.
      */
     public State getState() {
@@ -85,6 +82,7 @@ public class CheckEvent {
 
     /**
      * Gets affected elements if check fails.
+     * 
      * @return Affected elements.
      */
     public Set<Element> getElements() {

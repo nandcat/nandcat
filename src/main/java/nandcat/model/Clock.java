@@ -17,6 +17,7 @@ public class Clock {
      * Representing a clock cycle. A new cycle is reached when the sleep time is a multiple of the cycle.
      */
     private int cycle;
+
     /**
      * Model this clock refers to.
      */
@@ -41,6 +42,7 @@ public class Clock {
      * List of ClockListeners that want to get notified of changes in the Clock. It may not contain duplicates.
      */
     private Queue<ClockListener> listeners;
+
     /**
      * List of (starting elements, i.e. ImpulseGenerators, TODO anything else?).
      */
@@ -99,7 +101,7 @@ public class Clock {
     }
 
     /**
-     * Makes the clock notify the listeners. TODO Public for testing
+     * Makes the clock notify the listeners.s
      */
     public void cycle() {
         // never ever refactor name listener

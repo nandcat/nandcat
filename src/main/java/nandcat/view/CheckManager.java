@@ -4,7 +4,6 @@ import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
-
 import nandcat.model.check.CheckEvent;
 import nandcat.model.check.CheckListener;
 import nandcat.model.check.CircuitCheck;
@@ -52,6 +51,8 @@ public class CheckManager extends JFrame {
      * 
      * @param set
      *            List with all checks to be performed.
+     * @param boxListener
+     *            ItemHandler, Listener for a CheckBox.
      */
     public CheckManager(Set<CircuitCheck> set, ItemHandler boxListener) {
         setupCheckmanager(set, boxListener);
@@ -82,7 +83,7 @@ public class CheckManager extends JFrame {
      * 
      * @param set
      *            List with Checks to be listed in the Frame.
-     * @param boxListener 
+     * @param boxListener
      */
     private void setupCheckmanager(Set<CircuitCheck> set, ItemHandler boxListener) {
         // TODO Auto-generated method stub
