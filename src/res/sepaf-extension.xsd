@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema
-        xmlns="http://www.nandcat.de/xmlns/sepaf-extension"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://www.nandcat.de/xmlns/sepaf-extension"
-	xmlns:tns="http://www.nandcat.de/xmlns/sepaf-extension">
-<xs:attribute name="annotation" type="xs:integer"/>
+<xs:schema xmlns="http://www.nandcat.de/xmlns/sepaf-extension"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.nandcat.de/xmlns/sepaf-extension"
+	xmlns:tns="http://www.nandcat.de/xmlns/sepaf-extension"
+	elementFormDefault="qualified" attributeFormDefault="qualified">
 
-	
+<xs:attribute name="symbol" type="xs:string" />
+<xs:attribute name="annotation" type="xs:string" />
 </xs:schema>
