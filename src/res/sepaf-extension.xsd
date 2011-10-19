@@ -3,7 +3,22 @@
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.nandcat.de/xmlns/sepaf-extension"
 	xmlns:tns="http://www.nandcat.de/xmlns/sepaf-extension"
 	elementFormDefault="qualified" attributeFormDefault="qualified">
-
-<xs:attribute name="symbol" type="xs:string" />
-<xs:attribute name="annotation" type="xs:string" />
+	
+	<xs:element name="symbol">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="format" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:token">
+								<xs:enumeration value="png" />
+								<xs:enumeration value="svg" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:attribute name="annotation" type="xs:string" />
 </xs:schema>
