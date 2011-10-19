@@ -8,12 +8,7 @@ import javax.swing.ImageIcon;
  * @version 0.1
  * 
  */
-public class ViewElements {
-
-    /**
-     * Description of the Element.
-     */
-    private String description;
+public class ViewElement {
 
     /**
      * Name of the Element.
@@ -29,25 +24,6 @@ public class ViewElements {
      * Symbol representing the Element.
      */
     private ImageIcon symbol;
-
-    /**
-     * Returns the Description String.
-     * 
-     * @return String, the Description.
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Set the Description of the Element.
-     * 
-     * @param description
-     *            String Description of the Element.
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     /**
      * Returns the Name String.

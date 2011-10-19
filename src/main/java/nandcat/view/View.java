@@ -148,6 +148,6 @@ public class View extends JFrame {
      * @param viewele
      *            Set<ViewElements> with als the Elements available.
      */
-    public void setViewElements(Set<ViewElements> viewele) {
+    public void setViewElements(Set<ViewElement> viewele) {
     }
 }
