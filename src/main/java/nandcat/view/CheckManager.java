@@ -1,10 +1,11 @@
 package nandcat.view;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
+
 import nandcat.model.check.CheckEvent;
 import nandcat.model.check.CheckListener;
 import nandcat.model.check.CircuitCheck;
@@ -48,8 +49,8 @@ public class CheckManager extends JFrame {
      * @param set
      *            List with all checks to be performed.
      */
-    public CheckManager(Set<CircuitCheck> set) {
-        setupCheckmanager(set);
+    public CheckManager(Set<CircuitCheck> set, ItemHandler boxListener) {
+        setupCheckmanager(set, boxListener);
         checkListener = new CheckListener() {
 
             public void checkStarted() {
@@ -77,8 +78,9 @@ public class CheckManager extends JFrame {
      * 
      * @param set
      *            List with Checks to be listed in the Frame.
+     * @param boxListener 
      */
-    private void setupCheckmanager(Set<CircuitCheck> set) {
+    private void setupCheckmanager(Set<CircuitCheck> set, ItemHandler boxListener) {
         // TODO Auto-generated method stub
     }
 

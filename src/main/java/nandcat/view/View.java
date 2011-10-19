@@ -2,12 +2,12 @@ package nandcat.view;
 
 import java.awt.Point;
 import java.awt.event.ActionListener;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListener;
-import java.util.*;
 
 /**
  * View.
@@ -32,7 +32,7 @@ public class View extends JFrame {
 	 * Workspace displays model elements.
 	 */
 	private Workspace workspace;
-	
+
 	/**
 	 * A Map with all the Tool functionalities and their Listeners.
 	 */
@@ -112,8 +112,34 @@ public class View extends JFrame {
 	public void setViewportPosition(Point p) {
 
 	}
-	
-	public void setFunctionalities(Map<String, ActionListener> map){
+
+	/**
+	 * With this method the Controller is able to give the View the Informations
+	 * about the Tools needed.
+	 * 
+	 * @param map
+	 */
+	public void setFunctionalities(Map<String, ActionListener> map) {
 		this.toolFunctionalities = map;
+	}
+
+	/**
+	 * Changes the Height of the Workspace.
+	 * 
+	 * @param newWidth
+	 *            int to which the Height will be set.
+	 */
+	public void setWorkspaceHeight(int newHeight) {
+
+	}
+
+	/**
+	 * Changes the Width of the Workspace.
+	 * 
+	 * @param newWidth
+	 *            int to which the Width will be set.
+	 */
+	public void setWorkspaceWidth(int newWidth) {
+
 	}
 }

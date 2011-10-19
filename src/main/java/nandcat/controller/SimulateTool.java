@@ -112,9 +112,9 @@ public class SimulateTool implements Tool {
 				public void actionPerformed(ActionEvent e) {
 					// nur zum beispiel actionCommands sind defaultmäßig die
 					// namen der Buttons/menüpunkte
-					if (e.getActionCommand() == "checkstating")
+					if (e.getActionCommand() == "checkstarting")
 						;
-					checkManager = new CheckManager(model.getChecks());
+					checkManager = new CheckManager(model.getChecks(), comboboxListener);
 				}
 			};
 		}
