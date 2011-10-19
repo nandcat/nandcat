@@ -2,7 +2,10 @@ package nandcat.model;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import nandcat.model.check.CircuitCheck;
 import nandcat.model.element.Circuit;
@@ -18,8 +21,6 @@ import nandcat.model.element.Port;
  */
 public class Model implements ClockListener {
 
-    // TODO Implements clocklistener anonymously.
-    // NEIN WIRD ES NICHT !
     /**
      * A set of checks which can be performed on the current circuit before starting the simulation.
      */
@@ -39,6 +40,11 @@ public class Model implements ClockListener {
      * The current clock instance used for simulation.
      */
     private Clock clock;
+
+    /**
+     * 
+     */
+    private HashMap<ViewModule, Module> ViewModule2Module;
 
     /**
      * The constructor for the model class.
@@ -106,7 +112,7 @@ public class Model implements ClockListener {
      *            Modellistener
      */
     public void addListener(ModelListener l) {
-        // listeners.add(l);
+        listeners.add(l);
     }
 
     /**
@@ -224,12 +230,25 @@ public class Model implements ClockListener {
      * Adds a new Module to the Model.
      * 
      * @param m
-     *            the Module to be added
+     *            ViewModule to be added
      * @param p
-     *            the Location of the Module
+     *            Point Location of the Module
      */
     public void addModule(Module m, Point p) {
         circuit.addModule(m, p);
+    }
+
+    /**
+     * Adds a new Module derived from a ViewModule to the Model.
+     * 
+     * @param m
+     *            ViewModule to be added
+     * @param p
+     *            Point Location of the Module
+     */
+    public void addModule(ViewModule m, Point p) {
+        // TODO Fehlerpruefung++
+        circuit.addModule(ViewModule2Module.get(m), p);
     }
 
     /**
@@ -256,5 +275,54 @@ public class Model implements ClockListener {
      */
     public Set<CircuitCheck> getChecks() {
         return checks;
+    }
+
+    /**
+     * Instruct model to move given modules' position by point p.
+     * 
+     * @param p
+     *            Point specifying the relative positional change
+     */
+    public void moveBy(Set<Module> modules, Point p) {
+        // TODO implement
+    }
+
+    /**
+     * Return map containing valid file extensions and description for import.
+     * 
+     * @return Map with <b>key:</b> file extension and <b>value:</b> description
+     */
+    public Map<String, String> getImportFormat() {
+        // TODO implement
+        return null;
+    }
+
+    /**
+     * Return map containing valid file extensions and description for export.
+     * 
+     * @return Map with <b>key:</b> file extension and <b>value:</b> description
+     */
+    public Map<String, String> getExportFormat() {
+        // TODO implement
+        return null;
+    }
+
+    /**
+     * Import a Circuit as the new top-level Circuit and all its elements from a file.
+     * 
+     * @param file
+     *            File to import top-level Circuit from
+     */
+    public void importFromFile(File file) {
+        // TODO implement
+    }
+
+    /**
+     * Export the top-level Circuit and all its elements to a file.
+     * 
+     * @param file
+     */
+    public void exportToFile(File file) {
+        // TODO implement
     }
 }
