@@ -9,7 +9,7 @@ import nandcat.model.check.CheckListener;
 import nandcat.model.check.CircuitCheck;
 
 /**
- * CheckManager is responsible for selecting and deselecting Checks and showing their stats.
+ * CheckManager is responsible for selecting and deselecting Checks and showing their states.
  * 
  * @version 0.1
  * 
@@ -22,7 +22,7 @@ public class CheckManager extends JFrame {
     private static final long serialVersionUID = 1L;
 
     /**
-     * CheckListener of the Checkmanager, listening on the Checks.
+     * CheckListener of the CheckManager, listening on the Checks.
      */
     private CheckListener checkListener;
 
@@ -73,6 +73,9 @@ public class CheckManager extends JFrame {
 
     /**
      * Set the Frame visible or not.
+     * 
+     * @param visible
+     *            boolean represents if visible or not.
      */
     public void setVisible(boolean visible) {
         // TODO implement
@@ -84,11 +87,18 @@ public class CheckManager extends JFrame {
      * @param set
      *            List with Checks to be listed in the Frame.
      * @param boxListener
+     *            Listener for the CheckBoxes
      */
     private void setupCheckmanager(Set<CircuitCheck> set, ItemHandler boxListener) {
         // TODO Auto-generated method stub
     }
 
+    /**
+     * Changes the symbol representing the state of the Check.
+     * 
+     * @param icon
+     *            ImageIcon the new icon.
+     */
     private void changeSymbol(ImageIcon icon) {
     }
 }
