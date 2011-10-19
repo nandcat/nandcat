@@ -1,7 +1,6 @@
 package nandcat.view;
 
 import java.util.Set;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
@@ -22,22 +21,27 @@ public class CheckManager extends JFrame {
      * Default serial version uid.
      */
     private static final long serialVersionUID = 1L;
+
     /**
      * CheckListener of the Checkmanager, listening on the Checks.
      */
     private CheckListener checkListener;
+
     /**
      * Icon representing a check has not started yet.
      */
     private ImageIcon checkPending;
+
     /**
      * Icon representing a check has started but did not finish yet.
      */
     private ImageIcon checkStarted;
+
     /**
      * Icon representing a check passed successful.
      */
     private ImageIcon checkSuccessful;
+
     /**
      * Icon representing a check failed.
      */
