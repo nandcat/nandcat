@@ -1,12 +1,8 @@
 package nandcat;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import java.awt.Point;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 import nandcat.model.Model;
 import nandcat.model.check.CheckEvent;
 import nandcat.model.check.CheckListener;
@@ -14,14 +10,14 @@ import nandcat.model.check.CircuitCheck;
 import nandcat.model.check.FeedbackCheck;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.Port;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * FeedbackCheckTest.
  * 
  * Tests a circuit with an not-gate self connected to its input to fail the feedback check.
- * 
- * @author ben
- * 
  */
 public class FeedbackCheckTest {
 
@@ -36,6 +32,7 @@ public class FeedbackCheckTest {
      * @throws Exception
      *             Any Exception should fail the test.
      */
+    @Ignore
     @Before
     public void setUp() throws Exception {
         model = new Model();
@@ -52,7 +49,6 @@ public class FeedbackCheckTest {
     @Ignore
     @Test
     public void test() {
-        // Model .getChecks()
         CircuitCheck check = null;
         for (CircuitCheck c : model.getChecks()) {
             if (c instanceof FeedbackCheck) {
@@ -69,10 +65,8 @@ public class FeedbackCheckTest {
             }
 
             public void checkChanged(CheckEvent e) {
-                if (e.getState() != CheckEvent.State.SUCCEEDED && e.getState() != CheckEvent.State.FAILED) {
-                    return;
-                } else {
-                    assertEquals(CheckEvent.State.FAILED, e.getState());
+                if (e.getState() == CheckEvent.State.SUCCEEDED) {
+                    fail("Check succeeded.");
                 }
             }
         });

@@ -4,7 +4,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.awt.Point;
 import java.util.List;
+import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Test;
 import nandcat.model.Clock;
 import nandcat.model.ClockListener;
 import nandcat.model.Model;
@@ -17,15 +19,13 @@ import nandcat.model.element.Port;
  * Simulation Test 1.
  * 
  * Tests simulation of a circuit of one Or gate connected to a lamp and 2 buttons (off, on).
- * 
- * @version 0.1
  */
 public class SimulationTest {
 
     /**
-     * TODO Missing doc comment.
+     * Clock cycle to test.
      */
-    private static final int CORRECT_AFTER_CYCLE = 3;
+    private static final int CORRECT_AFTER_CYCLE = 2;
 
     /**
      * Model used for testing.
@@ -74,7 +74,7 @@ public class SimulationTest {
      *             Any Exception should fail the test.
      */
     @Ignore
-    // @Before
+    @Before
     public void setUp() throws Exception {
         model = new Model();
         OrGate orGate = new OrGate();
@@ -83,7 +83,6 @@ public class SimulationTest {
         model.addModule(lamp, new Point(1, 2));
         button1 = new ImpulseGenerator(0);
         ImpulseGenerator button2 = new ImpulseGenerator(0);
-        // Lists of ports
         List<Port> outPortsButton1 = button1.getOutPorts();
         List<Port> outPortsButton2 = button2.getOutPorts();
         List<Port> inPortsOr = orGate.getInPorts();
@@ -95,9 +94,6 @@ public class SimulationTest {
         inPort2Or = inPortsOr.get(1);
         outPortOr = outPortsOr.get(0);
         Port inPortLamp = inPortsLamp.get(0);
-        // Connection conButton1ToOr = new Connection(outPortButton1, inPort1Or);
-        // Connection conButton2ToOr = new Connection(outPortButton2, inPort2Or);
-        // Connection conOrToLamp = new Connection(outPortOr, inPortLamp);
         model.addConnection(outPortButton1, inPort1Or);
         model.addConnection(outPortButton2, inPort2Or);
         model.addConnection(outPortOr, inPortLamp);
@@ -107,7 +103,7 @@ public class SimulationTest {
      * Tests the simulation.
      */
     @Ignore
-    // @Test
+    @Test
     public void test() {
         model.getClock().addListener(new ClockListener() {
 
