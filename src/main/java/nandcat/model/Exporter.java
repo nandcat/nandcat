@@ -49,4 +49,10 @@ public interface Exporter {
      * @return String description of the supported file extensions.
      */
     String getFileDescription();
+
+    /**
+     * Gets the error message if export failed.
+     * @return String Error message if export failed.
+     */
+    String getErrorMessage();
 }

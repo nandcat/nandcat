@@ -49,4 +49,12 @@ public class StandardImporter implements Importer {
         // TODO Auto-generated method stub
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getErrorMessage() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

@@ -48,4 +48,10 @@ public interface Importer {
      * @return String description of the supported file extensions.
      */
     String getFileDescription();
+
+    /**
+     * Gets the error message if import failed.
+     * @return String Error message if import failed.
+     */
+    String getErrorMessage();
 }

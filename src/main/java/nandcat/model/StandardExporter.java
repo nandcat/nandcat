@@ -49,4 +49,12 @@ public class StandardExporter implements Exporter {
         // TODO Auto-generated method stub
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getErrorMessage() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
