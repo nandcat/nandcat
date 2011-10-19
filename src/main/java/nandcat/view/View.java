@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListener;
+import nandcat.model.ViewModule;
 
 /**
  * View.
@@ -66,6 +67,38 @@ public class View extends JFrame {
             }
 
             public void checksChanged(ModelEvent e) {
+            }
+
+            public void checksStarted(ModelEvent e) {
+                // TODO Auto-generated method stub
+            }
+
+            public void checksStopped(ModelEvent e) {
+                // TODO Auto-generated method stub
+            }
+
+            public void simulationStarted(ModelEvent e) {
+                // TODO Auto-generated method stub
+            }
+
+            public void simulationStopped(ModelEvent e) {
+                // TODO Auto-generated method stub
+            }
+
+            public void importSucceeded(ModelEvent e) {
+                // TODO Auto-generated method stub
+            }
+
+            public void importFailed(ModelEvent e) {
+                // TODO Auto-generated method stub
+            }
+
+            public void exportSucceeded(ModelEvent e) {
+                // TODO Auto-generated method stub
+            }
+
+            public void exportFailed(ModelEvent e) {
+                // TODO Auto-generated method stub
             }
         });
     }
@@ -146,8 +179,8 @@ public class View extends JFrame {
      * With this method the Controller is able to give the View the Informations about the Elements available.
      * 
      * @param viewele
-     *            Set<ViewElements> with als the Elements available.
+     *            Set<ViewModule> with the Elements available.
      */
-    public void setViewElements(Set<ViewElement> viewele) {
+    public void setViewModules(Set<ViewModule> viewele) {
     }
 }
