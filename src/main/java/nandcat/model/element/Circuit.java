@@ -133,6 +133,7 @@ public class Circuit implements ClockListener, Module {
      *            Point specifying the location of the Module
      */
     public void addModule(Module m, Point p) {
+        // one module may not appear more than once in elements (ensured by Set<>)
         elements.add(m);
         m.setLocation(p);
     }

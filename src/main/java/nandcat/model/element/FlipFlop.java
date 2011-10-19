@@ -1,5 +1,6 @@
 package nandcat.model.element;
 
+import java.awt.Point;
 import nandcat.model.Clock;
 
 /**
@@ -18,6 +19,10 @@ public class FlipFlop extends Circuit {
         AndGate s = new AndGate(2, 2);
         NotGate rNot = new NotGate();
         NotGate sNot = new NotGate();
+        addModule(r, new Point());
+        addModule(s, new Point());
+        addModule(rNot, new Point());
+        addModule(sNot, new Point());
         addConnection(r.getOutPorts().get(0), rNot.getInPorts().get(0));
         addConnection(s.getOutPorts().get(0), sNot.getInPorts().get(0));
         addConnection(rNot.getOutPorts().get(0), s.getInPorts().get(0));
