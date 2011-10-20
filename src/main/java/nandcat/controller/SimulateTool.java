@@ -132,27 +132,6 @@ public class SimulateTool implements Tool {
     /**
      * {@inheritDoc}
      */
-    public ActionListener getListener() {
-        if (buttonListener != null) {
-            return buttonListener;
-        } else {
-            buttonListener = new ActionListener() {
-
-                public void actionPerformed(ActionEvent e) {
-                    // nur zum beispiel actionCommands sind defaultmäßig die
-                    // namen der Buttons/menüpunkte
-                    if (e.getActionCommand() == "checkstarting")
-                        ;
-                    checkManager = new CheckManager(model.getChecks(), comboboxListener);
-                }
-            };
-        }
-        return buttonListener;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public Map<String, ActionListener> getFunctionalities() {
         buttonListener = new ActionListener() {
 
