@@ -9,8 +9,6 @@ import nandcat.view.View;
  * NandCat Main Class.
  * 
  * Initializes Model, View, Controller and starts the application.
- * 
- * @version 0.5
  */
 public final class Nandcat {
 

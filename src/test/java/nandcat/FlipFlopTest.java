@@ -120,8 +120,6 @@ public class FlipFlopTest {
                 }
                 if (counter == 30) {
                     testCycle30();
-                }
-                if (counter >= 30) {
                     model.stopSimulation();
                 }
                 counter++;

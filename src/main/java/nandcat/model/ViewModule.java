@@ -2,7 +2,6 @@ package nandcat.model;
 
 /**
  * View-friendly representation of all available module Objects. Contains no logic.
- * 
  */
 public class ViewModule {
 
@@ -36,7 +35,7 @@ public class ViewModule {
     }
 
     /**
-     * Sets the file extension for this ViewModule.
+     * Sets the file extension for the symbol of this ViewModule.
      * 
      * @param s
      *            String containing the file extension

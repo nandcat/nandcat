@@ -5,9 +5,6 @@ import nandcat.model.Clock;
 /**
  * Connection between two Modules. Propagates the signal from the first Module to the second. Is responsible for
  * registering the next Module on the clock.
- * 
- * @version 0.1
- * 
  */
 public class Connection implements Element {
 

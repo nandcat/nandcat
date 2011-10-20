@@ -1,14 +1,11 @@
-/**
- * 
- */
 package nandcat.model.check;
 
 import nandcat.model.element.Circuit;
 
 /**
- * Checks if any Ports has two Connections.
+ * MultipleConnectionsCheck.
  * 
- * @version 0.1
+ * Checks if any Ports has two Connections.
  */
 public class MultipleConnectionsCheck implements CircuitCheck {
 

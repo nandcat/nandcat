@@ -18,8 +18,6 @@ import nandcat.model.element.Port;
 /**
  * The model class contains the logic and data of the program as well as methods to manipulate said data. It is one of
  * the big three parts in NANDcat. Every query regarding data will be directed to this class.
- * 
- * @version 0.1
  */
 public class Model implements ClockListener {
 
@@ -32,6 +30,26 @@ public class Model implements ClockListener {
      * Set of all model listeners on the model. The listener informs the implementing class about changes in the model.
      */
     private Set<ModelListener> listeners;
+
+    /**
+     * Import formats map with <b>key:</b> file extension and <b>value:</b> description.
+     */
+    private Map<String, String> importFormats;
+
+    /**
+     * Export formats map with <b>key:</b> file extension and <b>value:</b> description.
+     */
+    private Map<String, String> exportFormats;
+
+    /**
+     * Importer map with <b>key:</b> file extension and <b>value:</b> Importer instance.
+     */
+    private Map<String, Importer> importers;
+
+    /**
+     * Exporter map with <b>key:</b> file extension and <b>value:</b> Exporter instance.
+     */
+    private Map<String, Exporter> exporters;
 
     /**
      * The current circuit of the model.
@@ -173,10 +191,8 @@ public class Model implements ClockListener {
         // elementsAt.add(element);
         // }
         return null;
-        // TODO implement
     }
 
-    // TODO ONLY FOR TESTING !!!
     /**
      * Gets the current clock.
      * 
@@ -325,7 +341,7 @@ public class Model implements ClockListener {
      * 
      * @return Map with <b>key:</b> file extension and <b>value:</b> description
      */
-    public Map<String, String> getImportFormat() {
+    public Map<String, String> getImportFormats() {
         // TODO implement
         return null;
     }
@@ -335,7 +351,7 @@ public class Model implements ClockListener {
      * 
      * @return Map with <b>key:</b> file extension and <b>value:</b> description
      */
-    public Map<String, String> getExportFormat() {
+    public Map<String, String> getExportFormats() {
         // TODO implement
         return null;
     }
@@ -354,6 +370,7 @@ public class Model implements ClockListener {
      * Export the top-level Circuit and all its elements to a file.
      * 
      * @param file
+     *            File to export top-level Circuit from
      */
     public void exportToFile(File file) {
         // TODO implement

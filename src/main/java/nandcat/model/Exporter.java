@@ -1,15 +1,13 @@
 package nandcat.model;
 
 import java.io.File;
+import java.util.Map;
 import nandcat.model.element.Circuit;
 
 /**
  * Exporter.
  * 
  * Used for storing a circuit persistent using a specialized format.
- * 
- * @version 0.1
- * 
  */
 public interface Exporter {
 
@@ -37,18 +35,11 @@ public interface Exporter {
     void setCircuit(Circuit c);
 
     /**
-     * Gets the supported file extensions.
+     * Gets the supported file extensions mapped with a description of the format.
      * 
-     * @return Array of supported file extensions.
+     * @return Map of supported file extensions mapped with a description of the format.
      */
-    String[] getFileExtension();
-
-    /**
-     * Gets the description of the supported file extensions.
-     * 
-     * @return String description of the supported file extensions.
-     */
-    String getFileDescription();
+    Map<String, String> getFileFormats();
 
     /**
      * Gets the error message if export failed.

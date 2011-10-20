@@ -6,8 +6,6 @@ import nandcat.model.element.Circuit;
  * Circuit check interface.
  * 
  * All checks implement this interface. An implementing check is able to check the circuit for errors.
- * 
- * @version 0.1
  */
 public interface CircuitCheck {
 

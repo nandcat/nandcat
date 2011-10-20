@@ -3,11 +3,9 @@ package nandcat.model.check;
 import nandcat.model.element.Circuit;
 
 /**
- * Orphancheck.
+ * OrphanCheck.
  * 
  * Checks if elements are without connection to other elements.
- * @version 0.1
- * 
  */
 public class OrphanCheck implements CircuitCheck {
 

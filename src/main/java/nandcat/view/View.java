@@ -14,8 +14,6 @@ import nandcat.model.ViewModule;
  * View.
  * 
  * Displays all graphical components including the workspace.
- * 
- * @version 0.1
  */
 public class View extends JFrame {
 

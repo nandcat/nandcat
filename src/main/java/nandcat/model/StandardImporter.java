@@ -1,13 +1,13 @@
 package nandcat.model;
 
 import java.io.File;
+import java.util.Map;
 import nandcat.model.element.Circuit;
 
 /**
  * StandardImporter.
  * 
- * Supports standard SEP format.
- * @version 0.1
+ * Supports standard SEP format SEPAF.
  */
 public class StandardImporter implements Importer {
 
@@ -37,23 +37,15 @@ public class StandardImporter implements Importer {
     /**
      * {@inheritDoc}
      */
-    public String[] getFileExtension() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getFileDescription() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public String getErrorMessage() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, String> getFileFormats() {
         // TODO Auto-generated method stub
         return null;
     }

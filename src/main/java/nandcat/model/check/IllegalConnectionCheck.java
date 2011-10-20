@@ -1,14 +1,13 @@
-/**
- * 
- */
 package nandcat.model.check;
 
 import nandcat.model.element.Circuit;
 
 /**
+ * IllegalConnectionCheck.
+ * 
  * Checks if all connections only connect in-Ports with out-Ports.
  */
-public class IllegalConnectionCheck {
+public class IllegalConnectionCheck implements CircuitCheck {
 
     /**
      * {@inheritDoc}

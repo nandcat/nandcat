@@ -3,11 +3,9 @@ package nandcat.model.check;
 import nandcat.model.element.Circuit;
 
 /**
- * Feedbackcheck.
+ * FeedbackCheck.
  * 
  * Checks if there are cycles inside the circuit.
- * 
- * @version 0.1
  */
 public class FeedbackCheck implements CircuitCheck {
 

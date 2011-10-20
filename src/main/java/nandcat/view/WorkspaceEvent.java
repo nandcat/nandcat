@@ -5,8 +5,7 @@ import java.awt.Point;
 /**
  * Workspace event.
  * 
- * @version 0.5
- * 
+ * Holds information about the occurred event.
  */
 public class WorkspaceEvent {
 

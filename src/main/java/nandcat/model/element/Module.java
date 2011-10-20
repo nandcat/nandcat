@@ -7,9 +7,6 @@ import nandcat.model.ClockListener;
 
 /**
  * Module interface. A Module is an Element with Ports. They can be connected by Connections.
- * 
- * @version 0.1
- * 
  */
 public interface Module extends ClockListener, Element {
 

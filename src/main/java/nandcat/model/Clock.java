@@ -8,8 +8,6 @@ import nandcat.model.element.ImpulseGenerator;
 
 /**
  * The Clock class represents a global clock. The Clock's tact is simulated in a separate thread.
- * 
- * @version 0.1
  */
 public class Clock {
 
@@ -101,7 +99,7 @@ public class Clock {
     }
 
     /**
-     * Makes the clock notify the listeners.s
+     * Makes the clock notify the listeners.
      */
     public void cycle() {
         // never ever refactor name listener
@@ -128,6 +126,6 @@ public class Clock {
      * Stop the simulation on this clock.
      */
     public void stopSimulation() {
-        // TODO clear listeners, reset cycle, blabla
+        // TODO clear listeners, reset cycle
     }
 }

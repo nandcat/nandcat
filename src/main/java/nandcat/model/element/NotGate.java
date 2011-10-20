@@ -4,9 +4,6 @@ import nandcat.model.Clock;
 
 /**
  * NOT gate implementation. It represents the boolean NOT-operator.
- * 
- * @version 0.5
- * 
  */
 public class NotGate extends Gate {
 

@@ -3,10 +3,9 @@ package nandcat.model.element;
 import nandcat.model.Clock;
 
 /**
- * AND gate implementation. It represents the boolean AND-operator.
+ * AND gate implementation. 
  * 
- * @version 0.5
- * 
+ * It represents the boolean AND-operator.
  */
 public class AndGate extends Gate {
 

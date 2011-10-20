@@ -3,9 +3,6 @@ package nandcat.model;
 /**
  * Modellistener. Classes that implement this interface can be notified if the model changed in certain ways (Checks,
  * Elements, Simulation).
- * 
- * @version 0.1
- * 
  */
 public interface ModelListener {
 

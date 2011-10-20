@@ -12,9 +12,6 @@ import nandcat.model.ClockListener;
  * This class represents a circuit. It could be a customized Module or the main circuit displayed in the GUI. A circuit
  * representing a custom Module will not be displayed in its full extent. Note that this leads to a recursive
  * datastructure, where a circuit could contain more circuits.
- * 
- * @version 0.1
- * 
  */
 public class Circuit implements ClockListener, Module {
 

@@ -10,9 +10,6 @@ import nandcat.model.check.CircuitCheck;
 
 /**
  * CheckManager is responsible for selecting and deselecting Checks and showing their states.
- * 
- * @version 0.1
- * 
  */
 public class CheckManager extends JFrame {
 

@@ -3,10 +3,9 @@ package nandcat.model.check;
 import nandcat.model.element.Circuit;
 
 /**
- * Countcheck.
+ * CountCheck.
  * 
- * @version 0.1
- * 
+ * Checks if a given amount of elements exceeded, which could result in performance issues.
  */
 public class CountCheck implements CircuitCheck {
 

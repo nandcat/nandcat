@@ -3,11 +3,9 @@ package nandcat.model.check;
 import nandcat.model.element.Circuit;
 
 /**
- * Sinkcheck.
+ * SinkCheck.
  * 
  * Checks if all elements are (in)directly connected to a sink.
- * @version 0.1
- * 
  */
 public class SinkCheck implements CircuitCheck {
 

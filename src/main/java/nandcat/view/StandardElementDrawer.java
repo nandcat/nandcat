@@ -14,8 +14,7 @@ import nandcat.model.element.Port;
 /**
  * Standard element drawer.
  * 
- * @version 0.1
- * 
+ * Draws all elements.
  */
 public class StandardElementDrawer implements ElementDrawer {
 

@@ -4,14 +4,12 @@ package nandcat.model.check;
  * Checklistener Interface, used for notification.
  * 
  * It notifies implementing classes about state changes of the check registered on.
- * @version 0.4
  */
 public interface CheckListener {
 
     /**
      * Called if check started.
      */
-    // TODO Wirklich benoetigt, ich würde noch checkChanged und einen State Started benutzen - Ben
     void checkStarted();
 
     /**

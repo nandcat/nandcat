@@ -15,9 +15,6 @@ import nandcat.model.element.Port;
  * ElementDrawer.
  * 
  * Draws elements on a given graphics object to support different drawing styles.
- * 
- * @version 0.1
- * 
  */
 public interface ElementDrawer {
 

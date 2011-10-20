@@ -2,9 +2,6 @@ package nandcat.view;
 
 /**
  * Interface WorkspaceListener defines the methods the Listener offers and must be implemented.
- * 
- * @version 0.5
- * 
  */
 public interface WorkspaceListener {
 

@@ -4,8 +4,6 @@ import nandcat.model.Clock;
 
 /**
  * A Port exists only on Modules. Its responsible to propagate the signal from the connection to the Module.
- * 
- * @version 0.1
  */
 public class Port {
 

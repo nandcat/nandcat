@@ -3,11 +3,9 @@ package nandcat.model.check;
 import nandcat.model.element.Circuit;
 
 /**
- * Sourcecheck.
+ * SourceCheck.
  * 
  * Checks if all elements are (in)directly connected to a source.
- * @version 0.1
- * 
  */
 public class SourceCheck implements CircuitCheck {
 

@@ -14,9 +14,6 @@ import nandcat.view.CheckManager;
 
 /**
  * The SimulateTool is responsible for handling the Simulation and Checks.
- * 
- * @version 0.1
- * 
  */
 public class SimulateTool implements Tool {
 

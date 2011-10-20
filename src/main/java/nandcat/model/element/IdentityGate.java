@@ -4,9 +4,6 @@ import nandcat.model.Clock;
 
 /**
  * Identity gate implementation. The output equals the input.
- * 
- * @version 0.5
- * 
  */
 public class IdentityGate extends Gate {
 

@@ -4,9 +4,6 @@ import nandcat.model.Clock;
 
 /**
  * OR gate implementation. It represents the boolean OR-operator.
- * 
- * @version 0.5
- * 
  */
 public class OrGate extends Gate {
 

@@ -8,9 +8,6 @@ import nandcat.model.Clock;
 
 /**
  * Gate class. Representing the minimum consent between the basic gates.
- * 
- * @version 0.1
- * 
  */
 public abstract class Gate implements Module {
 

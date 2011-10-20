@@ -8,9 +8,6 @@ import nandcat.model.Clock;
 
 /**
  * Impulse Generator. Cycles between outgoing signals. An Impulse Generator with frequency 0 is basically a Switch.
- * 
- * @version 0.1
- * 
  */
 public class ImpulseGenerator implements Module {
 

@@ -4,9 +4,6 @@ import java.awt.Point;
 
 /**
  * FlipFlop implementation. A FlipFlop is used to "hold" a boolean state for a certain amount of time.
- * 
- * @version 0.1
- * 
  */
 public class FlipFlop extends Circuit {
 

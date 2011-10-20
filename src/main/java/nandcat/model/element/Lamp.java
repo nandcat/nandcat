@@ -8,9 +8,6 @@ import nandcat.model.Clock;
 
 /**
  * Lamp implementation. The lamp is shiny if the input signal is true. It has no output ports.
- * 
- * @version 0.1
- * 
  */
 public class Lamp implements Module {
 
