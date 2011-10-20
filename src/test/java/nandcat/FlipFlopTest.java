@@ -48,7 +48,6 @@ public class FlipFlopTest {
     @Ignore // @Before
     public void setUp() throws Exception {
         model = new Model();
-        // TODO Feedbacktest off!!!
         AndGate andGate1 = new AndGate();
         AndGate andGate2 = new AndGate();
         NotGate notGate1 = new NotGate(2);
