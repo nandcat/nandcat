@@ -71,7 +71,7 @@ public class Model implements ClockListener {
      */
     public Model() {
         // TODO
-        circuit = new Circuit();
+        circuit = new Circuit(new Point(0, 0));
         checks = new LinkedHashSet<CircuitCheck>();
         listeners = new LinkedHashSet<ModelListener>();
         clock = new Clock(0, this);

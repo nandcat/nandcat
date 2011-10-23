@@ -45,6 +45,20 @@ public class Circuit implements ClockListener, Module {
     private boolean selected;
 
     /**
+     * Default constructor.
+     * 
+     * @parm p Point specifying the circuit's location
+     */
+    public Circuit(Point p) {
+        location = p;
+        name = "";
+        elements = new LinkedList<Element>();
+        rectangle = new Rectangle();
+        symbol = new byte[0];
+        selected = false;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public void setName(String name) {
