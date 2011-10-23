@@ -37,6 +37,11 @@ public abstract class Gate implements Module {
     private Rectangle rectangle;
 
     /**
+     * Selection state of gate.
+     */
+    private boolean selected;
+    
+    /**
      * Advanced constructor. Creates new Gate with inPorts incoming and outPorts outgoing Ports.
      * 
      * @param inPorts
@@ -188,14 +193,13 @@ public abstract class Gate implements Module {
      * {@inheritDoc}
      */
     public void setSelected(boolean b) {
-        // TODO Auto-generated method stub
+        selected = b;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isSelected() {
-        // TODO Auto-generated method stub
-        return false;
+        return selected;
     }
 }

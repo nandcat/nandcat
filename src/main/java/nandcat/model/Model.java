@@ -225,7 +225,7 @@ public class Model implements ClockListener {
      * 
      * @return A Set of all elements.
      */
-    public Set<Element> getElements() {
+    public List<Element> getElements() {
         return circuit.getElements();
     }
 
