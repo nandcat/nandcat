@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
+import org.fest.util.VisibleForTesting;
 import nandcat.model.Clock;
 import nandcat.model.ClockListener;
 
@@ -11,6 +12,8 @@ import nandcat.model.ClockListener;
  * This class represents a circuit. It could be a customized Module or the main circuit displayed in the GUI. A circuit
  * representing a custom Module will not be displayed in its full extent. Note that this leads to a recursive
  * datastructure, where a circuit could contain more circuits.
+ * 
+ * @version 7
  */
 public class Circuit implements ClockListener, Module {
 
@@ -202,13 +205,17 @@ public class Circuit implements ClockListener, Module {
         List<Module> result = new LinkedList<Module>();
         for (Element e : elements) {
             if (e instanceof Module) {
-                Module m = (Module) e;
                 boolean isStartingModule = false;
-                for (Port p : m.getInPorts()) {
-                    if (p.getConnection() == null) {
-                        break;
-                    }
+                Module m = (Module) e;
+                if (m instanceof ImpulseGenerator) {
                     isStartingModule = true;
+                } else {
+                    for (Port p : m.getInPorts()) {
+                        if (p.getConnection() == null) {
+                            isStartingModule = true;
+                            break;
+                        }
+                    }
                 }
                 if (isStartingModule) {
                     result.add(m);
@@ -222,7 +229,7 @@ public class Circuit implements ClockListener, Module {
      * {@inheritDoc}
      */
     public void clockTicked(Clock clock) {
-        // TODO Auto-generated method stub
+        // nothing to be done here, faggit.
     }
 
     /**
@@ -244,14 +251,10 @@ public class Circuit implements ClockListener, Module {
         if (e instanceof Module) {
             Module m = (Module) e;
             for (Port p : m.getInPorts()) {
-                if (p.getConnection() != null) {
-                    removeElement(p.getConnection());
-                }
+                removeElement(p.getConnection());
             }
             for (Port p : m.getOutPorts()) {
-                if (p.getConnection() != null) {
-                    removeElement(p.getConnection());
-                }
+                removeElement(p.getConnection());
             }
             elements.remove(m);
         }
@@ -267,6 +270,7 @@ public class Circuit implements ClockListener, Module {
      *            true if selected, false if not selected
      */
     public void setModuleSelected(Module m, boolean b) {
+        m.setSelected(b);
     }
 
     /**
@@ -293,9 +297,16 @@ public class Circuit implements ClockListener, Module {
      *            Point specifying the location of the Module
      */
     public void addModule(Module m, Point p) {
+        if (m instanceof Circuit) {
+            Circuit c = (Circuit) m;
+            for (Element e : c.getElements()) {
+                if (e instanceof Lamp || e instanceof ImpulseGenerator) {
+                    removeElement(e);
+                }
+            }
+        }
         // one module may not appear more than once in elements (ensured by Set<>)
         elements.add(m);
         m.setLocation(p);
-        // TODO if m instanceof Circuit: Lampen und Taktgeber (+deren Verbindungen) entfernen
     }
 }

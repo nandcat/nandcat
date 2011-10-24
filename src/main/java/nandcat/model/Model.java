@@ -314,7 +314,10 @@ public class Model implements ClockListener {
      * {@inheritDoc}
      */
     public void clockTicked(Clock clock) {
-        // TODO
+        for (ModelListener l : listeners) {
+            ModelEvent e = new ModelEvent();
+            l.elementsChanged(e);
+        }
     }
 
     /**

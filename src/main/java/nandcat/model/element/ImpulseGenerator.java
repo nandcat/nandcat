@@ -48,6 +48,7 @@ public class ImpulseGenerator implements Module {
      *            frequency of the generator
      */
     public ImpulseGenerator(int frequency) {
+        state = false;
         if (frequency < 0) {
             new IllegalArgumentException("invalid frequency for impulsegenerator");
         }
