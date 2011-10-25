@@ -1,10 +1,16 @@
 package nandcat.view;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JScrollPane;
+import javax.swing.JToolBar;
+import javax.swing.JViewport;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListener;
@@ -16,6 +22,26 @@ import nandcat.model.ViewModule;
  * Displays all graphical components including the workspace.
  */
 public class View extends JFrame {
+
+    /**
+     * frame of the Program.
+     */
+    private JFrame frame = new JFrame("NANDCat");
+
+    /**
+     * View over the Workspace.
+     */
+    private JScrollPane scroller;
+
+    /**
+     * ToolBar with Buttons for control.
+     */
+    private JToolBar toolBar;
+
+    /**
+     * Viewport, visible part of the Workspace.
+     */
+    private JViewport viewport;
 
     /**
      * Default serial version uid.
@@ -31,6 +57,23 @@ public class View extends JFrame {
      * Workspace displays model elements.
      */
     private Workspace workspace;
+
+    /**
+     * Location of upper left corner of the frame on the screen.
+     */
+    private Point frameLocation = new Point(200, 150);
+
+    /**
+     * Location of the upper left corner of the viewport on the screen.
+     */
+    private Point viewportLocation = new Point(200, 250);
+
+    /**
+     * Dimension of the panel we work in.
+     */
+    private Dimension workspaceDimension = new Dimension(1000, 1000);
+
+    private JMenuBar menubar;
 
     /**
      * A Map with all the Tool functionalities and their Listeners.
@@ -99,6 +142,41 @@ public class View extends JFrame {
                 // TODO Auto-generated method stub
             }
         });
+        frame.setSize(200, 200);
+        frame.setLocation(frameLocation);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        workspace = new Workspace();
+        workspace.setPreferredSize(workspaceDimension);
+        workspace.setBackground(Color.white);
+        workspace.setLayout(null); // no layout is required for free move of the components
+        scroller = new JScrollPane(workspace);
+        viewport = scroller.getViewport();
+        viewport.setViewPosition(viewportLocation);
+        toolBar = new JToolBar();
+        menubar = new JMenuBar();
+        frame.getContentPane().add(scroller, "Center");
+        frame.getContentPane().add(toolBar, "East");
+        frame.getContentPane().add(menubar);
+    }
+
+    /**
+     * set up MenuBar of the Frame.
+     * 
+     * @param menubar
+     *            the menuBar to be build
+     */
+    private void buildMenubar(JMenuBar menubar) {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     * set up the ToolBar of the Frame.
+     * 
+     * @param toolBar
+     *            ToolBar to be build.
+     */
+    private void buildToolbar(JToolBar toolBar) {
+        // TODO Auto-generated method stub
     }
 
     /**
@@ -153,6 +231,8 @@ public class View extends JFrame {
      */
     public void setFunctionalities(Map<String, ActionListener> map) {
         this.toolFunctionalities = map;
+        buildMenubar(menubar);
+        buildToolbar(toolBar);
     }
 
     /**
