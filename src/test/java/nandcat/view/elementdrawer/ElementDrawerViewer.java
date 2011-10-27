@@ -19,7 +19,6 @@ import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
-import nandcat.model.element.Port;
 import nandcat.view.StandardElementDrawer;
 
 public class ElementDrawerViewer extends JFrame {
@@ -70,6 +69,7 @@ public class ElementDrawerViewer extends JFrame {
         andGate3.getInPorts().get(0).setState(true, null);
         andGate3.getInPorts().get(1).setState(true, null);
         andGate3.getOutPorts().get(0).setState(true, null);
+        andGate3.setSelected(true);
         andGate3.setRectangle(new Rectangle(200, 5, 60, 40));
         elements.add(andGate3);
         // OR Gates
@@ -84,6 +84,7 @@ public class ElementDrawerViewer extends JFrame {
         orGate3.getInPorts().get(0).setState(true, null);
         orGate3.getInPorts().get(1).setState(true, null);
         orGate3.getOutPorts().get(0).setState(true, null);
+        orGate3.setSelected(true);
         orGate3.setRectangle(new Rectangle(200, 80, 60, 40));
         elements.add(orGate3);
         // OrGate orGate4 = new OrGate(2,5);
@@ -104,6 +105,11 @@ public class ElementDrawerViewer extends JFrame {
         lamp2.getInPorts().get(0).setState(true, null);
         lamp2.setRectangle(new Rectangle(100, 160, 40, 40));
         elements.add(lamp2);
+        Lamp lamp3 = new Lamp();
+        lamp3.getInPorts().get(0).setState(true, null);
+        lamp3.setSelected(true);
+        lamp3.setRectangle(new Rectangle(200, 160, 40, 40));
+        elements.add(lamp3);
         NotGate notGate1 = new NotGate();
         notGate1.setRectangle(new Rectangle(5, 240, 60, 40));
         elements.add(notGate1);
@@ -113,16 +119,17 @@ public class ElementDrawerViewer extends JFrame {
         elements.add(notGate2);
         NotGate notGate3 = new NotGate();
         notGate3.getOutPorts().get(0).setState(true, null);
+        notGate3.setSelected(true);
         notGate3.setRectangle(new Rectangle(200, 240, 60, 40));
         elements.add(notGate3);
         // FlipFlop flipFlop1 = new FlipFlop();
         // flipFlop1.setRectangle(new Rectangle(5, 320, 60, 40));
         // elements.add(flipFlop1);
-//         Circuit circuit1 = new Circuit();
-//         circuit1.getOutPorts().add(new Port(circuit1));
-//         circuit1.getOutPorts().get(0).setState(true, null);
-//         circuit1.setRectangle(new Rectangle(5, 400, 60, 40));
-//         elements.add(circuit1);
+        // Circuit circuit1 = new Circuit();
+        // circuit1.getOutPorts().add(new Port(circuit1));
+        // circuit1.getOutPorts().get(0).setState(true, null);
+        // circuit1.setRectangle(new Rectangle(5, 400, 60, 40));
+        // elements.add(circuit1);
         // IdentityGate identityGate1 = new IdentityGate();
         // identityGate1.setRectangle(new Rectangle(5, 480, 60, 40));
         // elements.add(identityGate1);
@@ -137,6 +144,7 @@ public class ElementDrawerViewer extends JFrame {
         ImpulseGenerator ig3 = new ImpulseGenerator(200);
         ig3.toggleState();
         ig3.getOutPorts().get(0).setState(true, null);
+        ig3.setSelected(true);
         ig3.setRectangle(new Rectangle(200, 320, 60, 40));
         elements.add(ig3);
         // FlipFlop ff1 = new FlipFlop();

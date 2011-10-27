@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.ImageIcon;
 import nandcat.model.Model;
+import nandcat.model.element.Element;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
@@ -78,11 +79,14 @@ public class CreateTool implements Tool {
 
                     public void mousePressed(WorkspaceEvent e) {
                         // TODO Auto-generated method stub
-                        Set<Elements> elementsAt = model.getElementsAt(e.getLocation());
+                        Set<Element> elementsAt = model.getElementsAt(e.getLocation());
                         if (elementsAt.isEmpty()) {
-                            Module module = new Module();
+                            //Ben: Module ist ein Interface!
+                            //Module module = new Module();
                             //TODO find out how to know which module it is.
-                            model.addModule(module, e.getLocation());
+                            //model.addModule(module, e.getLocation());
+                            //Ben: Schau das nächste mal ins irc wenn du nen build failst!
+                            //Ben: mvn compile && mvn test Vor commit!
                         } else {
                         // create new connection
                         }
@@ -115,7 +119,8 @@ public class CreateTool implements Tool {
 
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
-                controller.requestActivation(this);
+                //Ben: So laeuft das nicht, kapseln ueber private Methode.
+                //controller.requestActivation(this);
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();

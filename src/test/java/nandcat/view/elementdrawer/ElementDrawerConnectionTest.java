@@ -5,7 +5,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
-import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;

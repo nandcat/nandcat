@@ -21,6 +21,9 @@ public class ElementDrawerIdentityGateTest extends AbstractElementDrawerTest {
     public void setUp() {
         gateMock = EasyMock.createMock(IdentityGate.class);
         graphicMock = EasyMock.createStrictMock(Graphics.class);
+    }
+
+    private void gateMockSetGeneralExpectations() {
         LinkedList<Port> portList = new LinkedList<Port>();
         LinkedList<Port> portListOut = new LinkedList<Port>();
         Port activePort = EasyMock.createMock(Port.class);
@@ -40,11 +43,27 @@ public class ElementDrawerIdentityGateTest extends AbstractElementDrawerTest {
         EasyMock.expect(gateMock.getRectangle()).andReturn(rec).anyTimes();
         EasyMock.expect(gateMock.getInPorts()).andReturn(portList).anyTimes();
         EasyMock.expect(gateMock.getOutPorts()).andReturn(portListOut).anyTimes();
+    }
+
+    @Test
+    public void testDrawIdentityGateSelected() {
+        gateMockSetGeneralExpectations();
+        EasyMock.expect(gateMock.isSelected()).andReturn(true).anyTimes();
         EasyMock.replay(gateMock);
+        mockDrawRectangle();
+        mockDrawPorts();
+        mockDrawLabel();
+        EasyMock.replay(graphicMock);
+        drawer.setGraphics(graphicMock);
+        drawer.draw(gateMock);
+        EasyMock.verify(graphicMock);
     }
 
     @Test
     public void testDrawIdentityGate() {
+        gateMockSetGeneralExpectations();
+        EasyMock.expect(gateMock.isSelected()).andReturn(false).anyTimes();
+        EasyMock.replay(gateMock);
         mockDrawRectangle();
         mockDrawPorts();
         mockDrawLabel();
@@ -55,7 +74,11 @@ public class ElementDrawerIdentityGateTest extends AbstractElementDrawerTest {
     }
 
     private void mockDrawRectangle() {
-        graphicMock.setColor(EasyMock.eq(GATE_COLOR));
+        if (gateMock.isSelected()) {
+            graphicMock.setColor(EasyMock.eq(GATE_COLOR_SELECTED));
+        } else {
+            graphicMock.setColor(EasyMock.eq(GATE_COLOR));
+        }
         graphicMock.drawRect(EasyMock.eq(rec.x), EasyMock.eq(rec.y), EasyMock.eq(rec.width), EasyMock.eq(rec.height));
     }
 

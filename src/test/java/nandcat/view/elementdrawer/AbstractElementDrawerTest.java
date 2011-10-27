@@ -7,7 +7,7 @@ import org.junit.Before;
 
 /**
  * Base for element drawer tests.
- *
+ * 
  */
 public abstract class AbstractElementDrawerTest {
 
@@ -43,19 +43,19 @@ public abstract class AbstractElementDrawerTest {
 
     Color LAMP_COLOR;
 
-    Color IG_COLOR = Color.BLACK;
-
     Color IG_COLOR_DEFAULT = Color.WHITE;
 
     Color IG_COLOR_ACTIVE = Color.YELLOW;
-    
+
     Color LAMP_COLOR_ACTIVE;
 
     String LABEL_IDENTITYGATE;
 
+    Color GATE_COLOR_SELECTED;
 
     void applyFields() throws Exception {
-        PORT_COLOR_ACTIVE = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer, "PORT_COLOR_ACTIVE");
+        PORT_COLOR_ACTIVE = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
+                "PORT_COLOR_ACTIVE");
         PORT_COLOR_DEFAULT = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
                 "PORT_COLOR_DEFAULT");
         PORT_MARGIN_BOTTOM = (Integer) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
@@ -79,18 +79,21 @@ public abstract class AbstractElementDrawerTest {
                 "LABEL_IDENTITYGATE");
         LABEL_COLOR = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer, "LABEL_COLOR");
         LAMP_COLOR = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer, "LAMP_COLOR");
-        IG_COLOR = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer, "IG_COLOR");
         IG_COLOR_DEFAULT = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
                 "IG_COLOR_DEFAULT");
         IG_COLOR_ACTIVE = (Color) ReflectionUtil
                 .getPrivateField(StandardElementDrawer.class, drawer, "IG_COLOR_ACTIVE");
-        LAMP_COLOR_ACTIVE = (Color) ReflectionUtil
-                .getPrivateField(StandardElementDrawer.class, drawer, "LAMP_COLOR_ACTIVE");
+        LAMP_COLOR_ACTIVE = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
+                "LAMP_COLOR_ACTIVE");
+        GATE_COLOR_SELECTED = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
+                "GATE_COLOR_SELECTED");
     }
 
     /**
      * Create drawer and setup fields.
-     * @throws Exception Fail on all exceptions.
+     * 
+     * @throws Exception
+     *             Fail on all exceptions.
      */
     @Before
     public void setUpDrawerAndFields() throws Exception {

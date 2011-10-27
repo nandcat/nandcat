@@ -30,6 +30,9 @@ public class ElementDrawerOrGateTest extends AbstractElementDrawerTest {
     public void setUp() {
         gateMock = EasyMock.createMock(OrGate.class);
         graphicMock = EasyMock.createStrictMock(Graphics.class);
+    }
+
+    private void gateMockSetGeneralExpectations() {
         LinkedList<Port> portList = new LinkedList<Port>();
         portList.add(new Port(gateMock));
         Port activePort = EasyMock.createMock(Port.class);
@@ -42,7 +45,6 @@ public class ElementDrawerOrGateTest extends AbstractElementDrawerTest {
         EasyMock.expect(gateMock.getRectangle()).andReturn(rec).anyTimes();
         EasyMock.expect(gateMock.getInPorts()).andReturn(portList).anyTimes();
         EasyMock.expect(gateMock.getOutPorts()).andReturn(portList).anyTimes();
-        EasyMock.replay(gateMock);
     }
 
     /**
@@ -51,6 +53,23 @@ public class ElementDrawerOrGateTest extends AbstractElementDrawerTest {
      */
     @Test
     public void testDrawOrGate() {
+        gateMockSetGeneralExpectations();
+        EasyMock.expect(gateMock.isSelected()).andReturn(false).anyTimes();
+        EasyMock.replay(gateMock);
+        mockDrawRectangle();
+        mockDrawPorts();
+        mockDrawLabel();
+        EasyMock.replay(graphicMock);
+        drawer.setGraphics(graphicMock);
+        drawer.draw(gateMock);
+        EasyMock.verify(graphicMock);
+    }
+
+    @Test
+    public void testDrawOrGateSelected() {
+        gateMockSetGeneralExpectations();
+        EasyMock.expect(gateMock.isSelected()).andReturn(true).anyTimes();
+        EasyMock.replay(gateMock);
         mockDrawRectangle();
         mockDrawPorts();
         mockDrawLabel();
@@ -61,7 +80,11 @@ public class ElementDrawerOrGateTest extends AbstractElementDrawerTest {
     }
 
     private void mockDrawRectangle() {
-        graphicMock.setColor(EasyMock.eq(GATE_COLOR));
+        if (gateMock.isSelected()) {
+            graphicMock.setColor(EasyMock.eq(GATE_COLOR_SELECTED));
+        } else {
+            graphicMock.setColor(EasyMock.eq(GATE_COLOR));
+        }
         graphicMock.drawRect(EasyMock.eq(rec.x), EasyMock.eq(rec.y), EasyMock.eq(rec.width), EasyMock.eq(rec.height));
     }
 

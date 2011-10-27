@@ -15,45 +15,67 @@ public class ElementDrawerImpulseGeneratorTest extends AbstractElementDrawerTest
 
     private Rectangle rec;
 
-    private ImpulseGenerator igMock;
+    private ImpulseGenerator gateMock;
 
     @Before
     public void setUp() {
-        igMock = EasyMock.createMock(ImpulseGenerator.class);
+        gateMock = EasyMock.createMock(ImpulseGenerator.class);
         graphicMock = EasyMock.createStrictMock(Graphics.class);
+    }
+
+    private void gateMockSetGeneralExpectations() {
         LinkedList<Port> portList = new LinkedList<Port>();
-        portList.add(new Port(igMock));
+        portList.add(new Port(gateMock));
         Port activePort = EasyMock.createMock(Port.class);
         EasyMock.expect(activePort.getState()).andReturn(true).anyTimes();
         EasyMock.replay(activePort);
         portList.add(activePort);
-        portList.add(new Port(igMock));
+        portList.add(new Port(gateMock));
         rec = new Rectangle(21, 23, 100 + PORT_MARGIN_LEFT + PORT_MARGIN_RIGHT, 100 + PORT_MARGIN_TOP
                 + PORT_MARGIN_BOTTOM);
-        EasyMock.expect(igMock.getRectangle()).andReturn(rec).anyTimes();
-        EasyMock.expect(igMock.getInPorts()).andReturn(portList).anyTimes();
-        EasyMock.expect(igMock.getOutPorts()).andReturn(portList).anyTimes();
-        EasyMock.expect(igMock.getState()).andReturn(true).anyTimes();
-        EasyMock.expect(igMock.getFrequency()).andReturn(0).anyTimes();
-        EasyMock.replay(igMock);
+        EasyMock.expect(gateMock.getRectangle()).andReturn(rec).anyTimes();
+        EasyMock.expect(gateMock.getInPorts()).andReturn(portList).anyTimes();
+        EasyMock.expect(gateMock.getOutPorts()).andReturn(portList).anyTimes();
+        EasyMock.expect(gateMock.getState()).andReturn(true).anyTimes();
+        EasyMock.expect(gateMock.getFrequency()).andReturn(0).anyTimes();
     }
 
     @Test
     public void testDrawImpulseGenerator() {
+        gateMockSetGeneralExpectations();
+        EasyMock.expect(gateMock.isSelected()).andReturn(false).anyTimes();
+        EasyMock.replay(gateMock);
         mockDrawRectangle();
         mockDrawState();
         mockDrawPorts();
         mockDrawLabel();
         EasyMock.replay(graphicMock);
         drawer.setGraphics(graphicMock);
-        drawer.draw(igMock);
+        drawer.draw(gateMock);
+        EasyMock.verify(graphicMock);
+    }
+
+    @Test
+    public void testDrawImpulseGeneratorSelected() {
+        gateMockSetGeneralExpectations();
+        EasyMock.expect(gateMock.isSelected()).andReturn(true).anyTimes();
+        EasyMock.replay(gateMock);
+        mockDrawRectangle();
+        mockDrawState();
+        mockDrawPorts();
+        mockDrawLabel();
+        EasyMock.replay(graphicMock);
+        drawer.setGraphics(graphicMock);
+        drawer.draw(gateMock);
         EasyMock.verify(graphicMock);
     }
 
     private void mockDrawRectangle() {
-        // Select Color
-        graphicMock.setColor(EasyMock.eq(IG_COLOR));
-        EasyMock.expectLastCall();
+        if (gateMock.isSelected()) {
+            graphicMock.setColor(EasyMock.eq(GATE_COLOR_SELECTED));
+        } else {
+            graphicMock.setColor(EasyMock.eq(GATE_COLOR));
+        }
         // Draw Gate rectangle
         graphicMock.drawRect(EasyMock.eq(rec.x), EasyMock.eq(rec.y), EasyMock.eq(rec.width), EasyMock.eq(rec.height));
     }
@@ -61,14 +83,14 @@ public class ElementDrawerImpulseGeneratorTest extends AbstractElementDrawerTest
     private void mockDrawState() {
         graphicMock.setColor(EasyMock.eq(IG_COLOR_ACTIVE));
         graphicMock.fillRect(EasyMock.gt(rec.x), EasyMock.gt(rec.y), EasyMock.lt(rec.width), EasyMock.lt(rec.height));
-        graphicMock.setColor(EasyMock.eq(IG_COLOR));
+        graphicMock.setColor(EasyMock.eq(GATE_COLOR));
         graphicMock.drawRect(EasyMock.gt(rec.x), EasyMock.gt(rec.y), EasyMock.lt(rec.width), EasyMock.lt(rec.height));
     }
 
     private void mockDrawLabel() {
-        igMock.getFrequency();
+        gateMock.getFrequency();
         graphicMock.setColor(EasyMock.eq(LABEL_COLOR));
-        graphicMock.drawString(EasyMock.contains(Integer.toString(igMock.getFrequency())), EasyMock.geq(rec.x),
+        graphicMock.drawString(EasyMock.contains(Integer.toString(gateMock.getFrequency())), EasyMock.geq(rec.x),
                 EasyMock.geq(rec.y));
     }
 
@@ -101,9 +123,9 @@ public class ElementDrawerImpulseGeneratorTest extends AbstractElementDrawerTest
 
     @Test(expected = IllegalArgumentException.class)
     public void testDrawImpulseGeneratorNullRectangle() {
-        EasyMock.reset(igMock);
-        EasyMock.expect(igMock.getRectangle()).andReturn(null);
-        EasyMock.replay(igMock);
-        drawer.draw(igMock);
+        EasyMock.reset(gateMock);
+        EasyMock.expect(gateMock.getRectangle()).andReturn(null);
+        EasyMock.replay(gateMock);
+        drawer.draw(gateMock);
     }
 }

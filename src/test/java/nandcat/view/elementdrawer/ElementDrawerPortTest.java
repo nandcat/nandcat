@@ -27,6 +27,9 @@ public class ElementDrawerPortTest extends AbstractElementDrawerTest {
     public void setUp() {
         gateMock = EasyMock.createMock(OrGate.class);
         graphicMock = EasyMock.createStrictMock(Graphics.class);
+    }
+
+    private void gateMockSetGeneralExpectations() {
         LinkedList<Port> portList = new LinkedList<Port>();
         portList.add(new Port(gateMock));
         Port activePort = EasyMock.createMock(Port.class);
@@ -39,7 +42,22 @@ public class ElementDrawerPortTest extends AbstractElementDrawerTest {
         EasyMock.expect(gateMock.getRectangle()).andReturn(rec).anyTimes();
         EasyMock.expect(gateMock.getInPorts()).andReturn(portList);
         EasyMock.expect(gateMock.getOutPorts()).andReturn(portList);
+    }
+
+    @Test
+    public void testDrawOrGateWithPorts() throws Exception {
+        gateMockSetGeneralExpectations();
+        EasyMock.expect(gateMock.isSelected()).andReturn(false);
         EasyMock.replay(gateMock);
+        verifyDrawOrGateWithPorts(false);
+    }
+
+    @Test
+    public void testDrawOrGateWithPortsSelected() throws Exception {
+        gateMockSetGeneralExpectations();
+        EasyMock.expect(gateMock.isSelected()).andReturn(true);
+        EasyMock.replay(gateMock);
+        verifyDrawOrGateWithPorts(true);
     }
 
     /**
@@ -48,10 +66,13 @@ public class ElementDrawerPortTest extends AbstractElementDrawerTest {
      * @throws Exception
      *             Fail on exception.
      */
-    @Test
-    public void testDrawOrGateWithPorts() throws Exception {
+    private void verifyDrawOrGateWithPorts(boolean isSelected) throws Exception {
         // Draw outline of the or gate.
-        graphicMock.setColor(GATE_COLOR);
+        if (isSelected) {
+            graphicMock.setColor(EasyMock.eq(GATE_COLOR_SELECTED));
+        } else {
+            graphicMock.setColor(EasyMock.eq(GATE_COLOR));
+        }
         EasyMock.expectLastCall().once();
         graphicMock.drawRect(rec.x, rec.y, rec.height, rec.width);
         EasyMock.expectLastCall().once();

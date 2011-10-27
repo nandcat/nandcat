@@ -131,9 +131,14 @@ public class StandardElementDrawer implements ElementDrawer {
     private static final Color LABEL_COLOR = Color.BLACK;
 
     /**
-     * Outline color of a gate.
+     * Outline color of gate.
      */
     private static final Color GATE_COLOR = Color.BLACK;
+
+    /**
+     * Outline color of selected gate.
+     */
+    private static final Color GATE_COLOR_SELECTED = Color.RED;
 
     /**
      * Outline color of a lamp.
@@ -149,11 +154,6 @@ public class StandardElementDrawer implements ElementDrawer {
      * Fill color of an active lamp.
      */
     private static final Color LAMP_COLOR_ACTIVE = Color.YELLOW;
-
-    /**
-     * Outline color of an impulse generator.
-     */
-    private static final Color IG_COLOR = Color.BLACK;
 
     /**
      * Fill color of an inactive impulse generator.
@@ -305,7 +305,11 @@ public class StandardElementDrawer implements ElementDrawer {
         if (rec == null) {
             throw new IllegalArgumentException();
         }
-        g.setColor(GATE_COLOR);
+        if (module.isSelected()) {
+            g.setColor(GATE_COLOR_SELECTED);
+        } else {
+            g.setColor(GATE_COLOR);
+        }
         g.drawRect(rec.x, rec.y, rec.width, rec.height);
     }
 
@@ -449,7 +453,11 @@ public class StandardElementDrawer implements ElementDrawer {
         LOG.trace("Fill Oval (Lamp Border): x: " + (int) rec.x + " y: " + (int) rec.y + " w: " + rec.width + " h: "
                 + rec.height);
         g.fillOval(rec.x, rec.y, rec.width, rec.height);
-        g.setColor(LAMP_COLOR);
+        if (lamp.isSelected()) {
+            g.setColor(GATE_COLOR_SELECTED);
+        } else {
+            g.setColor(GATE_COLOR);
+        }
         LOG.trace("Draw Oval (Lamp Border): x: " + (int) rec.x + " y: " + (int) rec.y + " w: " + rec.width + " h: "
                 + rec.height);
         g.drawOval(rec.x, rec.y, rec.width, rec.height);
@@ -490,7 +498,7 @@ public class StandardElementDrawer implements ElementDrawer {
         g.fillRect(rec.x + IG_STATE_MARGIN_LEFT, rec.y + IG_STATE_MARGIN_TOP,
                 (int) (rec.width * IG_STATE_PERC / IG_STATE_PERC_FULL),
                 (int) (rec.height * IG_STATE_PERC / IG_STATE_PERC_FULL));
-        g.setColor(IG_COLOR);
+        g.setColor(GATE_COLOR);
         g.drawRect(rec.x + IG_STATE_MARGIN_LEFT, rec.y + IG_STATE_MARGIN_TOP,
                 (int) (rec.width * IG_STATE_PERC / IG_STATE_PERC_FULL),
                 (int) (rec.height * IG_STATE_PERC / IG_STATE_PERC_FULL));

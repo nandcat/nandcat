@@ -15,50 +15,73 @@ public class ElementDrawerCircuitTest extends AbstractElementDrawerTest {
 
     private Rectangle rec;
 
-    private Circuit circuitMock;
+    private Circuit gateMock;
 
     @Before
     public void setUp() {
-        circuitMock = EasyMock.createMock(Circuit.class);
+        gateMock = EasyMock.createMock(Circuit.class);
         graphicMock = EasyMock.createStrictMock(Graphics.class);
+    }
+
+    private void gateMockSetGeneralExpectations() {
         LinkedList<Port> portList = new LinkedList<Port>();
-        portList.add(new Port(circuitMock));
+        portList.add(new Port(gateMock));
         Port activePort = EasyMock.createMock(Port.class);
         EasyMock.expect(activePort.getState()).andReturn(true).anyTimes();
         EasyMock.replay(activePort);
         portList.add(activePort);
-        portList.add(new Port(circuitMock));
-        portList.add(new Port(circuitMock));
-        portList.add(new Port(circuitMock));
-        portList.add(new Port(circuitMock));
+        portList.add(new Port(gateMock));
+        portList.add(new Port(gateMock));
+        portList.add(new Port(gateMock));
+        portList.add(new Port(gateMock));
         rec = new Rectangle(21, 23, 100 + PORT_MARGIN_LEFT + PORT_MARGIN_RIGHT, 100 + PORT_MARGIN_TOP
                 + PORT_MARGIN_BOTTOM);
-        EasyMock.expect(circuitMock.getRectangle()).andReturn(rec).anyTimes();
-        EasyMock.expect(circuitMock.getInPorts()).andReturn(portList).anyTimes();
-        EasyMock.expect(circuitMock.getOutPorts()).andReturn(portList).anyTimes();
-        EasyMock.expect(circuitMock.getName()).andReturn("Test Circuit").anyTimes();
-        EasyMock.replay(circuitMock);
+        EasyMock.expect(gateMock.getRectangle()).andReturn(rec).anyTimes();
+        EasyMock.expect(gateMock.getInPorts()).andReturn(portList).anyTimes();
+        EasyMock.expect(gateMock.getOutPorts()).andReturn(portList).anyTimes();
+        EasyMock.expect(gateMock.getName()).andReturn("Test Circuit").anyTimes();
     }
 
     @Test
     public void testDrawCircuit() {
+        gateMockSetGeneralExpectations();
+        EasyMock.expect(gateMock.isSelected()).andReturn(false).anyTimes();
+        EasyMock.replay(gateMock);
         mockDrawRectangle();
         mockDrawPorts();
         mockDrawLabel();
         EasyMock.replay(graphicMock);
         drawer.setGraphics(graphicMock);
-        drawer.draw(circuitMock);
+        drawer.draw(gateMock);
+        EasyMock.verify(graphicMock);
+    }
+
+    @Test
+    public void testDrawCircuitSelected() {
+        gateMockSetGeneralExpectations();
+        EasyMock.expect(gateMock.isSelected()).andReturn(true).anyTimes();
+        EasyMock.replay(gateMock);
+        mockDrawRectangle();
+        mockDrawPorts();
+        mockDrawLabel();
+        EasyMock.replay(graphicMock);
+        drawer.setGraphics(graphicMock);
+        drawer.draw(gateMock);
         EasyMock.verify(graphicMock);
     }
 
     private void mockDrawRectangle() {
-        graphicMock.setColor(EasyMock.eq(GATE_COLOR));
+        if (gateMock.isSelected()) {
+            graphicMock.setColor(EasyMock.eq(GATE_COLOR_SELECTED));
+        } else {
+            graphicMock.setColor(EasyMock.eq(GATE_COLOR));
+        }
         graphicMock.drawRect(EasyMock.eq(rec.x), EasyMock.eq(rec.y), EasyMock.eq(rec.width), EasyMock.eq(rec.height));
     }
 
     private void mockDrawLabel() {
         graphicMock.setColor(EasyMock.eq(LABEL_COLOR));
-        graphicMock.drawString(EasyMock.eq(circuitMock.getName()), EasyMock.geq(rec.x), EasyMock.geq(rec.y));
+        graphicMock.drawString(EasyMock.eq(gateMock.getName()), EasyMock.geq(rec.x), EasyMock.geq(rec.y));
     }
 
     private void mockDrawPorts() {
@@ -108,9 +131,9 @@ public class ElementDrawerCircuitTest extends AbstractElementDrawerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testDrawCircuitNullRectangle() {
-        EasyMock.reset(circuitMock);
-        EasyMock.expect(circuitMock.getRectangle()).andReturn(null);
-        EasyMock.replay(circuitMock);
-        drawer.draw(circuitMock);
+        EasyMock.reset(gateMock);
+        EasyMock.expect(gateMock.getRectangle()).andReturn(null);
+        EasyMock.replay(gateMock);
+        drawer.draw(gateMock);
     }
 }
