@@ -3,7 +3,7 @@ package nandcat.model.element;
 import nandcat.model.Clock;
 
 /**
- * AND gate implementation. 
+ * AND gate implementation.
  * 
  * It represents the boolean AND-operator.
  */
@@ -52,14 +52,15 @@ public class AndGate extends Gate {
     /**
      * {@inheritDoc}
      */
-    protected boolean outBoundaries(int outPorts) {
-        return (outPorts == 1);
+    protected boolean isValidOutBoundary(int outPorts) {
+        // allowed for FlipFlop
+        return (outPorts > 0 && outPorts <= 2);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected boolean inBoundaries(int inPorts) {
+    protected boolean isValidInBoundary(int inPorts) {
         return (inPorts == 2);
     }
 }
