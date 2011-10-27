@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.ImageIcon;
 import nandcat.model.Model;
 import nandcat.view.View;
@@ -77,6 +78,14 @@ public class CreateTool implements Tool {
 
                     public void mousePressed(WorkspaceEvent e) {
                         // TODO Auto-generated method stub
+                        Set<Elements> elementsAt = model.getElementsAt(e.getLocation());
+                        if (elementsAt.isEmpty()) {
+                            Module module = new Module();
+                            //TODO find out how to know which module it is.
+                            model.addModule(module, e.getLocation());
+                        } else {
+                        // create new connection
+                        }
                     }
 
                     public void mouseMoved(WorkspaceEvent e) {
@@ -106,6 +115,7 @@ public class CreateTool implements Tool {
 
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
+                controller.requestActivation(this);
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();
