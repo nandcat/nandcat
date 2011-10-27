@@ -22,7 +22,7 @@ import nandcat.model.element.Port;
 public class Model implements ClockListener {
 
     /**
-     * A set of checks which can be performed on the current circuit before starting the simulation.
+     * A set of checks which can be performed on the circuit.
      */
     private Set<CircuitCheck> checks;
 
@@ -32,12 +32,12 @@ public class Model implements ClockListener {
     private Set<ModelListener> listeners;
 
     /**
-     * Import formats map with <b>key:</b> file extension and <b>value:</b> description.
+     * Map containing import formats with <b>key:</b> file extension and <b>value:</b> description.
      */
     private Map<String, String> importFormats;
 
     /**
-     * Export formats map with <b>key:</b> file extension and <b>value:</b> description.
+     * Map containing ixport formats with <b>key:</b> file extension and <b>value:</b> description.
      */
     private Map<String, String> exportFormats;
 
@@ -62,7 +62,7 @@ public class Model implements ClockListener {
     private Clock clock;
 
     /**
-     * 
+     * Map ViewModules (view representation) to Modules (datastructure).
      */
     private HashMap<ViewModule, Module> viewModule2Module;
 

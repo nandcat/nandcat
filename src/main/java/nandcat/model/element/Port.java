@@ -3,7 +3,8 @@ package nandcat.model.element;
 import nandcat.model.Clock;
 
 /**
- * A Port exists only on Modules. Its responsible to propagate the signal from the connection to the Module.
+ * A Port exists in Modules only. Connection's are attached to the module's Ports. It's responsible to propagate the
+ * signal from the connection to the Module.
  */
 public class Port {
 

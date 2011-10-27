@@ -7,12 +7,12 @@ import java.util.List;
 import nandcat.model.Clock;
 
 /**
- * Lamp implementation. The lamp is shiny if the input signal is true. It has no output ports.
+ * Lamp implementation. The lamp is shiny if the input signal is true. It has no outPorts.
  */
 public class Lamp implements Module {
 
     /**
-     * Point specifying the Location of the Gate.
+     * Point specifying the Location of the Lamp.
      */
     private Point location;
 
@@ -35,6 +35,11 @@ public class Lamp implements Module {
      * Rectangle specifying the Lamp's shape.
      */
     private Rectangle rectangle;
+
+    /**
+     * Lamp is selected (or not).
+     */
+    private boolean selected;
 
     /**
      * /** Default constructor.
@@ -144,14 +149,13 @@ public class Lamp implements Module {
      * {@inheritDoc}
      */
     public void setSelected(boolean b) {
-        // TODO Auto-generated method stub
+        selected = b;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isSelected() {
-        // TODO Auto-generated method stub
-        return false;
+        return selected;
     }
 }
