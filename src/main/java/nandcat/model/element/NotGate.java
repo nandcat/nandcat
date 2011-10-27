@@ -38,14 +38,14 @@ public class NotGate extends Gate {
     /**
      * {@inheritDoc}
      */
-    protected boolean outBoundaries(int outPorts) {
+    protected boolean isValidOutBoundary(int outPorts) {
         return (outPorts == 1);
     }
 
     /**
      * {@inheritDoc}
      */
-    protected boolean inBoundaries(int inPorts) {
+    protected boolean isValidInBoundary(int inPorts) {
         return (inPorts == 1);
     }
 }

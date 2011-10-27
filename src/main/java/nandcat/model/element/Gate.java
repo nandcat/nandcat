@@ -40,7 +40,7 @@ public abstract class Gate implements Module {
      * Selection state of gate.
      */
     private boolean selected;
-    
+
     /**
      * Advanced constructor. Creates new Gate with inPorts incoming and outPorts outgoing Ports.
      * 
@@ -50,7 +50,7 @@ public abstract class Gate implements Module {
      *            int <b>positive</b> number of outPorts to append
      */
     public Gate(int inPorts, int outPorts) {
-        if (!inBoundaries(inPorts) || !outBoundaries(outPorts)) {
+        if (!isValidInBoundary(inPorts) || !isValidOutBoundary(outPorts)) {
             throw new IllegalArgumentException("Illegal amount of in or out ports.");
         }
         createPorts(inPorts, outPorts);
@@ -128,7 +128,7 @@ public abstract class Gate implements Module {
      *            number of ports to check for legality
      * @return given outPorts are within our boundaries
      */
-    protected abstract boolean outBoundaries(int outPorts);
+    protected abstract boolean isValidOutBoundary(int outPorts);
 
     /**
      * Check if given number of ports contains a legal number of inPorts.
@@ -137,7 +137,7 @@ public abstract class Gate implements Module {
      *            number of ports to check for legality
      * @return given inPorts are within our boundaries
      */
-    protected abstract boolean inBoundaries(int inPorts);
+    protected abstract boolean isValidInBoundary(int inPorts);
 
     /**
      * Set arbitrary (positive) number of <b>new</b> in and out ports to append. Note that any existing ports will be

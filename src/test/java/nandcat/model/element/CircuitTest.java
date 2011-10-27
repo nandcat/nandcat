@@ -28,18 +28,7 @@ public class CircuitTest extends TestCase {
     }
 
     /**
-     * Test Circuit methods.
-     */
-    public void testApp() {
-        testAddConnection();
-        testStartingModules();
-        testRemoveElement();
-        testSetModuleActive();
-        testAddModule();
-    }
-
-    /**
-     * 
+     * AND, ImpulseGen.
      */
     public void testAddModule() {
         Point p = new Point(0, 0);
@@ -53,7 +42,7 @@ public class CircuitTest extends TestCase {
     }
 
     /**
-     * Test: Switch, AND0-->AND1, Switch-->AND2, AND1-->AND2
+     * Test: Switch, AND0-->AND1, Switch-->AND2, AND1-->AND2.
      */
     public void testStartingModules() {
         AndGate and0 = new AndGate(2, 1);
@@ -74,6 +63,9 @@ public class CircuitTest extends TestCase {
         assertFalse(c.getStartingModules().contains(and2));
     }
 
+    /**
+     * Remove element (AND1) AND0 --> AND1.
+     */
     public void testRemoveElement() {
         Point p = new Point(0, 0);
         AndGate and0 = new AndGate(2, 1);
@@ -97,6 +89,9 @@ public class CircuitTest extends TestCase {
         assertNull(and1.getInPorts().get(0).getConnection());
     }
 
+    /**
+     * Test selecting a single module. (AND)
+     */
     public void testSetModuleActive() {
         Point p = new Point(0, 0);
         Circuit c = new Circuit(p);
@@ -109,6 +104,9 @@ public class CircuitTest extends TestCase {
         assertFalse(and0.isSelected());
     }
 
+    /**
+     * Test connecting to Modules (ImpulseGen --> Lamp).
+     */
     public void testAddConnection() {
         Point p = new Point(0, 0);
         Circuit c = new Circuit(p);
@@ -121,5 +119,15 @@ public class CircuitTest extends TestCase {
         assertTrue(c.getElements().contains(conn));
         assertTrue(impy.getOutPorts().get(0).getConnection().getNextModule() == lamp);
         assertTrue(lamp.getInPorts().get(0).getConnection().getPreviousModule() == impy);
+    }
+
+    /**
+     * Test circuit containing a circuit (dawg).
+     */
+    public void testDawg() {
+        Point p = new Point(0, 0);
+        Circuit c = new Circuit(p);
+        Circuit innerCircuit = new FlipFlop(p);
+        c.addModule(innerCircuit, p);
     }
 }
