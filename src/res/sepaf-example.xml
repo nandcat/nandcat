@@ -20,8 +20,9 @@
 </circuit> 
         
 <circuit name="inner-circuit">
-  <component type="and" name="and0" posx="0" posy="1"/>
+  <component type="and" name="and0" posx="0" posy="1" nandcat:ports_in="5" nandcat:ports_out="3"/>
   <component type="or" name="or1" posx="0" posy="2"/>
+  <component type="in" name="in1" posx="0" posy="5" nandcat:in_state="true" nandcat:in_timing="100"/>
   <component type="out" name="o" posx="0" posy="3"/>
   <connection source="and0" sourcePort="o" target="or1" targetPort="a" />
   <connection source="and0" sourcePort="a" target="and0" targetPort="a" />

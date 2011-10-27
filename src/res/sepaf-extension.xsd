@@ -21,4 +21,9 @@
 		</xs:complexType>
 	</xs:element>
 	<xs:attribute name="annotation" type="xs:string" />
+	<xs:attribute name="in_state" type="xs:boolean" />
+	<xs:attribute name="in_timing" type="xs:integer" />
+	<xs:attribute name="ports_in" type="xs:integer" />
+	<xs:attribute name="ports_out" type="xs:integer" />
+	
 </xs:schema>
