@@ -85,11 +85,10 @@ public class CreateTool implements Tool {
                             //Module module = new Module();
                             //TODO find out how to know which module it is.
                             //model.addModule(module, e.getLocation());
-                            //Ben: Schau das nächste mal ins irc wenn du nen build failst!
-                            //Ben: mvn compile && mvn test Vor commit!
                         } else {
                         // create new connection
                         }
+
                     }
 
                     public void mouseMoved(WorkspaceEvent e) {
@@ -101,7 +100,15 @@ public class CreateTool implements Tool {
                     }
 
                     public void mouseClicked(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
+                        Set<Elements> elementsAt = model.getElementsAt(e.getLocation());
+                        if (elementsAt.isEmpty()) {
+                            Module module = new Module();
+                            //TODO find out how to know which module it is.
+                            model.addModule(module, e.getLocation());
+                        } else {
+                            //Port inPort = new Port(elementsAt);
+                            // TODO how do I get element from elementsAt?
+                        }
                     }
                 };
             }
