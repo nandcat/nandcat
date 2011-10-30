@@ -45,6 +45,7 @@ public class ElementDrawerOrGateTest extends AbstractElementDrawerTest {
         EasyMock.expect(gateMock.getRectangle()).andReturn(rec).anyTimes();
         EasyMock.expect(gateMock.getInPorts()).andReturn(portList).anyTimes();
         EasyMock.expect(gateMock.getOutPorts()).andReturn(portList).anyTimes();
+        EasyMock.expect(gateMock.getName()).andReturn(null).anyTimes();
     }
 
     /**
@@ -114,6 +115,10 @@ public class ElementDrawerOrGateTest extends AbstractElementDrawerTest {
         graphicMock.setColor(PORT_COLOR_DEFAULT);
         graphicMock.drawOval(EasyMock.geq(rec.x), EasyMock.geq(rec.y), EasyMock.eq(PORT_DIAMETER),
                 EasyMock.eq(PORT_DIAMETER));
+    }
+    
+    private void mockDrawAnnotation() {
+        graphicMock.setColor(ANNOTATION_COLOR);
     }
 
     @Test(expected = IllegalArgumentException.class)

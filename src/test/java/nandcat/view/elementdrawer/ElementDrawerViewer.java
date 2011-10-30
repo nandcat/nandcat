@@ -64,6 +64,7 @@ public class ElementDrawerViewer extends JFrame {
         AndGate andGate2 = new AndGate();
         andGate2.getInPorts().get(0).setState(true, null);
         andGate2.setRectangle(new Rectangle(100, 5, 60, 40));
+        andGate2.setName("Meine Annotation");
         elements.add(andGate2);
         AndGate andGate3 = new AndGate();
         andGate3.getInPorts().get(0).setState(true, null);
@@ -75,10 +76,12 @@ public class ElementDrawerViewer extends JFrame {
         // OR Gates
         OrGate orGate1 = new OrGate();
         orGate1.setRectangle(new Rectangle(5, 80, 60, 40));
+        orGate1.setName("Meine Annotation");
         elements.add(orGate1);
         OrGate orGate2 = new OrGate();
         orGate2.getInPorts().get(0).setState(true, null);
         orGate2.setRectangle(new Rectangle(100, 80, 60, 40));
+        orGate2.setName("Meine Annotation");
         elements.add(orGate2);
         OrGate orGate3 = new OrGate();
         orGate3.getInPorts().get(0).setState(true, null);
@@ -100,6 +103,7 @@ public class ElementDrawerViewer extends JFrame {
         elements.add(con1);
         Lamp lamp1 = new Lamp();
         lamp1.setRectangle(new Rectangle(5, 160, 40, 40));
+        lamp1.setName("Eine Lampe");
         elements.add(lamp1);
         Lamp lamp2 = new Lamp();
         lamp2.getInPorts().get(0).setState(true, null);
@@ -116,6 +120,7 @@ public class ElementDrawerViewer extends JFrame {
         NotGate notGate2 = new NotGate();
         notGate2.getInPorts().get(0).setState(true, null);
         notGate2.setRectangle(new Rectangle(100, 240, 60, 40));
+        notGate2.setName("Ein NotGate");
         elements.add(notGate2);
         NotGate notGate3 = new NotGate();
         notGate3.getOutPorts().get(0).setState(true, null);
@@ -135,6 +140,7 @@ public class ElementDrawerViewer extends JFrame {
         // elements.add(identityGate1);
         ImpulseGenerator ig1 = new ImpulseGenerator(0);
         ig1.setRectangle(new Rectangle(5, 320, 60, 40));
+        ig1.setName("Ein Schalter");
         elements.add(ig1);
         ImpulseGenerator ig2 = new ImpulseGenerator(0);
         ig2.toggleState();
