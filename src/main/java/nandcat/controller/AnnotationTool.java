@@ -1,12 +1,17 @@
 package nandcat.controller;
 
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import nandcat.model.Model;
+import nandcat.model.element.Element;
+import nandcat.model.element.Module;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
@@ -68,34 +73,64 @@ public class AnnotationTool implements Tool {
      */
     public void setActive(boolean active) {
         if (active) {
-            if (workspaceListener == null) {
-                workspaceListener = new WorkspaceListener() {
-
-                    public void mouseReleased(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mousePressed(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseMoved(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseDragged(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseClicked(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-                };
-            }
-            view.getWorkspace().addListener(workspaceListener);
+            setListeners();
         } else {
-            view.getWorkspace().removeListener(workspaceListener);
+            unsetListeners();
         }
+    }
+
+    private void setListeners() {
+        if (workspaceListener == null) {
+            workspaceListener = new WorkspaceListener() {
+
+                public void mouseReleased(WorkspaceEvent e) {
+                    // TODO Auto-generated method stub
+                }
+
+                public void mousePressed(WorkspaceEvent e) {
+                    // TODO Auto-generated method stub
+                }
+
+                public void mouseMoved(WorkspaceEvent e) {
+                    // TODO Auto-generated method stub
+                }
+
+                public void mouseDragged(WorkspaceEvent e) {
+                    // TODO Auto-generated method stub
+                }
+
+                public void mouseClicked(WorkspaceEvent e) {
+                    mouseClickedOnWorkspace(e.getLocation());
+                }
+            };
+        }
+        view.getWorkspace().addListener(workspaceListener);
+    }
+
+    private void mouseClickedOnWorkspace(Point p) {
+        assert p.getLocation() != null;
+        Set<Element> elements = model.getElementsAt(p);
+        Module toAnnotate = null;
+        for (Element element : elements) {
+            // annotations on modules only
+            if (element instanceof Module) {
+                toAnnotate = (Module) element;
+            }
+        }
+        if (toAnnotate != null) {
+            String newAnnotation = askForAnnotation(toAnnotate.getName());
+            toAnnotate.setName(newAnnotation);
+            view.repaint();
+        }
+    }
+
+    private String askForAnnotation(String oldAnnotation) {
+        return (String) JOptionPane.showInputDialog(view, "Complete the sentence:\n" + "\"Green eggs and...\"",
+                "Customized Dialog", JOptionPane.PLAIN_MESSAGE, icon, null, oldAnnotation);
+    }
+
+    private void unsetListeners() {
+        view.getWorkspace().removeListener(workspaceListener);
     }
 
     /**
