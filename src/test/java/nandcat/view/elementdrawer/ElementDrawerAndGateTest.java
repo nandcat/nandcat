@@ -36,6 +36,7 @@ public class ElementDrawerAndGateTest extends AbstractElementDrawerTest {
         EasyMock.expect(gateMock.getRectangle()).andReturn(rec).anyTimes();
         EasyMock.expect(gateMock.getInPorts()).andReturn(portList).anyTimes();
         EasyMock.expect(gateMock.getOutPorts()).andReturn(portList).anyTimes();
+        EasyMock.expect(gateMock.getName()).andReturn(null).anyTimes();
     }
 
     @Test

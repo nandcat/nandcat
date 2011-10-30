@@ -38,6 +38,7 @@ public class ElementDrawerImpulseGeneratorTest extends AbstractElementDrawerTest
         EasyMock.expect(gateMock.getOutPorts()).andReturn(portList).anyTimes();
         EasyMock.expect(gateMock.getState()).andReturn(true).anyTimes();
         EasyMock.expect(gateMock.getFrequency()).andReturn(0).anyTimes();
+        EasyMock.expect(gateMock.getName()).andReturn(null).anyTimes();
     }
 
     @Test

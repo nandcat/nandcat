@@ -1,9 +1,13 @@
 package nandcat.view;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
 import java.util.List;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
@@ -131,6 +135,21 @@ public class StandardElementDrawer implements ElementDrawer {
     private static final Color LABEL_COLOR = Color.BLACK;
 
     /**
+     * Color of the annotation text.
+     */
+    private static final Color ANNOTATION_COLOR = Color.BLACK;
+
+    /**
+     * Font used for annotation drawing.
+     */
+    private static final Font ANNOTATION_FONT = new Font("Dialog", Font.PLAIN, 9);
+
+    /**
+     * Padding of annotation bounds in relation to gate bounds.
+     */
+    private static final int ANNOTATION_PADDING = 2;
+
+    /**
      * Outline color of gate.
      */
     private static final Color GATE_COLOR = Color.BLACK;
@@ -139,11 +158,6 @@ public class StandardElementDrawer implements ElementDrawer {
      * Outline color of selected gate.
      */
     private static final Color GATE_COLOR_SELECTED = Color.RED;
-
-    /**
-     * Outline color of a lamp.
-     */
-    private static final Color LAMP_COLOR = Color.BLACK;
 
     /**
      * Fill color of an inactive lamp.
@@ -225,6 +239,9 @@ public class StandardElementDrawer implements ElementDrawer {
         drawModuleOutline(gate);
         drawModulePorts(gate);
         drawLabel(LABEL_IDENTITYGATE, gate.getRectangle());
+        if (gate.getName() != null) {
+            drawAnnotation(gate.getName(), gate.getRectangle());
+        }
     }
 
     /**
@@ -240,6 +257,9 @@ public class StandardElementDrawer implements ElementDrawer {
         drawModuleOutline(gate);
         drawModulePorts(gate);
         drawLabel(LABEL_NOTGATE, gate.getRectangle());
+        if (gate.getName() != null) {
+            drawAnnotation(gate.getName(), gate.getRectangle());
+        }
     }
 
     /**
@@ -255,6 +275,9 @@ public class StandardElementDrawer implements ElementDrawer {
         drawModuleOutline(gate);
         drawModulePorts(gate);
         drawLabel(LABEL_ANDGATE, gate.getRectangle());
+        if (gate.getName() != null) {
+            drawAnnotation(gate.getName(), gate.getRectangle());
+        }
     }
 
     /**
@@ -270,6 +293,9 @@ public class StandardElementDrawer implements ElementDrawer {
         drawModuleOutline(gate);
         drawModulePorts(gate);
         drawLabel(LABEL_ORGATE, gate.getRectangle());
+        if (gate.getName() != null) {
+            drawAnnotation(gate.getName(), gate.getRectangle());
+        }
     }
 
     /**
@@ -435,6 +461,29 @@ public class StandardElementDrawer implements ElementDrawer {
     }
 
     /**
+     * Draws an annotation string near the bounds object.
+     * 
+     * @param text
+     *            Text as String to draw.
+     * @param bounds
+     *            Bounds of the object to draw the annotation for.
+     */
+    private void drawAnnotation(String text, Rectangle bounds) {
+        assert text != null;
+        assert bounds != null;
+        int recWidthCenter = bounds.x + bounds.width / 2;
+        g.setColor(ANNOTATION_COLOR);
+        FontRenderContext frc = ((Graphics2D) g).getFontRenderContext();
+        TextLayout layout = new TextLayout(text, ANNOTATION_FONT, frc);
+        // Text Above
+        // layout.draw(((Graphics2D) g), (float)recWidthCenter-(float) layout.getBounds().getWidth()/2,
+        // (float)bounds.getY());
+        layout.draw(((Graphics2D) g), (float) recWidthCenter - (float) layout.getBounds().getWidth() / 2,
+                (float) bounds.getY() + (float) bounds.getHeight() + (float) layout.getBounds().getHeight()
+                        + ANNOTATION_PADDING);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public void draw(Lamp lamp) {
@@ -462,6 +511,9 @@ public class StandardElementDrawer implements ElementDrawer {
                 + rec.height);
         g.drawOval(rec.x, rec.y, rec.width, rec.height);
         drawModulePorts(lamp);
+        if (lamp.getName() != null) {
+            drawAnnotation(lamp.getName(), rec);
+        }
     }
 
     /**
@@ -476,6 +528,9 @@ public class StandardElementDrawer implements ElementDrawer {
         }
         drawModuleOutline(flipflop);
         drawModulePorts(flipflop);
+        if (flipflop.getName() != null) {
+            drawAnnotation(flipflop.getName(), flipflop.getRectangle());
+        }
     }
 
     /**
@@ -504,5 +559,8 @@ public class StandardElementDrawer implements ElementDrawer {
                 (int) (rec.height * IG_STATE_PERC / IG_STATE_PERC_FULL));
         drawModulePorts(ig);
         drawLabel(Integer.toString(ig.getFrequency()), rec);
+        if (ig.getName() != null) {
+            drawAnnotation(ig.getName(), ig.getRectangle());
+        }
     }
 }

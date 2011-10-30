@@ -41,8 +41,6 @@ public abstract class AbstractElementDrawerTest {
 
     Color LABEL_COLOR;
 
-    Color LAMP_COLOR;
-
     Color IG_COLOR_DEFAULT = Color.WHITE;
 
     Color IG_COLOR_ACTIVE = Color.YELLOW;
@@ -52,6 +50,8 @@ public abstract class AbstractElementDrawerTest {
     String LABEL_IDENTITYGATE;
 
     Color GATE_COLOR_SELECTED;
+
+    Color ANNOTATION_COLOR;
 
     void applyFields() throws Exception {
         PORT_COLOR_ACTIVE = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
@@ -78,7 +78,8 @@ public abstract class AbstractElementDrawerTest {
         LABEL_IDENTITYGATE = (String) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
                 "LABEL_IDENTITYGATE");
         LABEL_COLOR = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer, "LABEL_COLOR");
-        LAMP_COLOR = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer, "LAMP_COLOR");
+        ANNOTATION_COLOR = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
+                "ANNOTATION_COLOR");
         IG_COLOR_DEFAULT = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
                 "IG_COLOR_DEFAULT");
         IG_COLOR_ACTIVE = (Color) ReflectionUtil

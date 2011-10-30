@@ -36,6 +36,7 @@ public class ElementDrawerLampTest extends AbstractElementDrawerTest {
         EasyMock.expect(gateMock.getInPorts()).andReturn(portList).anyTimes();
         EasyMock.expect(gateMock.getOutPorts()).andReturn(portOutList).anyTimes();
         EasyMock.expect(gateMock.getState()).andReturn(true).anyTimes();
+        EasyMock.expect(gateMock.getName()).andReturn(null).anyTimes();
     }
 
     @Test
