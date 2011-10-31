@@ -18,7 +18,8 @@ public class Controller {
     /**
      * Collection of available tools.
      */
-    private Set<Tool> tools = new LinkedHashSet<Tool>();
+    // TODO: protected für Tests
+    protected Set<Tool> tools = new LinkedHashSet<Tool>();
 
     /**
      * Currently active tool.
@@ -52,7 +53,7 @@ public class Controller {
     /**
      * Initializes the Tool Classes.
      */
-    private void initTools() {
+    protected void initTools() {
         AnnotationTool annotationTool = new AnnotationTool(this);
         tools.add(annotationTool);
         // TODO Liste Fertig
