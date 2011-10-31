@@ -15,6 +15,7 @@ import nandcat.model.element.Module;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
+import nandcat.view.WorkspaceListenerAdapter;
 
 /**
  * The AnnotationTool is responsible for the naming of modules.
@@ -49,7 +50,7 @@ public class AnnotationTool implements Tool {
     /**
      * ActionListerner of the Tool on the Buttons.
      */
-    private ActionListener buttonListener;
+    private ActionListener actionListener;
 
     /**
      * WorkspaceListener of the Tool.
@@ -73,42 +74,41 @@ public class AnnotationTool implements Tool {
      */
     public void setActive(boolean active) {
         if (active) {
-            setListeners();
+            setWorkspaceListener();
         } else {
-            unsetListeners();
+            unsetWorkspaceListeners();
         }
     }
 
-    private void setListeners() {
+    /**
+     * Gets the WorkspaceListener if existing, otherwise creates it.
+     * @return WorkspaceListener used to get notified.
+     */
+    private WorkspaceListener getWorkspaceListener() {
         if (workspaceListener == null) {
-            workspaceListener = new WorkspaceListener() {
-
-                public void mouseReleased(WorkspaceEvent e) {
-                    // TODO Auto-generated method stub
-                }
-
-                public void mousePressed(WorkspaceEvent e) {
-                    // TODO Auto-generated method stub
-                }
-
-                public void mouseMoved(WorkspaceEvent e) {
-                    // TODO Auto-generated method stub
-                }
-
-                public void mouseDragged(WorkspaceEvent e) {
-                    // TODO Auto-generated method stub
-                }
-
+            workspaceListener = new WorkspaceListenerAdapter() {
+                @Override
                 public void mouseClicked(WorkspaceEvent e) {
                     mouseClickedOnWorkspace(e.getLocation());
                 }
             };
         }
-        view.getWorkspace().addListener(workspaceListener);
+        return workspaceListener;
     }
 
+    /**
+     * Adds the WorkspaceListener to the view's workspace. 
+     */
+    private void setWorkspaceListener() {
+        view.getWorkspace().addListener(getWorkspaceListener());
+    }
+
+    /**
+     * Action if the mouse clicked on workspace event occurred.
+     * Gets elements at click point and opens a dialog to edit the annotation.
+     * @param p Point of mouse click.
+     */
     private void mouseClickedOnWorkspace(Point p) {
-        assert p.getLocation() != null;
         Set<Element> elements = model.getElementsAt(p);
         Module toAnnotate = null;
         for (Element element : elements) {
@@ -125,12 +125,15 @@ public class AnnotationTool implements Tool {
     }
 
     private String askForAnnotation(String oldAnnotation) {
-        return (String) JOptionPane.showInputDialog(view, "Complete the sentence:\n" + "\"Green eggs and...\"",
+        return (String) JOptionPane.showInputDialog(view, "Baustein mit Text versehen:\n",
                 "Customized Dialog", JOptionPane.PLAIN_MESSAGE, icon, null, oldAnnotation);
     }
 
-    private void unsetListeners() {
-        view.getWorkspace().removeListener(workspaceListener);
+    /**
+     * Removes the workspace listener from the workspace.
+     */
+    private void unsetWorkspaceListeners() {
+        view.getWorkspace().removeListener(getWorkspaceListener());
     }
 
     /**
@@ -144,7 +147,7 @@ public class AnnotationTool implements Tool {
      * {@inheritDoc}
      */
     public Map<String, ActionListener> getFunctionalities() {
-        buttonListener = new ActionListener() {
+        actionListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
@@ -152,7 +155,7 @@ public class AnnotationTool implements Tool {
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();
         for (String functionality : represent) {
-            map.put(functionality, buttonListener);
+            map.put(functionality, actionListener);
         }
         return map;
     }
