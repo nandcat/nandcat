@@ -102,6 +102,17 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 					</descriptorRefs>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<configLocation>src/main/resources/checkstyle.xml</configLocation>
+					<propertyExpansion> 
+						cacheFile=${project.build.directory}/checkstyle-cachefile 
+					</propertyExpansion> 
+				</configuration>
+			</plugin>
 			<!-- ... any other configurations -->
 		</plugins>
 	</build>
