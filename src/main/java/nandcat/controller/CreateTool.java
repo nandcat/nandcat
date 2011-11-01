@@ -2,13 +2,17 @@ package nandcat.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Point;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import nandcat.model.Model;
 import nandcat.model.element.Element;
+import nandcat.model.element.Port;
+import nandcat.model.element.Module;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
@@ -53,6 +57,7 @@ public class CreateTool implements Tool {
      */
     private WorkspaceListener workspaceListener;
 
+    private Module selectedModule;
     /**
      * Constructs the SelectTool.
      * 
@@ -70,52 +75,54 @@ public class CreateTool implements Tool {
      */
     public void setActive(boolean active) {
         if (active) {
-            if (workspaceListener == null) {
-                workspaceListener = new WorkspaceListener() {
-
-                    public void mouseReleased(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mousePressed(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                        Set<Element> elementsAt = model.getElementsAt(e.getLocation());
-                        if (elementsAt.isEmpty()) {
-                            //Ben: Module ist ein Interface!
-                            //Module module = new Module();
-                            //TODO find out how to know which module it is.
-                            //model.addModule(module, e.getLocation());
-                        } else {
-                        // create new connection
-                        }
-
-                    }
-
-                    public void mouseMoved(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseDragged(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseClicked(WorkspaceEvent e) {
-                        Set<Elements> elementsAt = model.getElementsAt(e.getLocation());
-                        if (elementsAt.isEmpty()) {
-                            Module module = new Module();
-                            //TODO find out how to know which module it is.
-                            model.addModule(module, e.getLocation());
-                        } else {
-                            //Port inPort = new Port(elementsAt);
-                            // TODO how do I get element from elementsAt?
-                        }
-                    }
-                };
-            }
-            view.getWorkspace().addListener(workspaceListener);
+            setListeners();
         } else {
-            view.getWorkspace().removeListener(workspaceListener);
+            removeListeners();
         }
+    }
+
+    private void setListeners() {
+    if (workspaceListener == null) {
+            workspaceListener = new WorkspaceListener() {
+
+                public void mouseReleased(WorkspaceEvent e) {
+                    // TODO Auto-generated method stub
+                }
+
+                public void mousePressed(WorkspaceEvent e) {
+                    // TODO Auto-generated method stub
+                }
+
+                public void mouseMoved(WorkspaceEvent e) {
+                    // TODO Auto-generated method stub
+                }
+
+                public void mouseDragged(WorkspaceEvent e) {
+                    // TODO Auto-generated method stub
+                }
+
+                public void mouseClicked(WorkspaceEvent e) {
+                    createElementAtPoint(e.getLocation());
+                    
+                }
+            };
+        }
+        view.getWorkspace().addListener(workspaceListener);
+    }
+
+    private void createElementAtPoint(Point point) {
+        Set<Element> elementsAt = model.getElementsAt(point);
+        if (elementsAt.isEmpty()) {
+            
+            model.addModule(selectedModule, point);
+        } else {
+            //Port inPort = new Port(elementsAt);
+            // TODO how do I get element from elementsAt?
+        }
+    }
+
+    private void removeListeners() {
+        view.getWorkspace().removeListener(workspaceListener);
     }
 
     /**
@@ -126,8 +133,9 @@ public class CreateTool implements Tool {
 
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
-                //Ben: So laeuft das nicht, kapseln ueber private Methode.
-                //controller.requestActivation(this);
+                activateTool();
+                JComboBox cb = (JComboBox) e.getSource();
+                selectedModule = (Module) cb.getSelectedItem();
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();
@@ -135,6 +143,10 @@ public class CreateTool implements Tool {
             map.put(functionality, buttonListener);
         }
         return map;
+    }
+
+    private void activateTool() {
+        controller.requestActivation(this);
     }
 
     /**

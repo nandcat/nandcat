@@ -2,11 +2,16 @@ package nandcat.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Point;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.ImageIcon;
 import nandcat.model.Model;
+import nandcat.model.element.Element;
+import nandcat.model.element.Module;
+import nandcat.model.element.ImpulseGenerator;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
@@ -68,33 +73,56 @@ public class StateTool implements Tool {
      */
     public void setActive(boolean active) {
         if (active) {
-            if (workspaceListener == null) {
-                workspaceListener = new WorkspaceListener() {
-
-                    public void mouseReleased(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mousePressed(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseMoved(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseDragged(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseClicked(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-                };
-            }
-            view.getWorkspace().addListener(workspaceListener);
+            setListeners();
         } else {
-            view.getWorkspace().removeListener(workspaceListener);
+            removeListeners();
+        }
+    }
+
+    private void setListeners() {
+        if (workspaceListener == null) {
+            workspaceListener = new WorkspaceListener() {
+
+                public void mouseReleased(WorkspaceEvent e) {
+                    // TODO Auto-generated method stub
+                }
+
+                public void mousePressed(WorkspaceEvent e) {
+                    // TODO Auto-generated method stub
+                }
+
+                public void mouseMoved(WorkspaceEvent e) {
+                    // TODO Auto-generated method stub
+                }
+
+                public void mouseDragged(WorkspaceEvent e) {
+                    // TODO Auto-generated method stub
+                }
+
+                public void mouseClicked(WorkspaceEvent e) {
+                    changeState(e.getLocation());
+                }
+            };
+        }
+        view.getWorkspace().addListener(workspaceListener);
+    }
+
+    private void removeListeners() {
+        view.getWorkspace().removeListener(workspaceListener);
+    }
+
+    private void changeState(Point point) {
+        assert point != null;
+        Set<Element> elementsAt = model.getElementsAt(point);
+        ImpulseGenerator toChangeState = null;
+        for (Element element : elementsAt) {
+            // annotations on modules only
+            if (element instanceof ImpulseGenerator) {
+                toChangeState = (ImpulseGenerator) element;
+            }
+        }
+        if (toChangeState != null) {
+            toChangeState.toggleState();
         }
     }
 
@@ -106,6 +134,7 @@ public class StateTool implements Tool {
 
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
+                activateTool();
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();
@@ -115,6 +144,9 @@ public class StateTool implements Tool {
         return map;
     }
 
+    private void activateTool() {
+        controller.requestActivation(this);
+    }
     /**
      * {@inheritDoc}
      */
