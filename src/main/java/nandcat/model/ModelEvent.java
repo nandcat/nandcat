@@ -25,9 +25,9 @@ public class ModelEvent {
     private String message;
 
     /**
-     * Return CircuitChecks the event.
+     * Return CircuitChecks relevant for the event.
      * 
-     * @return
+     * @return Set<CircuitCheck> of relevant checks
      */
     public Set<CircuitCheck> getChecks() {
         return checks;

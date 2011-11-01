@@ -9,10 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import nandcat.model.check.CircuitCheck;
+import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
 import nandcat.model.element.Element;
+import nandcat.model.element.FlipFlop;
+import nandcat.model.element.IdentityGate;
+import nandcat.model.element.Lamp;
 import nandcat.model.element.Module;
+import nandcat.model.element.NotGate;
+import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
 
 /**
@@ -70,17 +76,34 @@ public class Model implements ClockListener {
      * The constructor for the model class.
      */
     public Model() {
-        // TODO
-        circuit = new Circuit(new Point(0, 0));
         checks = new LinkedHashSet<CircuitCheck>();
         listeners = new LinkedHashSet<ModelListener>();
+        importFormats = new HashMap<String, String>();
+        exportFormats = new HashMap<String, String>();
+        importers = new HashMap<String, Importer>();
+        exporters = new HashMap<String, Exporter>();
+        circuit = new Circuit(new Point(0, 0));
         clock = new Clock(0, this);
+        initView2Module();
     }
 
     /**
-     * List of all custom circuits.
+     * Fill viewModule2Module data structure with default Gates and custom circuits.
      */
-    private List<Circuit> loadedCircuits;
+    private void initView2Module() {
+        viewModule2Module = new HashMap<ViewModule, Module>();
+        viewModule2Module.put(new ViewModule("AND", "", null), new AndGate());
+        viewModule2Module.put(new ViewModule("FlipFlop", "", null), new FlipFlop(new Point(0, 0)));
+        viewModule2Module.put(new ViewModule("Identity", "", null), new IdentityGate());
+        viewModule2Module.put(new ViewModule("Lamp", "", null), new Lamp());
+        viewModule2Module.put(new ViewModule("NOT", "", null), new NotGate());
+        viewModule2Module.put(new ViewModule("OR", "", null), new OrGate());
+    }
+
+    /**
+     * List of all custom Modules.
+     */
+    private List<Module> loadedModules;
 
     /**
      * Start the selected checks on the current circuit.
@@ -237,7 +260,8 @@ public class Model implements ClockListener {
         for (Module m : circuit.getStartingModules()) {
             clock.addListener(m);
         }
-        clock.startSimulation();
+        // TODO auskommentiert für simulation
+        //clock.startSimulation();
     }
 
     /**

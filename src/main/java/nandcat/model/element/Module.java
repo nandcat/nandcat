@@ -3,12 +3,11 @@ package nandcat.model.element;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
-import nandcat.model.ClockListener;
 
 /**
  * Module interface. A Module is an Element with Ports. They can be connected by Connections.
  */
-public interface Module extends ClockListener, Element {
+public interface Module extends Element {
 
     /**
      * Gets incoming ports.

@@ -30,6 +30,11 @@ public class Connection implements Element {
     }
 
     /**
+     * Connection's state.
+     */
+    private boolean state;
+
+    /**
      * Create and attach new connection.
      * 
      * @param inPort
@@ -42,6 +47,7 @@ public class Connection implements Element {
         this.outPort = outPort;
         inPort.setConnection(this);
         outPort.setConnection(this);
+        state = false;
     }
 
     /**
@@ -72,11 +78,9 @@ public class Connection implements Element {
      *            Clock that has strikken(!)
      */
     public void setState(boolean state, Clock clock) {
-        if (getNextModule() != null) {
-            outPort.setState(getState(), clock);
-            if (clock != null) {
-                clock.addListener(getNextModule());
-            }
+        this.state = state;
+        if (clock != null) {
+            clock.addListener(this);
         }
     }
 
@@ -86,10 +90,7 @@ public class Connection implements Element {
      * @return the state
      */
     public boolean getState() {
-        if (inPort == null) {
-            return false;
-        }
-        return inPort.getState();
+        return state;
     }
 
     /**
@@ -146,5 +147,14 @@ public class Connection implements Element {
     public boolean isSelected() {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    public void clockTicked(Clock clock) {
+        if (getNextModule() != null) {
+            outPort.setState(state, clock);
+            if (clock != null) {
+                clock.addListener(getNextModule());
+            }
+        }
     }
 }

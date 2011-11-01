@@ -32,8 +32,6 @@ public class AndGateTest extends TestCase {
     public void testApp() {
         AndGate and = new AndGate(2, 1);
         Lamp lamp = new Lamp();
-        assertNotNull(and);
-        assertNotNull(lamp);
         for (Port p : and.getInPorts()) {
             p.setState(true, null);
         }
@@ -43,16 +41,29 @@ public class AndGateTest extends TestCase {
         for (Port p : and.getOutPorts()) {
             assertFalse(p.getState());
         }
-        // simulate ticking clock
+        assertFalse(lamp.getState());
+        assertFalse(conn.getState());
+        
+        // true, true liegt an, flase geht raus
+
+        // nächster tick setzt lausgang und leitung auf trve
+        // eingang lampe true, lampe selber derpt false
+        
         and.clockTicked(null);
-        for (Port p : and.getOutPorts()) {
-            assertTrue(p.getState());
-        }
-        // after 1st tick
-        assertNotNull(lamp.getInPorts().get(0));
+        conn.clockTicked(null);
+        
+        assertTrue(and.getOutPorts().get(0).getState());
+        assertTrue(conn.getState());
         assertTrue(lamp.getInPorts().get(0).getState());
-        // obviously clock ticked nach der änderung aufrufen, DERRRRRP
+        assertFalse(lamp.getState());
+        
+        // nächster tick setzt lampe auf true, sonst ändert si nix
         lamp.clockTicked(null);
+        
+        assertTrue(and.getOutPorts().get(0).getState());
+        assertTrue(conn.getState());
+        assertTrue(lamp.getInPorts().get(0).getState());
         assertTrue(lamp.getState());
+        
     }
 }

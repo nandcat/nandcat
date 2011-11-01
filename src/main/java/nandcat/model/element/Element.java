@@ -1,10 +1,12 @@
 package nandcat.model.element;
 
+import nandcat.model.ClockListener;
+
 /**
  * Element interface. An Element contains getters and setters for the most basic attributes a visible (or under specific
  * circumstances invisible) on the workspave component can have.
  */
-public interface Element {
+public interface Element extends ClockListener {
 
     /**
      * Set element's name.

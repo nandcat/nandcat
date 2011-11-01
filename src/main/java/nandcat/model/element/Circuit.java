@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
-import org.fest.util.VisibleForTesting;
 import nandcat.model.Clock;
 import nandcat.model.ClockListener;
 
@@ -50,7 +49,8 @@ public class Circuit implements ClockListener, Module {
     /**
      * Default constructor.
      * 
-     * @parm p Point specifying the circuit's location
+     * @param p
+     *            Point specifying the circuit's location
      */
     public Circuit(Point p) {
         location = p;

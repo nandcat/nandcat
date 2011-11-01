@@ -40,13 +40,13 @@ public class IdentityGate extends Gate {
      * {@inheritDoc}
      */
     protected boolean isValidOutBoundary(int outPorts) {
-        return (outPorts == 1);
+        return (outPorts >= 1);
     }
 
     /**
      * {@inheritDoc}
      */
     protected boolean isValidInBoundary(int inPorts) {
-        return (inPorts >= 1);
+        return (inPorts == 1);
     }
 }

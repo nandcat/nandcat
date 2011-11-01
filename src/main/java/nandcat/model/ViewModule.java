@@ -11,9 +11,30 @@ public class ViewModule {
     private String name;
 
     /**
-     * ViewModule's symbol.
+     * ViewModule's symbol. <b>Note:</b> may be null
      */
     private byte[] symbol;
+
+    /**
+     * ViewModule's file extension.
+     */
+    private String fileExtension;
+
+    /**
+     * Default constructor.
+     * 
+     * @param name
+     *            String containing ViewModule's name
+     * @param fileExtension
+     *            String ViewModule's file extension
+     * @param symbol
+     *            bytearray containing ViewModule's symbol
+     */
+    public ViewModule(String name, String fileExtension, byte[] symbol) {
+        this.name = name;
+        this.fileExtension = fileExtension;
+        this.symbol = symbol;
+    }
 
     /**
      * Return ViewModule's name.
@@ -41,6 +62,7 @@ public class ViewModule {
      *            String containing the file extension
      */
     public void setFileExtension(String s) {
+        fileExtension = s;
     }
 
     /**
@@ -49,7 +71,7 @@ public class ViewModule {
      * @return String containing the file extension
      */
     public String getFileExtension() {
-        return null;
+        return fileExtension;
     }
 
     /**
