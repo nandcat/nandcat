@@ -72,7 +72,9 @@ public abstract class Gate implements Module {
     List<Module> getNextElements() {
         List<Module> result = new LinkedList<Module>();
         for (Port p : getOutPorts()) {
-            result.add(p.getConnection().getNextModule());
+            if (p.getConnection() != null) {
+                result.add(p.getConnection().getNextModule());
+            }
         }
         return result;
     }

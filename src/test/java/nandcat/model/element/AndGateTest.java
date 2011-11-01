@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Unit test for simple App.
+ * Unit test for ANDGate.
  */
 public class AndGateTest extends TestCase {
 
@@ -43,27 +43,20 @@ public class AndGateTest extends TestCase {
         }
         assertFalse(lamp.getState());
         assertFalse(conn.getState());
-        
         // true, true liegt an, flase geht raus
-
         // nächster tick setzt lausgang und leitung auf trve
         // eingang lampe true, lampe selber derpt false
-        
         and.clockTicked(null);
         conn.clockTicked(null);
-        
         assertTrue(and.getOutPorts().get(0).getState());
         assertTrue(conn.getState());
         assertTrue(lamp.getInPorts().get(0).getState());
         assertFalse(lamp.getState());
-        
         // nächster tick setzt lampe auf true, sonst ändert si nix
         lamp.clockTicked(null);
-        
         assertTrue(and.getOutPorts().get(0).getState());
         assertTrue(conn.getState());
         assertTrue(lamp.getInPorts().get(0).getState());
         assertTrue(lamp.getState());
-        
     }
 }
