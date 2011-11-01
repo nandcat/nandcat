@@ -1,13 +1,19 @@
 package nandcat.view;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.util.Map;
 import java.util.Set;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JViewport;
@@ -73,12 +79,20 @@ public class View extends JFrame {
      */
     private Dimension workspaceDimension = new Dimension(1000, 1000);
 
+    /**
+     * Menu of the application.
+     */
     private JMenuBar menubar;
 
     /**
      * A Map with all the Tool functionalities and their Listeners.
      */
     private Map<String, ActionListener> toolFunctionalities;
+
+    /**
+     * A Set of Modules available for making circuits.
+     */
+    private Set<ViewModule> viewModules;
 
     /**
      * Constructs the view.
@@ -142,7 +156,7 @@ public class View extends JFrame {
                 // TODO Auto-generated method stub
             }
         });
-        frame.setSize(200, 200);
+        frame.setSize(600, 650);
         frame.setLocation(frameLocation);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         workspace = new Workspace();
@@ -155,8 +169,9 @@ public class View extends JFrame {
         toolBar = new JToolBar();
         menubar = new JMenuBar();
         frame.getContentPane().add(scroller, "Center");
-        frame.getContentPane().add(toolBar, "East");
-        frame.getContentPane().add(menubar);
+        frame.getContentPane().add(toolBar, "West");
+        frame.getContentPane().add(menubar, "North");
+        frame.setVisible(true);
     }
 
     /**
@@ -166,7 +181,44 @@ public class View extends JFrame {
      *            the menuBar to be build
      */
     private void buildMenubar(JMenuBar menubar) {
-        // TODO Auto-generated method stub
+        Set<String> functionalities = toolFunctionalities.keySet();
+        JMenu file = new JMenu("Datei");
+        JMenu edit = new JMenu("Bearbeiten");
+        JMenu sim = new JMenu("Simulation");
+        JMenu help = new JMenu("?");
+        menubar.add(file);
+        menubar.add(edit);
+        menubar.add(sim);
+        menubar.add(help);
+        for (String func : functionalities) {
+            if (func.charAt(0) == 'm') {
+                if (func.charAt(1) == 'd') {
+                    JMenuItem item = new JMenuItem(func);
+                    item.addActionListener(toolFunctionalities.get(func));
+                    item.setFocusable(false);
+                    item.setName(func);
+                    file.add(item);
+                } else if (func.charAt(1) == 's') {
+                    JMenuItem item = new JMenuItem(func);
+                    item.addActionListener(toolFunctionalities.get(func));
+                    item.setFocusable(false);
+                    item.setName(func);
+                    sim.add(item);
+                } else if (func.charAt(1) == 'e') {
+                    JMenuItem item = new JMenuItem(func);
+                    item.addActionListener(toolFunctionalities.get(func));
+                    item.setFocusable(false);
+                    item.setName(func);
+                    edit.add(item);
+                } else if (func.charAt(1) == 'h') {
+                    JMenuItem item = new JMenuItem(func);
+                    item.addActionListener(toolFunctionalities.get(func));
+                    item.setFocusable(false);
+                    item.setName(func);
+                    help.add(item);
+                }
+            }
+        }
     }
 
     /**
@@ -176,7 +228,27 @@ public class View extends JFrame {
      *            ToolBar to be build.
      */
     private void buildToolbar(JToolBar toolBar) {
-        // TODO Auto-generated method stub
+        Set<String> functionalities = toolFunctionalities.keySet();
+        for (String func : functionalities) {
+            if (func.charAt(0) == 'b') {
+                JButton button = new JButton(func);
+                button.addActionListener(toolFunctionalities.get(func));
+                button.setFocusable(false);
+                button.setMaximumSize(new Dimension(60, 30));
+                button.setName(func);
+                toolBar.add(button);
+            } else if (func.charAt(0) == 'c') {
+                String[] modules = { "And", "Or", "Not" };
+                // (String[]) viewModules.toArray();
+                JComboBox box = new JComboBox(modules);
+                box.addActionListener(toolFunctionalities.get(func));
+                box.setName(func);
+                box.setFocusable(false);
+                box.setMaximumSize(new Dimension(100, 30));
+                toolBar.add(box);
+            }
+        }
+        toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.Y_AXIS));
     }
 
     /**
@@ -186,23 +258,46 @@ public class View extends JFrame {
      *            ModelEvent with the elements to be redrawed.
      */
     public void redraw(ModelEvent e) {
+        workspace.redraw(e);
     }
 
     /**
      * Enables all buttons.
      */
     public void enableButtons() {
-        // TODO Wirklich enable Buttons, weil simulation buttons ja noch
-        // laufen?...
-        // TODO Naja ich glaub der FAll is ja eh nur in der Simulation relevant
-        // -> Alle anderen Buttons Disabeln
+        Component[] buttons = toolBar.getComponents();
+        for (int i = 0; i < buttons.length; i++) {
+            buttons[i].setEnabled(true);
+        }
+        Component[] menus = menubar.getComponents();
+        for (int i = 0; i < menus.length; i++) {
+            menus[i].setEnabled(true);
+        }
     }
 
     /**
      * Disables all buttons except buttons for simulation.
      */
     public void disableButtons() {
-        // TODO Wirklich disable Buttons?
+        Component[] buttons = toolBar.getComponents();
+        for (int i = 0; i < buttons.length; i++) {
+            if (buttons[i].getName() != "bstop" && buttons[i].getName() != "bplus" && buttons[i].getName() != "bminus") {
+                buttons[i].setEnabled(false);
+            }
+        }
+        Component[] menus = menubar.getComponents();
+        for (int i = 0; i < menus.length; i++) {
+            if (((JMenu) menus[i]).getActionCommand() != "Simulation") {
+                menus[i].setEnabled(false);
+            } else {
+                Component[] items = ((JMenu) menus[i]).getComponents();
+                for (int j = 0; j < items.length; j++) {
+                    if (((JMenuItem) items[j]).getActionCommand() == "msstart") {
+                        items[j].setEnabled(false);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -221,6 +316,7 @@ public class View extends JFrame {
      *            Point where to be set.
      */
     public void setViewportPosition(Point p) {
+        viewport.setViewPosition(p);
     }
 
     /**
@@ -242,6 +338,7 @@ public class View extends JFrame {
      *            int to which the Height will be set.
      */
     public void setWorkspaceHeight(int newHeight) {
+        workspace.setSize(workspace.getWidth(), newHeight);
     }
 
     /**
@@ -251,6 +348,7 @@ public class View extends JFrame {
      *            int to which the Width will be set.
      */
     public void setWorkspaceWidth(int newWidth) {
+        workspace.setSize(newWidth, workspace.getHeight());
     }
 
     /**
@@ -260,5 +358,6 @@ public class View extends JFrame {
      *            Set<ViewModule> with the Elements available.
      */
     public void setViewModules(Set<ViewModule> viewele) {
+        viewModules = viewele;
     }
 }

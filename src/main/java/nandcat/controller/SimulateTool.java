@@ -3,6 +3,7 @@ package nandcat.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
@@ -40,7 +41,20 @@ public class SimulateTool implements Tool {
     /**
      * String representation of the Tool.
      */
-    private List<String> represent; // TODO beschreibung schreiben
+    private List<String> represent = new LinkedList<String>() {
+
+        {
+            add("bstart");
+            add("bstop");
+            add("bplus");
+            add("bminus");
+            add("msstart");
+            add("msstop");
+            add("msplus");
+            add("msminus");
+            add("cbausteine");
+        }
+    }; // TODO beschreibung schreiben
 
     /**
      * ActionListener of the Tool on the Buttons.
@@ -57,6 +71,10 @@ public class SimulateTool implements Tool {
      */
     private ItemHandler comboboxListener;
 
+    protected Tool simulateTool;
+
+    private nandcat.view.View view;
+
     /**
      * Constructs the SimulateTool.
      * 
@@ -66,6 +84,8 @@ public class SimulateTool implements Tool {
     public SimulateTool(Controller controller) {
         this.controller = controller;
         model = controller.getModel();
+        view = controller.getView();
+        simulateTool = this;
     }
 
     /**
@@ -133,7 +153,18 @@ public class SimulateTool implements Tool {
         buttonListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
+                if (e.getActionCommand() == "bstart" || e.getActionCommand() == "msstart") {
+                    controller.requestActivation(simulateTool);
+                    model.startSimulation();
+                    view.disableButtons();
+                } else if (e.getActionCommand() == "bstop" || e.getActionCommand() == "msstop") {
+                    model.stopSimulation();
+                    view.enableButtons();
+                } else if (e.getActionCommand() == "bplus" || e.getActionCommand() == "msplus") {
+                    // sim geschw. erhöhen
+                } else if (e.getActionCommand() == "bminus" || e.getActionCommand() == "msminus") {
+                    // sim geschw. verringern
+                }
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();

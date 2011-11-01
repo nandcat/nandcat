@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.swing.JPanel;
 import nandcat.model.ModelEvent;
+import nandcat.model.element.Element;
 
 /**
  * Workspace.
@@ -46,15 +47,35 @@ public class Workspace extends JPanel {
     public Workspace() {
         setupWorkspace();
         mouseListener = new MouseAdapter() {
-            // TODO implement
+
+            public void mouseMoved(MouseEvent e) {
+                notifyMouseMoved(e);
+            }
+
+            public void mouseDragged(MouseEvent e) {
+                notifyMouseDragged(e);
+            }
+
+            public void mousePressed(MouseEvent e) {
+                notifyMousePressed(e);
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                notifyMouseReleased(e);
+            }
+
+            public void mouseClicked(MouseEvent e) {
+                notifyMouseClicked(e);
+            }
         };
+        this.addMouseListener(mouseListener);
     }
 
     /**
      * set up the Workspace.
      */
     private void setupWorkspace() {
-        // TODO Auto-generated method stub
+        this.elementDrawer = new StandardElementDrawer();
     }
 
     /**
@@ -64,7 +85,9 @@ public class Workspace extends JPanel {
      *            ModelEvent with the elements to be redrawed.
      */
     public void redraw(ModelEvent e) {
-        // TODO Wo kommen die Elements her?
+        for (Element elem : e.getElements()) {
+            //
+        }
     }
 
     /**
@@ -102,23 +125,43 @@ public class Workspace extends JPanel {
      * Notifies listeners of mouse pressed events on the workspace.
      */
     private void notifyMousePressed(MouseEvent altE) {
+        WorkspaceEvent e = new WorkspaceEvent();
+        e.setLocation(altE.getPoint());
+        for (WorkspaceListener l : listeners) {
+            l.mousePressed(e);
+        }
     }
 
     /**
      * Notifies listeners of mouse released events on the workspace.
      */
     private void notifyMouseReleased(MouseEvent altE) {
+        WorkspaceEvent e = new WorkspaceEvent();
+        e.setLocation(altE.getPoint());
+        for (WorkspaceListener l : listeners) {
+            l.mouseReleased(e);
+        }
     }
 
     /**
      * Notifies listeners of mouse moved events on the workspace.
      */
     private void notifyMouseMoved(MouseEvent altE) {
+        WorkspaceEvent e = new WorkspaceEvent();
+        e.setLocation(altE.getPoint());
+        for (WorkspaceListener l : listeners) {
+            l.mouseMoved(e);
+        }
     }
 
     /**
      * Notifies listeners of mouse dragged events on the workspace.
      */
     private void notifyMouseDragged(MouseEvent altE) {
+        WorkspaceEvent e = new WorkspaceEvent();
+        e.setLocation(altE.getPoint());
+        for (WorkspaceListener l : listeners) {
+            l.mouseDragged(e);
+        }
     }
 }
