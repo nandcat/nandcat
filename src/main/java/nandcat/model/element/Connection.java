@@ -149,6 +149,9 @@ public class Connection implements Element {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void clockTicked(Clock clock) {
         if (getNextModule() != null) {
             outPort.setState(state, clock);

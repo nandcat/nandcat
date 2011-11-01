@@ -8,7 +8,6 @@ import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 
-
 /**
  * The Clock class represents a global clock. The Clock's tact is simulated in a separate thread.
  * 
@@ -36,8 +35,10 @@ public class Clock {
      */
     private int sleepTime;
 
+    /**
+     * List of "ClockListening" connections. No duplicates!
+     */
     private Set<ClockListener> connections;
-        
 
     /**
      * List of ClockListeners that want to get notified of changes in the Clock. It may not contain duplicates.
