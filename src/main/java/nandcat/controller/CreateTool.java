@@ -16,6 +16,7 @@ import nandcat.model.element.Module;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
+import nandcat.view.WorkspaceListenerAdapter;
 
 /**
  * The CreateTool is responsible for the creation of new Modules and Connections.
@@ -58,6 +59,8 @@ public class CreateTool implements Tool {
     private WorkspaceListener workspaceListener;
 
     private Module selectedModule;
+
+    private Port sourcePort;
     /**
      * Constructs the SelectTool.
      * 
@@ -83,27 +86,10 @@ public class CreateTool implements Tool {
 
     private void setListeners() {
     if (workspaceListener == null) {
-            workspaceListener = new WorkspaceListener() {
-
-                public void mouseReleased(WorkspaceEvent e) {
-                    // TODO Auto-generated method stub
-                }
-
-                public void mousePressed(WorkspaceEvent e) {
-                    // TODO Auto-generated method stub
-                }
-
-                public void mouseMoved(WorkspaceEvent e) {
-                    // TODO Auto-generated method stub
-                }
-
-                public void mouseDragged(WorkspaceEvent e) {
-                    // TODO Auto-generated method stub
-                }
-
+            workspaceListener = new WorkspaceListenerAdapter() {
+                @Override
                 public void mouseClicked(WorkspaceEvent e) {
                     createElementAtPoint(e.getLocation());
-                    
                 }
             };
         }
@@ -113,11 +99,23 @@ public class CreateTool implements Tool {
     private void createElementAtPoint(Point point) {
         Set<Element> elementsAt = model.getElementsAt(point);
         if (elementsAt.isEmpty()) {
-            
-            model.addModule(selectedModule, point);
+            if (selectedModule != null) {
+                model.addModule(selectedModule, point);
+            }
         } else {
-            //Port inPort = new Port(elementsAt);
-            // TODO how do I get element from elementsAt?
+            Module toConnect = null;
+            for (Element element : elementsAt) {
+                if (element instanceof Module) {
+                    toConnect = (Module) element;
+                }
+            }
+            if (sourcePort == null) {
+                sourcePort = new Port(toConnect);
+            } else {
+                Port targetPort = new Port(toConnect);
+                model.addConnection(sourcePort, targetPort);
+                sourcePort = null;
+            }
         }
     }
 

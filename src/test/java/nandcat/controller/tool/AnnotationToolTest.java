@@ -63,48 +63,6 @@ public class AnnotationToolTest {
         EasyMock.expect(cMock.getView()).andReturn(fakeView).anyTimes();
         Point pointOfClick = new Point(10,50);
         AndGate andGate = EasyMock.createMock(AndGate.class);
-        EasyMock.expect(andGate.getName()).andReturn("Old Annotation").anyTimes();
-        //Hot point
-        andGate.setName(EasyMock.eq("Old Annotation2"));
-        Set<Element> elements = new HashSet<Element>();
-        elements.add(andGate);
-        EasyMock.expect(mMock.getElementsAt(EasyMock.eq(pointOfClick))).andReturn(elements);
-        EasyMock.replay(andGate);
-        EasyMock.replay(cMock);
-        EasyMock.replay(mMock);
-        AnnotationTool aT = new AnnotationTool(cMock);
-        aT.setActive(true);
-        final WorkspaceEvent workspaceEvent = EasyMock.createMock(WorkspaceEvent.class);
-        EasyMock.expect(workspaceEvent.getLocation()).andReturn(pointOfClick);
-        EasyMock.replay(workspaceEvent);
-        SwingUtilities.invokeLater(new Runnable() {
-
-            public void run() {
-                fakeWorkspace.getWorkspaceListener().mouseClicked(workspaceEvent);
-            }
-        });
-        
-        // TODO: Use FEST instead!
-//        FrameFixture fixture = new FrameFixture(fakeView);
-//        fixture.show();
-//        fakeWorkspace.getWorkspaceListener().mouseClicked(workspaceEvent);
-//        fixture.optionPane().buttonWithText("OK").click();
-        
-//        // Test dialogbox using Robot!
-        Robot robot = new Robot(); 
-        robot.delay(500);
-        robot.keyPress(KeyEvent.VK_RIGHT);
-        robot.keyRelease(KeyEvent.VK_RIGHT);
-        robot.delay(500);
-        robot.keyPress(KeyEvent.VK_2);
-        robot.keyRelease(KeyEvent.VK_2);
-        robot.keyPress(KeyEvent.VK_ENTER);
-        robot.keyRelease(KeyEvent.VK_ENTER);
-        robot.delay(500);
-        robot = null;
-
-        EasyMock.verify(cMock);
-        EasyMock.verify(andGate);
     }
     
     private class FakeWorkspace extends Workspace {

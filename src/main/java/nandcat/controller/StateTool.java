@@ -15,6 +15,7 @@ import nandcat.model.element.ImpulseGenerator;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
+import nandcat.view.WorkspaceListenerAdapter;
 
 /**
  * The StateTool is responsible for setting the states (true or false) at the ImpulseGenerator.
@@ -81,24 +82,8 @@ public class StateTool implements Tool {
 
     private void setListeners() {
         if (workspaceListener == null) {
-            workspaceListener = new WorkspaceListener() {
-
-                public void mouseReleased(WorkspaceEvent e) {
-                    // TODO Auto-generated method stub
-                }
-
-                public void mousePressed(WorkspaceEvent e) {
-                    // TODO Auto-generated method stub
-                }
-
-                public void mouseMoved(WorkspaceEvent e) {
-                    // TODO Auto-generated method stub
-                }
-
-                public void mouseDragged(WorkspaceEvent e) {
-                    // TODO Auto-generated method stub
-                }
-
+            workspaceListener = new WorkspaceListenerAdapter() {
+                @Override
                 public void mouseClicked(WorkspaceEvent e) {
                     changeState(e.getLocation());
                 }
