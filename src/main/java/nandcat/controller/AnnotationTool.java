@@ -1,6 +1,8 @@
 package nandcat.controller;
 
+import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -58,6 +60,11 @@ public class AnnotationTool implements Tool {
     private WorkspaceListener workspaceListener;
 
     /**
+     * Tolerance used if mouse clicked.
+     */
+    private static final Dimension MOUSE_TOLERANCE = new Dimension(2, 2);
+
+    /**
      * Constructs the SelectTool.
      * 
      * @param controller
@@ -82,11 +89,13 @@ public class AnnotationTool implements Tool {
 
     /**
      * Gets the WorkspaceListener if existing, otherwise creates it.
+     * 
      * @return WorkspaceListener used to get notified.
      */
     private WorkspaceListener getWorkspaceListener() {
         if (workspaceListener == null) {
             workspaceListener = new WorkspaceListenerAdapter() {
+
                 @Override
                 public void mouseClicked(WorkspaceEvent e) {
                     mouseClickedOnWorkspace(e.getLocation());
@@ -97,19 +106,21 @@ public class AnnotationTool implements Tool {
     }
 
     /**
-     * Adds the WorkspaceListener to the view's workspace. 
+     * Adds the WorkspaceListener to the view's workspace.
      */
     private void setWorkspaceListener() {
         view.getWorkspace().addListener(getWorkspaceListener());
     }
 
     /**
-     * Action if the mouse clicked on workspace event occurred.
-     * Gets elements at click point and opens a dialog to edit the annotation.
-     * @param p Point of mouse click.
+     * Action if the mouse clicked on workspace event occurred. Gets elements at click point and opens a dialog to edit
+     * the annotation.
+     * 
+     * @param p
+     *            Point of mouse click.
      */
     private void mouseClickedOnWorkspace(Point p) {
-        Set<Element> elements = model.getElementsAt(p);
+        Set<Element> elements = model.getElementsAt(new Rectangle(p, MOUSE_TOLERANCE));
         Module toAnnotate = null;
         for (Element element : elements) {
             // annotations on modules only
@@ -125,8 +136,8 @@ public class AnnotationTool implements Tool {
     }
 
     private String askForAnnotation(String oldAnnotation) {
-        return (String) JOptionPane.showInputDialog(view, "Baustein mit Text versehen:\n",
-                "Customized Dialog", JOptionPane.PLAIN_MESSAGE, icon, null, oldAnnotation);
+        return (String) JOptionPane.showInputDialog(view, "Baustein mit Text versehen:\n", "Customized Dialog",
+                JOptionPane.PLAIN_MESSAGE, icon, null, oldAnnotation);
     }
 
     /**
