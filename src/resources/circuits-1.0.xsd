@@ -10,10 +10,10 @@
   <xs:complexType>
     <xs:sequence>
       <xs:element minOccurs="1" maxOccurs="unbounded" ref="c:circuit"/>
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="strict"/>
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
     </xs:sequence>
     <xs:attribute name="main" type="xs:string" use="required"/>
-    <xs:anyAttribute namespace="##other" processContents="strict"/>
+    <xs:anyAttribute namespace="##other" processContents="lax"/>
   </xs:complexType>
   
   <!-- Names of circuits have to be unique, and the main circuit has to exist. -->
@@ -33,10 +33,10 @@
     <xs:sequence>
       <xs:element minOccurs="1" maxOccurs="unbounded" ref="c:component"/>
       <xs:element minOccurs="0" maxOccurs="unbounded" ref="c:connection"/>
-      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="strict"/>
+      <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
     </xs:sequence>
     <xs:attribute name="name" type="xs:string" use="required"/>
-    <xs:anyAttribute namespace="##other" processContents="strict"/>
+    <xs:anyAttribute namespace="##other" processContents="lax"/>
   </xs:complexType>
   
   <!-- Names of components have to be unique in each circuit,
@@ -67,14 +67,14 @@
 <xs:element name="component">
 <xs:complexType>
   <xs:sequence>
-    <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="strict"/>
+    <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
   </xs:sequence>
   <xs:attribute name="name" type="xs:string" use="required" />
   <xs:attribute name="type" type="c:component-type" use="required"/>
   <xs:attribute name="type2" type="xs:string"/>
   <xs:attribute name="posx" type="xs:nonNegativeInteger" use="required"/>
   <xs:attribute name="posy" type="xs:nonNegativeInteger" use="required"/>
-  <xs:anyAttribute namespace="##other" processContents="strict"/>
+  <xs:anyAttribute namespace="##other" processContents="lax"/>
 </xs:complexType>
 </xs:element>
 
@@ -101,13 +101,13 @@
 <xs:element name="connection">
 <xs:complexType>
   <xs:sequence>
-    <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="strict"/>
+    <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
   </xs:sequence>
   <xs:attribute name="source" type="xs:string" use="required"/>
   <xs:attribute name="sourcePort" type="xs:string" use="required"/>
   <xs:attribute name="target" type="xs:string" use="required"/>
   <xs:attribute name="targetPort" type="xs:string" use="required"/>
-  <xs:anyAttribute namespace="##other" processContents="strict"/>
+  <xs:anyAttribute namespace="##other" processContents="lax"/>
 </xs:complexType>
 
 </xs:element>

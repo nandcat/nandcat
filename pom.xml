@@ -53,6 +53,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		</dependency>
 	</dependencies>
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/resources</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -107,7 +115,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>2.7</version>
 				<configuration>
-					<configLocation>src/main/resources/checkstyle.xml</configLocation>
+					<configLocation>src/resources/checkstyle.xml</configLocation>
 					<propertyExpansion> 
 						cacheFile=${project.build.directory}/checkstyle-cachefile 
 					</propertyExpansion> 
