@@ -3,6 +3,7 @@ package nandcat.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,16 +99,15 @@ public class StateTool implements Tool {
 
     private void changeState(Point point) {
         assert point != null;
-        Set<Element> elementsAt = model.getElementsAt(point);
-        ImpulseGenerator toChangeState = null;
+        Set<Element> elementsAt = model.getElementsAt(new Rectangle(point));
+        Module toChangeState = null;
         for (Element element : elementsAt) {
-            // annotations on modules only
-            if (element instanceof ImpulseGenerator) {
-                toChangeState = (ImpulseGenerator) element;
+            if (element instanceof Module) {
+                toChangeState = (Module) element;
             }
         }
         if (toChangeState != null) {
-            toChangeState.toggleState();
+            model.toggleModule(toChangeState);
         }
     }
 

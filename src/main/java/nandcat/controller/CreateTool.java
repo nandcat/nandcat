@@ -3,6 +3,7 @@ package nandcat.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +98,7 @@ public class CreateTool implements Tool {
     }
 
     private void createElementAtPoint(Point point) {
-        Set<Element> elementsAt = model.getElementsAt(point);
+        Set<Element> elementsAt = model.getElementsAt(new Rectangle(point));
         if (elementsAt.isEmpty()) {
             if (selectedModule != null) {
                 model.addModule(selectedModule, point);
