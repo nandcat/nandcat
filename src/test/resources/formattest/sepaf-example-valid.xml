@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<circuits main="myCircuit"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0"
+  xmlns:nandcat="http://www.nandcat.de/xmlns/sepaf-extension"
+  xsi:schemaLocation="
+    http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0
+    http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0.xsd
+    http://www.nandcat.de/xmlns/sepaf-extension
+    http://www.nandcat.de/xmlns/sepaf-extension.xsd">
+
+<circuit name="myCircuit">
+  <component type="circuit" type2="inner-circuit" name="inner0" posx="0" posy="0" nandcat:annotation="test annotation"/>
+  <component type="other" type2="xor" name="xor0" posx="0" posy="1" nandcat:annotation="test"/> 
+  <component type="and" name="and0" posx="0" posy="2"/>
+  <component type="and" name="and1" posx="0" posy="3"/>
+  <component type="or" name="or0" posx="0" posy="4"/>
+  <connection source="and0" sourcePort="o" target="or0" targetPort="a" />
+  <nandcat:symbol nandcat:format="png">BASE64ENCODEDIMAGEDATA</nandcat:symbol>
+</circuit> 
+        
+<circuit name="inner-circuit">
+  <component type="and" name="and0" posx="0" posy="1" nandcat:ports_in="5" nandcat:ports_out="3" nandcat:bullshit="1"/>
+  <component type="or" name="or1" posx="0" posy="2"/>
+  <component type="in" name="in1" posx="0" posy="5" nandcat:in_state="true" nandcat:in_timing="100"/>
+  <component type="out" name="o" posx="0" posy="3"/>
+  <connection source="and0" sourcePort="o" target="or1" targetPort="a" />
+  <connection source="and0" sourcePort="a" target="and0" targetPort="a" />
+  <nandcat:symbol nandcat:format="svg">BASE64ENCODEDIMAGEDATA</nandcat:symbol>
+</circuit> 
+        
+</circuits>
