@@ -1,6 +1,7 @@
 package nandcat.view;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
@@ -8,8 +9,10 @@ import nandcat.model.element.FlipFlop;
 import nandcat.model.element.IdentityGate;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
+import nandcat.model.element.Module;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
+import nandcat.model.element.Port;
 
 /**
  * ElementDrawer.
@@ -97,4 +100,17 @@ public interface ElementDrawer {
      *            Lamp to draw.
      */
     void draw(Lamp lamp);
+
+    /**
+     * Gets the first port of the module intersecting the given rectangle.
+     * 
+     * Used for hit testing on an port.
+     * 
+     * @param rec
+     *            Rectangle to intersect port with.
+     * @param m
+     *            Module with ports to check.
+     * @return First intersecting port, otherwise null.
+     */
+    Port getPortAt(Rectangle rec, Module m);
 }

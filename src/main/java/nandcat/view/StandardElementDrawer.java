@@ -563,4 +563,23 @@ public class StandardElementDrawer implements ElementDrawer {
             drawAnnotation(ig.getName(), ig.getRectangle());
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Port getPortAt(Rectangle rec, Module m) {
+        for (int i = 0; i < m.getInPorts().size(); i++) {
+            Rectangle bounds = getPortBounds(m.getRectangle(), false, i, m.getInPorts().size());
+            if (bounds.intersects(rec)) {
+                return m.getInPorts().get(i);
+            }
+        }
+        for (int i = 0; i < m.getOutPorts().size(); i++) {
+            Rectangle bounds = getPortBounds(m.getRectangle(), true, i, m.getOutPorts().size());
+            if (bounds.intersects(rec)) {
+                return m.getOutPorts().get(i);
+            }
+        }
+        return null;
+    }
 }
