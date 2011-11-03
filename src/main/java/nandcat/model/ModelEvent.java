@@ -1,13 +1,32 @@
 package nandcat.model;
 
+import java.util.HashSet;
 import java.util.Set;
 import nandcat.model.check.CircuitCheck;
 import nandcat.model.element.Element;
+import nandcat.model.element.Module;
 
 /**
  * Modelevent object fired by Model to inform its listeners about state changes (Elements/Checks/Simulation/... changed)
  */
 public class ModelEvent {
+
+    /**
+     * Default constructor.
+     */
+    public ModelEvent() {
+    }
+
+    /**
+     * Constructor for initialization of the ModelEvent with a Module.
+     * 
+     * @param module
+     *            Module to initialize elements with.
+     */
+    public ModelEvent(Module module) {
+        elements = new HashSet<Element>();
+        elements.add(module);
+    }
 
     /**
      * Elements relevant for the fired event.

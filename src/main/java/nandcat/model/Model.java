@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,6 +16,7 @@ import nandcat.model.element.Connection;
 import nandcat.model.element.Element;
 import nandcat.model.element.FlipFlop;
 import nandcat.model.element.IdentityGate;
+import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
 import nandcat.model.element.Module;
 import nandcat.model.element.NotGate;
@@ -73,6 +75,11 @@ public class Model implements ClockListener {
     private HashMap<ViewModule, Module> viewModule2Module;
 
     /**
+     * List of all custom Modules.
+     */
+    private List<Module> loadedModules;
+
+    /**
      * The constructor for the model class.
      */
     public Model() {
@@ -85,6 +92,7 @@ public class Model implements ClockListener {
         circuit = new Circuit(new Point(0, 0));
         clock = new Clock(0, this);
         initView2Module();
+        loadedModules = new LinkedList<Module>();
     }
 
     /**
@@ -99,11 +107,6 @@ public class Model implements ClockListener {
         viewModule2Module.put(new ViewModule("NOT", "", null), new NotGate());
         viewModule2Module.put(new ViewModule("OR", "", null), new OrGate());
     }
-
-    /**
-     * List of all custom Modules.
-     */
-    private List<Module> loadedModules;
 
     /**
      * Start the selected checks on the current circuit.
@@ -200,13 +203,13 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Get a set of elements at a specific location.
+     * Get a set of elements within a specific rectangle.
      * 
-     * @param point
-     *            Point containing the x- and y-coordinate.
+     * @param rect
+     *            Rectangle containing the x- and y-coordinate.
      * @return Set of Elements at the given location.
      */
-    public Set<Element> getElementsAt(Point point) {
+    public Set<Element> getElementsAt(Rectangle rect) {
         // Set<Element> elementsAt = new HashSet<Element>();
         // for (Element element : circuit.getElements()) {
         // if (element.getRectangle.contains(point) {
@@ -261,7 +264,7 @@ public class Model implements ClockListener {
             clock.addListener(m);
         }
         // TODO auskommentiert für simulation
-        //clock.startSimulation();
+        // clock.startSimulation();
     }
 
     /**
@@ -356,11 +359,33 @@ public class Model implements ClockListener {
     /**
      * Instruct model to move given modules' position by point p.
      * 
+     * @param module
+     *            Module that needs relocation
      * @param p
      *            Point specifying the relative positional change
      */
-    public void moveBy(Point p) {
-        // TODO implement
+    public void moveBy(Module module, Point p) {
+        module.getLocation().translate(p.x, p.y);
+        ModelEvent e = new ModelEvent(module);
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
+        }
+    }
+
+    /**
+     * Toggle state of given module (if possible).
+     * 
+     * @param m
+     *            Module to toggle
+     */
+    public void toggleModule(Module m) {
+        if (m instanceof ImpulseGenerator) {
+            ((ImpulseGenerator) m).toggleState();
+        }
+        ModelEvent e = new ModelEvent(m);
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
+        }
     }
 
     /**

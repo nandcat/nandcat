@@ -63,6 +63,7 @@ public class CreateToolTest {
         EasyMock.expect(cMock.getView()).andReturn(fakeView).anyTimes();
         Point pointOfClick = new Point(10,50);
         AndGate andGate = EasyMock.createMock(AndGate.class);
+        // TODO finish
     }
     
     private class FakeWorkspace extends Workspace {

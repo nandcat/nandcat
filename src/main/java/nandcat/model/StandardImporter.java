@@ -12,10 +12,15 @@ import nandcat.model.element.Circuit;
 public class StandardImporter implements Importer {
 
     /**
+     * Handle of file to import from.
+     */
+    private File file = null;
+
+    /**
      * {@inheritDoc}
      */
     public void setFile(File file) {
-        // TODO Auto-generated method stub
+        this.file = file;
     }
 
     /**
@@ -30,7 +35,6 @@ public class StandardImporter implements Importer {
      * {@inheritDoc}
      */
     public boolean importCircuit() {
-        // TODO Auto-generated method stub
         return false;
     }
 
