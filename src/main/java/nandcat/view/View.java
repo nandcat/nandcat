@@ -94,6 +94,20 @@ public class View extends JFrame {
      */
     private Set<ViewModule> viewModules;
 
+    private JButton start;
+
+    private JButton stop;
+
+    private JButton slower;
+
+    private JButton faster;
+
+    private JButton create;
+
+    private JButton select;
+
+    private JButton move;
+
     /**
      * Constructs the view.
      * 
@@ -181,7 +195,6 @@ public class View extends JFrame {
      *            the menuBar to be build
      */
     private void buildMenubar(JMenuBar menubar) {
-        Set<String> functionalities = toolFunctionalities.keySet();
         JMenu file = new JMenu("Datei");
         JMenu edit = new JMenu("Bearbeiten");
         JMenu sim = new JMenu("Simulation");
@@ -190,35 +203,14 @@ public class View extends JFrame {
         menubar.add(edit);
         menubar.add(sim);
         menubar.add(help);
-        for (String func : functionalities) {
-            if (func.charAt(0) == 'm') {
-                if (func.charAt(1) == 'd') {
-                    JMenuItem item = new JMenuItem(func);
-                    item.addActionListener(toolFunctionalities.get(func));
-                    item.setFocusable(false);
-                    item.setName(func);
-                    file.add(item);
-                } else if (func.charAt(1) == 's') {
-                    JMenuItem item = new JMenuItem(func);
-                    item.addActionListener(toolFunctionalities.get(func));
-                    item.setFocusable(false);
-                    item.setName(func);
-                    sim.add(item);
-                } else if (func.charAt(1) == 'e') {
-                    JMenuItem item = new JMenuItem(func);
-                    item.addActionListener(toolFunctionalities.get(func));
-                    item.setFocusable(false);
-                    item.setName(func);
-                    edit.add(item);
-                } else if (func.charAt(1) == 'h') {
-                    JMenuItem item = new JMenuItem(func);
-                    item.addActionListener(toolFunctionalities.get(func));
-                    item.setFocusable(false);
-                    item.setName(func);
-                    help.add(item);
-                }
-            }
-        }
+        
+
+//                    JMenuItem item = new JMenuItem(func);
+//                    item.addActionListener(toolFunctionalities.get(func));
+//                    item.setFocusable(false);
+//                    item.setName(func);
+//                    help.add(item);
+
     }
 
     /**
@@ -228,26 +220,48 @@ public class View extends JFrame {
      *            ToolBar to be build.
      */
     private void buildToolbar(JToolBar toolBar) {
-        Set<String> functionalities = toolFunctionalities.keySet();
-        for (String func : functionalities) {
-            if (func.charAt(0) == 'b') {
-                JButton button = new JButton(func);
-                button.addActionListener(toolFunctionalities.get(func));
-                button.setFocusable(false);
-                button.setMaximumSize(new Dimension(60, 30));
-                button.setName(func);
-                toolBar.add(button);
-            } else if (func.charAt(0) == 'c') {
-                String[] modules = { "And", "Or", "Not" };
-                // (String[]) viewModules.toArray();
-                JComboBox box = new JComboBox(modules);
-                box.addActionListener(toolFunctionalities.get(func));
-                box.setName(func);
-                box.setFocusable(false);
-                box.setMaximumSize(new Dimension(100, 30));
-                toolBar.add(box);
-            }
+        start = new JButton("Start");
+        if (toolFunctionalities.containsKey("start")){
+            start.addActionListener(toolFunctionalities.get("start"));
+            start.setActionCommand("start");
         }
+        stop = new JButton("Stop");
+        if (toolFunctionalities.containsKey("stop")){
+            stop.addActionListener(toolFunctionalities.get("stop"));
+            stop.setActionCommand("stop");
+        }
+        faster = new JButton("Plus");
+        if (toolFunctionalities.containsKey("faster")){
+            faster.addActionListener(toolFunctionalities.get("faster"));
+            faster.setActionCommand("faster");
+        }
+        slower = new JButton("Minus");
+        if (toolFunctionalities.containsKey("slower")){
+            slower.addActionListener(toolFunctionalities.get("slower"));
+            slower.setActionCommand("slower");
+        }
+        create = new JButton("Erstellen");
+        if (toolFunctionalities.containsKey("create")){
+            create.addActionListener(toolFunctionalities.get("create"));
+            create.setActionCommand("create");
+        }
+        select = new JButton("Auswahl");
+        if (toolFunctionalities.containsKey("select")){
+            select.addActionListener(toolFunctionalities.get("select"));
+            select.setActionCommand("select");
+        }
+        move = new JButton("Verschieben");
+        if (toolFunctionalities.containsKey("move")){
+            move.addActionListener(toolFunctionalities.get("move"));
+            move.setActionCommand("move");
+        }
+        toolBar.add(start);
+        toolBar.add(stop);
+        toolBar.add(slower);
+        toolBar.add(faster);
+        toolBar.add(create);
+        toolBar.add(select);
+        toolBar.add(move);
         toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.Y_AXIS));
     }
 
@@ -281,7 +295,7 @@ public class View extends JFrame {
     public void disableButtons() {
         Component[] buttons = toolBar.getComponents();
         for (int i = 0; i < buttons.length; i++) {
-            if (buttons[i].getName() != "bstop" && buttons[i].getName() != "bplus" && buttons[i].getName() != "bminus") {
+            if (buttons[i].getName() != "stop" && buttons[i].getName() != "faster" && buttons[i].getName() != "slower") {
                 buttons[i].setEnabled(false);
             }
         }

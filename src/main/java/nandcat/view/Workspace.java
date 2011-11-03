@@ -6,7 +6,16 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.swing.JPanel;
 import nandcat.model.ModelEvent;
+import nandcat.model.element.AndGate;
+import nandcat.model.element.Circuit;
+import nandcat.model.element.Connection;
 import nandcat.model.element.Element;
+import nandcat.model.element.FlipFlop;
+import nandcat.model.element.IdentityGate;
+import nandcat.model.element.ImpulseGenerator;
+import nandcat.model.element.Lamp;
+import nandcat.model.element.NotGate;
+import nandcat.model.element.OrGate;
 
 /**
  * Workspace.
@@ -86,7 +95,25 @@ public class Workspace extends JPanel {
      */
     public void redraw(ModelEvent e) {
         for (Element elem : e.getElements()) {
-            //
+            if (elem instanceof Connection) {
+                elementDrawer.draw((Connection) elem);
+            } else if (elem instanceof AndGate) {
+                elementDrawer.draw((AndGate) elem);
+            } else if (elem instanceof Circuit) {
+                elementDrawer.draw((Circuit) elem);
+            } else if (elem instanceof FlipFlop) {
+                elementDrawer.draw((FlipFlop) elem);
+            } else if (elem instanceof ImpulseGenerator) {
+                elementDrawer.draw((ImpulseGenerator) elem);
+            } else if (elem instanceof IdentityGate) {
+                elementDrawer.draw((IdentityGate) elem);
+            } else if (elem instanceof NotGate) {
+                elementDrawer.draw((NotGate) elem);
+            } else if (elem instanceof OrGate) {
+                elementDrawer.draw((OrGate) elem);
+            } else if (elem instanceof Lamp) {
+                elementDrawer.draw((Lamp) elem);
+            }
         }
     }
 
