@@ -125,15 +125,8 @@ public class View extends JFrame {
     private void setupGui(Model model) {
         model.addListener(new ModelListener() {
 
-            public void simulationChanged(ModelEvent e) {
-                // TODO Auto-generated method stub
-            }
-
             public void elementsChanged(ModelEvent e) {
                 redraw(e);
-            }
-
-            public void checksChanged(ModelEvent e) {
             }
 
             public void checksStarted(ModelEvent e) {

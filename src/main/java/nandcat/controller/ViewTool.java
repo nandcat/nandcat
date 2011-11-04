@@ -68,8 +68,7 @@ public class ViewTool implements Tool {
         view = controller.getView();
         model = controller.getModel();
         view.addViewPortListener(new ChangeListener() {
-            
-            @Override
+
             public void stateChanged(ChangeEvent e) {
                 view.giveViewPortRect();
                 List<Element> elem = model.getElements();
