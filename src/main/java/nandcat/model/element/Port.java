@@ -35,6 +35,7 @@ public class Port {
      * Module this Port is attached to, but absolute Coordinates on the drawing area.
      * 
      * @param position
+     *            Rectangle to set
      */
     public void setRectangle(Rectangle position) {
         this.bounds = position;
