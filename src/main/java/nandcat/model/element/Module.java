@@ -24,16 +24,18 @@ public interface Module extends Element {
     List<Port> getOutPorts();
 
     /**
-     * Set the Location of this Module.
+     * Set the Location of this Module. The Location is the TopLeft corner.
      * 
+     * @deprecated use setRectangle(Rectangle rectangle) instead
      * @param p
      *            Point containing the new Location of this Module.
      */
     void setLocation(Point p);
 
     /**
-     * Get the Location of this Module.
+     * Get the Location of this Module. The Location is the TopLeft corner.
      * 
+     * @deprecated use getRectangle() instead
      * @return Point containing the Location of this Module
      */
     Point getLocation();

@@ -367,7 +367,11 @@ public class Model implements ClockListener {
      *            Point specifying the relative positional change
      */
     public void moveBy(Module module, Point p) {
-        module.getLocation().translate(p.x, p.y);
+        // ****************************************
+        // TODO derping around, aka - triple check!
+        // module.getLocation().translate(p.x, p.y);
+        module.getRectangle().getLocation().translate(p.x, p.y);
+        // ***********************************
         ModelEvent e = new ModelEvent(module);
         for (ModelListener l : listeners) {
             l.elementsChanged(e);
@@ -428,5 +432,22 @@ public class Model implements ClockListener {
      */
     public void exportToFile(File file) {
         // TODO implement
+    }
+
+    /**
+     * Move the specific port according to the x + y values stored in the point. Throws an Exception if one parameter is
+     * null.
+     * 
+     * @param distance
+     *            Point containing the x and y
+     * @param port
+     *            Port that will be moved
+     */
+    public void movePortBy(Point distance, Port port) {
+        if (port == null || distance == null) {
+            throw (new IllegalArgumentException("port and distancepoint must not be null!"));
+        }
+        Rectangle old = port.getRectangle();
+        port.setRectangle(new Rectangle(old.x + distance.x, old.y + distance.y, old.width, old.height));
     }
 }
