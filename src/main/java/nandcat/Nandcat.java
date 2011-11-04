@@ -46,7 +46,8 @@ public final class Nandcat {
     private static void initApp() {
         Model model = new Model();
         View view = new View(model);
-        new Controller(view, model);
+        Controller controller = new Controller(view, model);
         view.setVisible(true);
+        controller.giveFunctionalities();
     }
 }

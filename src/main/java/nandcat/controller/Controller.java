@@ -55,8 +55,8 @@ public class Controller {
      * Initializes the Tool Classes.
      */
     protected void initTools() {
-        AnnotationTool annotationTool = new AnnotationTool(this);
-        tools.add(annotationTool);
+        SimulateTool simulateTool = new SimulateTool(this);
+        tools.add(simulateTool);
         // TODO Liste Fertig
     }
 

@@ -44,15 +44,12 @@ public class SimulateTool implements Tool {
     private List<String> represent = new LinkedList<String>() {
 
         {
-            add("bstart");
-            add("bstop");
-            add("bplus");
-            add("bminus");
-            add("msstart");
-            add("msstop");
-            add("msplus");
-            add("msminus");
-            add("cbausteine");
+            add("start");
+            add("stop");
+            add("faster");
+            add("slower");
+            add("startcheck");
+            add("editcheck");
         }
     }; // TODO beschreibung schreiben
 
@@ -153,16 +150,16 @@ public class SimulateTool implements Tool {
         buttonListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                if (e.getActionCommand() == "bstart" || e.getActionCommand() == "msstart") {
+                if (e.getActionCommand() == "start") {
                     controller.requestActivation(simulateTool);
                     model.startSimulation();
                     view.disableButtons();
-                } else if (e.getActionCommand() == "bstop" || e.getActionCommand() == "msstop") {
+                } else if (e.getActionCommand() == "stop") {
                     model.stopSimulation();
                     view.enableButtons();
-                } else if (e.getActionCommand() == "bplus" || e.getActionCommand() == "msplus") {
+                } else if (e.getActionCommand() == "faster") {
                     // sim geschw. erhöhen
-                } else if (e.getActionCommand() == "bminus" || e.getActionCommand() == "msminus") {
+                } else if (e.getActionCommand() == "slower") {
                     // sim geschw. verringern
                 }
             }

@@ -1,11 +1,11 @@
 package nandcat.view;
 
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.swing.JPanel;
-import nandcat.model.ModelEvent;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
@@ -14,6 +14,7 @@ import nandcat.model.element.FlipFlop;
 import nandcat.model.element.IdentityGate;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
+import nandcat.model.element.Module;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 
@@ -49,6 +50,11 @@ public class Workspace extends JPanel {
      * MouseListener of the Workspace on itself.
      */
     private MouseAdapter mouseListener;
+
+    /**
+     * Rectangle representing the Position and Boundaries of the ViewPort.
+     */
+    private Rectangle viewPortRect;
 
     /**
      * Constructs the workspace.
@@ -90,29 +96,31 @@ public class Workspace extends JPanel {
     /**
      * Redraws the workspace with its elements.
      * 
-     * @param e
+     * @param elements
      *            ModelEvent with the elements to be redrawed.
      */
-    public void redraw(ModelEvent e) {
-        for (Element elem : e.getElements()) {
-            if (elem instanceof Connection) {
-                elementDrawer.draw((Connection) elem);
-            } else if (elem instanceof AndGate) {
-                elementDrawer.draw((AndGate) elem);
-            } else if (elem instanceof Circuit) {
-                elementDrawer.draw((Circuit) elem);
-            } else if (elem instanceof FlipFlop) {
-                elementDrawer.draw((FlipFlop) elem);
-            } else if (elem instanceof ImpulseGenerator) {
-                elementDrawer.draw((ImpulseGenerator) elem);
-            } else if (elem instanceof IdentityGate) {
-                elementDrawer.draw((IdentityGate) elem);
-            } else if (elem instanceof NotGate) {
-                elementDrawer.draw((NotGate) elem);
-            } else if (elem instanceof OrGate) {
-                elementDrawer.draw((OrGate) elem);
-            } else if (elem instanceof Lamp) {
-                elementDrawer.draw((Lamp) elem);
+    public void redraw(Set<Element> elements) {
+        for (Element elem : elements) {
+            if (isInView(elem)) {
+                if (elem instanceof Connection) {
+                    elementDrawer.draw((Connection) elem);
+                } else if (elem instanceof AndGate) {
+                    elementDrawer.draw((AndGate) elem);
+                } else if (elem instanceof Circuit) {
+                    elementDrawer.draw((Circuit) elem);
+                } else if (elem instanceof FlipFlop) {
+                    elementDrawer.draw((FlipFlop) elem);
+                } else if (elem instanceof ImpulseGenerator) {
+                    elementDrawer.draw((ImpulseGenerator) elem);
+                } else if (elem instanceof IdentityGate) {
+                    elementDrawer.draw((IdentityGate) elem);
+                } else if (elem instanceof NotGate) {
+                    elementDrawer.draw((NotGate) elem);
+                } else if (elem instanceof OrGate) {
+                    elementDrawer.draw((OrGate) elem);
+                } else if (elem instanceof Lamp) {
+                    elementDrawer.draw((Lamp) elem);
+                }
             }
         }
     }
@@ -135,6 +143,34 @@ public class Workspace extends JPanel {
      */
     public void removeListener(WorkspaceListener l) {
         listeners.remove(l);
+    }
+
+    /**
+     * Returns the current ElementDrawer.
+     * 
+     * @return elementDrawer, ElementDrawer
+     */
+    public ElementDrawer getDrawer() {
+        return elementDrawer;
+    }
+
+    /**
+     * Sets the ElementDrawer.
+     * 
+     * @param drawer
+     *            ElementDrawer, Class implementing the ElementDrawer interface.
+     */
+    public void setDrawer(ElementDrawer drawer) {
+        this.elementDrawer = drawer;
+    }
+
+    /**
+     * Sets the Rectangle representing the Boundaries and Position of the ViewPort.
+     * 
+     * @param rect
+     */
+    public void setViewPortRect(Rectangle rect) {
+        this.viewPortRect = rect;
     }
 
     /**
@@ -190,5 +226,28 @@ public class Workspace extends JPanel {
         for (WorkspaceListener l : listeners) {
             l.mouseDragged(e);
         }
+    }
+
+    private boolean isInView(Element elem) {
+        boolean isInView = false;
+        if (elem instanceof Connection) {
+            if (viewPortRect.intersects(((Connection) elem).getNextModule().getRectangle())) {
+                isInView = true;
+            } else if (viewPortRect.intersects(((Connection) elem).getPreviousModule().getRectangle())) {
+                isInView = true;
+            } else if (viewPortRect.contains(((Connection) elem).getPreviousModule().getRectangle())) {
+                isInView = true;
+            } else if (viewPortRect.contains(((Connection) elem).getNextModule().getRectangle())) {
+                isInView = true;
+            }
+        }
+        if (elem instanceof Module) {
+            if (viewPortRect.intersects(((Module) elem).getRectangle())) {
+                isInView = true;
+            } else if (viewPortRect.contains(((Module) elem).getRectangle())) {
+                isInView = true;
+            }
+        }
+        return isInView;
     }
 }

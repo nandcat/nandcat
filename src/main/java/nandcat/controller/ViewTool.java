@@ -3,12 +3,19 @@ package nandcat.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.ImageIcon;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import nandcat.model.Model;
+import nandcat.model.element.Element;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
+import nandcat.view.WorkspaceListenerAdapter;
 
 /**
  * The ViewTool is responsible for moving the display range over the Workspace.
@@ -19,6 +26,11 @@ public class ViewTool implements Tool {
      * Current View instance.
      */
     private View view = null;
+
+    /**
+     * Current Model instance.
+     */
+    private Model model;
 
     /**
      * Current Controller instance.
@@ -54,6 +66,18 @@ public class ViewTool implements Tool {
     public ViewTool(Controller controller) {
         this.controller = controller;
         view = controller.getView();
+        model = controller.getModel();
+        view.addViewPortListener(new ChangeListener() {
+            
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                view.giveViewPortRect();
+                List<Element> elem = model.getElements();
+                Set<Element> elements = new HashSet<Element>();
+                elements.addAll(elem);
+                view.getWorkspace().redraw(elements);
+            }
+        });
     }
 
     /**
@@ -62,25 +86,9 @@ public class ViewTool implements Tool {
     public void setActive(boolean active) {
         if (active) {
             if (workspaceListener == null) {
-                workspaceListener = new WorkspaceListener() {
-
-                    public void mouseReleased(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mousePressed(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseMoved(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
+                workspaceListener = new WorkspaceListenerAdapter() {
 
                     public void mouseDragged(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseClicked(WorkspaceEvent e) {
                         // TODO Auto-generated method stub
                     }
                 };
