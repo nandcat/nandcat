@@ -11,7 +11,8 @@ import nandcat.view.View;
 /**
  * Controller.
  * 
- * Maps user actions to model updates and defines application behavior.
+ * Maps user actions to model updates and defines application behavior. It holds all tools which are responsible for the
+ * application functionality available in the GUI.
  */
 public class Controller {
 

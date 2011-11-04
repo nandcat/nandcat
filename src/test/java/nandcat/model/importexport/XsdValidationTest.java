@@ -1,6 +1,5 @@
 package nandcat.model.importexport;
 
-import static org.junit.Assert.*;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.transform.Source;
@@ -40,9 +39,10 @@ public class XsdValidationTest {
         };
     }
 
-    @Test(expected=SAXParseException.class)
+    @Test(expected = SAXParseException.class)
     public void testInvalidMissingEndTag() throws SAXException, IOException {
-        InputStream invalid1 = NandcatTest.class.getResourceAsStream("../formattest/sepaf-example-invalid-missingendtag.xml");
+        InputStream invalid1 = NandcatTest.class
+                .getResourceAsStream("../formattest/sepaf-example-invalid-missingendtag.xml");
         invalid1.available();
         XsdValidation.validate(new StreamSource(invalid1), xsdSources, throwingErrorHandler);
     }

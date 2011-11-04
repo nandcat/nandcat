@@ -1,7 +1,10 @@
 package nandcat.model;
 
 /**
- * View-friendly representation of all available module Objects. Contains no logic.
+ * View-friendly representation of all available module objects. Contains no logic.
+ * 
+ * Used to display the representation of a module object, e.g. in a tool bar. Not used to display the module on the
+ * workspace!
  */
 public class ViewModule {
 

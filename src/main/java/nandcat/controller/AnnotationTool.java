@@ -21,6 +21,10 @@ import nandcat.view.WorkspaceListenerAdapter;
 
 /**
  * The AnnotationTool is responsible for the naming of modules.
+ * 
+ * Using this tool gives the user the option to click on existing elements on the workspace and change their annotation
+ * text which is a description for better usability. The annotation will be saved persistently in the standard export
+ * format.
  */
 public class AnnotationTool implements Tool {
 
@@ -135,6 +139,13 @@ public class AnnotationTool implements Tool {
         }
     }
 
+    /**
+     * Shows a dialog box to edit the existing annotation text of an element.
+     * 
+     * @param oldAnnotation
+     *            Annotation before editing.
+     * @return String entered as new annotation.
+     */
     private String askForAnnotation(String oldAnnotation) {
         return (String) JOptionPane.showInputDialog(view, "Baustein mit Text versehen:\n", "Customized Dialog",
                 JOptionPane.PLAIN_MESSAGE, icon, null, oldAnnotation);

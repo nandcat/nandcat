@@ -14,6 +14,8 @@ public interface Exporter {
     /**
      * Sets the output file handler.
      * 
+     * The file points to the file to store the data in.
+     * 
      * @param file
      *            File handler of file to export.
      */
@@ -29,6 +31,8 @@ public interface Exporter {
     /**
      * Sets the circuit to export.
      * 
+     * The given circuit will be stored persistently.
+     * 
      * @param c
      *            Circuit to export.
      */
@@ -43,6 +47,7 @@ public interface Exporter {
 
     /**
      * Gets the error message if export failed.
+     * 
      * @return String Error message if export failed.
      */
     String getErrorMessage();
