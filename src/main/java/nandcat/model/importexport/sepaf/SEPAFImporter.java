@@ -1,36 +1,42 @@
-package nandcat.model;
+package nandcat.model.importexport.sepaf;
 
 import java.io.File;
 import java.util.Map;
 import nandcat.model.element.Circuit;
+import nandcat.model.importexport.Importer;
 
 /**
- * StandardExporter.
+ * StandardImporter.
  * 
  * Supports standard SEP format SEPAF.
  */
-public class StandardExporter implements Exporter {
+public class SEPAFImporter implements Importer {
+
+    /**
+     * Handle of file to import from.
+     */
+    private File file = null;
 
     /**
      * {@inheritDoc}
      */
     public void setFile(File file) {
-        // TODO Auto-generated method stub
+        this.file = file;
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean exportCircuit() {
+    public Circuit getCircuit() {
         // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean importCircuit() {
         return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setCircuit(Circuit c) {
-        // TODO Auto-generated method stub
     }
 
     /**

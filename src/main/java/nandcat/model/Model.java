@@ -22,6 +22,8 @@ import nandcat.model.element.Module;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
+import nandcat.model.importexport.Exporter;
+import nandcat.model.importexport.Importer;
 
 /**
  * The model class contains the logic and data of the program as well as methods to manipulate said data. It is one of
