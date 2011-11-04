@@ -47,7 +47,7 @@ public class View extends JFrame {
     private JToolBar toolBar;
 
     /**
-     * Viewport, visible part of the Workspace.
+     * ViewPort, visible part of the Workspace.
      */
     private JViewport viewport;
 
@@ -187,7 +187,8 @@ public class View extends JFrame {
     }
 
     /**
-     * set up MenuBar of the Frame.
+     * set up MenuBar of the Frame. Creates Menu Elements and gives them Functionalities according to the set of
+     * toolFunctionalities given from the Controller.
      * 
      * @param menubar
      *            the menuBar to be build
@@ -336,7 +337,8 @@ public class View extends JFrame {
     }
 
     /**
-     * set up the ToolBar of the Frame.
+     * set up the ToolBar of the Frame. Creates Buttons and gives them Functionalities according to the set of
+     * toolFunctionalities given from the Controller.
      * 
      * @param toolBar
      *            ToolBar to be build.
@@ -421,7 +423,7 @@ public class View extends JFrame {
     }
 
     /**
-     * Enables all buttons.
+     * Enables all buttons and MenuItems.
      */
     public void enableButtons() {
         for (JComponent enable : disableElements) {
@@ -430,7 +432,7 @@ public class View extends JFrame {
     }
 
     /**
-     * Disables all buttons except buttons for simulation.
+     * Disables all buttons and MenuItems except those for controlling the Simulations.
      */
     public void disableButtons() {
         for (JComponent enable : disableElements) {
@@ -492,7 +494,7 @@ public class View extends JFrame {
      * Changes the Height of the Workspace.
      * 
      * @param newHeight
-     *            int to which the Height will be set.
+     *            integer to which the Height will be set.
      */
     public void setWorkspaceHeight(int newHeight) {
         workspace.setSize(workspace.getWidth(), newHeight);

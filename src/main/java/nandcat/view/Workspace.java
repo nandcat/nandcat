@@ -21,7 +21,9 @@ import nandcat.model.element.OrGate;
 /**
  * Workspace.
  * 
- * The Space the user works on, here he can place the Elements.
+ * The Space the user works on, here he can place the Elements. It holds the ElementDrawer and is says him which
+ * elements to be painted. It also is responsible for notifying the Classes which have implemented the
+ * WorkspaceListener.
  */
 public class Workspace extends JPanel {
 
@@ -34,11 +36,6 @@ public class Workspace extends JPanel {
      * ElementDrawer handles drawing of elements on the workspace.
      */
     private ElementDrawer elementDrawer;
-
-    /**
-     * View instance.
-     */
-    private View view;
 
     /**
      * A set of all workspace listeners on the workspace. The listener informs the implementing class about changes of
@@ -91,13 +88,14 @@ public class Workspace extends JPanel {
      */
     private void setupWorkspace() {
         this.elementDrawer = new StandardElementDrawer();
+        elementDrawer.setGraphics(this.getGraphics());
     }
 
     /**
-     * Redraws the workspace with its elements.
+     * Redraws the workspace with its elements. Checks if elements are in view (Means inside the ViewPort).
      * 
      * @param elements
-     *            ModelEvent with the elements to be redrawed.
+     *            Set<Elements> with the elements to be redrawed.
      */
     public void redraw(Set<Element> elements) {
         for (Element elem : elements) {
@@ -162,12 +160,14 @@ public class Workspace extends JPanel {
      */
     public void setDrawer(ElementDrawer drawer) {
         this.elementDrawer = drawer;
+        elementDrawer.setGraphics(this.getGraphics());
     }
 
     /**
      * Sets the Rectangle representing the Boundaries and Position of the ViewPort.
      * 
      * @param rect
+     *            Rectangle to be set.
      */
     public void setViewPortRect(Rectangle rect) {
         this.viewPortRect = rect;
@@ -175,6 +175,9 @@ public class Workspace extends JPanel {
 
     /**
      * Notifies listeners of mouse click events on the workspace.
+     * 
+     * @param altE
+     *            the MouseEvent received from the MouseListener.
      */
     private void notifyMouseClicked(MouseEvent altE) {
         WorkspaceEvent e = new WorkspaceEvent();
@@ -186,6 +189,9 @@ public class Workspace extends JPanel {
 
     /**
      * Notifies listeners of mouse pressed events on the workspace.
+     * 
+     * @param altE
+     *            the MouseEvent received from the MouseListener.
      */
     private void notifyMousePressed(MouseEvent altE) {
         WorkspaceEvent e = new WorkspaceEvent();
@@ -197,6 +203,9 @@ public class Workspace extends JPanel {
 
     /**
      * Notifies listeners of mouse released events on the workspace.
+     * 
+     * @param altE
+     *            the MouseEvent received from the MouseListener.
      */
     private void notifyMouseReleased(MouseEvent altE) {
         WorkspaceEvent e = new WorkspaceEvent();
@@ -208,6 +217,9 @@ public class Workspace extends JPanel {
 
     /**
      * Notifies listeners of mouse moved events on the workspace.
+     * 
+     * @param altE
+     *            the MouseEvent received from the MouseListener.
      */
     private void notifyMouseMoved(MouseEvent altE) {
         WorkspaceEvent e = new WorkspaceEvent();
@@ -219,6 +231,9 @@ public class Workspace extends JPanel {
 
     /**
      * Notifies listeners of mouse dragged events on the workspace.
+     * 
+     * @param altE
+     *            the MouseEvent received from the MouseListener.
      */
     private void notifyMouseDragged(MouseEvent altE) {
         WorkspaceEvent e = new WorkspaceEvent();
@@ -228,9 +243,18 @@ public class Workspace extends JPanel {
         }
     }
 
+    /**
+     * Checks if an Element is inside or intersects the ViewPort. Helps to decide whether or not to draw the Elements.
+     * Elements out of sight must no be painted.
+     * 
+     * @param elem
+     *            the Element to be checked
+     * @return True or False. Whether the element is in sight or not.
+     */
     private boolean isInView(Element elem) {
         boolean isInView = false;
         if (elem instanceof Connection) {
+            // Connections must be painted if one of the Modules it connects is in sight.
             if (viewPortRect.intersects(((Connection) elem).getNextModule().getRectangle())) {
                 isInView = true;
             } else if (viewPortRect.intersects(((Connection) elem).getPreviousModule().getRectangle())) {
@@ -242,6 +266,7 @@ public class Workspace extends JPanel {
             }
         }
         if (elem instanceof Module) {
+            // Modules must be painted if they are (partly) inside.
             if (viewPortRect.intersects(((Module) elem).getRectangle())) {
                 isInView = true;
             } else if (viewPortRect.contains(((Module) elem).getRectangle())) {

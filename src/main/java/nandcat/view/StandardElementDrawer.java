@@ -20,7 +20,6 @@ import nandcat.model.element.Module;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
-import org.apache.log4j.Logger;
 
 /**
  * Standard element drawer.
@@ -182,7 +181,7 @@ public class StandardElementDrawer implements ElementDrawer {
     /**
      * Class logger instance.
      */
-    private static Logger LOG = Logger.getLogger(StandardElementDrawer.class);
+//    private static Logger LOG = Logger.getLogger(StandardElementDrawer.class);
 
     /**
      * {@inheritDoc}
@@ -200,7 +199,7 @@ public class StandardElementDrawer implements ElementDrawer {
         } else {
             g.setColor(CONNECTION_COLOR_DEFAULT);
         }
-        LOG.trace("Draw Line: " + outPoint.x + "," + outPoint.y + "," + inPoint.x + "," + inPoint.y);
+//        LOG.trace("Draw Line: " + outPoint.x + "," + outPoint.y + "," + inPoint.x + "," + inPoint.y);
         g.drawLine(outPoint.x, outPoint.y, inPoint.x, inPoint.y);
     }
 
@@ -456,7 +455,7 @@ public class StandardElementDrawer implements ElementDrawer {
         } else {
             g.setColor(PORT_COLOR_DEFAULT);
         }
-        LOG.trace("Draw Oval: x: " + (int) rec.x + " y: " + (int) rec.y + " w: " + rec.width + " h: " + rec.height);
+//        LOG.trace("Draw Oval: x: " + (int) rec.x + " y: " + (int) rec.y + " w: " + rec.width + " h: " + rec.height);
         g.drawOval((int) rec.x, (int) rec.y, rec.width, rec.height);
     }
 
@@ -499,16 +498,16 @@ public class StandardElementDrawer implements ElementDrawer {
         } else {
             g.setColor(LAMP_COLOR_DEFAULT);
         }
-        LOG.trace("Fill Oval (Lamp Border): x: " + (int) rec.x + " y: " + (int) rec.y + " w: " + rec.width + " h: "
-                + rec.height);
+//        LOG.trace("Fill Oval (Lamp Border): x: " + (int) rec.x + " y: " + (int) rec.y + " w: " + rec.width + " h: "
+//                + rec.height);
         g.fillOval(rec.x, rec.y, rec.width, rec.height);
         if (lamp.isSelected()) {
             g.setColor(GATE_COLOR_SELECTED);
         } else {
             g.setColor(GATE_COLOR);
         }
-        LOG.trace("Draw Oval (Lamp Border): x: " + (int) rec.x + " y: " + (int) rec.y + " w: " + rec.width + " h: "
-                + rec.height);
+//        LOG.trace("Draw Oval (Lamp Border): x: " + (int) rec.x + " y: " + (int) rec.y + " w: " + rec.width + " h: "
+//                + rec.height);
         g.drawOval(rec.x, rec.y, rec.width, rec.height);
         drawModulePorts(lamp);
         if (lamp.getName() != null) {
