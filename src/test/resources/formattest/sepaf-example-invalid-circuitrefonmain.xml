@@ -20,7 +20,8 @@
   <nandcat:symbol nandcat:format="png">BASE64ENCODEDIMAGEDATA</nandcat:symbol>
 </circuit> 
         
-<circuit name="inner-circuit0">
+<circuit name="inner-circuit">
+  <component type="circuit" type2="myCircuit" name="inner1" posx="0" posy="0" nandcat:annotation="test annotation"/>
   <component type="and" name="and0" posx="0" posy="1" nandcat:ports_in="5" nandcat:ports_out="3" nandcat:bullshit="1"/>
   <component type="or" name="or1" posx="0" posy="2"/>
   <component type="in" name="in1" posx="0" posy="5" nandcat:in_state="true" nandcat:in_timing="100"/>
