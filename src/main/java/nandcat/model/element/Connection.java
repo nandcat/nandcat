@@ -1,12 +1,13 @@
 package nandcat.model.element;
 
+import java.awt.geom.Line2D;
 import nandcat.model.Clock;
 
 /**
  * Connection between two Modules. Propagates the signal from the first Module to the second. Is responsible for
  * registering the next Module on the clock.
  */
-public class Connection implements Element {
+public class Connection implements Element, DrawConnection {
 
     /**
      * Connection's name.
@@ -33,6 +34,11 @@ public class Connection implements Element {
      * Connection's state.
      */
     private boolean state;
+
+    /**
+     * Connection's selection-state.
+     */
+    private boolean selected;
 
     /**
      * Create and attach new connection.
@@ -138,15 +144,14 @@ public class Connection implements Element {
      * {@inheritDoc}
      */
     public void setSelected(boolean b) {
-        // TODO Auto-generated method stub
+        selected = b;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isSelected() {
-        // TODO Auto-generated method stub
-        return false;
+        return selected;
     }
 
     /**
@@ -159,5 +164,13 @@ public class Connection implements Element {
                 clock.addListener(getNextModule());
             }
         }
+    }
+
+    /**
+     * Return Line-object representing this connection (derived from attached in/outPorts).
+     */
+    public Line2D getLine() {
+        // TODO exact enough? -> maybe better: public Point inPort.getModuleBoundary()
+        return new Line2D.Double(inPort.getRectangle().getLocation(), outPort.getRectangle().getLocation());
     }
 }
