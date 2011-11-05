@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +14,7 @@ import nandcat.model.check.CircuitCheck;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
+import nandcat.model.element.DrawElement;
 import nandcat.model.element.Element;
 import nandcat.model.element.FlipFlop;
 import nandcat.model.element.IdentityGate;
@@ -207,6 +209,7 @@ public class Model implements ClockListener {
     /**
      * Get a set of elements within a specific rectangle.
      * 
+     * @deprecated use the fine Draw*-equivalent instead.
      * @param rect
      *            Rectangle containing the x- and y-coordinate.
      * @return Set of Elements at the given location.
@@ -221,6 +224,33 @@ public class Model implements ClockListener {
         return null;
     }
 
+    // TODO recheck, faggit!
+    /**
+     * Get a set of elements within a specific rectangle.
+     * 
+     * @param rect
+     *            Rectangle containing the x- and y-coordinate.
+     * @return Set of Elements at the given location.
+     */
+    public Set<DrawElement> getDrawElementsAt(Rectangle rect) {
+        Set<DrawElement> elementsAt = new HashSet<DrawElement>();
+        for (Element element : circuit.getElements()) {
+            if (element instanceof Module) {
+                Module m = (Module) element;
+                if (m.getRectangle().intersects(rect)) {
+                    elementsAt.add((DrawElement) element);
+                }
+            }
+            if (element instanceof Connection) {
+                Connection c = (Connection) element;
+                if (c.getLine().intersects(rect)) {
+                    elementsAt.add((DrawElement) element);
+                }
+            }
+        }
+        return elementsAt;
+    }
+
     /**
      * Gets the current clock.
      * 
@@ -233,6 +263,7 @@ public class Model implements ClockListener {
     /**
      * Select elements from the circuit. An element is selected when it lies within a given rectangle.
      * 
+     * @deprecated use the fine Draw*-equivalent instead.
      * @param rect
      *            The Rectangle defining the zone where elements are selected.
      * @return A Set of the selected elements.
@@ -249,12 +280,45 @@ public class Model implements ClockListener {
     }
 
     /**
+     * Select elements from the circuit. An element is selected when it lies within a given rectangle.
+     * 
+     * @param rect
+     *            The Rectangle defining the zone where elements are selected.
+     * @return A Set of the selected elements.
+     */
+    public Set<DrawElement> selectDrawElements(Rectangle rect) {
+        // TODO implement
+        // Set<Element> selectedElements = new HashSet<Element>();
+        // for (Element element : circuit.getElements()) {
+        // if (rect.contains(element.getRectangle)){
+        // selectedElements.add(element);
+        // }
+        // }
+        return null;
+    }
+
+    /**
      * Get all elements from the current circuit.
+     * 
+     * @deprecated use the fine Draw*-equivalent instead.
      * 
      * @return A Set of all elements.
      */
     public List<Element> getElements() {
         return circuit.getElements();
+    }
+
+    /**
+     * Get all elements from the current circuit.
+     * 
+     * @return A Set of all elements.
+     */
+    public List<DrawElement> getDrawElements() {
+        List<DrawElement> drawElements = new LinkedList<DrawElement>();
+        for (Element element : circuit.getElements()) {
+            drawElements.add((DrawElement) element);
+        }
+        return drawElements;
     }
 
     /**
