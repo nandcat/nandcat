@@ -6,7 +6,6 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import nandcat.Nandcat;
 import nandcat.NandcatTest;
-import nandcat.model.XsdValidation;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.ErrorHandler;
@@ -47,10 +46,43 @@ public class XsdValidationTest {
         XsdValidation.validate(new StreamSource(invalid1), xsdSources, throwingErrorHandler);
     }
 
+    @Test(expected = SAXParseException.class)
+    public void testInvalidDoubledName() throws SAXException, IOException {
+        InputStream invalid1 = NandcatTest.class
+                .getResourceAsStream("../formattest/sepaf-example-invalid-doubledname.xml");
+        invalid1.available();
+        XsdValidation.validate(new StreamSource(invalid1), xsdSources, throwingErrorHandler);
+    }
+
+    @Test
+    public void testPseudoValidMissingCircuitReference() throws SAXException, IOException {
+        InputStream invalid1 = NandcatTest.class
+                .getResourceAsStream("../formattest/sepaf-example-invalid-missingcircuitref.xml");
+        invalid1.available();
+        XsdValidation.validate(new StreamSource(invalid1), xsdSources, throwingErrorHandler);
+    }
+
+    @Test
+    public void testIgnoreWrongElementAtSecondLevel() throws SAXException, IOException {
+        InputStream invalid1 = NandcatTest.class
+                .getResourceAsStream("../formattest/sepaf-example-ignore-wrongelement.xml");
+        invalid1.available();
+        XsdValidation.validate(new StreamSource(invalid1), xsdSources, throwingErrorHandler);
+    }
+
+    @Test(expected = SAXParseException.class)
+    public void testInvalidCircuitWithoutName() throws SAXException, IOException {
+        InputStream invalid1 = NandcatTest.class
+                .getResourceAsStream("../formattest/sepaf-example-invalid-circuitwoname.xml");
+        invalid1.available();
+        XsdValidation.validate(new StreamSource(invalid1), xsdSources, throwingErrorHandler);
+    }
+
     @Test
     public void test() throws SAXException, IOException {
         InputStream valid = NandcatTest.class.getResourceAsStream("../formattest/sepaf-example-valid.xml");
         valid.available();
         XsdValidation.validate(new StreamSource(valid), xsdSources, throwingErrorHandler);
     }
+
 }

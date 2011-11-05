@@ -42,7 +42,8 @@ public interface Importer {
 
     /**
      * Gets the error message if import failed.
-     * @return String Error message if import failed.
+     * 
+     * @return String Error message if import failed, null if no error occurred.
      */
     String getErrorMessage();
 }

@@ -5,6 +5,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ ImportExportGeneralTest.class, XsdValidationTest.class })
+@SuiteClasses({ ImportExportGeneralTest.class, XsdValidationTest.class, JDOMFirstTest.class })
 public class ImportExportTestSuite {
 }
