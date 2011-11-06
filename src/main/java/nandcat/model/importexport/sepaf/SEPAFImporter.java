@@ -18,6 +18,7 @@ import nandcat.model.element.OrGate;
 import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
 import nandcat.model.importexport.XsdValidation;
+import org.apache.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.DataConversionException;
 import org.jdom.Document;
@@ -36,6 +37,11 @@ import org.xml.sax.SAXParseException;
  * Supports standard SEP format SEPAF.
  */
 public class SEPAFImporter implements Importer {
+
+    /**
+     * Class logger instance.
+     */
+    private static Logger LOG = Logger.getLogger(SEPAFImporter.class);
 
     /**
      * Handle of file to import from.
@@ -138,7 +144,7 @@ public class SEPAFImporter implements Importer {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return true;
 
@@ -212,11 +218,19 @@ public class SEPAFImporter implements Importer {
         if (el == null) {
             throw new IllegalArgumentException();
         }
+        LOG.debug("Build module: " + el.getQualifiedName() + " : " + el.getAttributeValue("name"));
         Attribute aType = el.getAttribute("type", NS_SEPAF);
         Attribute aSubtype = el.getAttribute("type2", NS_SEPAF);
         Attribute aName = el.getAttribute("name", NS_SEPAF);
         Attribute aPosX = el.getAttribute("posx", NS_SEPAF);
         Attribute aPosY = el.getAttribute("posy", NS_SEPAF);
+        if (aPosX == null) {
+            throw new FormatException("posx not valid at :" + el.getQualifiedName());
+        }
+        if (aPosY == null) {
+            throw new FormatException("posy not valid at :" + el.getQualifiedName());
+        }
+
         Point location = null;
         try {
             location = new Point(aPosX.getIntValue(), aPosY.getIntValue());

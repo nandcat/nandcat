@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<circuits main="myCircuit"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0"
+  xmlns:nandcat="http://www.nandcat.de/xmlns/sepaf-extension"
+  xsi:schemaLocation="
+    http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0
+    http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0.xsd
+    http://www.nandcat.de/xmlns/sepaf-extension
+    http://www.nandcat.de/xmlns/sepaf-extension.xsd">
+
+<circuit name="myCircuit">
+	<component type="not" name="not0" posx="1" posy="1"/>
+  <component type="and" name="and0" posx="0" posy="2"/>
+  <component type="and" name="and1" posx="0" posy="3"/>
+  <component type="or" name="or0" posx="0" posy="4"/>
+</circuit> 
+              
+</circuits>
