@@ -5,7 +5,6 @@ import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
 import nandcat.model.check.CheckEvent;
@@ -101,7 +100,7 @@ public class CheckManager extends JFrame {
     /**
      * Sets up CheckManager elements.
      * 
-     * @param set
+     * @param checks
      *            List with Checks to be listed in the Frame.
      * @param boxListener
      *            Listener for the CheckBoxes
@@ -111,7 +110,7 @@ public class CheckManager extends JFrame {
         frame.setLocation(frameLocation);
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         JCheckBox checkbox = new JCheckBox();
-        for(CircuitCheck check : checks) {
+        for (CircuitCheck check : checks) {
             JCheckBoxMenuItem item = new JCheckBoxMenuItem(check.toString(), checkPending);
             item.addItemListener(boxListener);
             checkbox.add(item);
