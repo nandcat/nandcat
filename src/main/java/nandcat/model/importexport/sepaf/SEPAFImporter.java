@@ -11,7 +11,10 @@ import javax.xml.transform.stream.StreamSource;
 import nandcat.Nandcat;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
+import nandcat.model.element.FlipFlop;
 import nandcat.model.element.IdentityGate;
+import nandcat.model.element.ImpulseGenerator;
+import nandcat.model.element.Lamp;
 import nandcat.model.element.Module;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
@@ -219,11 +222,11 @@ public class SEPAFImporter implements Importer {
             throw new IllegalArgumentException();
         }
         LOG.debug("Build module: " + el.getQualifiedName() + " : " + el.getAttributeValue("name"));
-        Attribute aType = el.getAttribute("type", NS_SEPAF);
-        Attribute aSubtype = el.getAttribute("type2", NS_SEPAF);
-        Attribute aName = el.getAttribute("name", NS_SEPAF);
-        Attribute aPosX = el.getAttribute("posx", NS_SEPAF);
-        Attribute aPosY = el.getAttribute("posy", NS_SEPAF);
+        Attribute aType = el.getAttribute("type");
+        Attribute aSubtype = el.getAttribute("type2");
+        Attribute aName = el.getAttribute("name");
+        Attribute aPosX = el.getAttribute("posx");
+        Attribute aPosY = el.getAttribute("posy");
         if (aPosX == null) {
             throw new FormatException("posx not valid at :" + el.getQualifiedName());
         }
@@ -240,6 +243,9 @@ public class SEPAFImporter implements Importer {
         Attribute aAnnotation = el.getAttribute("annotation", NS_NANDCAT);
         Attribute aPortsIn = el.getAttribute("ports_in", NS_NANDCAT);
         Attribute aPortsOut = el.getAttribute("ports_out", NS_NANDCAT);
+        Attribute inState = el.getAttribute("in_state", NS_NANDCAT);
+        Attribute inTiming = el.getAttribute("in_timing", NS_NANDCAT);
+
         Integer portsIn = null;
         Integer portsOut = null;
         if (aPortsIn != null) {
@@ -291,6 +297,81 @@ public class SEPAFImporter implements Importer {
                 notGate = new NotGate();
             }
             module = notGate;
+        } else if (aType.getValue().equals("out")) {
+            Lamp lamp = null;
+
+            if (portsIn != null && portsOut != null) {
+                LOG.debug("Component 'out' does not support 'ports_in' or 'ports_out'");
+            }
+            lamp = new Lamp();
+            module = lamp;
+        } else if (aType.getValue().equals("flipflop")) {
+            FlipFlop ff = null;
+
+            if (portsIn != null && portsOut != null) {
+                LOG.debug("Component 'flipflop' does not support 'ports_in' or 'ports_out'");
+            }
+            // TODO FlipFlop und Circuit sollte kein Point im Konstruktor haben
+            ff = new FlipFlop(null);
+            module = ff;
+        } else if (aType.getValue().equals("in")) {
+            ImpulseGenerator ig = null;
+
+            if (portsIn != null && portsOut != null) {
+                LOG.debug("Component 'in' does not support 'ports_in' or 'ports_out'");
+            }
+            // TODO DocComment in ImpulseGenerator
+            ig = new ImpulseGenerator(0);
+            if (inState != null) {
+                Boolean state = null;
+                try {
+                    state = inState.getBooleanValue();
+                } catch (DataConversionException e) {
+                    throw new FormatException("'in_state' not boolean", e);
+                }
+                if (state != null && state) {
+                    ig.toggleState();
+                }
+            } else {
+                LOG.debug("Component 'in' does not has 'in_state', use default");
+            }
+            module = ig;
+        } else if (aType.getValue().equals("clock")) {
+            ImpulseGenerator ig = null;
+
+            if (portsIn != null && portsOut != null) {
+                LOG.debug("Component 'clock' does not support 'ports_in' or 'ports_out'");
+            }
+            if (inTiming != null) {
+                Integer timing = null;
+                try {
+                    timing = inTiming.getIntValue();
+                } catch (DataConversionException e) {
+                    throw new FormatException("'in_timinig' not integer", e);
+                }
+                if (timing != null) {
+                    ig = new ImpulseGenerator(timing);
+                }
+            } else {
+                LOG.debug("Component 'clock' does not has 'in_timing', use default");
+                // FIXME Default constructor benötigt für ImpulseGenerator.
+                ig = new ImpulseGenerator(50);
+            }
+
+            if (inState != null) {
+                Boolean state = null;
+                try {
+                    state = inState.getBooleanValue();
+                } catch (DataConversionException e) {
+                    throw new FormatException("'in_state' not boolean", e);
+                }
+                if (state != null && state) {
+                    ig.toggleState();
+                }
+            } else {
+                LOG.debug("Component 'clock' does not has a state, use default");
+            }
+            module = ig;
         } else {
             throw new FormatException("Not a supported component type: '" + aType.getValue() + "'");
         }

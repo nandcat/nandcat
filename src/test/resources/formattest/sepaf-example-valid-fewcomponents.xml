@@ -11,9 +11,13 @@
 
 <circuit name="myCircuit">
 	<component type="not" name="not0" posx="1" posy="1"/>
-  <component type="and" name="and0" posx="0" posy="2"/>
-  <component type="and" name="and1" posx="0" posy="3"/>
-  <component type="or" name="or0" posx="0" posy="4"/>
+  <component type="and" name="and0" posx="2" posy="2"/>
+  <component type="id" name="id0" posx="3" posy="3"/>
+  <component type="or" name="or0" posx="4" posy="4"/>
+  <component type="out" name="lamp0" posx="5" posy="5"/>
+  <component type="flipflop" name="ff0" posx="6" posy="6"/>
+  <component type="in" name="in0" posx="7" posy="7" nandcat:in_state="true" />
+  <component type="clock" name="clock0" nandcat:in_timing="20" posx="8" posy="8"/>
 </circuit> 
               
 </circuits>
