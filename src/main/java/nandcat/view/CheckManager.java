@@ -1,7 +1,11 @@
 package nandcat.view;
 
+import java.awt.Point;
 import java.util.Set;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
 import nandcat.model.check.CheckEvent;
@@ -12,6 +16,11 @@ import nandcat.model.check.CircuitCheck;
  * CheckManager is responsible for selecting and deselecting Checks and showing their states.
  */
 public class CheckManager extends JFrame {
+
+    /**
+     * frame of the CheckManager.
+     */
+    private JFrame frame = new JFrame("CheckManager");
 
     /**
      * Default serial version uid.
@@ -44,6 +53,16 @@ public class CheckManager extends JFrame {
     private ImageIcon checkFailed;
 
     /**
+     * Reference on this CheckManager.
+     */
+    private CheckManager checkManager;
+
+    /**
+     * Location of upper left corner of the frame on the screen.
+     */
+    private Point frameLocation = new Point(300, 250);
+
+    /**
      * Constructs the CheckManager.
      * 
      * @param set
@@ -66,6 +85,7 @@ public class CheckManager extends JFrame {
         for (CircuitCheck c : set) {
             c.addListener(checkListener);
         }
+        checkManager = this;
     }
 
     /**
@@ -75,7 +95,7 @@ public class CheckManager extends JFrame {
      *            boolean represents if visible or not.
      */
     public void setVisible(boolean visible) {
-        // TODO implement
+        checkManager.setVisible(visible);
     }
 
     /**
@@ -86,8 +106,16 @@ public class CheckManager extends JFrame {
      * @param boxListener
      *            Listener for the CheckBoxes
      */
-    private void setupCheckmanager(Set<CircuitCheck> set, ItemHandler boxListener) {
-        // TODO Auto-generated method stub
+    private void setupCheckmanager(Set<CircuitCheck> checks, ItemHandler boxListener) {
+        frame.setSize(600, 400);
+        frame.setLocation(frameLocation);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        JCheckBox checkbox = new JCheckBox();
+        for(CircuitCheck check : checks) {
+            JCheckBoxMenuItem item = new JCheckBoxMenuItem(check.toString(), checkPending);
+            item.addItemListener(boxListener);
+            checkbox.add(item);
+        }
     }
 
     /**

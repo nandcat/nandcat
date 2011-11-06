@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.BoxLayout;
@@ -92,9 +93,9 @@ public class View extends JFrame {
     private Map<String, ActionListener> toolFunctionalities;
 
     /**
-     * A Set of Modules available for making circuits.
+     * A List of Modules available for making circuits.
      */
-    private Set<ViewModule> viewModules;
+    private List<ViewModule> viewModules;
 
     /**
      * Set of JComponents we want to be disabled during simulation.
@@ -351,7 +352,7 @@ public class View extends JFrame {
         disableElements.add(create);
         JButton select = new JButton("Auswahl");
         disableElements.add(select);
-        JComboBox modules = null;
+        JComboBox<ViewModule> modules = null;
         if (toolFunctionalities.containsKey("start")) {
             start.addActionListener(toolFunctionalities.get("start"));
             start.setActionCommand("start");
@@ -388,7 +389,9 @@ public class View extends JFrame {
             move.setName("move");
         }
         if (viewModules != null) {
-            modules = new JComboBox(viewModules.toArray());
+            ViewModule[] viewMod = new ViewModule[viewModules.size()];
+            viewMod = viewModules.toArray(viewMod);
+            modules = new JComboBox<ViewModule>(viewMod);
         }
         if (toolFunctionalities.containsKey("create")) {
             modules.addActionListener(toolFunctionalities.get("selectModule"));
@@ -409,7 +412,7 @@ public class View extends JFrame {
      * Redraws the workspace with its elements.
      * 
      * @param e
-     *            ModelEvent with the elements to be redrawed.
+     *            ModelEvent with the elements to be repainted.
      */
     public void redraw(ModelEvent e) {
         workspace.redraw(e.getElements());
@@ -468,7 +471,8 @@ public class View extends JFrame {
      *            Point where to be set.
      */
     public void setViewportPosition(Point p) {
-        viewport.setViewPosition(p);
+        viewportLocation.setLocation(viewportLocation.getX() + p.getX(), viewportLocation.getY() + p.getY());
+        viewport.setViewPosition(viewportLocation);
     }
 
     /**
@@ -506,11 +510,11 @@ public class View extends JFrame {
     /**
      * With this method the Controller is able to give the View the Informations about the Elements available.
      * 
-     * @param viewele
-     *            Set<ViewModule> with the Elements available.
+     * @param viewElem
+     *            List<ViewModule> with the Elements available.
      */
-    public void setViewModules(Set<ViewModule> viewele) {
-        viewModules = viewele;
+    public void setViewModules(List<ViewModule> viewElem) {
+        viewModules = viewElem;
     }
 
     /**
