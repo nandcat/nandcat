@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<circuits main="myCircuit"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0"
+  xmlns:c="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0"
+  xmlns:nandcat="http://www.nandcat.de/xmlns/sepaf-extension"
+  xsi:schemaLocation="
+    http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0
+    http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0.xsd
+    http://www.nandcat.de/xmlns/sepaf-extension
+    http://www.nandcat.de/xmlns/sepaf-extension.xsd">
+
+<circuit name="myCircuit">
+	<component type="not" name="not0" posx="1" posy="1" nandcat:annotation="not"/>
+  <component type="and" name="and0" posx="2" posy="2" nandcat:annotation="and"/>
+  <component type="id" name="id0" posx="3" posy="3" nandcat:annotation="id"/>
+  <component type="or" name="or0" posx="4" posy="4" nandcat:annotation="or"/>
+  <component type="out" name="lamp0" posx="5" posy="5" nandcat:annotation="out"/>
+  <component type="flipflop" name="ff0" posx="6" posy="6" nandcat:annotation="flipflop"/>
+  <component type="in" name="in0" posx="7" posy="7" nandcat:in_state="true" nandcat:annotation="in"/>
+  <component type="clock" name="clock0" nandcat:in_timing="20" posx="8" posy="8" nandcat:annotation="clock"/>
+  <connection source="and0" sourcePort="o" target="or0" targetPort="a" />
+  <connection source="or0" sourcePort="o" target="and0" targetPort="b" />
+</circuit> 
+              
+</circuits>

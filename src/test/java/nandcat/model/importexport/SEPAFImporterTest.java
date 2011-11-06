@@ -1,6 +1,7 @@
 package nandcat.model.importexport;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import java.awt.Point;
 import java.io.File;
 import java.net.URISyntaxException;
@@ -15,6 +16,7 @@ import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
+import nandcat.model.element.Port;
 import nandcat.model.importexport.sepaf.SEPAFImporter;
 import org.junit.Test;
 
@@ -87,7 +89,57 @@ public class SEPAFImporterTest {
 
         // Check if no element exists twice.
         assertEquals(8, elements.size());
+    }
 
+    @Test
+    public void testConnections() {
+        File file = getFile("../formattest/sepaf-example-valid-connectedcomponents.xml");
+        Importer importer = new SEPAFImporter();
+        importer.setFile(file);
+        assertTrue(importer.importCircuit());
+        Circuit circuit = importer.getCircuit();
+        assertTrue(circuit != null);
+        List<Element> elements = circuit.getElements();
+        NotGate notGate = null;
+        AndGate andGate = null;
+        IdentityGate idGate = null;
+        OrGate orGate = null;
+        Lamp lamp = null;
+        FlipFlop flipFlop = null;
+        ImpulseGenerator in = null;
+        ImpulseGenerator ig = null;
+        for (Element element : elements) {
+            if (element instanceof NotGate)
+                notGate = (NotGate) element;
+            if (element instanceof AndGate)
+                andGate = (AndGate) element;
+            if (element instanceof IdentityGate)
+                idGate = (IdentityGate) element;
+            if (element instanceof OrGate)
+                orGate = (OrGate) element;
+            if (element instanceof Lamp)
+                lamp = (Lamp) element;
+            if (element instanceof FlipFlop)
+                flipFlop = (FlipFlop) element;
+            if (element instanceof ImpulseGenerator) {
+                ImpulseGenerator igtmp = (ImpulseGenerator) element;
+                if (igtmp.getFrequency() == 0)
+                    in = igtmp;
+                else
+                    ig = igtmp;
+            }
+        }
+        Port source1 = andGate.getOutPorts().get(0);
+        Port target1 = orGate.getInPorts().get(0);
+        assertTrue(source1.getConnection() != null);
+        assertEquals(source1, source1.getConnection().getInPort());
+        assertEquals(target1, source1.getConnection().getOutPort());
+
+        Port source2 = orGate.getOutPorts().get(0);
+        Port target2 = andGate.getInPorts().get(1);
+        assertTrue(source2.getConnection() != null);
+        assertEquals(source2, source2.getConnection().getInPort());
+        assertEquals(target2, source2.getConnection().getOutPort());
     }
 
     private File getFile(String path) {
