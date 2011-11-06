@@ -297,6 +297,17 @@ public class Circuit implements ClockListener, Module {
      *            Point specifying the location of the Module
      */
     public void addModule(Module m, Point p) {
+        addModule(m);
+        m.setLocation(p);
+    }
+
+    /**
+     * Adds a Module to the Circuit.
+     * 
+     * @param m
+     *            Module to add
+     */
+    public void addModule(Module m) {
         if (m instanceof Circuit) {
             Circuit c = (Circuit) m;
             for (Element e : c.getElements()) {
@@ -307,6 +318,6 @@ public class Circuit implements ClockListener, Module {
         }
         // one module may not appear more than once in elements (ensured by Set<>)
         elements.add(m);
-        m.setLocation(p);
     }
+
 }
