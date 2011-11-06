@@ -16,34 +16,34 @@ public interface DrawCircuit extends DrawModule {
     /**
      * {@inheritDoc}
      */
-    public String getName();
+    String getName();
 
     /**
      * Getter for Elements.
      * 
      * @return The Elements
      */
-    public List<Element> getElements();
+    List<Element> getElements();
 
     /**
      * {@inheritDoc}
      */
-    public List<Port> getInPorts();
+    List<Port> getInPorts();
 
     /**
      * {@inheritDoc}
      */
-    public List<Port> getOutPorts();
+    List<Port> getOutPorts();
 
     /**
      * {@inheritDoc}
      */
-    public Point getLocation();
+    Point getLocation();
 
     /**
      * {@inheritDoc}
      */
-    public Rectangle getRectangle();
+    Rectangle getRectangle();
 
     /**
      * Returns base64-encoded PNG symbol representation of the circuit. Conversion to a BufferedImage via<br />
@@ -51,12 +51,12 @@ public interface DrawCircuit extends DrawModule {
      * 
      * @return byte[] representation of PNG symbol
      */
-    public byte[] getSymbol();
+    byte[] getSymbol();
 
     /**
      * {@inheritDoc}
      */
-    public boolean isSelected();
+    boolean isSelected();
 
     // NOTE nice to have: durchlauf sortiert nach Y-Koordinate, sodass die in/outPorts entsprechend
     // als Ein/Ausgaenge eines (Circuit)Bausteins auftauchen
@@ -65,5 +65,5 @@ public interface DrawCircuit extends DrawModule {
      * 
      * @return List<Module> containing the starting Modules of this Circuit.
      */
-    public List<Module> getStartingModules();
+    List<Module> getStartingModules();
 }

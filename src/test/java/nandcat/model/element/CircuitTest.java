@@ -11,6 +11,11 @@ import junit.framework.TestSuite;
 public class CircuitTest extends TestCase {
 
     /**
+     * Default location for elements.
+     */
+    private Point p;
+
+    /**
      * Create the test case.
      * 
      * @param testName
@@ -18,6 +23,7 @@ public class CircuitTest extends TestCase {
      */
     public CircuitTest(String testName) {
         super(testName);
+        p = new Point(0, 0);
     }
 
     /**
@@ -31,7 +37,6 @@ public class CircuitTest extends TestCase {
      * AND, ImpulseGen.
      */
     public void testAddModule() {
-        Point p = new Point(0, 0);
         AndGate and0 = new AndGate(2, 1);
         ImpulseGenerator impy = new ImpulseGenerator(0);
         Circuit c = new Circuit(p);
@@ -49,11 +54,11 @@ public class CircuitTest extends TestCase {
         AndGate and1 = new AndGate(2, 1);
         AndGate and2 = new AndGate(2, 1);
         ImpulseGenerator impy = new ImpulseGenerator(0);
-        Circuit c = new Circuit(new Point(0, 0));
-        c.addModule(and0, new Point(0, 0));
-        c.addModule(and1, new Point(0, 0));
-        c.addModule(and2, new Point(0, 0));
-        c.addModule(impy, new Point(0, 0));
+        Circuit c = new Circuit(p);
+        c.addModule(and0, p);
+        c.addModule(and1, p);
+        c.addModule(and2, p);
+        c.addModule(impy, p);
         c.addConnection(and0.getOutPorts().get(0), and1.getInPorts().get(1));
         c.addConnection(impy.getOutPorts().get(0), and2.getInPorts().get(0));
         c.addConnection(and1.getOutPorts().get(0), and2.getInPorts().get(1));
@@ -67,7 +72,6 @@ public class CircuitTest extends TestCase {
      * Remove element (AND1) AND0 --> AND1.
      */
     public void testRemoveElement() {
-        Point p = new Point(0, 0);
         AndGate and0 = new AndGate(2, 1);
         AndGate and1 = new AndGate(2, 1);
         Circuit c = new Circuit(p);
@@ -93,7 +97,6 @@ public class CircuitTest extends TestCase {
      * Test selecting a single module. (AND)
      */
     public void testSetModuleActive() {
-        Point p = new Point(0, 0);
         Circuit c = new Circuit(p);
         AndGate and0 = new AndGate(2, 1);
         c.addModule(and0, p);
@@ -108,7 +111,6 @@ public class CircuitTest extends TestCase {
      * Test connecting to Modules (ImpulseGen --> Lamp).
      */
     public void testAddConnection() {
-        Point p = new Point(0, 0);
         Circuit c = new Circuit(p);
         ImpulseGenerator impy = new ImpulseGenerator(0);
         Lamp lamp = new Lamp();
@@ -125,7 +127,6 @@ public class CircuitTest extends TestCase {
      * Test circuit containing a circuit (dawg).
      */
     public void testDawg() {
-        Point p = new Point(0, 0);
         Circuit c = new Circuit(p);
         Circuit innerCircuit = new FlipFlop(p);
         c.addModule(innerCircuit, p);

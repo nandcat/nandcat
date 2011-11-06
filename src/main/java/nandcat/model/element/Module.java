@@ -10,6 +10,11 @@ import java.util.List;
 public interface Module extends Element, DrawModule {
 
     /**
+     * Default extent for the Rectangle of Modules.
+     */
+    int EXTENT = 100;
+
+    /**
      * Gets incoming ports.
      * 
      * @return incoming ports.

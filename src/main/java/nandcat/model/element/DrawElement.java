@@ -4,7 +4,7 @@ package nandcat.model.element;
  * RoElement interface. A read-only Element contains getters for the most basic attributes a visible (or under specific
  * circumstances invisible) on the workspave component can have.
  */
-public interface DrawElement extends Element {
+public interface DrawElement {
 
     /**
      * Return element's name.

@@ -53,7 +53,9 @@ public class ImpulseGenerator implements Module {
             new IllegalArgumentException("invalid frequency for impulsegenerator");
         }
         this.frequency = frequency;
+        rectangle = new Rectangle(EXTENT, EXTENT);
         outPort = new Port(this);
+        outPort.locateOnStandardPosition();
     }
 
     /**
