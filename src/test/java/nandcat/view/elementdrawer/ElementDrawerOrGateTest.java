@@ -34,12 +34,21 @@ public class ElementDrawerOrGateTest extends AbstractElementDrawerTest {
 
     private void gateMockSetGeneralExpectations() {
         LinkedList<Port> portList = new LinkedList<Port>();
-        portList.add(new Port(gateMock));
+        // Add ports
+        Port port1 = EasyMock.createMock(Port.class);
+        EasyMock.expect(port1.getState()).andReturn(false).anyTimes();
+        EasyMock.replay(port1);
+        portList.add(port1);
+
         Port activePort = EasyMock.createMock(Port.class);
         EasyMock.expect(activePort.getState()).andReturn(true).anyTimes();
         EasyMock.replay(activePort);
         portList.add(activePort);
-        portList.add(new Port(gateMock));
+
+        Port port2 = EasyMock.createMock(Port.class);
+        EasyMock.expect(port2.getState()).andReturn(false).anyTimes();
+        EasyMock.replay(port2);
+        portList.add(port2);
         rec = new Rectangle(21, 23, 100 + PORT_MARGIN_LEFT + PORT_MARGIN_RIGHT, 100 + PORT_MARGIN_TOP
                 + PORT_MARGIN_BOTTOM);
         EasyMock.expect(gateMock.getRectangle()).andReturn(rec).anyTimes();
@@ -116,7 +125,7 @@ public class ElementDrawerOrGateTest extends AbstractElementDrawerTest {
         graphicMock.drawOval(EasyMock.geq(rec.x), EasyMock.geq(rec.y), EasyMock.eq(PORT_DIAMETER),
                 EasyMock.eq(PORT_DIAMETER));
     }
-    
+
     private void mockDrawAnnotation() {
         graphicMock.setColor(ANNOTATION_COLOR);
     }
