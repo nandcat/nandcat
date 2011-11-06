@@ -11,14 +11,14 @@ public interface DrawConnection extends DrawElement {
      * 
      * @return String representing connection's name
      */
-    public String getName();
+    String getName();
 
     /**
      * Return connection's state.
      * 
      * @return the state
      */
-    public boolean getState();
+    boolean getState();
 
     /**
      * Return the next module (the Connection is attached to). Next: going from one element's outPort to the other
@@ -26,7 +26,7 @@ public interface DrawConnection extends DrawElement {
      * 
      * @return Module whose inPort is attached to this connection
      */
-    public Module getNextModule();
+    Module getNextModule();
 
     /**
      * Return the previous module (the Connection is attached to). Previous: going from one element's inPort to the
@@ -34,24 +34,24 @@ public interface DrawConnection extends DrawElement {
      * 
      * @return Module whose outPort is attached to this connection
      */
-    public Module getPreviousModule();
+    Module getPreviousModule();
 
     /**
      * Getter for inPort.
      * 
      * @return Port inPort
      */
-    public Port getInPort();
+    Port getInPort();
 
     /**
      * Getter for outPort.
      * 
      * @return Port outPort
      */
-    public Port getOutPort();
+    Port getOutPort();
 
     /**
      * {@inheritDoc}
      */
-    public boolean isSelected();
+    boolean isSelected();
 }

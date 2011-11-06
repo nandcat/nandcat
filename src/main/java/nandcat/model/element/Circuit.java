@@ -307,6 +307,8 @@ public class Circuit implements ClockListener, Module, DrawCircuit {
         }
         // one module may not appear more than once in elements (ensured by Set<>)
         elements.add(m);
-        m.setLocation(p);
+        Rectangle r = m.getRectangle();
+        r.setLocation(p);
+        m.setRectangle(r);
     }
 }

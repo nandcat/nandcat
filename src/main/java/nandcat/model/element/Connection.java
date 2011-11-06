@@ -168,6 +168,8 @@ public class Connection implements Element {
 
     /**
      * Return Line-object representing this connection (derived from attached in/outPorts).
+     * 
+     * @return Line2D representing the connection's shape
      */
     public Line2D getLine() {
         // TODO exact enough? -> maybe better: public Point inPort.getModuleBoundary()

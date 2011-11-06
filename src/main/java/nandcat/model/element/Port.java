@@ -58,7 +58,7 @@ public class Port {
      * @param module
      *            Module to attach port to
      */
-    public Port(Module module) {
+    protected Port(Module module) {
         this.module = module;
     }
 
