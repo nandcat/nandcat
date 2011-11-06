@@ -12,6 +12,7 @@ import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListener;
 import nandcat.view.CheckManager;
+import nandcat.view.View;
 
 /**
  * The SimulateTool is responsible for handling the Simulation and Checks.
@@ -66,11 +67,17 @@ public class SimulateTool implements Tool {
     /**
      * ItemHanlder of the Tool the the ComboBox in the CheckManager.
      */
-    private ItemHandler comboboxListener;
+    private ItemHandler comboboxListener;// TODO nachschaun wie des funzt!!
 
+    /**
+     * Reference on this Tool.
+     */
     protected Tool simulateTool;
 
-    private nandcat.view.View view;
+    /**
+     * View instance.
+     */
+    private View view;
 
     /**
      * Constructs the SimulateTool.
@@ -96,16 +103,11 @@ public class SimulateTool implements Tool {
                     public void elementsChanged(ModelEvent e) {
                     }
 
-                    public void checksChanged(ModelEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void simulationChanged(ModelEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
                     public void checksStarted(ModelEvent e) {
-                        // TODO Auto-generated method stub
+                        if (checkManager == null) {
+                            checkManager = new CheckManager(e.getChecks(), comboboxListener);
+                        }
+                        checkManager.setVisible(true);
                     }
 
                     public void checksStopped(ModelEvent e) {
@@ -117,7 +119,7 @@ public class SimulateTool implements Tool {
                     }
 
                     public void simulationStopped(ModelEvent e) {
-                        // TODO Auto-generated method stub
+                        view.enableButtons();
                     }
 
                     public void importSucceeded(ModelEvent e) {
@@ -161,6 +163,16 @@ public class SimulateTool implements Tool {
                     // sim geschw. erhöhen
                 } else if (e.getActionCommand() == "slower") {
                     // sim geschw. verringern
+                } else if (e.getActionCommand() == "startcheck") {
+                    if (checkManager == null) {
+                        checkManager = new CheckManager(model.getChecks(), comboboxListener);
+                    }
+                    checkManager.setVisible(true);
+                } else if (e.getActionCommand() == "editcheck") {
+                    if (checkManager == null) {
+                        checkManager = new CheckManager(model.getChecks(), comboboxListener);
+                    }
+                    checkManager.setVisible(true);
                 }
             }
         };

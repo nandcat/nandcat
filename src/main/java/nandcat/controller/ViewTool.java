@@ -1,9 +1,11 @@
 package nandcat.controller;
 
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +30,11 @@ public class ViewTool implements Tool {
     private View view = null;
 
     /**
+     * Reference to this Tool.
+     */
+    private Tool viewTool;
+
+    /**
      * Current Model instance.
      */
     private Model model;
@@ -45,7 +52,12 @@ public class ViewTool implements Tool {
     /**
      * String representation of the Tool.
      */
-    private List<String> represent; // TODO beschreibung schreiben
+    private List<String> represent = new LinkedList<String>() {
+
+        {
+            add("move");
+        }
+    };
 
     /**
      * ActionListerner of the Tool on the Buttons.
@@ -67,6 +79,7 @@ public class ViewTool implements Tool {
         this.controller = controller;
         view = controller.getView();
         model = controller.getModel();
+        viewTool = this;
         view.addViewPortListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
@@ -87,8 +100,24 @@ public class ViewTool implements Tool {
             if (workspaceListener == null) {
                 workspaceListener = new WorkspaceListenerAdapter() {
 
+                    private Point offset;
+
+                    public void mousePressed(WorkspaceEvent e) {
+                        offset = e.getLocation();
+                    }
+
                     public void mouseDragged(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
+                        // move ViewPort
+                        int x = (int) (e.getLocation().getX() - offset.getX());
+                        int y = (int) (e.getLocation().getY() - offset.getY());
+                        Point p = new Point(x, y);
+                        view.setViewportPosition(p);
+                        // redraw new elements in sight
+                        view.giveViewPortRect();
+                        List<Element> elem = model.getElements();
+                        Set<Element> elements = new HashSet<Element>();
+                        elements.addAll(elem);
+                        view.getWorkspace().redraw(elements);
                     }
                 };
             }
@@ -105,7 +134,7 @@ public class ViewTool implements Tool {
         buttonListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
+                controller.requestActivation(viewTool);
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();
