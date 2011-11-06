@@ -1,6 +1,6 @@
 package nandcat.model.importexport.sepaf;
 
-import nandcat.model.importexport.FormatCheckException;
+import nandcat.model.importexport.FormatException;
 import org.jdom.Document;
 
 /**
@@ -19,8 +19,8 @@ public interface XMLCheck {
     /**
      * Validate the document.
      * 
-     * @throws FormatCheckException
+     * @throws FormatException
      *             Exception if validation was not successful.
      */
-    void validate() throws FormatCheckException;
+    void validate() throws FormatException;
 }

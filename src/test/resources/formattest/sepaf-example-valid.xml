@@ -2,6 +2,7 @@
 <circuits main="myCircuit"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0"
+  xmlns:c="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0"
   xmlns:nandcat="http://www.nandcat.de/xmlns/sepaf-extension"
   xsi:schemaLocation="
     http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0

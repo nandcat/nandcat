@@ -12,7 +12,7 @@ import org.junit.Test;
 
 public class SEPAFCheckReferenceTest {
 
-    @Test(expected = FormatCheckException.class)
+    @Test(expected = FormatException.class)
     public void testMissingCircuit() throws Exception {
         Document doc = getDocument("../formattest/sepaf-example-invalid-missingcircuitref.xml");
         XMLCheck check = new SEPAFCheckCircuitReference();
@@ -20,7 +20,7 @@ public class SEPAFCheckReferenceTest {
         check.validate();
     }
 
-    @Test(expected = FormatCheckException.class)
+    @Test(expected = FormatException.class)
     public void testCircuitRefOnMain() throws Exception {
         Document doc = getDocument("../formattest/sepaf-example-invalid-circuitrefonmain.xml");
         XMLCheck check = new SEPAFCheckCircuitReference();
@@ -28,7 +28,7 @@ public class SEPAFCheckReferenceTest {
         check.validate();
     }
 
-    @Test(expected = FormatCheckException.class)
+    @Test(expected = FormatException.class)
     public void testCircuitSingleRecursion() throws Exception {
         Document doc = getDocument("../formattest/sepaf-example-invalid-circuitsinglerecursion.xml");
         XMLCheck check = new SEPAFCheckCircuitReference();

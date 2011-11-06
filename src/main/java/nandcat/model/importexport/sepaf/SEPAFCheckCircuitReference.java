@@ -3,7 +3,7 @@ package nandcat.model.importexport.sepaf;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import nandcat.model.importexport.FormatCheckException;
+import nandcat.model.importexport.FormatException;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -33,14 +33,14 @@ public class SEPAFCheckCircuitReference implements XMLCheck {
     /**
      * Validates if references inside the document are set correctly.
      * 
-     * @throws FormatCheckException
+     * @throws FormatException
      *             Exception with error message if validating fails.
      */
-    public void validate() throws FormatCheckException {
+    public void validate() throws FormatException {
         Element root = doc.getRootElement();
         String mainCircuit = root.getAttributeValue("main");
         if (mainCircuit == null) {
-            throw new FormatCheckException("No Maincircuit");
+            throw new FormatException("No Maincircuit");
         }
 
         try {
@@ -49,7 +49,7 @@ public class SEPAFCheckCircuitReference implements XMLCheck {
             // TODO implement: check deep recursion!
             checkSingleRecursion();
         } catch (JDOMException e) {
-            throw new FormatCheckException(e);
+            throw new FormatException(e);
         }
 
     }
@@ -59,10 +59,10 @@ public class SEPAFCheckCircuitReference implements XMLCheck {
      * 
      * @throws JDOMException
      *             Internal XML Exception
-     * @throws FormatCheckException
+     * @throws FormatException
      *             Exception with error message if validating fails.
      */
-    private void checkSingleRecursion() throws JDOMException, FormatCheckException {
+    private void checkSingleRecursion() throws JDOMException, FormatException {
         XPath xpathCircuits = XPath.newInstance("/c:circuits/c:circuit");
         XPath xpathRefs = XPath.newInstance("c:component[@type='circuit']/attribute::type2");
 
@@ -71,7 +71,7 @@ public class SEPAFCheckCircuitReference implements XMLCheck {
         List availableCircuitsNodes = xpathCircuits.selectNodes(doc);
         // Set<String> availableCircuitNames = new HashSet<String>();
         if (availableCircuitsNodes.size() == 0) {
-            throw new FormatCheckException("No Circuits available");
+            throw new FormatException("No Circuits available");
         }
         for (Object circuit : availableCircuitsNodes) {
             if (circuit instanceof Element) {
@@ -79,7 +79,7 @@ public class SEPAFCheckCircuitReference implements XMLCheck {
                 for (Object ref : refs) {
                     if (ref instanceof Attribute) {
                         if (((Attribute) ref).getValue().equals(((Element) circuit).getAttributeValue("name"))) {
-                            throw new FormatCheckException("Self recursion inside circuit '"
+                            throw new FormatException("Self recursion inside circuit '"
                                     + ((Element) circuit).getAttributeValue("name") + "'");
                         }
                     }
@@ -93,10 +93,10 @@ public class SEPAFCheckCircuitReference implements XMLCheck {
      * 
      * @throws JDOMException
      *             Internal XML Exception
-     * @throws FormatCheckException
+     * @throws FormatException
      *             Exception with error message if validating fails.
      */
-    private void checkReferenceOnMainCircuit() throws JDOMException, FormatCheckException {
+    private void checkReferenceOnMainCircuit() throws JDOMException, FormatException {
         Element root = doc.getRootElement();
         String mainCircuit = root.getAttributeValue("main");
         XPath xpathRefs = XPath.newInstance("/c:circuits/c:circuit/c:component[@type='circuit']/attribute::type2");
@@ -105,7 +105,7 @@ public class SEPAFCheckCircuitReference implements XMLCheck {
         for (Object ref : circuitRefs) {
             if (ref instanceof Attribute) {
                 if (((Attribute) ref).getValue().equals(mainCircuit)) {
-                    throw new FormatCheckException("Circuit reference on main circuit '" + mainCircuit + "'");
+                    throw new FormatException("Circuit reference on main circuit '" + mainCircuit + "'");
                 }
             }
         }
@@ -117,16 +117,16 @@ public class SEPAFCheckCircuitReference implements XMLCheck {
      * 
      * @throws JDOMException
      *             Internal XML Exception
-     * @throws FormatCheckException
+     * @throws FormatException
      *             Exception with error message if validating fails.
      */
-    private void checkMissingReferences() throws JDOMException, FormatCheckException {
+    private void checkMissingReferences() throws JDOMException, FormatException {
         XPath xpath = XPath.newInstance("/c:circuits/c:circuit/attribute::name");
         xpath.addNamespace("c", "http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0");
         List availableCircuitsNodes = xpath.selectNodes(doc);
         Set<String> availableCircuitNames = new HashSet<String>();
         if (availableCircuitsNodes.size() == 0) {
-            throw new FormatCheckException("No Circuits available");
+            throw new FormatException("No Circuits available");
         }
         for (Object circuit : availableCircuitsNodes) {
             if (circuit instanceof Attribute) {
@@ -140,7 +140,7 @@ public class SEPAFCheckCircuitReference implements XMLCheck {
         for (Object ref : circuitRefs) {
             if (ref instanceof Attribute) {
                 if (!availableCircuitNames.contains(((Attribute) ref).getValue())) {
-                    throw new FormatCheckException("Circuit reference '" + ((Attribute) ref).getValue() + "' not found");
+                    throw new FormatException("Circuit reference '" + ((Attribute) ref).getValue() + "' not found");
                 }
             }
         }
