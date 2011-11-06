@@ -14,7 +14,7 @@ import nandcat.model.ClockListener;
  * 
  * @version 7
  */
-public class Circuit implements ClockListener, Module {
+public class Circuit implements ClockListener, Module, DrawCircuit {
 
     /**
      * Contains the Location in this Circuit.

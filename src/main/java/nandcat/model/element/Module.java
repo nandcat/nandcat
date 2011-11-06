@@ -7,7 +7,12 @@ import java.util.List;
 /**
  * Module interface. A Module is an Element with Ports. They can be connected by Connections.
  */
-public interface Module extends Element {
+public interface Module extends Element, DrawModule {
+
+    /**
+     * Default extent for the Rectangle of Modules.
+     */
+    int EXTENT = 100;
 
     /**
      * Gets incoming ports.

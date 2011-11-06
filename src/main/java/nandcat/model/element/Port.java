@@ -52,14 +52,14 @@ public class Port {
     private Connection connection;
 
     /**
-     * Default constructor.
+     * Default constructor. It won't layout the port(s) in the containing Module. See/call
+     * <code>locateOnStandardPosition()</code> for the glourious details.
      * 
      * @param module
      *            Module to attach port to
      */
     public Port(Module module) {
         this.module = module;
-        this.bounds = locateOnStandardPosition();
     }
 
     /**
@@ -124,12 +124,17 @@ public class Port {
     }
 
     /**
-     * Calculates the standard position on this port during the construction. Note that this can lead to immense and
-     * horrific errors and unexpected behaviour if the Module is smaller than the size of the according list of ports.
+     * Calculates the standard position on this port. <br/>
+     * <br/>
+     * <b>Note:</b> This method only makes sense iff called after <b>all</b> in- or out-ports have been added to the
+     * containing Module!<br/>
+     * <br/>
+     * Not called in constructor! Note that this can lead to immense and horrific errors and unexpected behaviour if the
+     * Module is smaller than the size of the according list of ports.
      * 
      * @return Rectangle specifying the standard Location of this Port
      */
-    private Rectangle locateOnStandardPosition() {
+    public Rectangle locateOnStandardPosition() {
 
         // rectangle containing the standard size, but not position of the port
         Rectangle result = new Rectangle(-1, -1, 1, 1);

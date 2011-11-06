@@ -53,6 +53,7 @@ public abstract class Gate implements Module {
         if (!isValidInBoundary(inPorts) || !isValidOutBoundary(outPorts)) {
             throw new IllegalArgumentException("Illegal amount of in or out ports.");
         }
+        rectangle = new Rectangle(EXTENT, EXTENT);
         createPorts(inPorts, outPorts);
     }
 
@@ -143,7 +144,7 @@ public abstract class Gate implements Module {
 
     /**
      * Set arbitrary (positive) number of <b>new</b> in and out ports to append. Note that any existing ports will be
-     * lost.
+     * lost. This method may only be called <b>after</b> the module's boundary has been set up.
      * 
      * @param inPorts
      *            int number of inports to append
@@ -152,15 +153,23 @@ public abstract class Gate implements Module {
      */
     private void createPorts(int inPorts, int outPorts) {
         LinkedList<Port> ports = new LinkedList<Port>();
+        this.inPorts = ports;
         for (int i = 0; i < inPorts; i++) {
             ports.add(new Port(this));
         }
-        this.inPorts = ports;
         ports = new LinkedList<Port>();
+        this.outPorts = ports;
         for (int i = 0; i < outPorts; i++) {
             ports.add(new Port(this));
         }
-        this.outPorts = ports;
+
+        // (standard)relocate all ports
+        for (Port p : this.inPorts) {
+            p.locateOnStandardPosition();
+        }
+        for (Port p : this.outPorts) {
+            p.locateOnStandardPosition();
+        }
     }
 
     /**
