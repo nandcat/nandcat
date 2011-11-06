@@ -18,6 +18,7 @@ import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
 import nandcat.view.WorkspaceListenerAdapter;
+import nandcat.view.ElementDrawer;
 
 /**
  * The CreateTool is responsible for the creation of new Modules and Connections.
@@ -111,9 +112,11 @@ public class CreateTool implements Tool {
                 }
             }
             if (sourcePort == null) {
-                sourcePort = new Port(toConnect);
+                ElementDrawer drawer = view.getDrawer();
+                sourcePort = drawer.getPortAt(new Rectangle(point), toConnect);
             } else {
-                Port targetPort = new Port(toConnect);
+                ElementDrawer drawer = view.getDrawer();
+                Port targetPort = drawer.getPortAt(new Rectangle(point), toConnect);
                 model.addConnection(sourcePort, targetPort);
                 sourcePort = null;
             }
