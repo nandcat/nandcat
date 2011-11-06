@@ -10,14 +10,14 @@
     http://www.nandcat.de/xmlns/sepaf-extension.xsd">
 
 <circuit name="myCircuit">
-	<component type="not" name="not0" posx="1" posy="1"/>
-  <component type="and" name="and0" posx="2" posy="2"/>
-  <component type="id" name="id0" posx="3" posy="3"/>
-  <component type="or" name="or0" posx="4" posy="4"/>
-  <component type="out" name="lamp0" posx="5" posy="5"/>
-  <component type="flipflop" name="ff0" posx="6" posy="6"/>
-  <component type="in" name="in0" posx="7" posy="7" nandcat:in_state="true" />
-  <component type="clock" name="clock0" nandcat:in_timing="20" posx="8" posy="8"/>
+	<component type="not" name="not0" posx="1" posy="1" nandcat:annotation="not"/>
+  <component type="and" name="and0" posx="2" posy="2" nandcat:annotation="and"/>
+  <component type="id" name="id0" posx="3" posy="3" nandcat:annotation="id"/>
+  <component type="or" name="or0" posx="4" posy="4" nandcat:annotation="or"/>
+  <component type="out" name="lamp0" posx="5" posy="5" nandcat:annotation="out"/>
+  <component type="flipflop" name="ff0" posx="6" posy="6" nandcat:annotation="flipflop"/>
+  <component type="in" name="in0" posx="7" posy="7" nandcat:in_state="true" nandcat:annotation="in"/>
+  <component type="clock" name="clock0" nandcat:in_timing="20" posx="8" posy="8" nandcat:annotation="clock"/>
 </circuit> 
               
 </circuits>

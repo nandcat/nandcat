@@ -60,15 +60,30 @@ public class SEPAFImporterTest {
 
         // Check if all element were parsed correctly.
         assertEquals(new Point(1, 1), notGate.getLocation());
+        assertEquals("not", notGate.getName());
+
         assertEquals(new Point(2, 2), andGate.getLocation());
+        assertEquals("and", andGate.getName());
+
         assertEquals(new Point(3, 3), idGate.getLocation());
+        assertEquals("id", idGate.getName());
+
         assertEquals(new Point(4, 4), orGate.getLocation());
+        assertEquals("or", orGate.getName());
+
         assertEquals(new Point(5, 5), lamp.getLocation());
+        assertEquals("out", lamp.getName());
+
         assertEquals(new Point(6, 6), flipFlop.getLocation());
+        assertEquals("flipflop", flipFlop.getName());
+
         assertEquals(new Point(7, 7), in.getLocation());
         assertEquals(true, in.getState());
+        assertEquals("in", in.getName());
+
         assertEquals(new Point(8, 8), ig.getLocation());
         assertEquals(20, ig.getFrequency());
+        assertEquals("clock", ig.getName());
 
         // Check if no element exists twice.
         assertEquals(8, elements.size());
