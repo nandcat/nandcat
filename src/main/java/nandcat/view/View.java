@@ -352,7 +352,7 @@ public class View extends JFrame {
         disableElements.add(create);
         JButton select = new JButton("Auswahl");
         disableElements.add(select);
-        JComboBox<ViewModule> modules = null;
+        // JComboBox modules = null;
         if (toolFunctionalities.containsKey("start")) {
             start.addActionListener(toolFunctionalities.get("start"));
             start.setActionCommand("start");
@@ -388,16 +388,16 @@ public class View extends JFrame {
             move.setActionCommand("move");
             move.setName("move");
         }
-        if (viewModules != null) {
-            ViewModule[] viewMod = new ViewModule[viewModules.size()];
-            viewMod = viewModules.toArray(viewMod);
-            modules = new JComboBox<ViewModule>(viewMod);
-        }
-        if (toolFunctionalities.containsKey("create")) {
-            modules.addActionListener(toolFunctionalities.get("selectModule"));
-            modules.setActionCommand("selectModule");
-            modules.setName("selectModule");
-        }
+        // if (viewModules != null) {
+        // ViewModule[] viewMod = new ViewModule[viewModules.size()];
+        // viewMod = viewModules.toArray(viewMod);
+        // // modules = new JComboBox(viewMod);
+        // }
+        // if (toolFunctionalities.containsKey("create")) {
+        // modules.addActionListener(toolFunctionalities.get("selectModule"));
+        // modules.setActionCommand("selectModule");
+        // modules.setName("selectModule");
+        // }
         toolBar.add(start);
         toolBar.add(faster);
         toolBar.add(stop);
