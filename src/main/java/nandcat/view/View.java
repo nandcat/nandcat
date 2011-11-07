@@ -389,13 +389,7 @@ public class View extends JFrame {
             move.setName("move");
         }
         if (viewModules != null) {
-            ViewModule[] viewMod = new ViewModule[viewModules.size()];
-            viewMod = viewModules.toArray(viewMod);
-            modules = new JComboBox(viewMod);
-            modules = new JComboBox();
-//            for (ViewModule viewmod : viewModules){
-//                modules.add
-//            }
+            modules = new JComboBox(viewModules.toArray());
         }
         if (toolFunctionalities.containsKey("selectModule")) {
             modules.addActionListener(toolFunctionalities.get("selectModule"));

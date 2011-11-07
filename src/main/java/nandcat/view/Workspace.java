@@ -81,6 +81,7 @@ public class Workspace extends JPanel {
             }
         };
         this.addMouseListener(mouseListener);
+        this.addMouseMotionListener(mouseListener);
     }
 
     /**

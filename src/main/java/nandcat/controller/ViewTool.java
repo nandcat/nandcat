@@ -112,6 +112,7 @@ public class ViewTool implements Tool {
                         int y = (int) (e.getLocation().getY() - offset.getY());
                         Point p = new Point(x, y);
                         view.setViewportPosition(p);
+                        offset = e.getLocation();
                         // redraw new elements in sight
                         view.giveViewPortRect();
                         List<DrawElement> elem = model.getDrawElements();
