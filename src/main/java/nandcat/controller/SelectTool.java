@@ -2,6 +2,7 @@ package nandcat.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Point;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import nandcat.model.Model;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
+import nandcat.view.WorkspaceListenerAdapter;
 
 /**
  * The SelectTool is responsible for selecting and moving Elements on the Workspace.
@@ -68,34 +70,42 @@ public class SelectTool implements Tool {
      */
     public void setActive(boolean active) {
         if (active) {
-            if (workspaceListener == null) {
-                workspaceListener = new WorkspaceListener() {
-
-                    public void mouseReleased(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mousePressed(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseMoved(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseDragged(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseClicked(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-                };
-            }
-            view.getWorkspace().addListener(workspaceListener);
+            setListeners();
         } else {
-            view.getWorkspace().removeListener(workspaceListener);
+            removeListeners();
         }
+    }
+
+    /**
+     * Sets a WorkspaceListener on the Workspace.
+     */
+    private void setListeners() {
+    if (workspaceListener == null) {
+            workspaceListener = new WorkspaceListenerAdapter() {
+                @Override
+                public void mouseClicked(WorkspaceEvent e) {
+                    // TODO compute rectangle
+                }
+                public void mouseReleased(WorkspaceEvent e) {
+                    // TODO set as selected
+                }
+            };
+        }
+        view.getWorkspace().addListener(workspaceListener);
+    }
+
+    /**
+     * Removes the Listener from the Workspace.
+     */
+    private void removeListeners() {
+        view.getWorkspace().removeListener(workspaceListener);
+    }
+
+    /*
+     * Set the Elements within the rectangle as selected.
+     */
+    private void selectElements(Point point) {
+        
     }
 
     /**

@@ -21,7 +21,8 @@ import nandcat.view.WorkspaceListener;
 import nandcat.view.WorkspaceListenerAdapter;
 
 /**
- * The CreateTool is responsible for the creation of new Modules and Connections.
+ * The CreateTool is responsible for the creation of new Modules and Connections. They will be displayed on the Workspace and added
+ * to the Model.
  */
 public class CreateTool implements Tool {
 
@@ -60,15 +61,21 @@ public class CreateTool implements Tool {
      */
     private WorkspaceListener workspaceListener;
 
+    /**
+     *
+     */
     private Module selectedModule;
 
+    /*
+     * Port representing the source of a new Connection. NULL if the user did not click on an Element to create a Connection.
+     */
     private Port sourcePort;
 
     /**
      * Constructs the SelectTool.
      * 
      * @param controller
-     *            Controller component of the application.
+     *            Controller component of the application. It contains the view and model component of the application.
      */
     public CreateTool(Controller controller) {
         this.controller = controller;
@@ -87,20 +94,26 @@ public class CreateTool implements Tool {
         }
     }
 
+    /**
+     * Sets a WorkspaceListener on the Workspace.
+     */
     private void setListeners() {
         if (workspaceListener == null) {
             workspaceListener = new WorkspaceListenerAdapter() {
 
                 @Override
                 public void mouseClicked(WorkspaceEvent e) {
-                    createElementAtPoint(e.getLocation());
+                    createElement(e.getLocation());
                 }
             };
         }
         view.getWorkspace().addListener(workspaceListener);
     }
 
-    private void createElementAtPoint(Point point) {
+    /**
+     * Creates a new Element at the given Point.
+     */
+    private void createElement(Point point) {
         Set<Element> elementsAt = model.getElementsAt(new Rectangle(point));
         if (elementsAt.isEmpty()) {
             if (selectedModule != null) {
@@ -125,6 +138,9 @@ public class CreateTool implements Tool {
         }
     }
 
+    /**
+     * Removes the Listener from the Workspace.
+     */
     private void removeListeners() {
         view.getWorkspace().removeListener(workspaceListener);
     }
