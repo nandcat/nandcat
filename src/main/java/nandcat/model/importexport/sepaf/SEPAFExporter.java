@@ -6,11 +6,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
+import nandcat.model.element.FlipFlop;
+import nandcat.model.element.IdentityGate;
+import nandcat.model.element.ImpulseGenerator;
+import nandcat.model.element.Lamp;
 import nandcat.model.element.Module;
+import nandcat.model.element.NotGate;
+import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
 import nandcat.model.importexport.Exporter;
+import nandcat.model.importexport.FormatException;
 import org.apache.log4j.Logger;
 import org.jdom.Content;
 import org.jdom.Document;
@@ -82,22 +90,25 @@ public class SEPAFExporter implements Exporter {
         Document doc = new Document(new Element("circuits", NS_SEPAF));
         Element root = doc.getRootElement();
         root.addNamespaceDeclaration(NS_NANDCAT);
-        root.setAttribute("main", getIdentifier(circuit));
-        root.addContent(buildCircuit(circuit));
-        XMLOutputter outputter = new XMLOutputter();
         try {
+            root.setAttribute("main", getIdentifier(circuit));
+            root.addContent(buildCircuit(circuit));
+            XMLOutputter outputter = new XMLOutputter();
+
             outputter.output(doc, new FileOutputStream(file));
             return true;
         } catch (FileNotFoundException e) {
             setErrorMessage("File not found");
         } catch (IOException e) {
             setErrorMessage("Can not read file");
+        } catch (FormatException e) {
+            setErrorMessage("Verarbeitung nicht möglich: " + e.getMessage());
         }
 
         return false;
     }
 
-    private Element buildCircuit(Circuit c) {
+    private Element buildCircuit(Circuit c) throws FormatException {
         org.jdom.Element e = new Element("circuit", NS_SEPAF);
         e.setAttribute("name", getIdentifier(c));
         for (nandcat.model.element.Element circuitE : c.getElements()) {
@@ -106,7 +117,7 @@ public class SEPAFExporter implements Exporter {
         return e;
     }
 
-    private Content buildElement(nandcat.model.element.Element circuitE) {
+    private Content buildElement(nandcat.model.element.Element circuitE) throws FormatException {
         Content c = null;
         if (circuitE instanceof Circuit) {
             LOG.fatal("Circuit export not implemented");
@@ -120,7 +131,7 @@ public class SEPAFExporter implements Exporter {
         return c;
     }
 
-    private Content buildComponent(Module circuitM) {
+    private Content buildComponent(Module circuitM) throws FormatException {
         Element e = new Element("component", NS_SEPAF);
         e.setAttribute("posx", Integer.toString(circuitM.getLocation().x));
         e.setAttribute("posy", Integer.toString(circuitM.getLocation().y));
@@ -129,10 +140,41 @@ public class SEPAFExporter implements Exporter {
             e.setAttribute("annotation", circuitM.getName(), NS_NANDCAT);
         }
         setModuleSpecificAttributes(e, circuitM);
+        if (circuitM.getInPorts() != null) {
+            e.setAttribute("ports_in", Integer.toString(circuitM.getInPorts().size()), NS_NANDCAT);
+        }
+
+        if (circuitM.getInPorts() != null) {
+            e.setAttribute("ports_out", Integer.toString(circuitM.getInPorts().size()), NS_NANDCAT);
+        }
+
         return e;
     }
 
-    private void setModuleSpecificAttributes(Element e, Module m) {
+    private void setModuleSpecificAttributes(Element e, Module m) throws FormatException {
+        if (m instanceof ImpulseGenerator) {
+            if (((ImpulseGenerator) m).getFrequency() == 0) {
+                e.setAttribute("type", "in");
+            } else {
+                e.setAttribute("type", "clock");
+                e.setAttribute("in_timing", Integer.toString(((ImpulseGenerator) m).getFrequency()), NS_NANDCAT);
+            }
+            e.setAttribute("in_state", ((((ImpulseGenerator) m).getState()) ? "true" : "false"), NS_NANDCAT);
+        } else if (m instanceof AndGate) {
+            e.setAttribute("type", "and");
+        } else if (m instanceof OrGate) {
+            e.setAttribute("type", "or");
+        } else if (m instanceof IdentityGate) {
+            e.setAttribute("type", "id");
+        } else if (m instanceof Lamp) {
+            e.setAttribute("type", "out");
+        } else if (m instanceof NotGate) {
+            e.setAttribute("type", "not");
+        } else if (m instanceof FlipFlop) {
+            e.setAttribute("type", "flipflop");
+        } else {
+            throw new FormatException("Not a supported component type: '" + m.getClass().getName() + "'");
+        }
 
     }
 
