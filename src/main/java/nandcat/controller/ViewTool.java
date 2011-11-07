@@ -13,7 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import nandcat.model.Model;
-import nandcat.model.element.Element;
+import nandcat.model.element.DrawElement;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
@@ -84,8 +84,8 @@ public class ViewTool implements Tool {
 
             public void stateChanged(ChangeEvent e) {
                 view.giveViewPortRect();
-                List<Element> elem = model.getElements();
-                Set<Element> elements = new HashSet<Element>();
+                List<DrawElement> elem = model.getDrawElements();
+                Set<DrawElement> elements = new HashSet<DrawElement>();
                 elements.addAll(elem);
                 view.getWorkspace().redraw(elements);
             }
@@ -114,8 +114,8 @@ public class ViewTool implements Tool {
                         view.setViewportPosition(p);
                         // redraw new elements in sight
                         view.giveViewPortRect();
-                        List<Element> elem = model.getElements();
-                        Set<Element> elements = new HashSet<Element>();
+                        List<DrawElement> elem = model.getDrawElements();
+                        Set<DrawElement> elements = new HashSet<DrawElement>();
                         elements.addAll(elem);
                         view.getWorkspace().redraw(elements);
                     }

@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
-import nandcat.model.element.Element;
+import nandcat.model.element.DrawElement;
 import nandcat.model.element.FlipFlop;
 import nandcat.model.element.IdentityGate;
 import nandcat.model.element.ImpulseGenerator;
@@ -97,8 +97,8 @@ public class Workspace extends JPanel {
      * @param elements
      *            Set<Elements> with the elements to be redrawed.
      */
-    public void redraw(Set<Element> elements) {
-        for (Element elem : elements) {
+    public void redraw(Set<DrawElement> elements) {
+        for (DrawElement elem : elements) {
             if (isInView(elem)) {
                 if (elem instanceof Connection) {
                     elementDrawer.draw((Connection) elem);
@@ -251,7 +251,7 @@ public class Workspace extends JPanel {
      *            the Element to be checked
      * @return True or False. Whether the element is in sight or not.
      */
-    private boolean isInView(Element elem) {
+    private boolean isInView(DrawElement elem) {
         boolean isInView = false;
         if (elem instanceof Connection) {
             // Connections must be painted if one of the Modules it connects is in sight.

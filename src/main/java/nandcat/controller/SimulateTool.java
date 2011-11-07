@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
+import nandcat.model.Clock;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListener;
@@ -158,11 +159,12 @@ public class SimulateTool implements Tool {
                     view.disableButtons();
                 } else if (e.getActionCommand() == "stop") {
                     model.stopSimulation();
-                    view.enableButtons();
                 } else if (e.getActionCommand() == "faster") {
-                    // sim geschw. erhöhen
+                    Clock clock = model.getClock();
+                    clock.setSleepTime(clock.getSleepTime() + 5);
                 } else if (e.getActionCommand() == "slower") {
-                    // sim geschw. verringern
+                    Clock clock = model.getClock();
+                    clock.setSleepTime(clock.getSleepTime() - 5);
                 } else if (e.getActionCommand() == "startcheck") {
                     if (checkManager == null) {
                         checkManager = new CheckManager(model.getChecks(), comboboxListener);

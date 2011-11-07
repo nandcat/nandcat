@@ -135,7 +135,7 @@ public class View extends JFrame {
             }
 
             public void checksStopped(ModelEvent e) {
-                // TODO Auto-generated method stub
+                enableButtons();
             }
 
             public void simulationStarted(ModelEvent e) {
@@ -352,7 +352,7 @@ public class View extends JFrame {
         disableElements.add(create);
         JButton select = new JButton("Auswahl");
         disableElements.add(select);
-        // JComboBox modules = null;
+        JComboBox modules = null;
         if (toolFunctionalities.containsKey("start")) {
             start.addActionListener(toolFunctionalities.get("start"));
             start.setActionCommand("start");
@@ -388,16 +388,20 @@ public class View extends JFrame {
             move.setActionCommand("move");
             move.setName("move");
         }
-        // if (viewModules != null) {
-        // ViewModule[] viewMod = new ViewModule[viewModules.size()];
-        // viewMod = viewModules.toArray(viewMod);
-        // // modules = new JComboBox(viewMod);
-        // }
-        // if (toolFunctionalities.containsKey("create")) {
-        // modules.addActionListener(toolFunctionalities.get("selectModule"));
-        // modules.setActionCommand("selectModule");
-        // modules.setName("selectModule");
-        // }
+        if (viewModules != null) {
+            ViewModule[] viewMod = new ViewModule[viewModules.size()];
+            viewMod = viewModules.toArray(viewMod);
+            modules = new JComboBox(viewMod);
+            modules = new JComboBox();
+//            for (ViewModule viewmod : viewModules){
+//                modules.add
+//            }
+        }
+        if (toolFunctionalities.containsKey("selectModule")) {
+            modules.addActionListener(toolFunctionalities.get("selectModule"));
+            modules.setActionCommand("selectModule");
+            modules.setName("selectModule");
+        }
         toolBar.add(start);
         toolBar.add(faster);
         toolBar.add(stop);
@@ -405,6 +409,7 @@ public class View extends JFrame {
         toolBar.add(create);
         toolBar.add(select);
         toolBar.add(move);
+        toolBar.add(modules);
         toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.Y_AXIS));
     }
 
