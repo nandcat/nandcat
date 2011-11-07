@@ -12,7 +12,7 @@ import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import nandcat.model.Model;
-import nandcat.model.element.Element;
+import nandcat.model.element.DrawElement;
 import nandcat.model.element.Module;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
@@ -124,9 +124,9 @@ public class AnnotationTool implements Tool {
      *            Point of mouse click.
      */
     private void mouseClickedOnWorkspace(Point p) {
-        Set<Element> elements = model.getElementsAt(new Rectangle(p, MOUSE_TOLERANCE));
+        Set<DrawElement> elements = model.getDrawElementsAt(new Rectangle(p, MOUSE_TOLERANCE));
         Module toAnnotate = null;
-        for (Element element : elements) {
+        for (DrawElement element : elements) {
             // annotations on modules only
             if (element instanceof Module) {
                 toAnnotate = (Module) element;
