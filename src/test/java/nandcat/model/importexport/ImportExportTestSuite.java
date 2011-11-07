@@ -6,6 +6,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ ImportExportGeneralTest.class, XsdValidationTest.class, JDOMFirstTest.class,
-        SEPAFCheckReferenceTest.class, SEPAFImporterTest.class })
+        SEPAFCheckReferenceTest.class, SEPAFImporterTest.class, SEPAFExporterTest.class })
 public class ImportExportTestSuite {
 }

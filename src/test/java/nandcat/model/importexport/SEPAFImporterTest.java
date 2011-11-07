@@ -129,12 +129,14 @@ public class SEPAFImporterTest {
                     ig = igtmp;
             }
         }
+        // Test connection between and and orgate
         Port source1 = andGate.getOutPorts().get(0);
         Port target1 = orGate.getInPorts().get(0);
         assertTrue(source1.getConnection() != null);
         assertEquals(source1, source1.getConnection().getInPort());
         assertEquals(target1, source1.getConnection().getOutPort());
 
+        // Test connection between or and andgate
         Port source2 = orGate.getOutPorts().get(0);
         Port target2 = andGate.getInPorts().get(1);
         assertTrue(source2.getConnection() != null);
