@@ -31,6 +31,10 @@ public class OrGateTest extends TestCase {
      */
     public void testOr() {
         OrGate or = new OrGate(2, 1);
+        // check in/outBoundaries
+        assertFalse(or.isValidInBoundary(-1));
+        assertFalse(or.isValidOutBoundary(-1));
+
         or = new OrGate();
         Lamp lamp = new Lamp();
         or.getInPorts().get(1).setState(true, null);

@@ -27,12 +27,60 @@ public class ConnectionTest extends TestCase {
     }
 
     /**
-     * Test: ->.
+     * Test: Impy->Lamp
      */
+    @SuppressWarnings("unused")
     public void testConnection() {
-        Connection conn = new Connection();
-        assertNotNull(conn);
-        assertNull(conn.getInPort());
-        assertNull(conn.getOutPort());
+        ImpulseGenerator impy = new ImpulseGenerator(0);
+        Lamp lamp = new Lamp();
+        Connection c = new Connection(impy.getOutPorts().get(0), lamp.getInPorts().get(0));
+        assertNotNull(c);
+
+        // test selection
+        assertFalse(c.isSelected());
+        c.setSelected(true);
+        assertTrue(c.isSelected());
+        c.setSelected(false);
+        assertFalse(c.isSelected());
+
+        // test connectivity-functionality
+        assertEquals(impy, c.getPreviousModule());
+        assertEquals(lamp, c.getNextModule());
+
+        // default is: false
+        assertEquals(false, c.getState());
+
+        // test (failing) NULL initialisation
+        boolean failed = false;
+        try {
+            Connection fail = new Connection(impy.getOutPorts().get(0), null);
+        } catch (Exception e) {
+            failed = true;
+        }
+        assertTrue(failed);
+        failed = false;
+        try {
+            Connection fail = new Connection(null, impy.getOutPorts().get(0));
+        } catch (Exception e) {
+            failed = true;
+        }
+        assertTrue(failed);
+
+        // Test signal propagation
+        impy.toggleState();
+        // just to be sure FIXME OUTPORT!
+        assertTrue(impy.getState());
+
+        impy.clockTicked(null);
+        c.clockTicked(null);
+        lamp.clockTicked(null);
+
+        impy.clockTicked(null);
+        // just to be sure
+        assertFalse(impy.getState());
+
+        c.clockTicked(null);
+        lamp.clockTicked(null);
+        assertFalse(lamp.getState());
     }
 }

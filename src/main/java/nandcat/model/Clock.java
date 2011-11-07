@@ -59,6 +59,11 @@ public class Clock {
      *            The model for the new clock.
      */
     public Clock(int cycle, Model model) {
+        // TODO check Exception.
+        if (model == null || cycle < 0) {
+            throw new IllegalArgumentException("negative cycle or null-model not allow for clock");
+        }
+
         this.cycle = cycle;
         listeners = new HashSet<ClockListener>();
         generators = new HashSet<ImpulseGenerator>();

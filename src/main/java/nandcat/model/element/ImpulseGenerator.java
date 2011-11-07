@@ -111,6 +111,7 @@ public class ImpulseGenerator implements Module {
         if (outPort == null) {
             return;
         }
+        // note that outPort and state are asynchronous
         outPort.setState(state, clock);
         toggleState();
     }

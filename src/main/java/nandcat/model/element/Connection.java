@@ -25,12 +25,6 @@ public class Connection implements Element {
     private Port outPort;
 
     /**
-     * Default constructor.
-     */
-    public Connection() {
-    }
-
-    /**
      * Connection's state.
      */
     private boolean state;
@@ -41,14 +35,19 @@ public class Connection implements Element {
     private boolean selected;
 
     /**
-     * Create and attach new connection.
+     * Create and attach new connection.Note that this will also set the port's connection reference.
      * 
      * @param inPort
-     *            Port (a module's <b>outPort</b>) the connection is attached to. Set to one of the modules's outPorts
+     *            Port (a module's <b>outPort</b>) the connection is attached to. Set to one of the modules's outPorts.
+     *            May not be null.
      * @param outPort
-     *            Port (a module's <b>inPort</b>) the connection is attached to. Set to one of the modules's inPorts
+     *            Port (a module's <b>inPort</b>) the connection is attached to. Set to one of the modules's inPorts.
+     *            May not be null.
      */
     public Connection(Port inPort, Port outPort) {
+        if (inPort == null || outPort == null) {
+            throw new IllegalArgumentException("neither in nor outport of a connection may be null");
+        }
         this.inPort = inPort;
         this.outPort = outPort;
         inPort.setConnection(this);

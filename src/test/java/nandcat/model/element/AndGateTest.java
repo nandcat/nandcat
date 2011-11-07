@@ -43,8 +43,8 @@ public class AndGateTest extends TestCase {
         }
         assertFalse(lamp.getState());
         assertFalse(conn.getState());
-        // true, true liegt an, flase geht raus
-        // nächster tick setzt lausgang und leitung auf trve
+        // true, true liegt an, false geht raus
+        // nächster tick setzt ausgang und leitung auf true
         // eingang lampe true, lampe selber derpt false
         and.clockTicked(null);
         conn.clockTicked(null);
@@ -58,5 +58,14 @@ public class AndGateTest extends TestCase {
         assertTrue(conn.getState());
         assertTrue(lamp.getInPorts().get(0).getState());
         assertTrue(lamp.getState());
+
+        // FALSE,TRUE->AND
+        and.getInPorts().get(0).setState(false, null);
+        and.clockTicked(null);
+        assertFalse(and.getOutPorts().get(0).getState());
+
+        // check in/outBoundaries
+        assertFalse(and.isValidInBoundary(5));
+        assertFalse(and.isValidOutBoundary(5));
     }
 }

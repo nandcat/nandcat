@@ -10,7 +10,7 @@ import java.util.List;
 public interface Module extends Element, DrawModule {
 
     /**
-     * Default extent for the Rectangle of Modules.
+     * Default extent for the rectangle of Modules.
      */
     int EXTENT = 100;
 

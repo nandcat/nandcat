@@ -3,13 +3,28 @@ package nandcat.model;
 import java.util.HashSet;
 import java.util.Set;
 import nandcat.model.check.CircuitCheck;
-import nandcat.model.element.Element;
+import nandcat.model.element.DrawElement;
 import nandcat.model.element.Module;
 
 /**
  * Modelevent object fired by Model to inform its listeners about state changes (Elements/Checks/Simulation/... changed)
  */
 public class ModelEvent {
+
+    /**
+     * Elements relevant for the fired event.
+     */
+    private Set<DrawElement> elements;
+
+    /**
+     * CicuitChecks relevant for the fired event.
+     */
+    private Set<CircuitCheck> checks;
+
+    /**
+     * Message for the fired event.
+     */
+    private String message;
 
     /**
      * Default constructor.
@@ -24,24 +39,9 @@ public class ModelEvent {
      *            Module to initialize elements with.
      */
     public ModelEvent(Module module) {
-        elements = new HashSet<Element>();
+        elements = new HashSet<DrawElement>();
         elements.add(module);
     }
-
-    /**
-     * Elements relevant for the fired event.
-     */
-    private Set<Element> elements;
-
-    /**
-     * CicuitChecks relevant for the fired event.
-     */
-    private Set<CircuitCheck> checks;
-
-    /**
-     * Message for the fired event.
-     */
-    private String message;
 
     /**
      * Return CircuitChecks relevant for the event.
@@ -86,7 +86,7 @@ public class ModelEvent {
      * 
      * @return Set<Element> elements relevant for the event
      */
-    public Set<Element> getElements() {
+    public Set<DrawElement> getElements() {
         return elements;
     }
 
@@ -96,7 +96,7 @@ public class ModelEvent {
      * @param elements
      *            Set<Element> for the event
      */
-    public void setElements(Set<Element> elements) {
+    public void setElements(Set<DrawElement> elements) {
         this.elements = elements;
     }
 }

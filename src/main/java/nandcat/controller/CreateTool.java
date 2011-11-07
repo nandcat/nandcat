@@ -1,9 +1,9 @@
 package nandcat.controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,13 +12,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import nandcat.model.Model;
 import nandcat.model.element.Element;
-import nandcat.model.element.Port;
 import nandcat.model.element.Module;
+import nandcat.model.element.Port;
+import nandcat.view.ElementDrawer;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
 import nandcat.view.WorkspaceListenerAdapter;
-import nandcat.view.ElementDrawer;
 
 /**
  * The CreateTool is responsible for the creation of new Modules and Connections.
@@ -63,6 +63,7 @@ public class CreateTool implements Tool {
     private Module selectedModule;
 
     private Port sourcePort;
+
     /**
      * Constructs the SelectTool.
      * 
@@ -87,8 +88,9 @@ public class CreateTool implements Tool {
     }
 
     private void setListeners() {
-    if (workspaceListener == null) {
+        if (workspaceListener == null) {
             workspaceListener = new WorkspaceListenerAdapter() {
+
                 @Override
                 public void mouseClicked(WorkspaceEvent e) {
                     createElementAtPoint(e.getLocation());

@@ -1,5 +1,7 @@
 package nandcat.model;
 
+import nandcat.model.element.Module;
+
 /**
  * View-friendly representation of all available module objects. Contains no logic.
  * 
@@ -19,23 +21,34 @@ public class ViewModule {
     private byte[] symbol;
 
     /**
-     * ViewModule's file extension.
+     * ViewModule's filename (may be null in case of standard gates). This has to be used to reference
+     * circuit-definition files.
      */
-    private String fileExtension;
+    private String fileName; // TODO data-type: Filename/File?
+
+    /**
+     * Module reference to the gate represented by this ViewModule. May be null in case of circuits.
+     */
+    private final Class<? extends Module> module;
 
     /**
      * Default constructor.
      * 
      * @param name
      *            String containing ViewModule's name
-     * @param fileExtension
-     *            String ViewModule's file extension
+     * @param module
+     *            Module this viewmodule represents. May be null. (for circuits)
+     * @param fileName
+     *            String ViewModule's file name. May be empty/null. (for standard gates)
      * @param symbol
      *            bytearray containing ViewModule's symbol
      */
-    public ViewModule(String name, String fileExtension, byte[] symbol) {
+    public ViewModule(String name, Class<? extends Module> module, String fileName, byte[] symbol) {
         this.name = name;
-        this.fileExtension = fileExtension;
+        this.module = module;
+        if (fileName != "" && fileName != null) {
+            this.fileName = fileName;
+        }
         this.symbol = symbol;
     }
 
@@ -64,8 +77,8 @@ public class ViewModule {
      * @param s
      *            String containing the file extension
      */
-    public void setFileExtension(String s) {
-        fileExtension = s;
+    private void setFileExtension(String s) {
+
     }
 
     /**
@@ -74,7 +87,7 @@ public class ViewModule {
      * @return String containing the file extension
      */
     public String getFileExtension() {
-        return fileExtension;
+        return fileName;
     }
 
     /**
@@ -94,5 +107,30 @@ public class ViewModule {
      */
     public void setSymbol(byte[] symbol) {
         this.symbol = symbol;
+    }
+
+    /**
+     * Get Filename (may be empty in case of circuits).
+     * 
+     * @return String containing the filename of the circuit this ViewModule represents
+     */
+    public String getFileName() {
+        return fileName;
+    }
+
+    /**
+     * Return Module this ViewModule represents.
+     * 
+     * @return Module represented by this ViewModule
+     */
+    public Class<? extends Module> getModule() {
+        return module;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return new String(name);
     }
 }

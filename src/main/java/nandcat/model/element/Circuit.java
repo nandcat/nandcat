@@ -274,7 +274,9 @@ public class Circuit implements ClockListener, Module, DrawCircuit {
     }
 
     /**
-     * Adds a connection between two ports to this Circuit.
+     * Adds a connection between two ports to this Circuit. Note that this function will also set the port's connection
+     * reference. <br/>
+     * <b>Note:</b> the inPort of the connection has to be of type outPort and vice versa.<br/>
      * 
      * @param inPort
      *            Port the Connection will get attached to
@@ -307,8 +309,6 @@ public class Circuit implements ClockListener, Module, DrawCircuit {
         }
         // one module may not appear more than once in elements (ensured by Set<>)
         elements.add(m);
-        Rectangle r = m.getRectangle();
-        r.setLocation(p);
-        m.setRectangle(r);
+        m.getRectangle().setLocation(p);
     }
 }

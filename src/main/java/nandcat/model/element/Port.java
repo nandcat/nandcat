@@ -1,5 +1,6 @@
 package nandcat.model.element;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import nandcat.model.Clock;
 
@@ -154,5 +155,14 @@ public class Port {
         result.x = module.getRectangle().x + (isOutPort() ? 0 : module.getRectangle().width - result.width);
 
         return result;
+    }
+
+    /**
+     * Return center of Port.
+     * 
+     * @return Point of the center
+     */
+    public Point getCenter() {
+        return (new Point(bounds.x+(int)bounds.getCenterX(), bounds.y+(int)bounds.getCenterY()));
     }
 }
