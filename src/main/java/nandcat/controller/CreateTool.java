@@ -11,7 +11,7 @@ import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import nandcat.model.Model;
-import nandcat.model.element.Element;
+import nandcat.model.element.DrawElement;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 import nandcat.view.ElementDrawer;
@@ -110,18 +110,23 @@ public class CreateTool implements Tool {
         view.getWorkspace().addListener(workspaceListener);
     }
 
+<<<<<<< Updated upstream
     /**
      * Creates a new Element at the given Point.
      */
     private void createElement(Point point) {
         Set<Element> elementsAt = model.getElementsAt(new Rectangle(point));
+=======
+    private void createElementAtPoint(Point point) {
+        Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(point));
+>>>>>>> Stashed changes
         if (elementsAt.isEmpty()) {
             if (selectedModule != null) {
                 model.addModule(selectedModule, point);
             }
         } else {
             Module toConnect = null;
-            for (Element element : elementsAt) {
+            for (DrawElement element : elementsAt) {
                 if (element instanceof Module) {
                     toConnect = (Module) element;
                 }

@@ -10,9 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.ImageIcon;
 import nandcat.model.Model;
-import nandcat.model.element.Element;
+import nandcat.model.element.DrawElement;
 import nandcat.model.element.Module;
-import nandcat.model.element.ImpulseGenerator;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
@@ -99,9 +98,9 @@ public class StateTool implements Tool {
 
     private void changeState(Point point) {
         assert point != null;
-        Set<Element> elementsAt = model.getElementsAt(new Rectangle(point));
+        Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(point));
         Module toChangeState = null;
-        for (Element element : elementsAt) {
+        for (DrawElement element : elementsAt) {
             if (element instanceof Module) {
                 toChangeState = (Module) element;
             }
