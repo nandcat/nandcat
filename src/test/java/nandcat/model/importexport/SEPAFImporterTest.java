@@ -144,6 +144,27 @@ public class SEPAFImporterTest {
         assertEquals(target2, source2.getConnection().getOutPort());
     }
 
+    @Test
+    public void testRecursiveCircuits() {
+        File file = getFile("../formattest/sepaf-example-valid-recursivecircuits.xml");
+        Importer importer = new SEPAFImporter();
+        importer.setFile(file);
+        assertTrue(importer.importCircuit());
+        Circuit circuit = importer.getCircuit();
+        assertTrue(circuit != null);
+        List<Element> elements = circuit.getElements();
+        assertEquals(4, countRecursiveCircuits(elements));
+    }
+
+    private int countRecursiveCircuits(List<Element> elements) {
+        for (Element inelement : elements) {
+            if (inelement instanceof Circuit) {
+                return 1 + countRecursiveCircuits(((Circuit) inelement).getElements());
+            }
+        }
+        return 1;
+    }
+
     private File getFile(String path) {
         try {
             return new File(NandcatTest.class.getResource(path).toURI());

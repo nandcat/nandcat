@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<circuits main="myCircuit" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0"
+	xmlns:c="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0"
+	xmlns:nandcat="http://www.nandcat.de/xmlns/sepaf-extension"
+	xsi:schemaLocation="
+    http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0
+    http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0.xsd
+    http://www.nandcat.de/xmlns/sepaf-extension
+    http://www.nandcat.de/xmlns/sepaf-extension.xsd">
+
+	<circuit name="myCircuit">
+		<component type="not" name="not0" posx="1" posy="1"
+			nandcat:annotation="not" />
+		<component type="and" name="and0" posx="2" posy="2"
+			nandcat:annotation="and" />
+		<component type="circuit" type2="inner-circuit0" name="innercircuitcomponent0" posx="3" posy="4" />
+		<connection source="and0" sourcePort="o" target="not0"
+			targetPort="a" />
+		<connection source="not0" sourcePort="o" target="and0"
+			targetPort="b" />
+	</circuit>
+	
+	<circuit name="inner-circuit0">
+		<component type="not" name="not1" posx="1" posy="1"
+			nandcat:annotation="not" />
+		<component type="and" name="and1" posx="2" posy="2"
+			nandcat:annotation="and" />
+		<component type="circuit" type2="inner-circuit1" name="innercircuitcomponent1" posx="3" posy="3" />
+		<connection source="and1" sourcePort="o" target="not1"
+			targetPort="a" />
+		<connection source="not1" sourcePort="o" target="and1"
+			targetPort="b" />
+	</circuit>
+	
+	<circuit name="inner-circuit1">
+		<component type="not" name="not2" posx="1" posy="1"
+			nandcat:annotation="not" />
+		<component type="and" name="and2" posx="2" posy="2"
+			nandcat:annotation="and" />
+		<component type="circuit" type2="inner-circuit2" name="innercircuitcomponent2" posx="3" posy="3" />
+		<connection source="and2" sourcePort="o" target="not2"
+			targetPort="a" />
+		<connection source="not2" sourcePort="o" target="and2"
+			targetPort="b" />
+	</circuit>
+	
+	<circuit name="inner-circuit2">
+		<component type="not" name="not3" posx="1" posy="1"
+			nandcat:annotation="not" />
+		<component type="and" name="and3" posx="2" posy="2"
+			nandcat:annotation="and" />
+		<connection source="and3" sourcePort="o" target="not3"
+			targetPort="a" />
+		<connection source="not3" sourcePort="o" target="and3"
+			targetPort="b" />
+	</circuit>
+	
+
+</circuits>

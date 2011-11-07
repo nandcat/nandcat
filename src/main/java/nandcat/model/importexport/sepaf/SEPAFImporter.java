@@ -213,7 +213,7 @@ public class SEPAFImporter implements Importer {
         for (Object c : mainComponents) {
             if (c instanceof Element) {
                 Element compE = (Element) c;
-                buildModule(circuit, compE, moduleIndex);
+                buildModule(circuit, compE, doc, moduleIndex);
             }
         }
 
@@ -251,7 +251,7 @@ public class SEPAFImporter implements Importer {
      * @throws FormatException
      *             if format is not valid.
      */
-    private void buildModule(Circuit c, Element el, Map<String, Module> index) throws FormatException {
+    private void buildModule(Circuit c, Element el, Document doc, Map<String, Module> index) throws FormatException {
         if (el == null) {
             throw new IllegalArgumentException();
         }
@@ -261,25 +261,31 @@ public class SEPAFImporter implements Importer {
         Attribute aName = el.getAttribute("name");
         Attribute aPosX = el.getAttribute("posx");
         Attribute aPosY = el.getAttribute("posy");
+
+        // Position x and y needed for all components.
         if (aPosX == null) {
-            throw new FormatException("posx not valid at :" + el.getQualifiedName());
+            throw new FormatException("posx not found at :" + el.getQualifiedName());
         }
         if (aPosY == null) {
-            throw new FormatException("posy not valid at :" + el.getQualifiedName());
+            throw new FormatException("posy not found at :" + el.getQualifiedName());
         }
 
+        // Build point from coordinates.
         Point location = null;
         try {
             location = new Point(aPosX.getIntValue(), aPosY.getIntValue());
         } catch (DataConversionException e) {
             throw new FormatException("Coordinates not integer", e);
         }
+
+        // Get attributes from nandcat extension. null if not present.
         Attribute aAnnotation = el.getAttribute("annotation", NS_NANDCAT);
         Attribute aPortsIn = el.getAttribute("ports_in", NS_NANDCAT);
         Attribute aPortsOut = el.getAttribute("ports_out", NS_NANDCAT);
         Attribute inState = el.getAttribute("in_state", NS_NANDCAT);
         Attribute inTiming = el.getAttribute("in_timing", NS_NANDCAT);
 
+        // Parse attribute for amount of incoming and outgoing ports if available.
         Integer portsIn = null;
         Integer portsOut = null;
         if (aPortsIn != null) {
@@ -297,6 +303,7 @@ public class SEPAFImporter implements Importer {
             }
         }
 
+        // Instantiate specified module.
         Module module = null;
         if (aType.getValue().equals("and")) {
             AndGate andGate = null;
@@ -405,6 +412,8 @@ public class SEPAFImporter implements Importer {
                 LOG.debug("Component 'clock' does not has a state, use default");
             }
             module = ig;
+        } else if (aType.getValue().equals("circuit")) {
+            module = buildCircuit(el.getAttributeValue("type2"), doc);
         } else {
             throw new FormatException("Not a supported component type: '" + aType.getValue() + "'");
         }
@@ -414,6 +423,8 @@ public class SEPAFImporter implements Importer {
             String annotation = aAnnotation.getValue();
             module.setName(annotation);
         }
+
+        // Put module in the index for referencing later.
         index.put(el.getAttributeValue("name"), module);
         c.addModule(module);
     }
