@@ -14,7 +14,7 @@ import nandcat.controller.AnnotationTool;
 import nandcat.controller.Controller;
 import nandcat.model.Model;
 import nandcat.model.element.AndGate;
-import nandcat.model.element.Element;
+import nandcat.model.element.DrawElement;
 import nandcat.view.View;
 import nandcat.view.Workspace;
 import nandcat.view.WorkspaceEvent;
@@ -68,9 +68,9 @@ public class AnnotationToolTest {
         EasyMock.expect(andGate.getName()).andReturn("Old Annotation").anyTimes();
         // Hot point
         andGate.setName(EasyMock.eq("Old Annotation2"));
-        Set<Element> elements = new HashSet<Element>();
+        Set<DrawElement> elements = new HashSet<DrawElement>();
         elements.add(andGate);
-        EasyMock.expect(mMock.getElementsAt(EasyMock.eq(recOfClick))).andReturn(elements);
+        EasyMock.expect(mMock.getDrawElementsAt(EasyMock.eq(recOfClick))).andReturn(elements);
         EasyMock.replay(andGate);
         EasyMock.replay(cMock);
         EasyMock.replay(mMock);
