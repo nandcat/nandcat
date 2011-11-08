@@ -1,5 +1,6 @@
 package nandcat.model.importexport;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.awt.Point;
 import java.io.BufferedReader;
@@ -28,7 +29,7 @@ public class SEPAFExporterTest {
         SEPAFExporter export = new SEPAFExporter();
         File file = File.createTempFile("export", ".xml");
         export.setFile(file);
-        Circuit c = new Circuit(null);
+        Circuit c = new Circuit();
         AndGate andGate = new AndGate();
         andGate.setLocation(new Point(1, 1));
         andGate.setName("AndGate");
@@ -59,12 +60,18 @@ public class SEPAFExporterTest {
         testValidOutput(file);
     }
 
-    private Circuit buildSimpleCircuit(String prefix) {
-        Circuit c = new Circuit(new Point(0, 0));
+    private Circuit buildSimpleCircuit(String uuid, String prefix, Point p) {
+        Circuit c = null;
+        if (uuid == null) {
+            c = new Circuit();
+        } else {
+            c = new Circuit(uuid);
+        }
+        c.setLocation(p);
 
         // And gate
         AndGate andGate = new AndGate();
-        andGate.setLocation(new Point(1, 1));
+        andGate.setLocation(new Point(0, 0));
         andGate.setName(prefix + ":AndGate");
         c.addModule(andGate);
 
@@ -76,23 +83,31 @@ public class SEPAFExporterTest {
         SEPAFExporter export = new SEPAFExporter();
         File file = File.createTempFile("export", ".xml");
         export.setFile(file);
-        Circuit c = new Circuit(null);
+        Circuit c = new Circuit();
 
-        Circuit c1 = buildSimpleCircuit("c1");
-        Circuit c2 = buildSimpleCircuit("c2");
-        Circuit c3 = buildSimpleCircuit("c3");
+        Circuit c1 = buildSimpleCircuit(null, "c1", new Point(1, 1));
+        Circuit c2 = buildSimpleCircuit(null, "c2", new Point(1, 1));
+        Circuit c3 = buildSimpleCircuit(null, "c3", new Point(1, 1));
+
+        Circuit c4 = buildSimpleCircuit("un-iq-ue", "c4", new Point(2, 2));
+        Circuit c5 = buildSimpleCircuit("un-iq-ue", "not-parsed!", new Point(3, 3));
         c2.addModule(c3);
         c1.addModule(c2);
         c.addModule(c1);
-
+        c.addModule(c4);
+        c.addModule(c5);
         export.setCircuit(c);
         assertTrue(export.exportCircuit());
         String content = getFileContent(file);
-        System.out.println(file.getAbsolutePath());
-        System.out.println(content);
         assertTrue(content.contains("nandcat:annotation=\"c1:AndGate\""));
         assertTrue(content.contains("nandcat:annotation=\"c2:AndGate\""));
         assertTrue(content.contains("nandcat:annotation=\"c3:AndGate\""));
+        assertTrue(content.contains("nandcat:annotation=\"c4:AndGate\""));
+        assertTrue(content.contains("type2=\"un-iq-ue\""));
+        assertTrue(content.contains("name=\"un-iq-ue\""));
+
+        // should not be written to xml because the circuit un-iq-ue is already defined by c4
+        assertFalse(content.contains("no-parsed!"));
         testValidOutput(file);
     }
 
@@ -130,5 +145,4 @@ public class SEPAFExporterTest {
         };
         XsdValidation.validate(new StreamSource(new FileInputStream(file)), xsdSources, throwingErrorHandler);
     }
-
 }

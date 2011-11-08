@@ -61,9 +61,15 @@ public class SEPAFExporter implements Exporter {
         SUPPORTED_FORMATS.put("xml", "SEPAF");
     }
 
-    private Set<Circuit> innerCircuits = new LinkedHashSet<Circuit>();
+    /**
+     * Index of already generated inner circuits. Indexed by the uuid. Used to avoid double generating.
+     */
+    private Set<String> innerCircuitsIndex = new LinkedHashSet<String>();
 
-    private Element root;
+    /**
+     * Root element of the current document.
+     */
+    private Element root = null;
 
     /**
      * {@inheritDoc}
@@ -84,7 +90,7 @@ public class SEPAFExporter implements Exporter {
         this.root = root;
         root.addNamespaceDeclaration(SEPAFFormat.NAMESPACE.NANDCAT);
         try {
-            root.setAttribute("main", SEPAFFormat.getObjectAsUniqueString(circuit));
+            root.setAttribute("main", circuit.getUUID());
             root.addContent(buildCircuit(circuit));
             XMLOutputter outputter = new XMLOutputter();
 
@@ -112,7 +118,7 @@ public class SEPAFExporter implements Exporter {
      */
     private Element buildCircuit(Circuit c) throws FormatException {
         org.jdom.Element e = new Element("circuit", SEPAFFormat.NAMESPACE.SEPAF);
-        e.setAttribute("name", SEPAFFormat.getObjectAsUniqueString(c));
+        e.setAttribute("name", c.getUUID());
         for (nandcat.model.element.Element circuitE : c.getElements()) {
             e.addContent(buildElement(circuitE));
         }
@@ -137,8 +143,10 @@ public class SEPAFExporter implements Exporter {
         Content c = null;
         if (e instanceof Circuit) {
             c = buildComponent((Module) e);
-            root.addContent(buildCircuit((Circuit) e));
-            LOG.warn("Circuit export not fully implemented");
+            if (!innerCircuitsIndex.contains(((Circuit) e).getUUID())) {
+                root.addContent(buildCircuit((Circuit) e));
+                innerCircuitsIndex.add(((Circuit) e).getUUID());
+            }
         }
 
         if (e instanceof Module) {
@@ -160,12 +168,9 @@ public class SEPAFExporter implements Exporter {
      */
     private Content buildComponent(Module m) throws FormatException {
         Element e = new Element("component", SEPAFFormat.NAMESPACE.SEPAF);
-        e.setAttribute("posx", Integer.toString(m.getLocation().x));
-        e.setAttribute("posy", Integer.toString(m.getLocation().y));
-        e.setAttribute("name", SEPAFFormat.getObjectAsUniqueString(m));
-        if (m.getName() != null) {
-            e.setAttribute("annotation", m.getName(), SEPAFFormat.NAMESPACE.NANDCAT);
-        }
+        setComponentAttributesLocation(e, m);
+        setComponentName(e, m);
+        setComponentAttributesAnnotation(e, m);
 
         // Set specific attributes.
         setModuleSpecificAttributes(e, m);
@@ -180,6 +185,45 @@ public class SEPAFExporter implements Exporter {
         }
 
         return e;
+    }
+
+    /**
+     * Sets the component attributes for location.
+     * 
+     * @param e
+     *            Element to set attribute at.
+     * @param m
+     *            Module to get the attribute value from.
+     */
+    private void setComponentAttributesLocation(Element e, Module m) {
+        e.setAttribute("posx", Integer.toString(m.getLocation().x));
+        e.setAttribute("posy", Integer.toString(m.getLocation().y));
+    }
+
+    /**
+     * Sets the component attributes for annotation.
+     * 
+     * @param e
+     *            Element to set attribute at.
+     * @param m
+     *            Module to get the attribute value from.
+     */
+    private void setComponentAttributesAnnotation(Element e, Module m) {
+        if (m.getName() != null) {
+            e.setAttribute("annotation", m.getName(), SEPAFFormat.NAMESPACE.NANDCAT);
+        }
+    }
+
+    /**
+     * Sets the component attributes for name.
+     * 
+     * @param e
+     *            Element to set attribute at.
+     * @param m
+     *            Module to get the attribute value from.
+     */
+    private void setComponentName(Element e, Module m) {
+        e.setAttribute("name", SEPAFFormat.getObjectAsUniqueString(m));
     }
 
     /**
@@ -203,8 +247,13 @@ public class SEPAFExporter implements Exporter {
                 e.setAttribute("in_timing", Integer.toString(((ImpulseGenerator) m).getFrequency()),
                         SEPAFFormat.NAMESPACE.NANDCAT);
             }
-            e.setAttribute("in_state", ((((ImpulseGenerator) m).getState()) ? "true" : "false"),
-                    SEPAFFormat.NAMESPACE.NANDCAT);
+            String inState = "";
+            if (((ImpulseGenerator) m).getState()) {
+                inState = "true";
+            } else {
+                inState = "false";
+            }
+            e.setAttribute("in_state", inState, SEPAFFormat.NAMESPACE.NANDCAT);
         } else if (m instanceof AndGate) {
             e.setAttribute("type", "and");
         } else if (m instanceof OrGate) {
@@ -219,7 +268,7 @@ public class SEPAFExporter implements Exporter {
             e.setAttribute("type", "flipflop");
         } else if (m instanceof Circuit) {
             e.setAttribute("type", "circuit");
-            e.setAttribute("type2", SEPAFFormat.getObjectAsUniqueString(m));
+            e.setAttribute("type2", ((Circuit) m).getUUID());
         } else {
             LOG.debug("Not a supported component type: '" + m.getClass().getName() + "'");
         }
