@@ -36,7 +36,9 @@ public class ImpulseGenerator implements Module {
     private Rectangle rectangle;
 
     /**
-     * Constructor with frequency.
+     * Constructor with frequency. The frequency is basically the necessary amount of ticks of the clock to toggle the
+     * state of this ImpulseGenerator. With frequency 0, the ImpulseGenerator will not change its state. This has
+     * implications for the clock's register-procedure.
      * 
      * @param frequency
      *            frequency of the generator
@@ -53,10 +55,10 @@ public class ImpulseGenerator implements Module {
     }
 
     /**
-     * Constructor for a switch. Frequency 0 will never change the state.
+     * Default constructor. The frequency will be 1.
      */
     public ImpulseGenerator() {
-        this(0);
+        this(1);
     }
 
     /**
