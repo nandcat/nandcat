@@ -51,7 +51,26 @@ public class Circuit implements ClockListener, Module, DrawCircuit {
      * Uuid for this circuit.
      */
     private String uuid;
-    
+
+    /**
+     * Return the uuid of this circuit.
+     * 
+     * @return String representing the uuid
+     */
+    public String getUuid() {
+        return uuid;
+    }
+
+    /**
+     * Set the uuid.
+     * 
+     * @param uuid
+     *            String representing the uuid
+     */
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     /**
      * Usual constructor for circuits. The UUID will be extracted from the Importer.
      * 
@@ -66,7 +85,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit {
         symbol = new byte[0];
         selected = false;
     }
-    
+
     /**
      * Default constructor.
      */
