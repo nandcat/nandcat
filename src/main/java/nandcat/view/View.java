@@ -373,7 +373,7 @@ public class View extends JFrame {
             slower.setActionCommand("slower");
             slower.setName("slower");
         }
-        if (toolFunctionalities.containsKey("create")) {
+        if (toolFunctionalities.containsKey("createButton")) {
             create.addActionListener(toolFunctionalities.get("create"));
             create.setActionCommand("create");
             create.setName("create");

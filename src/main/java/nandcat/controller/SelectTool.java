@@ -2,8 +2,9 @@ package nandcat.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
@@ -53,6 +54,8 @@ public class SelectTool implements Tool {
      */
     private WorkspaceListener workspaceListener;
 
+    private Rectangle rect;
+
     /**
      * Constructs the SelectTool.
      * 
@@ -63,6 +66,8 @@ public class SelectTool implements Tool {
         this.controller = controller;
         this.view = controller.getView();
         this.model = controller.getModel();
+        represent = new LinkedList<String>();
+        represent.add("select");
     }
 
     /**
@@ -84,10 +89,11 @@ public class SelectTool implements Tool {
             workspaceListener = new WorkspaceListenerAdapter() {
                 @Override
                 public void mouseClicked(WorkspaceEvent e) {
-                    // TODO compute rectangle
+                    rect = new Rectangle(e.getLocation());
                 }
-                public void mouseReleased(WorkspaceEvent e) {
-                    // TODO set as selected
+                public void mouseMoved(WorkspaceEvent e) {
+                    rect.add(e.getLocation());
+                    selectElements(rect);
                 }
             };
         }
@@ -104,8 +110,8 @@ public class SelectTool implements Tool {
     /*
      * Set the Elements within the rectangle as selected.
      */
-    private void selectElements(Point point) {
-        
+    private void selectElements(Rectangle rect) {
+        model.selectElements(rect);
     }
 
     /**

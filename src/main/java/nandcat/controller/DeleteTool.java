@@ -5,11 +5,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import nandcat.model.Model;
+import nandcat.model.element.Element;
 import nandcat.view.View;
+import nandcat.view.WorkspaceEvent;
+import nandcat.view.WorkspaceListener;
+import nandcat.view.WorkspaceListenerAdapter;
 
 /**
  * A tool for deleting Elements from the circuit.
@@ -56,12 +61,27 @@ public class DeleteTool implements Tool {
         this.controller = controller;
         this.model = controller.getModel();
         this.view = controller.getView();
+        represent = new LinkedList<String>();
+        represent.add("delete");
         // TODO Funktioniert das mit dem Keylistener so? Ich würde den
         // Keymanager nehmen - Ben
+        setActive(true);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setActive(boolean active) {
+        setListeners();
+    }
+
+    public void setListeners() {
         this.view.addKeyListener(new KeyListener() {
 
             public void keyTyped(KeyEvent e) {
-                // TODO Auto-generated method stub
+                Element element = (Element) e.getSource();
+                model.removeElement(element);
             }
 
             public void keyReleased(KeyEvent e) {
@@ -72,13 +92,6 @@ public class DeleteTool implements Tool {
                 // TODO Auto-generated method stub
             }
         });
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setActive(boolean active) {
-        // Always active
     }
 
     /**

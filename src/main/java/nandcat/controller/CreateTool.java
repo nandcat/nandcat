@@ -5,12 +5,14 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import nandcat.model.Model;
+import nandcat.model.ViewModule;
 import nandcat.model.element.DrawElement;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
@@ -64,10 +66,11 @@ public class CreateTool implements Tool {
     /**
      *
      */
-    private Module selectedModule;
+    private ViewModule selectedModule;
 
     /*
-     * Port representing the source of a new Connection. NULL if the user did not click on an Element to create a Connection.
+     * Port representing the source of a new Connection.
+     * NULL if the user did not click on an Element to create a Connection.
      */
     private Port sourcePort;
 
@@ -81,6 +84,9 @@ public class CreateTool implements Tool {
         this.controller = controller;
         this.view = controller.getView();
         this.model = controller.getModel();
+        represent = new LinkedList<String>();
+        represent.add("createButton");
+        represent.add("selectModule");
     }
 
     /**
@@ -110,16 +116,12 @@ public class CreateTool implements Tool {
         view.getWorkspace().addListener(workspaceListener);
     }
 
-<<<<<<< Updated upstream
     /**
      * Creates a new Element at the given Point.
      */
     private void createElement(Point point) {
-        Set<Element> elementsAt = model.getElementsAt(new Rectangle(point));
-=======
-    private void createElementAtPoint(Point point) {
         Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(point));
->>>>>>> Stashed changes
+
         if (elementsAt.isEmpty()) {
             if (selectedModule != null) {
                 model.addModule(selectedModule, point);
@@ -158,9 +160,14 @@ public class CreateTool implements Tool {
 
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
-                activateTool();
-                JComboBox cb = (JComboBox) e.getSource();
-                selectedModule = (Module) cb.getSelectedItem();
+                if (e.getActionCommand() == "createButton") {
+                    activateTool();
+                } else if (e.getActionCommand() == "selectModule") {
+                  if (e.getSource() instanceof JComboBox) {
+                      selectedModule = (ViewModule) ((JComboBox) e.getSource()).getSelectedItem();
+                  }
+                }
+                
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();
