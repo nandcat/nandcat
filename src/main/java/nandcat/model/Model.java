@@ -71,7 +71,7 @@ public class Model implements ClockListener {
     /**
      * Map ViewModules (view representation) to Modules (datastructure).
      */
-    private Set<ViewModule> viewModules;
+    private List<ViewModule> viewModules;
 
     /**
      * List of all custom Modules.
@@ -98,20 +98,10 @@ public class Model implements ClockListener {
      * Fill viewModule2Module data structure with default Gates and custom circuits.
      */
     private void initView2Module() {
-        viewModules = new HashSet<ViewModule>();
+        viewModules = new LinkedList<ViewModule>();
         // TODO fix this
         ViewModule andGate = new ViewModule("AND", AndGate.class, "", null);
         viewModules.add(andGate);
-
-        try {
-            andGate.getModule().newInstance();
-        } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         // FIXME walk through circuit-Ordner and fill viewModule2Module
     }
 
@@ -169,7 +159,7 @@ public class Model implements ClockListener {
      * @return List of ViewModules
      */
     public List<ViewModule> getViewModules() {
-        return null;
+        return viewModules;
     }
 
     /**
