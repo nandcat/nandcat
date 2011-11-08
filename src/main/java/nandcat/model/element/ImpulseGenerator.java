@@ -53,6 +53,13 @@ public class ImpulseGenerator implements Module {
     }
 
     /**
+     * Constructor for a switch. Frequency 0 will never change the state.
+     */
+    public ImpulseGenerator() {
+        this(0);
+    }
+
+    /**
      * Set impulsegenerator's name.
      * 
      * @param name

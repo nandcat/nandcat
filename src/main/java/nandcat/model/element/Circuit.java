@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import nandcat.model.Clock;
 import nandcat.model.ClockListener;
+import java.util.UUID;
 
 /**
  * This class represents a circuit. It could be a customized Module or the main circuit displayed in the GUI. A circuit
@@ -47,18 +48,30 @@ public class Circuit implements ClockListener, Module, DrawCircuit {
     private boolean selected;
 
     /**
-     * Default constructor.
-     * 
-     * @param p
-     *            Point specifying the circuit's location
+     * Uuid for this circuit.
      */
-    public Circuit(Point p) {
-        location = p;
+    private String uuid;
+    
+    /**
+     * Usual constructor for circuits. The UUID will be extracted from the Importer.
+     * 
+     * @param uuid
+     *            String containing the uuid of this circuit
+     */
+    public Circuit(String uuid) {
+        this.uuid = uuid;
         name = "";
         elements = new LinkedList<Element>();
         rectangle = new Rectangle();
         symbol = new byte[0];
         selected = false;
+    }
+    
+    /**
+     * Default constructor.
+     */
+    public Circuit() {
+        this(UUID.randomUUID().toString());
     }
 
     /**

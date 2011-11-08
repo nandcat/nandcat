@@ -13,8 +13,8 @@ public class FlipFlop extends Circuit {
      * @param p
      *            Point specifying FlipFlop's location.
      */
-    public FlipFlop(Point p) {
-        super(p);
+    public FlipFlop() {
+        super("FlipFlop");
         AndGate r = new AndGate(2, 2);
         AndGate s = new AndGate(2, 2);
         NotGate rNot = new NotGate();
@@ -29,10 +29,4 @@ public class FlipFlop extends Circuit {
         addConnection(sNot.getOutPorts().get(0), r.getInPorts().get(0));
     }
 
-    /**
-     * Default constructor.
-     */
-    public FlipFlop() {
-        this(new Point(0, 0));
-    }
 }
