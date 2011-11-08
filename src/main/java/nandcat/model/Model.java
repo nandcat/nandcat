@@ -505,7 +505,16 @@ public class Model implements ClockListener {
      * @return Map with <b>key:</b> file extension and <b>value:</b> description
      */
     public Map<String, String> getExportFormats() {
-        // TODO implement
+        // nett aber nur Vorlage, im/exportFormats kann dynamisch aus importers/exporters generiert werden
+        // vmtl. (:>) hilfe-Funktion zum finden von: Dateiendung->im/exporter
+        // HashMap<String, String> exportFormats = new HashMap<String, String>();
+        // for (Exporter e : exporters.values()) {
+        // e.getFileFormats().entrySet().iterator().next();
+        // for (Entry<String, String> entry : e.getFileFormats().entrySet()) {
+        // exportFormats.put(entry.getKey(), entry.getValue());
+        // }
+        // }
+        // return exportFormats;
         return null;
     }
 
@@ -527,6 +536,10 @@ public class Model implements ClockListener {
      */
     public void exportToFile(File file) {
         // TODO implement
+        // Exporter exporter;
+        // exporter.setCircuit(circuit);
+        // exporter.setFile(file);
+        // exporter.exportCircuit();
     }
 
     /**
@@ -538,7 +551,15 @@ public class Model implements ClockListener {
      */
     public Circuit getCircuitByFileName(String fileName) {
         // TODO implement
-        return null;
+        // Finde passenden importer
+        Circuit c = null;
+        // Importer importer;
+        // File file = new File(fileName);
+        // importer.setFile(file);
+        // if (importer.importCircuit()) {
+        // c = importer.getCircuit();
+        // }
+        return c;
     }
 
     /**

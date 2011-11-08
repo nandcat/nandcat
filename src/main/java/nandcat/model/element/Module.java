@@ -1,6 +1,5 @@
 package nandcat.model.element;
 
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public interface Module extends Element, DrawModule {
      * @param p
      *            Point containing the new Location of this Module.
      */
-    void setLocation(Point p);
+    // void setLocation(Point p);
 
     /**
      * Get the Location of this Module. The Location is the TopLeft corner.
@@ -43,7 +42,7 @@ public interface Module extends Element, DrawModule {
      * @deprecated use getRectangle() instead
      * @return Point containing the Location of this Module
      */
-    Point getLocation();
+    // Point getLocation();
 
     /**
      * Return the module's rectangle.

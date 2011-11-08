@@ -1,6 +1,5 @@
 package nandcat.model.element;
 
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,11 +9,6 @@ import nandcat.model.Clock;
  * Lamp implementation. The lamp is shiny if the input signal is true. It has no outPorts.
  */
 public class Lamp implements Module {
-
-    /**
-     * Point specifying the Location of the Lamp.
-     */
-    private Point location;
 
     /**
      * Lamp's name.
@@ -116,20 +110,6 @@ public class Lamp implements Module {
      */
     public void clockTicked(Clock clock) {
         this.state = inPort.getState();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setLocation(Point p) {
-        location = p;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Point getLocation() {
-        return location;
     }
 
     /**

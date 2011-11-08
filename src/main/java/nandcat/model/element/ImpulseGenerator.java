@@ -1,6 +1,5 @@
 package nandcat.model.element;
 
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,11 +9,6 @@ import nandcat.model.Clock;
  * Impulse Generator. Cycles between outgoing signals. An Impulse Generator with frequency 0 is basically a Switch.
  */
 public class ImpulseGenerator implements Module {
-
-    /**
-     * Point specifying the Location of the Gate.
-     */
-    private Point location;
 
     /**
      * Impulsegenerator's name.
@@ -114,20 +108,6 @@ public class ImpulseGenerator implements Module {
         // note that outPort and state are asynchronous
         outPort.setState(state, clock);
         toggleState();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setLocation(Point p) {
-        location = p;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Point getLocation() {
-        return location;
     }
 
     /**

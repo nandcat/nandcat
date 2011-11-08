@@ -27,7 +27,7 @@ public class ConnectionTest extends TestCase {
     }
 
     /**
-     * Test: Impy->Lamp
+     * Test: Impy->Lamp.
      */
     @SuppressWarnings("unused")
     public void testConnection() {

@@ -1,6 +1,5 @@
 package nandcat.model.element;
 
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,11 +9,6 @@ import nandcat.model.Clock;
  * Gate class. Representing the minimum consent between the basic gates.
  */
 public abstract class Gate implements Module {
-
-    /**
-     * Point specifying the Location of the Gate.
-     */
-    private Point location;
 
     /**
      * String defining the Gates' name.
@@ -170,20 +164,6 @@ public abstract class Gate implements Module {
         for (Port p : this.outPorts) {
             p.locateOnStandardPosition();
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setLocation(Point p) {
-        this.location = p;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Point getLocation() {
-        return location;
     }
 
     /**
