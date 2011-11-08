@@ -1,11 +1,14 @@
 package nandcat.view;
 
+import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import javax.swing.JPanel;
+import nandcat.model.Model;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
@@ -54,9 +57,31 @@ public class Workspace extends JPanel {
     private Rectangle viewPortRect;
 
     /**
-     * Constructs the workspace.
+     * Model instance.
      */
-    public Workspace() {
+    private Model model;
+
+    /**
+     * Rectangle to draw while selecting Elements.
+     */
+    private Rectangle selectRect;
+
+    /**
+     * View instance.
+     */
+    private View view;
+
+    /**
+     * Constructs the workspace.
+     * 
+     * @param model
+     *            Model instance.
+     * @param view
+     *            View instance.
+     */
+    public Workspace(Model model, View view) {
+        this.model = model;
+        this.view = view;
         setupWorkspace();
         mouseListener = new MouseAdapter() {
 
@@ -92,36 +117,22 @@ public class Workspace extends JPanel {
     }
 
     /**
-     * Redraws the workspace with its elements. Checks if elements are in view (Means inside the ViewPort).
-     * 
-     * @param elements
-     *            Set<Elements> with the elements to be redrawed.
+     * Redraws the workspace with its elements. By calling the repaint() method.
      */
-    public void redraw(Set<DrawElement> elements) {
-        elementDrawer.setGraphics(this.getGraphics());
-        for (DrawElement elem : elements) {
-            if (isInView(elem)) {
-                if (elem instanceof Connection) {
-                    elementDrawer.draw((Connection) elem);
-                } else if (elem instanceof AndGate) {
-                    elementDrawer.draw((AndGate) elem);
-                } else if (elem instanceof Circuit) {
-                    elementDrawer.draw((Circuit) elem);
-                } else if (elem instanceof FlipFlop) {
-                    elementDrawer.draw((FlipFlop) elem);
-                } else if (elem instanceof ImpulseGenerator) {
-                    elementDrawer.draw((ImpulseGenerator) elem);
-                } else if (elem instanceof IdentityGate) {
-                    elementDrawer.draw((IdentityGate) elem);
-                } else if (elem instanceof NotGate) {
-                    elementDrawer.draw((NotGate) elem);
-                } else if (elem instanceof OrGate) {
-                    elementDrawer.draw((OrGate) elem);
-                } else if (elem instanceof Lamp) {
-                    elementDrawer.draw((Lamp) elem);
-                }
-            }
-        }
+    public void redraw() {
+        repaint();
+    }
+
+    /**
+     * Redraws the workspace with its elements. By calling the repaint() method. And sets a rectangle which represents
+     * the selecting area.
+     * 
+     * @param rect
+     *            Rectangle size and position of the "seeking-rectangle".
+     */
+    public void redraw(Rectangle rect) {
+        this.selectRect = rect;
+        repaint();
     }
 
     /**
@@ -172,6 +183,46 @@ public class Workspace extends JPanel {
      */
     public void setViewPortRect(Rectangle rect) {
         this.viewPortRect = rect;
+        if (rect.getWidth() >= this.getWidth()) {
+            view.setWorkspaceWidth((int) rect.getWidth());
+        }
+        if (rect.getHeight() >= this.getHeight()) {
+            view.setWorkspaceHeight((int) rect.getHeight());
+        }
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        elementDrawer.setGraphics(g);
+        List<DrawElement> elementsToDraw = model.getDrawElements();
+        for (DrawElement elem : elementsToDraw) {
+            if (isInView(elem)) {
+                if (elem instanceof Connection) {
+                    elementDrawer.draw((Connection) elem);
+                } else if (elem instanceof AndGate) {
+                    elementDrawer.draw((AndGate) elem);
+                } else if (elem instanceof Circuit) {
+                    elementDrawer.draw((Circuit) elem);
+                } else if (elem instanceof FlipFlop) {
+                    elementDrawer.draw((FlipFlop) elem);
+                } else if (elem instanceof ImpulseGenerator) {
+                    elementDrawer.draw((ImpulseGenerator) elem);
+                } else if (elem instanceof IdentityGate) {
+                    elementDrawer.draw((IdentityGate) elem);
+                } else if (elem instanceof NotGate) {
+                    elementDrawer.draw((NotGate) elem);
+                } else if (elem instanceof OrGate) {
+                    elementDrawer.draw((OrGate) elem);
+                } else if (elem instanceof Lamp) {
+                    elementDrawer.draw((Lamp) elem);
+                }
+            }
+        }
+        if (selectRect != null) {
+            elementDrawer.draw(selectRect);
+            selectRect = null;
+        }
     }
 
     /**

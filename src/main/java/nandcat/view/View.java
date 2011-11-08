@@ -33,6 +33,11 @@ import nandcat.model.ViewModule;
 public class View extends JFrame {
 
     /**
+     * frame of the Program.
+     */
+    private JFrame frame = new JFrame("NANDCat");
+
+    /**
      * View over the Workspace.
      */
     private JScrollPane scroller;
@@ -103,13 +108,17 @@ public class View extends JFrame {
     private Set<JComponent> noDisableElements = new HashSet<JComponent>();
 
     /**
+     * Dimension of Buttons.
+     */
+    private Dimension buttonDim = new Dimension(60, 30);
+
+    /**
      * Constructs the view.
      * 
      * @param model
      *            The Model component of the application.
      */
     public View(Model model) {
-        super("NANDcat");
         setupGui(model);
     }
 
@@ -143,7 +152,7 @@ public class View extends JFrame {
             }
 
             public void importSucceeded(ModelEvent e) {
-                // TODO Auto-generated method stub
+                allModulesInSight();
             }
 
             public void importFailed(ModelEvent e) {
@@ -158,10 +167,10 @@ public class View extends JFrame {
                 // TODO Auto-generated method stub
             }
         });
-        setSize(600, 650);
-        setLocation(frameLocation);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        workspace = new Workspace();
+        frame.setSize(600, 650);
+        frame.setLocation(frameLocation);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        workspace = new Workspace(model, this);
         workspace.setPreferredSize(workspaceDimension);
         workspace.setBackground(Color.white);
         workspace.setLayout(null); // no layout is required for free move of the components
@@ -170,9 +179,10 @@ public class View extends JFrame {
         viewport.setViewPosition(viewportLocation);
         toolBar = new JToolBar();
         menubar = new JMenuBar();
-        getContentPane().add(scroller, "Center");
-        getContentPane().add(toolBar, "West");
-        getContentPane().add(menubar, "North");
+        frame.getContentPane().add(scroller, "Center");
+        frame.getContentPane().add(toolBar, "West");
+        frame.getContentPane().add(menubar, "North");
+        frame.setVisible(true);
     }
 
     /**
@@ -228,94 +238,58 @@ public class View extends JFrame {
         JMenuItem mtoggle = new JMenuItem("Setze Schalter");
         disableElements.add(mtoggle);
         if (toolFunctionalities.containsKey("start")) {
-            mstart.addActionListener(toolFunctionalities.get("start"));
-            mstart.setActionCommand("start");
-            mstart.setName("start");
+            setupMenuItem(mstart, "start");
         }
         if (toolFunctionalities.containsKey("toggle")) {
-            mtoggle.addActionListener(toolFunctionalities.get("toggle"));
-            mtoggle.setActionCommand("toggle");
-            mtoggle.setName("toggle");
+            setupMenuItem(mtoggle, "toggle");
         }
         if (toolFunctionalities.containsKey("annotate")) {
-            mannotate.addActionListener(toolFunctionalities.get("annotate"));
-            mannotate.setActionCommand("annotate");
-            mannotate.setName("annotate");
+            setupMenuItem(mannotate, "annotate");
         }
         if (toolFunctionalities.containsKey("stop")) {
-            mstop.addActionListener(toolFunctionalities.get("stop"));
-            mstop.setActionCommand("stop");
-            mstop.setName("stop");
+            setupMenuItem(mstop, "stop");
         }
         if (toolFunctionalities.containsKey("faster")) {
-            mfaster.addActionListener(toolFunctionalities.get("faster"));
-            mfaster.setActionCommand("faster");
-            mfaster.setName("faster");
+            setupMenuItem(mfaster, "faster");
         }
         if (toolFunctionalities.containsKey("slower")) {
-            mslower.addActionListener(toolFunctionalities.get("slower"));
-            mslower.setActionCommand("slower");
-            mslower.setName("slower");
+            setupMenuItem(mslower, "slower");
         }
         if (toolFunctionalities.containsKey("create")) {
-            mcreate.addActionListener(toolFunctionalities.get("create"));
-            mcreate.setActionCommand("create");
-            mcreate.setName("create");
+            setupMenuItem(mcreate, "create");
         }
         if (toolFunctionalities.containsKey("select")) {
-            mselect.addActionListener(toolFunctionalities.get("select"));
-            mselect.setActionCommand("select");
-            mselect.setName("select");
+            setupMenuItem(mselect, "select");
         }
         if (toolFunctionalities.containsKey("move")) {
-            mmove.addActionListener(toolFunctionalities.get("move"));
-            mmove.setActionCommand("move");
-            mmove.setName("move");
+            setupMenuItem(mmove, "move");
         }
         if (toolFunctionalities.containsKey("startcheck")) {
-            mstartcheck.addActionListener(toolFunctionalities.get("startcheck"));
-            mstartcheck.setActionCommand("startcheck");
-            mstartcheck.setName("startcheck");
+            setupMenuItem(mstartcheck, "startcheck");
         }
         if (toolFunctionalities.containsKey("editcheck")) {
-            meditcheck.addActionListener(toolFunctionalities.get("editcheck"));
-            meditcheck.setActionCommand("editcheck");
-            meditcheck.setName("editcheck");
+            setupMenuItem(meditcheck, "editcheck");
         }
         if (toolFunctionalities.containsKey("new")) {
-            mnew.addActionListener(toolFunctionalities.get("new"));
-            mnew.setActionCommand("new");
-            mnew.setName("new");
+            setupMenuItem(mnew, "new");
         }
         if (toolFunctionalities.containsKey("load")) {
-            mload.addActionListener(toolFunctionalities.get("load"));
-            mload.setActionCommand("load");
-            mload.setName("load");
+            setupMenuItem(mload, "load");
         }
         if (toolFunctionalities.containsKey("save")) {
-            msave.addActionListener(toolFunctionalities.get("save"));
-            msave.setActionCommand("save");
-            msave.setName("save");
+            setupMenuItem(msave, "save");
         }
         if (toolFunctionalities.containsKey("saveAs")) {
-            msave2.addActionListener(toolFunctionalities.get("saveAs"));
-            msave2.setActionCommand("saveAs");
-            msave2.setName("saveAs");
+            setupMenuItem(msave2, "saveAs");
         }
         if (toolFunctionalities.containsKey("loaddef")) {
-            mloaddef.addActionListener(toolFunctionalities.get("loaddef"));
-            mloaddef.setActionCommand("loaddef");
-            mloaddef.setName("loaddef");
+            setupMenuItem(mloaddef, "loaddef");
         }
         if (toolFunctionalities.containsKey("close")) {
-            mclose.addActionListener(toolFunctionalities.get("close"));
-            mclose.setActionCommand("close");
-            mclose.setName("close");
+            setupMenuItem(mclose, "close");
         }
         if (toolFunctionalities.containsKey("delete")) {
-            mdelete.addActionListener(toolFunctionalities.get("delete"));
-            mdelete.setActionCommand("delete");
-            mdelete.setName("delete");
+            setupMenuItem(mdelete, "delete");
         }
         menubar.add(file);
         menubar.add(edit);
@@ -342,6 +316,20 @@ public class View extends JFrame {
     }
 
     /**
+     * Sets up the MenuItems. Gives them the Functionalities and ActionCommands.
+     * 
+     * @param item
+     *            JMenuItem to be edited.
+     * @param name
+     *            String, Name of Functionality.
+     */
+    private void setupMenuItem(JMenuItem item, String name) {
+        item.addActionListener(toolFunctionalities.get(name));
+        item.setActionCommand(name);
+        item.setName(name);
+    }
+
+    /**
      * set up the ToolBar of the Frame. Creates Buttons and gives them Functionalities according to the set of
      * toolFunctionalities given from the Controller.
      * 
@@ -350,20 +338,36 @@ public class View extends JFrame {
      */
     private void buildToolbar(JToolBar toolBar) {
         JButton start = new JButton("Start");
+        start.setMaximumSize(buttonDim);
+        start.setToolTipText("Startet die Simulation.");
         disableElements.add(start);
         JButton move = new JButton("Verschieben");
+        move.setMaximumSize(buttonDim);
+        move.setToolTipText("Aktiviert den Modus in welchem Mit der Maus gescrollt werden kann.");
         disableElements.add(move);
         JButton stop = new JButton("Stop");
+        stop.setMaximumSize(buttonDim);
+        stop.setToolTipText("Stoppt die Simulation.");
         noDisableElements.add(stop);
         JButton faster = new JButton("Plus");
+        faster.setMaximumSize(buttonDim);
+        faster.setToolTipText("Beschleunigt die Simulationsgeschwindigkeit.");
         noDisableElements.add(faster);
         JButton slower = new JButton("Minus");
+        slower.setMaximumSize(buttonDim);
+        slower.setToolTipText("Verlangsamt die Simulationsgeschwindigkeit.");
         noDisableElements.add(slower);
         JButton create = new JButton("Erstellen");
+        create.setMaximumSize(buttonDim);
+        create.setToolTipText("Versetzt das Programm in den Modus in welchem neue Bausteine und Leitungen gesetzt werden können.");
         disableElements.add(create);
         JButton select = new JButton("Auswahl");
+        select.setMaximumSize(buttonDim);
+        select.setToolTipText("Versetzt das Programm in den Modus in welchem Bausteine und Leitungen markiert werden können.");
         disableElements.add(select);
         JButton toggle = new JButton("Setze Schalter");
+        toggle.setMaximumSize(buttonDim);
+        toggle.setToolTipText("Versetzt das Programm in den Modus in welchem Schalter auf An und Aus gestellt werden können");
         disableElements.add(toggle);
         JComboBox modules = null;
         if (toolFunctionalities.containsKey("start")) {
@@ -408,6 +412,8 @@ public class View extends JFrame {
         }
         if (viewModules != null) {
             modules = new JComboBox(viewModules.toArray());
+            modules.setMaximumSize(buttonDim);
+            modules.setToolTipText("Liste mit verfügbaren Bausteinen");
         }
         if (toolFunctionalities.containsKey("selectModule")) {
             modules.addActionListener(toolFunctionalities.get("selectModule"));
@@ -421,8 +427,16 @@ public class View extends JFrame {
         toolBar.add(create);
         toolBar.add(select);
         toolBar.add(move);
+        toolBar.add(toggle);
         toolBar.add(modules);
         toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.Y_AXIS));
+    }
+
+    /**
+     * Checks after an Import if all Elements are on the workspace or if it has to be extended.
+     */
+    private void allModulesInSight() {
+        // aus dem Event alle Elements dann überprüfen ob workspace groß genug.
     }
 
     /**
@@ -432,7 +446,7 @@ public class View extends JFrame {
      *            ModelEvent with the elements to be repainted.
      */
     public void redraw(ModelEvent e) {
-        workspace.redraw(e.getElements());
+        workspace.redraw();
     }
 
     /**
@@ -514,7 +528,7 @@ public class View extends JFrame {
      *            integer to which the Height will be set.
      */
     public void setWorkspaceHeight(int newHeight) {
-        workspace.setSize(workspace.getWidth(), newHeight);
+        workspace.setPreferredSize(new Dimension(workspace.getWidth(), newHeight));
     }
 
     /**
@@ -524,7 +538,7 @@ public class View extends JFrame {
      *            integer to which the Width will be set.
      */
     public void setWorkspaceWidth(int newWidth) {
-        workspace.setSize(newWidth, workspace.getHeight());
+        workspace.setPreferredSize(new Dimension(newWidth, workspace.getHeight()));
     }
 
     /**
