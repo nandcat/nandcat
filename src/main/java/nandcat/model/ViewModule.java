@@ -24,12 +24,12 @@ public class ViewModule {
      * ViewModule's filename (may be null in case of standard gates). This has to be used to reference
      * circuit-definition files.
      */
-    private String fileName; // TODO data-type: Filename/File?
+    private final String fileName; // TODO data-type: Filename/File?
 
     /**
      * Module reference to the gate represented by this ViewModule. May be null in case of circuits.
      */
-    private final Class<? extends Module> module;
+    private final Module module;
 
     /**
      * Default constructor.
@@ -39,14 +39,16 @@ public class ViewModule {
      * @param module
      *            Module this viewmodule represents. May be null. (for circuits)
      * @param fileName
-     *            String ViewModule's file name. May be empty/null. (for standard gates)
+     *            String ViewModule's file name. May be empty. (for standard gates)
      * @param symbol
      *            bytearray containing ViewModule's symbol
      */
-    public ViewModule(String name, Class<? extends Module> module, String fileName, byte[] symbol) {
+    protected ViewModule(String name, Module module, String fileName, byte[] symbol) {
         this.name = name;
         this.module = module;
-        if (fileName != "" && fileName != null) {
+        if (fileName == null) {
+            this.fileName = "";
+        } else {
             this.fileName = fileName;
         }
         this.symbol = symbol;
@@ -69,16 +71,6 @@ public class ViewModule {
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * Sets the file extension for the symbol of this ViewModule.
-     * 
-     * @param s
-     *            String containing the file extension
-     */
-    private void setFileExtension(String s) {
-
     }
 
     /**
@@ -123,7 +115,7 @@ public class ViewModule {
      * 
      * @return Module represented by this ViewModule
      */
-    public Class<? extends Module> getModule() {
+    public Module getModule() {
         return module;
     }
 

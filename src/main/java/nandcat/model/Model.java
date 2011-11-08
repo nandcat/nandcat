@@ -16,8 +16,13 @@ import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
 import nandcat.model.element.DrawElement;
 import nandcat.model.element.Element;
+import nandcat.model.element.FlipFlop;
+import nandcat.model.element.IdentityGate;
 import nandcat.model.element.ImpulseGenerator;
+import nandcat.model.element.Lamp;
 import nandcat.model.element.Module;
+import nandcat.model.element.NotGate;
+import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
 import nandcat.model.importexport.Exporter;
 import nandcat.model.importexport.Importer;
@@ -100,9 +105,21 @@ public class Model implements ClockListener {
     private void initView2Module() {
         viewModules = new LinkedList<ViewModule>();
         // TODO fix this
-        ViewModule andGate = new ViewModule("AND", AndGate.class, "", null);
+        ViewModule andGate = new ViewModule("AND", new AndGate(), "", null);
         viewModules.add(andGate);
+        ViewModule orGate = new ViewModule("OR", new OrGate(), "", null);
+        viewModules.add(orGate);
+        ViewModule flipFlop = new ViewModule("FlipFlop", new FlipFlop(), "", null);
+        viewModules.add(flipFlop);
+        ViewModule id = new ViewModule("ID", new IdentityGate(), "", null);
+        viewModules.add(id);
+        ViewModule lamp = new ViewModule("Lampe", new Lamp(), "", null);
+        viewModules.add(lamp);
+        ViewModule not = new ViewModule("NOT", new NotGate(), "", null);
+        viewModules.add(not);
         // FIXME walk through circuit-Ordner and fill viewModule2Module
+        ViewModule circ = new ViewModule("SomeCircuit", null, "circuit.xml", null);
+        viewModules.add(circ);
     }
 
     /**
@@ -206,8 +223,7 @@ public class Model implements ClockListener {
      *            Rectangle containing the x- and y-coordinate.
      * @return Set of Elements at the given location.
      */
-    // TODO set protected
-    public Set<Element> getElementsAt(Rectangle rect) {
+    protected Set<Element> getElementsAt(Rectangle rect) {
         // Set<Element> elementsAt = new HashSet<Element>();
         // for (Element element : circuit.getElements()) {
         // if (element.getRectangle.contains(point) {
@@ -274,8 +290,7 @@ public class Model implements ClockListener {
      * 
      * @return A Set of all elements.
      */
-    // TODO set protected
-    public List<Element> getElements() {
+    protected List<Element> getElements() {
         return circuit.getElements();
     }
 
@@ -361,8 +376,25 @@ public class Model implements ClockListener {
      *            Point Location of the Module
      */
     public void addModule(ViewModule m, Point p) {
-        // TODO Fehlerpruefung++
-        // circuit.addModule(viewModules.get(m), p);
+        Module module = null;
+        // spawn new circuit / element _object_
+        if (m.getFileName() != "") {
+            module = getCircuitByFileName(m.getFileName());
+        } else {
+            try {
+                module = m.getModule().getClass().getConstructor().newInstance();
+            } catch (Exception e) {
+                throw new IllegalArgumentException("ViewModule does not provide a Module with a default constructor.");
+            }
+        }
+
+        if (module != null) {
+            circuit.addModule(module, p);
+            ModelEvent e = new ModelEvent(module);
+            for (ModelListener l : listeners) {
+                l.elementsChanged(e);
+            }
+        }
     }
 
     /**
@@ -504,7 +536,7 @@ public class Model implements ClockListener {
      *            String file to load circuit from
      * @return Module instantiated circuit, null on failure
      */
-    public Module getCircuitByFileName(String fileName) {
+    public Circuit getCircuitByFileName(String fileName) {
         // TODO implement
         return null;
     }

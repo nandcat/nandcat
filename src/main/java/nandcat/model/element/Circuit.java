@@ -157,6 +157,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit {
      * {@inheritDoc}
      */
     public void setRectangle(Rectangle rectangle) {
+        // TODO check: set alle child element's rectangles, too?
         this.rectangle = rectangle;
     }
 

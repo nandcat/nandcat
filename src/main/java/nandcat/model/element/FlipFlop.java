@@ -8,7 +8,7 @@ import java.awt.Point;
 public class FlipFlop extends Circuit {
 
     /**
-     * Default constructor, Creates new RS-FlipFlop.
+     * Create new RS-FlipFlop at p.
      * 
      * @param p
      *            Point specifying FlipFlop's location.
@@ -27,5 +27,12 @@ public class FlipFlop extends Circuit {
         addConnection(s.getOutPorts().get(0), sNot.getInPorts().get(0));
         addConnection(rNot.getOutPorts().get(0), s.getInPorts().get(0));
         addConnection(sNot.getOutPorts().get(0), r.getInPorts().get(0));
+    }
+
+    /**
+     * Default constructor.
+     */
+    public FlipFlop() {
+        this(new Point(0, 0));
     }
 }
