@@ -190,7 +190,7 @@ public class SEPAFImporter implements Importer {
         if (mainComponents == null || mainComponents.isEmpty()) {
             throw new FormatException("Circuit has no components: '" + name + "'");
         }
-        Circuit circuit = new Circuit(null);
+        Circuit circuit = new Circuit(name);
 
         // Index of imported modules used for connections
         Map<String, Module> moduleIndex = new HashMap<String, Module>();
@@ -336,8 +336,7 @@ public class SEPAFImporter implements Importer {
             if (portsIn != null && portsOut != null) {
                 LOG.debug("Component 'flipflop' does not support 'ports_in' or 'ports_out'");
             }
-            // TODO FlipFlop und Circuit sollte kein Point im Konstruktor haben
-            ff = new FlipFlop(null);
+            ff = new FlipFlop();
             module = ff;
         } else if (aType.getValue().equals("in")) {
             ImpulseGenerator ig = null;
@@ -345,7 +344,6 @@ public class SEPAFImporter implements Importer {
             if (portsIn != null && portsOut != null) {
                 LOG.debug("Component 'in' does not support 'ports_in' or 'ports_out'");
             }
-            // TODO DocComment in ImpulseGenerator
             ig = new ImpulseGenerator(0);
             if (inState != null) {
                 Boolean state = null;

@@ -2,6 +2,7 @@ package nandcat.model.importexport;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import java.awt.Point;
 import java.io.File;
 import java.net.URISyntaxException;
@@ -156,6 +157,49 @@ public class SEPAFImporterTest {
         List<Element> elements = circuit.getElements();
         assertEquals(4, countRecursiveCircuits(elements));
     }
+
+    @Test
+    public void testDoubleRefCircuits() {
+        File file = getFile("../formattest/sepaf-example-valid-doublerefcircuits.xml");
+        Importer importer = new SEPAFImporter();
+        importer.setFile(file);
+        assertTrue(importer.importCircuit());
+        Circuit circuit = importer.getCircuit();
+        assertTrue(circuit != null);
+        List<Element> elements = circuit.getElements();
+        for (Element element : elements) {
+            if (element instanceof Circuit) {
+                assertEquals("un-iq-ue", ((Circuit) element).getUUID());
+                for (Element sub : ((Circuit) element).getElements()) {
+                    if (sub instanceof AndGate) {
+                        assertEquals("c4:AndGate", sub.getName());
+                    } else {
+                        fail("There should be only a Andgate");
+                    }
+                }
+            } else {
+                fail("There should be two circuits nothing more");
+            }
+        }
+        assertEquals(2, countRecursiveCircuits(elements));
+    }
+
+    // private void drawHierarchy(Element e, int indent) {
+    // for (int i = 0; i < indent; i++) {
+    // System.out.print("-");
+    // }
+    // System.out.print(e.getClass().getName() + " : " + Integer.toHexString(System.identityHashCode(e)));
+    // if (e instanceof Module) {
+    // System.out.println(": Name=" + ((Module) e).getName());
+    // }
+    // System.out.println();
+    // if (e instanceof Circuit) {
+    // for (Element el : ((Circuit) e).getElements()) {
+    // drawHierarchy(el, indent + 1);
+    // }
+    // }
+    //
+    // }
 
     private int countRecursiveCircuits(List<Element> elements) {
         for (Element inelement : elements) {
