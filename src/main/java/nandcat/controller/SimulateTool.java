@@ -159,6 +159,8 @@ public class SimulateTool implements Tool {
                     view.disableButtons();
                 } else if (e.getActionCommand() == "stop") {
                     model.stopSimulation();
+                    // nur solang net alle modelevents funzen.
+                    view.enableButtons();
                 } else if (e.getActionCommand() == "faster") {
                     Clock clock = model.getClock();
                     clock.setSleepTime(clock.getSleepTime() + 5);

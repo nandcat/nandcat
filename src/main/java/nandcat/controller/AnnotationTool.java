@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,7 +52,12 @@ public class AnnotationTool implements Tool {
     /**
      * String representation of the Tool.
      */
-    private List<String> represent; // TODO beschreibung schreiben
+    private List<String> represent = new LinkedList<String>() {
+
+        {
+            add("annotate");
+        }
+    }; // TODO beschreibung schreiben
 
     /**
      * ActionListerner of the Tool on the Buttons.

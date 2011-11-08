@@ -12,9 +12,6 @@ import javax.swing.ImageIcon;
 import nandcat.model.Model;
 import nandcat.model.element.Element;
 import nandcat.view.View;
-import nandcat.view.WorkspaceEvent;
-import nandcat.view.WorkspaceListener;
-import nandcat.view.WorkspaceListenerAdapter;
 
 /**
  * A tool for deleting Elements from the circuit.
@@ -44,7 +41,12 @@ public class DeleteTool implements Tool {
     /**
      * String representation of the Tool.
      */
-    private List<String> represent; // TODO beschreibung schreiben
+    private List<String> represent = new LinkedList<String>() {
+
+        {
+            add("delete");
+        }
+    };// TODO beschreibung schreiben
 
     /**
      * ActionListerner of the Tool on the Buttons.

@@ -108,10 +108,9 @@ public class ViewTool implements Tool {
 
                     public void mouseDragged(WorkspaceEvent e) {
                         // move ViewPort
-                        int x = (int) (e.getLocation().getX() - offset.getX());
-                        int y = (int) (e.getLocation().getY() - offset.getY());
-                        Point p = new Point(x, y);
-                        view.setViewportPosition(p);
+                        int x = e.getLocation().x - offset.x;
+                        int y = e.getLocation().y - offset.y;
+                        view.setViewportPosition(x, y);
                         offset = e.getLocation();
                         // redraw new elements in sight
                         view.giveViewPortRect();

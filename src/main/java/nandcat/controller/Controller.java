@@ -59,7 +59,12 @@ public class Controller {
         tools.add(new CreateTool(this));
         tools.add(new SelectTool(this));
         tools.add(new ViewTool(this));
-        // TODO Liste Fertig
+        tools.add(new AnnotationTool(this));
+        tools.add(new StateTool(this));
+        tools.add(new DeleteTool(this));
+        tools.add(new ExportTool(this));
+        tools.add(new ImportTool(this));
+        tools.add(new HelpTool(this));
     }
 
     /**
