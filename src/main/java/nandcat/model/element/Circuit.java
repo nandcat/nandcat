@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import nandcat.model.Clock;
 import nandcat.model.ClockListener;
 
@@ -47,18 +48,31 @@ public class Circuit implements ClockListener, Module {
     private boolean selected;
 
     /**
+     * The unique identifier of the circuit.
+     */
+    private String uuid;
+
+    /**
      * Default constructor.
      * 
-     * @param p
-     *            Point specifying the circuit's location
+     * @param uuid
+     *            UUID of circuit.
      */
-    public Circuit(Point p) {
-        location = p;
+    public Circuit(String uuid) {
+        this.uuid = uuid;
+        location = new Point(0, 0);
         name = "";
         elements = new LinkedList<Element>();
         rectangle = new Rectangle();
         symbol = new byte[0];
         selected = false;
+    }
+
+    /**
+     * Constructs the circuit with a new random uuid.
+     */
+    public Circuit() {
+        this(UUID.randomUUID().toString());
     }
 
     /**
@@ -320,4 +334,12 @@ public class Circuit implements ClockListener, Module {
         elements.add(m);
     }
 
+    /**
+     * Gets the unique identifier of the circuit.
+     * 
+     * @return The unique identifier.
+     */
+    public String getUUID() {
+        return uuid;
+    }
 }

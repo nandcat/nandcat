@@ -13,8 +13,8 @@ public class FlipFlop extends Circuit {
      * @param p
      *            Point specifying FlipFlop's location.
      */
-    public FlipFlop(Point p) {
-        super(p);
+    public FlipFlop() {
+        super();
         AndGate r = new AndGate(2, 2);
         AndGate s = new AndGate(2, 2);
         NotGate rNot = new NotGate();
