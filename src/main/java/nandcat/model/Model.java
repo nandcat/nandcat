@@ -93,7 +93,7 @@ public class Model implements ClockListener {
         exportFormats = new HashMap<String, String>();
         importers = new HashMap<String, Importer>();
         exporters = new HashMap<String, Exporter>();
-        circuit = new Circuit(new Point(0, 0));
+        circuit = new Circuit();
         clock = new Clock(0, this);
         initView2Module();
         loadedModules = new LinkedList<Module>();
