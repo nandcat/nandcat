@@ -39,7 +39,7 @@ public class CircuitTest extends TestCase {
     public void testAddModule() {
         AndGate and0 = new AndGate(2, 1);
         ImpulseGenerator impy = new ImpulseGenerator(0);
-        Circuit c = new Circuit(p);
+        Circuit c = new Circuit();
         c.addModule(and0, p);
         c.addModule(impy, p);
         assertTrue(c.getElements().contains(and0));
@@ -54,7 +54,7 @@ public class CircuitTest extends TestCase {
         AndGate and1 = new AndGate(2, 1);
         AndGate and2 = new AndGate(2, 1);
         ImpulseGenerator impy = new ImpulseGenerator(0);
-        Circuit c = new Circuit(p);
+        Circuit c = new Circuit();
         c.addModule(and0, p);
         c.addModule(and1, p);
         c.addModule(and2, p);
@@ -74,7 +74,7 @@ public class CircuitTest extends TestCase {
     public void testRemoveElement() {
         AndGate and0 = new AndGate(2, 1);
         AndGate and1 = new AndGate(2, 1);
-        Circuit c = new Circuit(p);
+        Circuit c = new Circuit();
         c.addModule(and0, p);
         c.addModule(and1, p);
         Connection conn = c.addConnection(and0.getOutPorts().get(0), and1.getInPorts().get(0));
@@ -97,7 +97,7 @@ public class CircuitTest extends TestCase {
      * Test selecting a single module. (AND)
      */
     public void testSetModuleActive() {
-        Circuit c = new Circuit(p);
+        Circuit c = new Circuit();
         AndGate and0 = new AndGate(2, 1);
         c.addModule(and0, p);
         assertFalse(and0.isSelected());
@@ -111,7 +111,7 @@ public class CircuitTest extends TestCase {
      * Test connecting to Modules (ImpulseGen --> Lamp).
      */
     public void testAddConnection() {
-        Circuit c = new Circuit(p);
+        Circuit c = new Circuit();
         ImpulseGenerator impy = new ImpulseGenerator(0);
         Lamp lamp = new Lamp();
         c.addModule(impy, p);
@@ -127,8 +127,8 @@ public class CircuitTest extends TestCase {
      * Test circuit containing a circuit (dawg).
      */
     public void testDawg() {
-        Circuit c = new Circuit(p);
-        Circuit innerCircuit = new FlipFlop(p);
+        Circuit c = new Circuit();
+        Circuit innerCircuit = new FlipFlop();
         c.addModule(innerCircuit, p);
     }
 }
