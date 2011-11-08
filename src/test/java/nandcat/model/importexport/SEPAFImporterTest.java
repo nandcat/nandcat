@@ -27,8 +27,9 @@ public class SEPAFImporterTest {
         File file = getFile("../formattest/sepaf-example-valid-fewcomponents.xml");
         Importer importer = new SEPAFImporter();
         importer.setFile(file);
-        importer.importCircuit();
+        assertTrue(importer.importCircuit());
         Circuit circuit = importer.getCircuit();
+        assertTrue(circuit != null);
         List<Element> elements = circuit.getElements();
         NotGate notGate = null;
         AndGate andGate = null;

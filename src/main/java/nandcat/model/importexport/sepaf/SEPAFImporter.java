@@ -58,26 +58,9 @@ public class SEPAFImporter implements Importer {
     private String errorMsg = null;
 
     /**
-     * SEPAF namespace.
-     */
-    private static final Namespace NS_SEPAF = Namespace.getNamespace("c",
-            "http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0");
-
-    /**
-     * Custom NANDCat namespace.
-     */
-    private static final Namespace NS_NANDCAT = Namespace.getNamespace("nandcat",
-            "http://www.nandcat.de/xmlns/sepaf-extension");
-
-    /**
      * Checks used to validate xml.
      */
     private XMLCheck[] checks = { new SEPAFCheckCircuitReference() };
-
-    /**
-     * Namespaces used in the format.
-     */
-    private static final Namespace[] namespaces = { NS_SEPAF, NS_NANDCAT };
 
     /**
      * Defines which errors should result in an invalid validation result. If a exception is thrown the validation
@@ -157,6 +140,8 @@ public class SEPAFImporter implements Importer {
         } catch (FormatException f) {
             System.out.println(f.getMessage());
         } catch (Exception e) {
+            System.out.println("Exception caught: ");
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
         return true;
@@ -279,11 +264,11 @@ public class SEPAFImporter implements Importer {
         }
 
         // Get attributes from nandcat extension. null if not present.
-        Attribute aAnnotation = el.getAttribute("annotation", NS_NANDCAT);
-        Attribute aPortsIn = el.getAttribute("ports_in", NS_NANDCAT);
-        Attribute aPortsOut = el.getAttribute("ports_out", NS_NANDCAT);
-        Attribute inState = el.getAttribute("in_state", NS_NANDCAT);
-        Attribute inTiming = el.getAttribute("in_timing", NS_NANDCAT);
+        Attribute aAnnotation = el.getAttribute("annotation", SEPAFFormat.NAMESPACE.NANDCAT);
+        Attribute aPortsIn = el.getAttribute("ports_in", SEPAFFormat.NAMESPACE.NANDCAT);
+        Attribute aPortsOut = el.getAttribute("ports_out", SEPAFFormat.NAMESPACE.NANDCAT);
+        Attribute inState = el.getAttribute("in_state", SEPAFFormat.NAMESPACE.NANDCAT);
+        Attribute inTiming = el.getAttribute("in_timing", SEPAFFormat.NAMESPACE.NANDCAT);
 
         // Parse attribute for amount of incoming and outgoing ports if available.
         Integer portsIn = null;
@@ -582,7 +567,7 @@ public class SEPAFImporter implements Importer {
      */
     private XPath getXPathInstance(String path) throws JDOMException {
         XPath xpath = XPath.newInstance(path);
-        for (Namespace ns : namespaces) {
+        for (Namespace ns : SEPAFFormat.NAMESPACE.ALL) {
             xpath.addNamespace(ns);
         }
         return xpath;
