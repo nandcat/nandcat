@@ -24,7 +24,7 @@ import org.xml.sax.SAXParseException;
 public class SEPAFExporterTest {
 
     @Test
-    public void test() throws IOException, SAXException {
+    public void testStandardGatter() throws IOException, SAXException {
         SEPAFExporter export = new SEPAFExporter();
         File file = File.createTempFile("export", ".xml");
         export.setFile(file);
@@ -56,6 +56,43 @@ public class SEPAFExporterTest {
         assertTrue(content.contains("nandcat:annotation=\"OrGate\""));
         assertTrue(content.contains("nandcat:annotation=\"AndGate\""));
         assertTrue(content.contains("<connection"));
+        testValidOutput(file);
+    }
+
+    private Circuit buildSimpleCircuit(String prefix) {
+        Circuit c = new Circuit(new Point(0, 0));
+
+        // And gate
+        AndGate andGate = new AndGate();
+        andGate.setLocation(new Point(1, 1));
+        andGate.setName(prefix + ":AndGate");
+        c.addModule(andGate);
+
+        return c;
+    }
+
+    @Test
+    public void testCircuits() throws Exception {
+        SEPAFExporter export = new SEPAFExporter();
+        File file = File.createTempFile("export", ".xml");
+        export.setFile(file);
+        Circuit c = new Circuit(null);
+
+        Circuit c1 = buildSimpleCircuit("c1");
+        Circuit c2 = buildSimpleCircuit("c2");
+        Circuit c3 = buildSimpleCircuit("c3");
+        c2.addModule(c3);
+        c1.addModule(c2);
+        c.addModule(c1);
+
+        export.setCircuit(c);
+        assertTrue(export.exportCircuit());
+        String content = getFileContent(file);
+        System.out.println(file.getAbsolutePath());
+        System.out.println(content);
+        assertTrue(content.contains("nandcat:annotation=\"c1:AndGate\""));
+        assertTrue(content.contains("nandcat:annotation=\"c2:AndGate\""));
+        assertTrue(content.contains("nandcat:annotation=\"c3:AndGate\""));
         testValidOutput(file);
     }
 

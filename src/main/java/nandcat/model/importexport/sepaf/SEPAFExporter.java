@@ -5,7 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
@@ -59,6 +61,10 @@ public class SEPAFExporter implements Exporter {
         SUPPORTED_FORMATS.put("xml", "SEPAF");
     }
 
+    private Set<Circuit> innerCircuits = new LinkedHashSet<Circuit>();
+
+    private Element root;
+
     /**
      * {@inheritDoc}
      */
@@ -75,6 +81,7 @@ public class SEPAFExporter implements Exporter {
     public boolean exportCircuit() {
         Document doc = new Document(new Element("circuits", SEPAFFormat.NAMESPACE.SEPAF));
         Element root = doc.getRootElement();
+        this.root = root;
         root.addNamespaceDeclaration(SEPAFFormat.NAMESPACE.NANDCAT);
         try {
             root.setAttribute("main", SEPAFFormat.getObjectAsUniqueString(circuit));
@@ -115,7 +122,10 @@ public class SEPAFExporter implements Exporter {
     /**
      * Builds a DOM element of given circuit element.
      * 
-     * Builds an component or connection dom element depending on element type.
+     * Builds an component or connection or circuit dom element depending on element type.
+     * 
+     * If element is a circuit, the component tag is generated and the circuit will be build and added to documents root
+     * element.
      * 
      * @param e
      *            Element to build DOM element of.
@@ -126,7 +136,9 @@ public class SEPAFExporter implements Exporter {
     private Content buildElement(nandcat.model.element.Element e) throws FormatException {
         Content c = null;
         if (e instanceof Circuit) {
-            LOG.fatal("Circuit export not implemented");
+            c = buildComponent((Module) e);
+            root.addContent(buildCircuit((Circuit) e));
+            LOG.warn("Circuit export not fully implemented");
         }
 
         if (e instanceof Module) {
@@ -205,8 +217,11 @@ public class SEPAFExporter implements Exporter {
             e.setAttribute("type", "not");
         } else if (m instanceof FlipFlop) {
             e.setAttribute("type", "flipflop");
+        } else if (m instanceof Circuit) {
+            e.setAttribute("type", "circuit");
+            e.setAttribute("type2", SEPAFFormat.getObjectAsUniqueString(m));
         } else {
-            throw new FormatException("Not a supported component type: '" + m.getClass().getName() + "'");
+            LOG.debug("Not a supported component type: '" + m.getClass().getName() + "'");
         }
     }
 
