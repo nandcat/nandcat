@@ -89,7 +89,6 @@ public class Workspace extends JPanel {
      */
     private void setupWorkspace() {
         this.elementDrawer = new StandardElementDrawer();
-        elementDrawer.setGraphics(this.getGraphics());
     }
 
     /**
@@ -99,6 +98,7 @@ public class Workspace extends JPanel {
      *            Set<Elements> with the elements to be redrawed.
      */
     public void redraw(Set<DrawElement> elements) {
+        elementDrawer.setGraphics(this.getGraphics());
         for (DrawElement elem : elements) {
             if (isInView(elem)) {
                 if (elem instanceof Connection) {
