@@ -68,7 +68,7 @@ public class CreateTool implements Tool {
      */
     private ViewModule selectedModule;
 
-    /*
+    /**
      * Port representing the source of a new Connection.
      * NULL if the user did not click on an Element to create a Connection.
      */

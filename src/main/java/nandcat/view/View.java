@@ -228,24 +228,10 @@ public class View extends JFrame {
         noDisableElements.add(mclose);
         JMenuItem mdelete = new JMenuItem("Löschen");
         noDisableElements.add(mdelete);
-        JMenuItem mannotate = new JMenuItem("Benennen");
-        disableElements.add(mannotate);
-        JMenuItem mtoggle = new JMenuItem("Setze Schalter");
-        disableElements.add(mtoggle);
         if (toolFunctionalities.containsKey("start")) {
             mstart.addActionListener(toolFunctionalities.get("start"));
             mstart.setActionCommand("start");
             mstart.setName("start");
-        }
-        if (toolFunctionalities.containsKey("toggle")) {
-            mtoggle.addActionListener(toolFunctionalities.get("toggle"));
-            mtoggle.setActionCommand("toggle");
-            mtoggle.setName("toggle");
-        }
-        if (toolFunctionalities.containsKey("annotate")) {
-            mannotate.addActionListener(toolFunctionalities.get("annotate"));
-            mannotate.setActionCommand("annotate");
-            mannotate.setName("annotate");
         }
         if (toolFunctionalities.containsKey("stop")) {
             mstop.addActionListener(toolFunctionalities.get("stop"));
@@ -336,8 +322,6 @@ public class View extends JFrame {
         edit.add(mselect);
         edit.add(mmove);
         edit.add(mdelete);
-        edit.add(mannotate);
-        edit.add(mtoggle);
         file.add(mnew);
         file.add(mload);
         file.add(msave);
@@ -368,18 +352,11 @@ public class View extends JFrame {
         disableElements.add(create);
         JButton select = new JButton("Auswahl");
         disableElements.add(select);
-        JButton toggle = new JButton("Setze Schalter");
-        disableElements.add(toggle);
         JComboBox modules = null;
         if (toolFunctionalities.containsKey("start")) {
             start.addActionListener(toolFunctionalities.get("start"));
             start.setActionCommand("start");
             start.setName("start");
-        }
-        if (toolFunctionalities.containsKey("toggle")) {
-            toggle.addActionListener(toolFunctionalities.get("toggle"));
-            toggle.setActionCommand("toggle");
-            toggle.setName("toggle");
         }
         if (toolFunctionalities.containsKey("stop")) {
             stop.addActionListener(toolFunctionalities.get("stop"));
@@ -487,16 +464,13 @@ public class View extends JFrame {
     }
 
     /**
-     * Change Viewport Position on the workspace.
+     * Set the ViewportPosition over the Workspace.
      * 
-     * @param x
-     *            double value by which the x -coord is changed
-     * @param y
-     *            double value by which the x -coord is changed
+     * @param p
+     *            Point where to be set.
      */
-    public void setViewportPosition(int x, int y) {
-        viewportLocation.x -= x;
-        viewportLocation.y -= y;
+    public void setViewportPosition(Point p) {
+        viewportLocation.setLocation(viewportLocation.getX() + p.getX(), viewportLocation.getY() + p.getY());
         viewport.setViewPosition(viewportLocation);
     }
 
