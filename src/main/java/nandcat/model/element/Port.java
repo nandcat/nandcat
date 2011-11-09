@@ -141,7 +141,7 @@ public class Port {
         Rectangle result = new Rectangle(-1, -1, 1, 1);
 
         // index starts at 0, so +1. first port is number 1. derp.
-        int numberOfPort = isOutPort() ? module.getOutPorts().indexOf(this) : module.getInPorts().indexOf(this) + 1;
+        int numberOfPort = isOutPort() ? module.getOutPorts().indexOf(this) + 1 : module.getInPorts().indexOf(this) + 1;
 
         // amount of ports on this side
         int amountOfPorts = isOutPort() ? module.getOutPorts().size() : module.getInPorts().size();
