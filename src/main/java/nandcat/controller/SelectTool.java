@@ -1,5 +1,6 @@
 package nandcat.controller;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import nandcat.model.Model;
+import nandcat.view.ElementDrawer;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
@@ -92,8 +94,7 @@ public class SelectTool implements Tool {
                     rect = new Rectangle(e.getLocation());
                 }
                 public void mouseDragged(WorkspaceEvent e) {
-                    rect.add(e.getLocation());
-                    selectElements(rect);
+                    selectElements(rect, e.getLocation());
                 }
             };
         }
@@ -107,10 +108,19 @@ public class SelectTool implements Tool {
         view.getWorkspace().removeListener(workspaceListener);
     }
 
-    /*
-     * Set the Elements within the rectangle as selected.
+    /**
+     * Set the Elements within the rectangle as selected and paints the selection rectangle on the workspace.
      */
-    private void selectElements(Rectangle rect) {
+    private void selectElements(Rectangle rect, Point point) {
+        ElementDrawer drawer = view.getDrawer();
+        
+        int xCoord = Math.min(rect.x, point.x);
+        int yCoord = Math.min(rect.y, point.y);
+        int width = Math.abs(rect.x - point.x);
+        int height = Math.abs(rect.y - point. y);
+        rect.setBounds(xCoord, yCoord, width, height);
+
+        drawer.draw(rect);
         model.selectElements(rect);
     }
 

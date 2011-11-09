@@ -1,5 +1,6 @@
 package nandcat.controller;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -51,7 +52,7 @@ public class CreateTool implements Tool {
     /**
      * String representation of the Tool.
      */
-    private List<String> represent; // TODO beschreibung schreiben
+    private List<String> represent;
 
     /**
      * ActionListerner of the Tool on the Buttons.
@@ -68,7 +69,12 @@ public class CreateTool implements Tool {
      */
     private ViewModule selectedModule;
 
-    /*
+    /**
+     * Tolerance used if mouse clicked.
+     */
+    private static final Dimension MOUSE_TOLERANCE = new Dimension(2, 2);
+
+    /**
      * Port representing the source of a new Connection.
      * NULL if the user did not click on an Element to create a Connection.
      */
@@ -120,7 +126,7 @@ public class CreateTool implements Tool {
      * Creates a new Element at the given Point.
      */
     private void createElement(Point point) {
-        Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(point));
+        Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(point, MOUSE_TOLERANCE));
 
         if (elementsAt.isEmpty()) {
             if (selectedModule != null) {
@@ -134,11 +140,12 @@ public class CreateTool implements Tool {
                 }
             }
             if (sourcePort == null) {
+                /*
                 ElementDrawer drawer = view.getDrawer();
-                sourcePort = drawer.getPortAt(new Rectangle(point), toConnect);
+                sourcePort = drawer.getPortAt(new Rectangle(point), toConnect);*/
+                sourcePort = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
             } else {
-                ElementDrawer drawer = view.getDrawer();
-                Port targetPort = drawer.getPortAt(new Rectangle(point), toConnect);
+                Port targetPort = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
                 model.addConnection(sourcePort, targetPort);
                 sourcePort = null;
             }
@@ -159,15 +166,15 @@ public class CreateTool implements Tool {
         buttonListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
-                if (e.getActionCommand() == "createButton") {
+                if (e.getActionCommand().equals("createButton")) {
+
+                    // User first has to click on CreateButton before he can add a module to the workspace
                     activateTool();
-                } else if (e.getActionCommand() == "selectModule") {
+                } else if (e.getActionCommand().equals("selectModule")) {
                   if (e.getSource() instanceof JComboBox) {
                       selectedModule = (ViewModule) ((JComboBox) e.getSource()).getSelectedItem();
                   }
                 }
-                
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();
