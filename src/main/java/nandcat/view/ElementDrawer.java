@@ -102,6 +102,14 @@ public interface ElementDrawer {
     void draw(Lamp lamp);
 
     /**
+     * Draws a rectangle on the workspace. Used e.g. for selection visualization.
+     * 
+     * @param r
+     *            Rectangle to draw.
+     */
+    void draw(Rectangle r);
+
+    /**
      * Gets the first port of the module intersecting the given rectangle.
      * 
      * Used for hit testing on an port.
