@@ -479,7 +479,7 @@ public class Model implements ClockListener {
      * 
      * @return boolean specifying if moveoperation was successful
      */
-    public boolean moveBy(Module module, Point p) {
+    private boolean moveBy(Module module, Point p) {
         // check if module won't intersect after the move
         Rectangle r = module.getRectangle();
         for (Element e : circuit.getElements()) {
@@ -497,7 +497,7 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Instruct model to move given modules' positions by point p.
+     * Instruct model to move given modules' positions by point p.<br>
      * 
      * @param modules
      *            Module that needs relocation
@@ -514,6 +514,34 @@ public class Model implements ClockListener {
             }
         }
         return result;
+    }
+    
+    /**
+     * Instruct model to move selected modules' positions by point p.
+     * 
+     * @param p
+     *            Point specifying the relative positional change
+     * 
+     * @return boolean specifying if moveoperation for each module was successful
+     */
+    public boolean moveBy(Point p) {
+        Set<Module> selectedModules = new HashSet<Module>();
+        for (Element element : getSelectedElements()) {
+            if (element instanceof Module) {
+                Module m = (Module) element;
+                selectedModules.add(m);
+            }
+        }
+         return moveBy(selectedModules, p);
+    }
+    
+    /**
+     * Get all selected elements from the main circuit.
+     * 
+     * @return Set<Element> containing, oh the magic, all selected elements
+     */
+    private Set<Element> getSelectedElements() {
+        return null;
     }
 
     /**
