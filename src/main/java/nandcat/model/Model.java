@@ -133,6 +133,49 @@ public class Model implements ClockListener {
         // }
         // }
     }
+    
+    /**
+     * Returns the Port at the Position.
+     * If multiple Ports are intersecting the Rectangle, no specific behaviour can be assured. KTHXBYE.
+     *
+     * @param rect Rectangle containing the x- and y-coordinate
+     * @return the Port at this position, null if no Port is there
+     */
+    public Port getPortAt(Rectangle rect) {
+        for (Module m : getModsAt(rect)) {
+            for (Port p : m.getInPorts()) {
+                if (p.getRectangle().intersects(rect)) {
+                    return p;
+                }
+            }
+            for (Port p : m.getOutPorts()) {
+                if (p.getRectangle().intersects(rect)) {
+                    return p;
+                }
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Get all modules intersecting a rectangle.
+     * 
+     * @param rect Rectangle containing the x- and y-coordinate
+     * @return Set of Modules intersecting the given location
+     */
+    private Set<Module> getModsAt(Rectangle rect) {
+        return null;
+    }
+    
+    /**
+     * Get all connections intersecting a rectangle.
+     * 
+     * @param rect Rectangle containing the x- and y-coordinate
+     * @return Set of Connections intersecting the given location
+     */
+    private Set<Connection> getConnsAt(Rectangle rect) {
+        return null;
+    }
 
     /**
      * Set a given check on the circuit to active or inactive.
