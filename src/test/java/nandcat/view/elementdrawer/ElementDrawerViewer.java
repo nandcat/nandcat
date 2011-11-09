@@ -44,7 +44,7 @@ public class ElementDrawerViewer extends JFrame {
     }
 
     public ElementDrawerViewer() {
-        this.setSize(new Dimension(300, 400));
+        this.setSize(new Dimension(300, 500));
         this.setLocationRelativeTo(null);
         setTitle("ElementDrawer - Viewer");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -90,7 +90,7 @@ public class ElementDrawerViewer extends JFrame {
         orGate3.setSelected(true);
         orGate3.setRectangle(new Rectangle(200, 80, 60, 40));
         elements.add(orGate3);
-        // OrGate orGate4 = new OrGate(2,5);
+        // OrGate orGate4 = new OrGate(2, 2);
         // orGate4.getInPorts().get(0).setState(true, null);
         // orGate4.getInPorts().get(1).setState(true, null);
         // orGate4.getOutPorts().get(0).setState(true, null);
@@ -153,9 +153,9 @@ public class ElementDrawerViewer extends JFrame {
         ig3.setSelected(true);
         ig3.setRectangle(new Rectangle(200, 320, 60, 40));
         elements.add(ig3);
-        // FlipFlop ff1 = new FlipFlop();
-        // ff1.setRectangle(new Rectangle(200, 400, 60, 40));
-        // elements.add(ff1);
+        FlipFlop ff1 = new FlipFlop();
+        ff1.setRectangle(new Rectangle(200, 400, 60, 40));
+        elements.add(ff1);
     }
 
     public void drawElements(Graphics g) {
@@ -185,7 +185,7 @@ public class ElementDrawerViewer extends JFrame {
         private ElementDrawerViewer viewer;
 
         public MyWorkbench(ElementDrawerViewer viewer) {
-            setSize(new Dimension(300, 300));
+            // setSize(new Dimension(300, 300));
             setBackground(Color.white);
             this.viewer = viewer;
         }

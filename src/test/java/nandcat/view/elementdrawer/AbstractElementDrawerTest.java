@@ -53,6 +53,8 @@ public abstract class AbstractElementDrawerTest {
 
     Color ANNOTATION_COLOR;
 
+    Color LAMP_COLOR_DEFAULT;
+
     void applyFields() throws Exception {
         PORT_COLOR_ACTIVE = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
                 "PORT_COLOR_ACTIVE");
@@ -86,6 +88,8 @@ public abstract class AbstractElementDrawerTest {
                 .getPrivateField(StandardElementDrawer.class, drawer, "IG_COLOR_ACTIVE");
         LAMP_COLOR_ACTIVE = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
                 "LAMP_COLOR_ACTIVE");
+        LAMP_COLOR_DEFAULT = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
+                "LAMP_COLOR_DEFAULT");
         GATE_COLOR_SELECTED = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
                 "GATE_COLOR_SELECTED");
     }

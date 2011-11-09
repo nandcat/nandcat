@@ -45,6 +45,9 @@ public class Port implements Serializable {
      *            Rectangle to set
      */
     public void setRectangle(Rectangle position) {
+        if (position == null) {
+            throw new IllegalArgumentException();
+        }
         this.bounds = position;
     }
 

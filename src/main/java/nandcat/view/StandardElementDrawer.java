@@ -1,6 +1,7 @@
 package nandcat.view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -20,6 +21,7 @@ import nandcat.model.element.Module;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
+import org.apache.log4j.Logger;
 
 /**
  * Standard element drawer.
@@ -46,7 +48,7 @@ public class StandardElementDrawer implements ElementDrawer {
     /**
      * Label for the Identity-Gate.
      */
-    private static final String LABEL_IDENTITYGATE = "SPLITTER";
+    private static final String LABEL_IDENTITYGATE = "SPLIT";
 
     /**
      * Currently used graphics object to draw on.
@@ -184,9 +186,24 @@ public class StandardElementDrawer implements ElementDrawer {
     private static final Color RECTANGLE_COLOR = Color.BLACK;
 
     /**
+     * Default gate dimension.
+     */
+    private static final Dimension GATE_DIMENSION = new Dimension(60, 40);
+
+    /**
+     * Default lamp dimension.
+     */
+    private static final Dimension LAMP_DIMENSION = new Dimension(40, 40);
+
+    /**
      * Class logger instance.
      */
-    // private static Logger LOG = Logger.getLogger(StandardElementDrawer.class);
+    private static final Logger LOG = Logger.getLogger(StandardElementDrawer.class);
+
+    /**
+     * Label for Flipflop.
+     */
+    private static final String LABEL_FLIPFLOP = "RS-FF";
 
     /**
      * {@inheritDoc}
@@ -225,9 +242,12 @@ public class StandardElementDrawer implements ElementDrawer {
         if (circuit.getRectangle() == null) {
             throw new IllegalArgumentException();
         }
+        setModuleDefaultDimension(circuit);
         drawModuleOutline(circuit);
-        drawModulePorts(circuit);
-        drawLabel(circuit.getName(), circuit.getRectangle());
+        drawAndSetModulePorts(circuit);
+        if (circuit.getName() != null && !circuit.getName().isEmpty()) {
+            drawLabel(circuit.getName(), circuit.getRectangle());
+        }
     }
 
     /**
@@ -240,10 +260,11 @@ public class StandardElementDrawer implements ElementDrawer {
         if (gate.getRectangle() == null) {
             throw new IllegalArgumentException();
         }
+        setModuleDefaultDimension(gate);
         drawModuleOutline(gate);
-        drawModulePorts(gate);
+        drawAndSetModulePorts(gate);
         drawLabel(LABEL_IDENTITYGATE, gate.getRectangle());
-        if (gate.getName() != null) {
+        if (gate.getName() != null && !gate.getName().isEmpty()) {
             drawAnnotation(gate.getName(), gate.getRectangle());
         }
     }
@@ -258,10 +279,11 @@ public class StandardElementDrawer implements ElementDrawer {
         if (gate.getRectangle() == null) {
             throw new IllegalArgumentException();
         }
+        setModuleDefaultDimension(gate);
         drawModuleOutline(gate);
-        drawModulePorts(gate);
+        drawAndSetModulePorts(gate);
         drawLabel(LABEL_NOTGATE, gate.getRectangle());
-        if (gate.getName() != null) {
+        if (gate.getName() != null && !gate.getName().isEmpty()) {
             drawAnnotation(gate.getName(), gate.getRectangle());
         }
     }
@@ -276,10 +298,11 @@ public class StandardElementDrawer implements ElementDrawer {
         if (gate.getRectangle() == null) {
             throw new IllegalArgumentException();
         }
+        setModuleDefaultDimension(gate);
         drawModuleOutline(gate);
-        drawModulePorts(gate);
+        drawAndSetModulePorts(gate);
         drawLabel(LABEL_ANDGATE, gate.getRectangle());
-        if (gate.getName() != null) {
+        if (gate.getName() != null && !gate.getName().isEmpty()) {
             drawAnnotation(gate.getName(), gate.getRectangle());
         }
     }
@@ -294,10 +317,11 @@ public class StandardElementDrawer implements ElementDrawer {
         if (gate.getRectangle() == null) {
             throw new IllegalArgumentException();
         }
+        setModuleDefaultDimension(gate);
         drawModuleOutline(gate);
-        drawModulePorts(gate);
+        drawAndSetModulePorts(gate);
         drawLabel(LABEL_ORGATE, gate.getRectangle());
-        if (gate.getName() != null) {
+        if (gate.getName() != null && !gate.getName().isEmpty()) {
             drawAnnotation(gate.getName(), gate.getRectangle());
         }
     }
@@ -349,7 +373,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * @param module
      *            Module to draw ports of.
      */
-    private void drawModulePorts(Module module) {
+    private void drawAndSetModulePorts(Module module) {
         if (module == null) {
             throw new IllegalArgumentException();
         }
@@ -361,14 +385,16 @@ public class StandardElementDrawer implements ElementDrawer {
         List<Port> inPorts = module.getInPorts();
         int i = 0;
         for (Port port : inPorts) {
-            drawPort(module.getRectangle(), false, i, inPorts.size(), port.getState());
+            port.setRectangle(getPortBounds(module.getRectangle(), false, i, inPorts.size()));
+            drawPort(port.getRectangle(), port.getState());
             i++;
         }
         // Draw OutPorts
         List<Port> outPorts = module.getOutPorts();
         i = 0;
         for (Port port : outPorts) {
-            drawPort(module.getRectangle(), true, i, outPorts.size(), port.getState());
+            port.setRectangle(getPortBounds(module.getRectangle(), true, i, outPorts.size()));
+            drawPort(port.getRectangle(), port.getState());
             i++;
         }
     }
@@ -441,27 +467,39 @@ public class StandardElementDrawer implements ElementDrawer {
     /**
      * Draws a port on the class graphics object.
      * 
-     * @param bounds
-     *            Bounds of the area around the port.
-     * @param outPort
-     *            True to draw an outgoing port.
-     * @param i
-     *            Position of the port in the column (0 - (count-1))
-     * @param count
-     *            Amount of ports in the column.
+     * @param portBounds
+     *            Bounds of the port.
      * @param state
      *            State of the port. True iff active.
      */
-    private void drawPort(Rectangle bounds, boolean outPort, int i, int count, boolean state) {
-        assert bounds != null;
-        Rectangle rec = getPortBounds(bounds, outPort, i, count);
+    private void drawPort(Rectangle portBounds, boolean state) {
+        assert portBounds != null;
         if (state) {
             g.setColor(PORT_COLOR_ACTIVE);
         } else {
             g.setColor(PORT_COLOR_DEFAULT);
         }
-        // LOG.trace("Draw Oval: x: " + (int) rec.x + " y: " + (int) rec.y + " w: " + rec.width + " h: " + rec.height);
-        g.drawOval((int) rec.x, (int) rec.y, rec.width, rec.height);
+        g.drawOval((int) portBounds.x, (int) portBounds.y, portBounds.width, portBounds.height);
+    }
+
+    /**
+     * Sets the size of the given module to default dimensions.
+     * 
+     * @param module
+     *            Module to set dimensions of.
+     */
+    private void setModuleDefaultDimension(Module module) {
+        module.getRectangle().setSize(GATE_DIMENSION);
+    }
+
+    /**
+     * Sets the size of the given lamp to default dimensions.
+     * 
+     * @param lamp
+     *            Module to set dimensions of.
+     */
+    private void setLampDefaultDimension(Lamp lamp) {
+        lamp.getRectangle().setSize(LAMP_DIMENSION);
     }
 
     /**
@@ -498,6 +536,7 @@ public class StandardElementDrawer implements ElementDrawer {
         if (rec == null) {
             throw new IllegalArgumentException();
         }
+        setLampDefaultDimension(lamp);
         if (lamp.getState()) {
             g.setColor(LAMP_COLOR_ACTIVE);
         } else {
@@ -514,8 +553,8 @@ public class StandardElementDrawer implements ElementDrawer {
         // LOG.trace("Draw Oval (Lamp Border): x: " + (int) rec.x + " y: " + (int) rec.y + " w: " + rec.width + " h: "
         // + rec.height);
         g.drawOval(rec.x, rec.y, rec.width, rec.height);
-        drawModulePorts(lamp);
-        if (lamp.getName() != null) {
+        drawAndSetModulePorts(lamp);
+        if (lamp.getName() != null && !lamp.getName().isEmpty()) {
             drawAnnotation(lamp.getName(), rec);
         }
     }
@@ -530,9 +569,11 @@ public class StandardElementDrawer implements ElementDrawer {
         if (flipflop.getRectangle() == null) {
             throw new IllegalArgumentException();
         }
+        setModuleDefaultDimension(flipflop);
         drawModuleOutline(flipflop);
-        drawModulePorts(flipflop);
-        if (flipflop.getName() != null) {
+        drawAndSetModulePorts(flipflop);
+        drawLabel(LABEL_FLIPFLOP, flipflop.getRectangle());
+        if (flipflop.getName() != null && !flipflop.getName().isEmpty()) {
             drawAnnotation(flipflop.getName(), flipflop.getRectangle());
         }
     }
@@ -548,6 +589,7 @@ public class StandardElementDrawer implements ElementDrawer {
         if (rec == null) {
             throw new IllegalArgumentException();
         }
+        setModuleDefaultDimension(ig);
         drawModuleOutline(ig);
         if (ig.getState()) {
             g.setColor(IG_COLOR_ACTIVE);
@@ -561,9 +603,9 @@ public class StandardElementDrawer implements ElementDrawer {
         g.drawRect(rec.x + IG_STATE_MARGIN_LEFT, rec.y + IG_STATE_MARGIN_TOP,
                 (int) (rec.width * IG_STATE_PERC / IG_STATE_PERC_FULL),
                 (int) (rec.height * IG_STATE_PERC / IG_STATE_PERC_FULL));
-        drawModulePorts(ig);
+        drawAndSetModulePorts(ig);
         drawLabel(Integer.toString(ig.getFrequency()), rec);
-        if (ig.getName() != null) {
+        if (ig.getName() != null && !ig.getName().isEmpty()) {
             drawAnnotation(ig.getName(), ig.getRectangle());
         }
     }
@@ -572,18 +614,8 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public Port getPortAt(Rectangle rec, Module m) {
-        for (int i = 0; i < m.getInPorts().size(); i++) {
-            Rectangle bounds = getPortBounds(m.getRectangle(), false, i, m.getInPorts().size());
-            if (bounds.intersects(rec)) {
-                return m.getInPorts().get(i);
-            }
-        }
-        for (int i = 0; i < m.getOutPorts().size(); i++) {
-            Rectangle bounds = getPortBounds(m.getRectangle(), true, i, m.getOutPorts().size());
-            if (bounds.intersects(rec)) {
-                return m.getOutPorts().get(i);
-            }
-        }
+        LOG.warn("Deprecated function! Change to model call!");
+        // FIXME Veraltete Methode raus!
         return null;
     }
 

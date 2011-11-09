@@ -1,85 +1,93 @@
 package nandcat.view.elementdrawer;
 
-import java.awt.Graphics;
-import java.awt.Rectangle;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.when;
 import java.util.LinkedList;
 import nandcat.model.element.Lamp;
 import nandcat.model.element.Port;
-import org.easymock.classextension.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
 
-public class ElementDrawerLampTest extends AbstractElementDrawerTest {
+public class ElementDrawerLampTest extends AbstractModuleElementDrawerTest {
 
-    private Graphics graphicMock;
-
-    private Rectangle rec;
-
-    private Lamp gateMock;
+    protected Lamp gateMock;
 
     @Before
     public void setUp() {
-        gateMock = EasyMock.createMock(Lamp.class);
-        graphicMock = EasyMock.createStrictMock(Graphics.class);
-    }
-
-    private void gateMockSetGeneralExpectations() {
-        LinkedList<Port> portList = new LinkedList<Port>();
-        LinkedList<Port> portOutList = new LinkedList<Port>();
-        Port activePort = EasyMock.createMock(Port.class);
-        EasyMock.expect(activePort.getState()).andReturn(true).anyTimes();
-        EasyMock.replay(activePort);
-        portList.add(activePort);
-        rec = new Rectangle(21, 23, 100 + PORT_MARGIN_LEFT + PORT_MARGIN_RIGHT, 100 + PORT_MARGIN_TOP
-                + PORT_MARGIN_BOTTOM);
-        EasyMock.expect(gateMock.getRectangle()).andReturn(rec).anyTimes();
-        EasyMock.expect(gateMock.getInPorts()).andReturn(portList).anyTimes();
-        EasyMock.expect(gateMock.getOutPorts()).andReturn(portOutList).anyTimes();
-        EasyMock.expect(gateMock.getState()).andReturn(true).anyTimes();
-        EasyMock.expect(gateMock.getName()).andReturn(null).anyTimes();
+        setUpForModuleClass(Lamp.class);
+        this.gateMock = (Lamp) super.gateMock;
     }
 
     @Test
-    public void testDrawLampSelected() {
-        gateMockSetGeneralExpectations();
-        EasyMock.expect(gateMock.isSelected()).andReturn(true).anyTimes();
-        EasyMock.replay(gateMock);
-        mockDrawBorder();
-        mockDrawPorts();
-        EasyMock.replay(graphicMock);
-        drawer.setGraphics(graphicMock);
-        drawer.draw(gateMock);
-        EasyMock.verify(graphicMock);
-    }
+    public void testDrawSelected() {
+        when(gateMock.isSelected()).thenReturn(true);
+        when(gateMock.getState()).thenReturn(true);
+        stubModule();
 
-    @Test
-    public void testDrawLamp() {
-        gateMockSetGeneralExpectations();
-        EasyMock.expect(gateMock.isSelected()).andReturn(false).anyTimes();
-        EasyMock.replay(gateMock);
-        mockDrawBorder();
-        mockDrawPorts();
-        EasyMock.replay(graphicMock);
+        // action
         drawer.setGraphics(graphicMock);
-        drawer.draw(gateMock);
-        EasyMock.verify(graphicMock);
-    }
+        drawer.draw((Lamp) gateMock);
 
-    private void mockDrawBorder() {
-        graphicMock.setColor(EasyMock.eq(LAMP_COLOR_ACTIVE));
-        graphicMock.fillOval(EasyMock.eq(rec.x), EasyMock.eq(rec.y), EasyMock.eq(rec.width), EasyMock.eq(rec.height));
-        if (gateMock.isSelected()) {
-            graphicMock.setColor(EasyMock.eq(GATE_COLOR_SELECTED));
-        } else {
-            graphicMock.setColor(EasyMock.eq(GATE_COLOR));
+        verifyDrawModule();
+        InOrder inOrder = inOrder(graphicMock);
+        for (Port inPort : inPorts) {
+            verifyDrawPort(inPort, inOrder);
         }
-        graphicMock.drawOval(EasyMock.eq(rec.x), EasyMock.eq(rec.y), EasyMock.eq(rec.width), EasyMock.eq(rec.height));
     }
 
-    private void mockDrawPorts() {
-        graphicMock.setColor(PORT_COLOR_ACTIVE);
-        graphicMock.drawOval(EasyMock.gt(rec.x), EasyMock.gt(rec.y), EasyMock.eq(PORT_DIAMETER),
-                EasyMock.eq(PORT_DIAMETER));
+    @Test
+    public void testDraw() {
+        when(gateMock.isSelected()).thenReturn(true);
+        when(gateMock.getState()).thenReturn(false);
+        stubModule();
+
+        // action
+        drawer.setGraphics(graphicMock);
+        drawer.draw((Lamp) gateMock);
+
+        verifyDrawModule();
+        InOrder inOrder = inOrder(graphicMock);
+        for (Port inPort : inPorts) {
+            verifyDrawPort(inPort, inOrder);
+        }
+    }
+
+    protected void verifyDrawModule() {
+        InOrder inOrder = inOrder(graphicMock);
+        if (gateMock.getState()) {
+            inOrder.verify(graphicMock).setColor(LAMP_COLOR_ACTIVE);
+        } else {
+            inOrder.verify(graphicMock).setColor(LAMP_COLOR_DEFAULT);
+        }
+        // LOG.trace("Fill Oval (Lamp Border): x: " + (int) rec.x + " y: " + (int) rec.y + " w: " + rec.width + " h: "
+        // + rec.height);
+        inOrder.verify(graphicMock).fillOval(rec.x, rec.y, rec.width, rec.height);
+
+        if (gateMock.isSelected()) {
+            inOrder.verify(graphicMock).setColor(GATE_COLOR_SELECTED);
+        } else {
+            inOrder.verify(graphicMock).setColor(GATE_COLOR);
+        }
+        inOrder.verify(graphicMock).drawOval(eq(rec.x), eq(rec.y), eq(rec.width), eq(rec.height));
+    }
+
+    private void stubModule() {
+        when(gateMock.getRectangle()).thenReturn(rec);
+
+        // in ports
+        inPorts = new LinkedList<Port>();
+        inPorts.add(stubPort(true));
+
+        // out ports
+        outPorts = new LinkedList<Port>();
+
+        when(gateMock.getInPorts()).thenReturn(inPorts);
+        when(gateMock.getOutPorts()).thenReturn(outPorts);
+
+        // annotation
+        when(gateMock.getName()).thenReturn(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -89,9 +97,8 @@ public class ElementDrawerLampTest extends AbstractElementDrawerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testDrawLampNullRectangle() {
-        EasyMock.reset(gateMock);
-        EasyMock.expect(gateMock.getRectangle()).andReturn(null);
-        EasyMock.replay(gateMock);
-        drawer.draw(gateMock);
+        when(gateMock.getRectangle()).thenReturn(null);
+        drawer.setGraphics(graphicMock);
+        drawer.draw((Lamp) gateMock);
     }
 }

@@ -119,6 +119,7 @@ public interface ElementDrawer {
      * @param m
      *            Module with ports to check.
      * @return First intersecting port, otherwise null.
+     * @deprecated Diese funktion gibts nur noch im Model!
      */
     Port getPortAt(Rectangle rec, Module m);
 }
