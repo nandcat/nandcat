@@ -52,12 +52,13 @@ public class AnnotationTool implements Tool {
     /**
      * String representation of the Tool.
      */
+    @SuppressWarnings("serial")
     private List<String> represent = new LinkedList<String>() {
 
         {
             add("annotate");
         }
-    }; // TODO beschreibung schreiben
+    };
 
     /**
      * ActionListerner of the Tool on the Buttons.
@@ -172,13 +173,25 @@ public class AnnotationTool implements Tool {
     }
 
     /**
+     * Request activation of functionality.
+     * 
+     * @param command
+     *            String representing functionality to active.
+     */
+    private void request(String command) {
+        if (command.equals("annotate")) {
+            controller.requestActivation(this);
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     public Map<String, ActionListener> getFunctionalities() {
         actionListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
+                request(e.getActionCommand());
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();
