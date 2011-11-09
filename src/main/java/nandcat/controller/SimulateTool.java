@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
+import nandcat.model.Clock;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListener;
 import nandcat.view.CheckManager;
+import nandcat.view.View;
 
 /**
  * The SimulateTool is responsible for handling the Simulation and Checks.
@@ -44,15 +46,12 @@ public class SimulateTool implements Tool {
     private List<String> represent = new LinkedList<String>() {
 
         {
-            add("bstart");
-            add("bstop");
-            add("bplus");
-            add("bminus");
-            add("msstart");
-            add("msstop");
-            add("msplus");
-            add("msminus");
-            add("cbausteine");
+            add("start");
+            add("stop");
+            add("faster");
+            add("slower");
+            add("startcheck");
+            add("editcheck");
         }
     }; // TODO beschreibung schreiben
 
@@ -69,11 +68,17 @@ public class SimulateTool implements Tool {
     /**
      * ItemHanlder of the Tool the the ComboBox in the CheckManager.
      */
-    private ItemHandler comboboxListener;
+    private ItemHandler comboboxListener;// TODO nachschaun wie des funzt!!
 
+    /**
+     * Reference on this Tool.
+     */
     protected Tool simulateTool;
 
-    private nandcat.view.View view;
+    /**
+     * View instance.
+     */
+    private View view;
 
     /**
      * Constructs the SimulateTool.
@@ -99,16 +104,11 @@ public class SimulateTool implements Tool {
                     public void elementsChanged(ModelEvent e) {
                     }
 
-                    public void checksChanged(ModelEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void simulationChanged(ModelEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
                     public void checksStarted(ModelEvent e) {
-                        // TODO Auto-generated method stub
+                        if (checkManager == null) {
+                            checkManager = new CheckManager(e.getChecks(), comboboxListener);
+                        }
+                        checkManager.setVisible(true);
                     }
 
                     public void checksStopped(ModelEvent e) {
@@ -120,7 +120,7 @@ public class SimulateTool implements Tool {
                     }
 
                     public void simulationStopped(ModelEvent e) {
-                        // TODO Auto-generated method stub
+                        view.enableButtons();
                     }
 
                     public void importSucceeded(ModelEvent e) {
@@ -153,17 +153,30 @@ public class SimulateTool implements Tool {
         buttonListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                if (e.getActionCommand() == "bstart" || e.getActionCommand() == "msstart") {
+                if (e.getActionCommand() == "start") {
                     controller.requestActivation(simulateTool);
                     model.startSimulation();
                     view.disableButtons();
-                } else if (e.getActionCommand() == "bstop" || e.getActionCommand() == "msstop") {
+                } else if (e.getActionCommand() == "stop") {
                     model.stopSimulation();
+                    // nur solang net alle modelevents funzen.
                     view.enableButtons();
-                } else if (e.getActionCommand() == "bplus" || e.getActionCommand() == "msplus") {
-                    // sim geschw. erhöhen
-                } else if (e.getActionCommand() == "bminus" || e.getActionCommand() == "msminus") {
-                    // sim geschw. verringern
+                } else if (e.getActionCommand() == "faster") {
+                    Clock clock = model.getClock();
+                    clock.setSleepTime(clock.getSleepTime() + 5);
+                } else if (e.getActionCommand() == "slower") {
+                    Clock clock = model.getClock();
+                    clock.setSleepTime(clock.getSleepTime() - 5);
+                } else if (e.getActionCommand() == "startcheck") {
+                    if (checkManager == null) {
+                        checkManager = new CheckManager(model.getChecks(), comboboxListener);
+                    }
+                    checkManager.setVisible(true);
+                } else if (e.getActionCommand() == "editcheck") {
+                    if (checkManager == null) {
+                        checkManager = new CheckManager(model.getChecks(), comboboxListener);
+                    }
+                    checkManager.setVisible(true);
                 }
             }
         };

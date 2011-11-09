@@ -31,12 +31,23 @@ public class ElementDrawerPortTest extends AbstractElementDrawerTest {
 
     private void gateMockSetGeneralExpectations() {
         LinkedList<Port> portList = new LinkedList<Port>();
-        portList.add(new Port(gateMock));
+
+        // Add ports
+        Port port1 = EasyMock.createMock(Port.class);
+        EasyMock.expect(port1.getState()).andReturn(false).anyTimes();
+        EasyMock.replay(port1);
+        portList.add(port1);
+
         Port activePort = EasyMock.createMock(Port.class);
         EasyMock.expect(activePort.getState()).andReturn(true).anyTimes();
         EasyMock.replay(activePort);
         portList.add(activePort);
-        portList.add(new Port(gateMock));
+
+        Port port2 = EasyMock.createMock(Port.class);
+        EasyMock.expect(port2.getState()).andReturn(false).anyTimes();
+        EasyMock.replay(port2);
+        portList.add(port2);
+
         rec = new Rectangle(21, 23, 100 + PORT_MARGIN_LEFT + PORT_MARGIN_RIGHT, 100 + PORT_MARGIN_TOP
                 + PORT_MARGIN_BOTTOM);
         EasyMock.expect(gateMock.getRectangle()).andReturn(rec).anyTimes();
@@ -74,51 +85,35 @@ public class ElementDrawerPortTest extends AbstractElementDrawerTest {
         } else {
             graphicMock.setColor(EasyMock.eq(GATE_COLOR));
         }
-        EasyMock.expectLastCall().once();
         graphicMock.drawRect(rec.x, rec.y, rec.height, rec.width);
-        EasyMock.expectLastCall().once();
         // Draw InPorts
         graphicMock.setColor(PORT_COLOR_DEFAULT);
-        EasyMock.expectLastCall().once();
         graphicMock.drawOval(EasyMock.eq(rec.x + PORT_MARGIN_LEFT),
                 EasyMock.eq(PORT_MARGIN_TOP + rec.y + 25 - PORT_DIAMETER / 2), EasyMock.eq(PORT_DIAMETER),
                 EasyMock.eq(PORT_DIAMETER));
-        EasyMock.expectLastCall().once();
         graphicMock.setColor(PORT_COLOR_ACTIVE);
-        EasyMock.expectLastCall().once();
         graphicMock.drawOval(EasyMock.eq(rec.x + PORT_MARGIN_LEFT),
                 EasyMock.eq(PORT_MARGIN_TOP + rec.y + 50 - PORT_DIAMETER / 2), EasyMock.eq(PORT_DIAMETER),
                 EasyMock.eq(PORT_DIAMETER));
-        EasyMock.expectLastCall().once();
         graphicMock.setColor(PORT_COLOR_DEFAULT);
-        EasyMock.expectLastCall().once();
         graphicMock.drawOval(EasyMock.eq(rec.x + PORT_MARGIN_LEFT),
                 EasyMock.eq(PORT_MARGIN_TOP + rec.y + 75 - PORT_DIAMETER / 2), EasyMock.eq(PORT_DIAMETER),
                 EasyMock.eq(PORT_DIAMETER));
-        EasyMock.expectLastCall().once();
         // // Draw OutPorts
         graphicMock.setColor(PORT_COLOR_DEFAULT);
-        EasyMock.expectLastCall().once();
         graphicMock.drawOval(EasyMock.eq(rec.x + rec.width - PORT_MARGIN_RIGHT - PORT_DIAMETER),
                 EasyMock.eq(25 - PORT_DIAMETER / 2 + PORT_MARGIN_TOP + rec.y), EasyMock.eq(PORT_DIAMETER),
                 EasyMock.eq(PORT_DIAMETER));
-        EasyMock.expectLastCall().once();
         graphicMock.setColor(PORT_COLOR_ACTIVE);
-        EasyMock.expectLastCall().once();
         graphicMock.drawOval(EasyMock.eq(rec.x + rec.width - PORT_MARGIN_RIGHT - PORT_DIAMETER),
                 EasyMock.eq(50 - PORT_DIAMETER / 2 + PORT_MARGIN_TOP + rec.y), EasyMock.eq(PORT_DIAMETER),
                 EasyMock.eq(PORT_DIAMETER));
-        EasyMock.expectLastCall().once();
         graphicMock.setColor(PORT_COLOR_DEFAULT);
-        EasyMock.expectLastCall().once();
         graphicMock.drawOval(EasyMock.eq(rec.x + rec.width - PORT_MARGIN_RIGHT - PORT_DIAMETER),
                 EasyMock.eq(75 - PORT_DIAMETER / 2 + PORT_MARGIN_TOP + rec.y), EasyMock.eq(PORT_DIAMETER),
                 EasyMock.eq(PORT_DIAMETER));
-        EasyMock.expectLastCall().once();
         graphicMock.setColor(LABEL_COLOR);
-        EasyMock.expectLastCall().once();
         graphicMock.drawString(EasyMock.eq(LABEL_ORGATE), EasyMock.geq(rec.x), EasyMock.geq(rec.y));
-        EasyMock.expectLastCall().once();
         EasyMock.replay(graphicMock);
         drawer.setGraphics(graphicMock);
         drawer.draw(gateMock);

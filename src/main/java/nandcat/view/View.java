@@ -1,15 +1,17 @@
 package nandcat.view;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -17,6 +19,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JViewport;
+import javax.swing.event.ChangeListener;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListener;
@@ -45,7 +48,7 @@ public class View extends JFrame {
     private JToolBar toolBar;
 
     /**
-     * Viewport, visible part of the Workspace.
+     * ViewPort, visible part of the Workspace.
      */
     private JViewport viewport;
 
@@ -90,23 +93,19 @@ public class View extends JFrame {
     private Map<String, ActionListener> toolFunctionalities;
 
     /**
-     * A Set of Modules available for making circuits.
+     * A List of Modules available for making circuits.
      */
-    private Set<ViewModule> viewModules;
+    private List<ViewModule> viewModules;
 
-    private JButton start;
+    /**
+     * Set of JComponents we want to be disabled during simulation.
+     */
+    private Set<JComponent> disableElements = new HashSet<JComponent>();
 
-    private JButton stop;
-
-    private JButton slower;
-
-    private JButton faster;
-
-    private JButton create;
-
-    private JButton select;
-
-    private JButton move;
+    /**
+     * Set of JComponents we want not to be disabled during simulation.
+     */
+    private Set<JComponent> noDisableElements = new HashSet<JComponent>();
 
     /**
      * Constructs the view.
@@ -127,15 +126,8 @@ public class View extends JFrame {
     private void setupGui(Model model) {
         model.addListener(new ModelListener() {
 
-            public void simulationChanged(ModelEvent e) {
-                // TODO Auto-generated method stub
-            }
-
             public void elementsChanged(ModelEvent e) {
                 redraw(e);
-            }
-
-            public void checksChanged(ModelEvent e) {
             }
 
             public void checksStarted(ModelEvent e) {
@@ -143,7 +135,7 @@ public class View extends JFrame {
             }
 
             public void checksStopped(ModelEvent e) {
-                // TODO Auto-generated method stub
+                enableButtons();
             }
 
             public void simulationStarted(ModelEvent e) {
@@ -189,79 +181,252 @@ public class View extends JFrame {
     }
 
     /**
-     * set up MenuBar of the Frame.
+     * set up MenuBar of the Frame. Creates Menu Elements and gives them Functionalities according to the set of
+     * toolFunctionalities given from the Controller.
      * 
      * @param menubar
      *            the menuBar to be build
      */
     private void buildMenubar(JMenuBar menubar) {
         JMenu file = new JMenu("Datei");
+        disableElements.add(file);
         JMenu edit = new JMenu("Bearbeiten");
+        disableElements.add(edit);
         JMenu sim = new JMenu("Simulation");
+        noDisableElements.add(sim);
         JMenu help = new JMenu("?");
+        disableElements.add(help);
+        JMenuItem mstart = new JMenuItem("Start");
+        disableElements.add(mstart);
+        JMenuItem mstop = new JMenuItem("Stop");
+        noDisableElements.add(mstop);
+        JMenuItem mslower = new JMenuItem("Langsamer");
+        noDisableElements.add(mslower);
+        JMenuItem mfaster = new JMenuItem("Schneller");
+        noDisableElements.add(mfaster);
+        JMenuItem mcreate = new JMenuItem("Erstellen");
+        noDisableElements.add(mcreate);
+        JMenuItem mmove = new JMenuItem("Bewegen");
+        noDisableElements.add(mmove);
+        JMenuItem mselect = new JMenuItem("Auswählen");
+        noDisableElements.add(mselect);
+        JMenuItem mstartcheck = new JMenuItem("Tests Ausführen");
+        disableElements.add(mstartcheck);
+        JMenuItem meditcheck = new JMenuItem("Tests Verwalten");
+        disableElements.add(meditcheck);
+        JMenuItem mnew = new JMenuItem("Neu");
+        noDisableElements.add(mnew);
+        JMenuItem mload = new JMenuItem("Schaltung laden");
+        noDisableElements.add(mload);
+        JMenuItem msave = new JMenuItem("Speichern");
+        noDisableElements.add(msave);
+        JMenuItem msave2 = new JMenuItem("Speichern unter..");
+        noDisableElements.add(msave2);
+        JMenuItem mloaddef = new JMenuItem("Schaltungsdefinitionen neu laden"); // Was genau is des?
+        noDisableElements.add(mloaddef);
+        JMenuItem mclose = new JMenuItem("Schließen");
+        noDisableElements.add(mclose);
+        JMenuItem mdelete = new JMenuItem("Löschen");
+        noDisableElements.add(mdelete);
+        JMenuItem mannotate = new JMenuItem("Benennen");
+        disableElements.add(mannotate);
+        JMenuItem mtoggle = new JMenuItem("Setze Schalter");
+        disableElements.add(mtoggle);
+        if (toolFunctionalities.containsKey("start")) {
+            mstart.addActionListener(toolFunctionalities.get("start"));
+            mstart.setActionCommand("start");
+            mstart.setName("start");
+        }
+        if (toolFunctionalities.containsKey("toggle")) {
+            mtoggle.addActionListener(toolFunctionalities.get("toggle"));
+            mtoggle.setActionCommand("toggle");
+            mtoggle.setName("toggle");
+        }
+        if (toolFunctionalities.containsKey("annotate")) {
+            mannotate.addActionListener(toolFunctionalities.get("annotate"));
+            mannotate.setActionCommand("annotate");
+            mannotate.setName("annotate");
+        }
+        if (toolFunctionalities.containsKey("stop")) {
+            mstop.addActionListener(toolFunctionalities.get("stop"));
+            mstop.setActionCommand("stop");
+            mstop.setName("stop");
+        }
+        if (toolFunctionalities.containsKey("faster")) {
+            mfaster.addActionListener(toolFunctionalities.get("faster"));
+            mfaster.setActionCommand("faster");
+            mfaster.setName("faster");
+        }
+        if (toolFunctionalities.containsKey("slower")) {
+            mslower.addActionListener(toolFunctionalities.get("slower"));
+            mslower.setActionCommand("slower");
+            mslower.setName("slower");
+        }
+        if (toolFunctionalities.containsKey("create")) {
+            mcreate.addActionListener(toolFunctionalities.get("create"));
+            mcreate.setActionCommand("create");
+            mcreate.setName("create");
+        }
+        if (toolFunctionalities.containsKey("select")) {
+            mselect.addActionListener(toolFunctionalities.get("select"));
+            mselect.setActionCommand("select");
+            mselect.setName("select");
+        }
+        if (toolFunctionalities.containsKey("move")) {
+            mmove.addActionListener(toolFunctionalities.get("move"));
+            mmove.setActionCommand("move");
+            mmove.setName("move");
+        }
+        if (toolFunctionalities.containsKey("startcheck")) {
+            mstartcheck.addActionListener(toolFunctionalities.get("startcheck"));
+            mstartcheck.setActionCommand("startcheck");
+            mstartcheck.setName("startcheck");
+        }
+        if (toolFunctionalities.containsKey("editcheck")) {
+            meditcheck.addActionListener(toolFunctionalities.get("editcheck"));
+            meditcheck.setActionCommand("editcheck");
+            meditcheck.setName("editcheck");
+        }
+        if (toolFunctionalities.containsKey("new")) {
+            mnew.addActionListener(toolFunctionalities.get("new"));
+            mnew.setActionCommand("new");
+            mnew.setName("new");
+        }
+        if (toolFunctionalities.containsKey("load")) {
+            mload.addActionListener(toolFunctionalities.get("load"));
+            mload.setActionCommand("load");
+            mload.setName("load");
+        }
+        if (toolFunctionalities.containsKey("save")) {
+            msave.addActionListener(toolFunctionalities.get("save"));
+            msave.setActionCommand("save");
+            msave.setName("save");
+        }
+        if (toolFunctionalities.containsKey("saveUnder")) {
+            msave2.addActionListener(toolFunctionalities.get("saveUnder"));
+            msave2.setActionCommand("saveUnder");
+            msave2.setName("saveUnder");
+        }
+        if (toolFunctionalities.containsKey("loaddef")) {
+            mloaddef.addActionListener(toolFunctionalities.get("loaddef"));
+            mloaddef.setActionCommand("loaddef");
+            mloaddef.setName("loaddef");
+        }
+        if (toolFunctionalities.containsKey("close")) {
+            mclose.addActionListener(toolFunctionalities.get("close"));
+            mclose.setActionCommand("close");
+            mclose.setName("close");
+        }
+        if (toolFunctionalities.containsKey("delete")) {
+            mdelete.addActionListener(toolFunctionalities.get("delete"));
+            mdelete.setActionCommand("delete");
+            mdelete.setName("delete");
+        }
         menubar.add(file);
         menubar.add(edit);
         menubar.add(sim);
         menubar.add(help);
-        
-
-//                    JMenuItem item = new JMenuItem(func);
-//                    item.addActionListener(toolFunctionalities.get(func));
-//                    item.setFocusable(false);
-//                    item.setName(func);
-//                    help.add(item);
-
+        sim.add(mstart);
+        sim.add(mfaster);
+        sim.add(mstop);
+        sim.add(mslower);
+        sim.add(mstartcheck);
+        sim.add(meditcheck);
+        edit.add(mcreate);
+        edit.add(mselect);
+        edit.add(mmove);
+        edit.add(mdelete);
+        edit.add(mannotate);
+        edit.add(mtoggle);
+        file.add(mnew);
+        file.add(mload);
+        file.add(msave);
+        file.add(msave2);
+        file.add(mloaddef);
+        file.add(mclose);
     }
 
     /**
-     * set up the ToolBar of the Frame.
+     * set up the ToolBar of the Frame. Creates Buttons and gives them Functionalities according to the set of
+     * toolFunctionalities given from the Controller.
      * 
      * @param toolBar
      *            ToolBar to be build.
      */
     private void buildToolbar(JToolBar toolBar) {
-        start = new JButton("Start");
-        if (toolFunctionalities.containsKey("start")){
+        JButton start = new JButton("Start");
+        disableElements.add(start);
+        JButton move = new JButton("Verschieben");
+        disableElements.add(move);
+        JButton stop = new JButton("Stop");
+        noDisableElements.add(stop);
+        JButton faster = new JButton("Plus");
+        noDisableElements.add(faster);
+        JButton slower = new JButton("Minus");
+        noDisableElements.add(slower);
+        JButton create = new JButton("Erstellen");
+        disableElements.add(create);
+        JButton select = new JButton("Auswahl");
+        disableElements.add(select);
+        JButton toggle = new JButton("Setze Schalter");
+        disableElements.add(toggle);
+        JComboBox modules = null;
+        if (toolFunctionalities.containsKey("start")) {
             start.addActionListener(toolFunctionalities.get("start"));
             start.setActionCommand("start");
+            start.setName("start");
         }
-        stop = new JButton("Stop");
-        if (toolFunctionalities.containsKey("stop")){
+        if (toolFunctionalities.containsKey("toggle")) {
+            toggle.addActionListener(toolFunctionalities.get("toggle"));
+            toggle.setActionCommand("toggle");
+            toggle.setName("toggle");
+        }
+        if (toolFunctionalities.containsKey("stop")) {
             stop.addActionListener(toolFunctionalities.get("stop"));
             stop.setActionCommand("stop");
+            stop.setName("stop");
         }
-        faster = new JButton("Plus");
-        if (toolFunctionalities.containsKey("faster")){
+        if (toolFunctionalities.containsKey("faster")) {
             faster.addActionListener(toolFunctionalities.get("faster"));
             faster.setActionCommand("faster");
+            faster.setName("faster");
         }
-        slower = new JButton("Minus");
-        if (toolFunctionalities.containsKey("slower")){
+        if (toolFunctionalities.containsKey("slower")) {
             slower.addActionListener(toolFunctionalities.get("slower"));
             slower.setActionCommand("slower");
+            slower.setName("slower");
         }
-        create = new JButton("Erstellen");
-        if (toolFunctionalities.containsKey("create")){
-            create.addActionListener(toolFunctionalities.get("create"));
-            create.setActionCommand("create");
+        if (toolFunctionalities.containsKey("createButton")) {
+            create.addActionListener(toolFunctionalities.get("createButton"));
+            create.setActionCommand("createButton");
+            create.setName("createButton");
         }
-        select = new JButton("Auswahl");
-        if (toolFunctionalities.containsKey("select")){
+        if (toolFunctionalities.containsKey("select")) {
             select.addActionListener(toolFunctionalities.get("select"));
             select.setActionCommand("select");
+            select.setName("select");
         }
-        move = new JButton("Verschieben");
-        if (toolFunctionalities.containsKey("move")){
+        if (toolFunctionalities.containsKey("move")) {
             move.addActionListener(toolFunctionalities.get("move"));
             move.setActionCommand("move");
+            move.setName("move");
+        }
+        if (viewModules != null) {
+            modules = new JComboBox(viewModules.toArray());
+        }
+        if (toolFunctionalities.containsKey("selectModule")) {
+            modules.addActionListener(toolFunctionalities.get("selectModule"));
+            modules.setActionCommand("selectModule");
+            modules.setName("selectModule");
         }
         toolBar.add(start);
+        toolBar.add(faster);
         toolBar.add(stop);
         toolBar.add(slower);
-        toolBar.add(faster);
         toolBar.add(create);
         toolBar.add(select);
         toolBar.add(move);
+        toolBar.add(modules);
         toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.Y_AXIS));
     }
 
@@ -269,48 +434,27 @@ public class View extends JFrame {
      * Redraws the workspace with its elements.
      * 
      * @param e
-     *            ModelEvent with the elements to be redrawed.
+     *            ModelEvent with the elements to be repainted.
      */
     public void redraw(ModelEvent e) {
-        workspace.redraw(e);
+        workspace.redraw(e.getElements());
     }
 
     /**
-     * Enables all buttons.
+     * Enables all buttons and MenuItems.
      */
     public void enableButtons() {
-        Component[] buttons = toolBar.getComponents();
-        for (int i = 0; i < buttons.length; i++) {
-            buttons[i].setEnabled(true);
-        }
-        Component[] menus = menubar.getComponents();
-        for (int i = 0; i < menus.length; i++) {
-            menus[i].setEnabled(true);
+        for (JComponent enable : disableElements) {
+            enable.setEnabled(true);
         }
     }
 
     /**
-     * Disables all buttons except buttons for simulation.
+     * Disables all buttons and MenuItems except those for controlling the Simulations.
      */
     public void disableButtons() {
-        Component[] buttons = toolBar.getComponents();
-        for (int i = 0; i < buttons.length; i++) {
-            if (buttons[i].getName() != "stop" && buttons[i].getName() != "faster" && buttons[i].getName() != "slower") {
-                buttons[i].setEnabled(false);
-            }
-        }
-        Component[] menus = menubar.getComponents();
-        for (int i = 0; i < menus.length; i++) {
-            if (((JMenu) menus[i]).getActionCommand() != "Simulation") {
-                menus[i].setEnabled(false);
-            } else {
-                Component[] items = ((JMenu) menus[i]).getComponents();
-                for (int j = 0; j < items.length; j++) {
-                    if (((JMenuItem) items[j]).getActionCommand() == "msstart") {
-                        items[j].setEnabled(false);
-                    }
-                }
-            }
+        for (JComponent enable : disableElements) {
+            enable.setEnabled(false);
         }
     }
 
@@ -324,13 +468,36 @@ public class View extends JFrame {
     }
 
     /**
-     * Set the ViewportPosition over the Workspace.
+     * Returns the current ElementDrawer of the Workspace.
      * 
-     * @param p
-     *            Point where to be set.
+     * @return ElementDrawer.
      */
-    public void setViewportPosition(Point p) {
-        viewport.setViewPosition(p);
+    public ElementDrawer getDrawer() {
+        return workspace.getDrawer();
+    }
+
+    /**
+     * Sets the ElementDrawer of the Workspace.
+     * 
+     * @param drawer
+     *            ElementDrawer to be set.
+     */
+    public void setDrawer(ElementDrawer drawer) {
+        workspace.setDrawer(drawer);
+    }
+
+    /**
+     * Change Viewport Position on the workspace.
+     * 
+     * @param x
+     *            double value by which the x -coord is changed
+     * @param y
+     *            double value by which the x -coord is changed
+     */
+    public void setViewportPosition(int x, int y) {
+        viewportLocation.x -= x;
+        viewportLocation.y -= y;
+        viewport.setViewPosition(viewportLocation);
     }
 
     /**
@@ -349,7 +516,7 @@ public class View extends JFrame {
      * Changes the Height of the Workspace.
      * 
      * @param newHeight
-     *            int to which the Height will be set.
+     *            integer to which the Height will be set.
      */
     public void setWorkspaceHeight(int newHeight) {
         workspace.setSize(workspace.getWidth(), newHeight);
@@ -359,7 +526,7 @@ public class View extends JFrame {
      * Changes the Width of the Workspace.
      * 
      * @param newWidth
-     *            int to which the Width will be set.
+     *            integer to which the Width will be set.
      */
     public void setWorkspaceWidth(int newWidth) {
         workspace.setSize(newWidth, workspace.getHeight());
@@ -368,10 +535,27 @@ public class View extends JFrame {
     /**
      * With this method the Controller is able to give the View the Informations about the Elements available.
      * 
-     * @param viewele
-     *            Set<ViewModule> with the Elements available.
+     * @param viewElem
+     *            List<ViewModule> with the Elements available.
      */
-    public void setViewModules(Set<ViewModule> viewele) {
-        viewModules = viewele;
+    public void setViewModules(List<ViewModule> viewElem) {
+        viewModules = viewElem;
+    }
+
+    /**
+     * Adds a ChangeListener on the ViewPort.
+     * 
+     * @param changeListener
+     *            ChangeListener to be set on the ViewPort.
+     */
+    public void addViewPortListener(ChangeListener changeListener) {
+        viewport.addChangeListener(changeListener);
+    }
+
+    /**
+     * Gives the ViewPort Rectangle to the Workspace.
+     */
+    public void giveViewPortRect() {
+        workspace.setViewPortRect(viewport.getViewRect());
     }
 }

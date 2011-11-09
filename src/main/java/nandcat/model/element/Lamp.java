@@ -1,6 +1,5 @@
 package nandcat.model.element;
 
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,11 +14,6 @@ public class Lamp implements Module {
      * Default serial version uid.
      */
     private static final long serialVersionUID = 1L;
-
-    /**
-     * Point specifying the Location of the Lamp.
-     */
-    private Point location;
 
     /**
      * Lamp's name.
@@ -51,6 +45,7 @@ public class Lamp implements Module {
      */
     public Lamp() {
         state = false;
+        rectangle = new Rectangle(EXTENT, EXTENT);
         inPort = new Port(this);
         inPort.setState(false, null);
     }
@@ -120,20 +115,6 @@ public class Lamp implements Module {
      */
     public void clockTicked(Clock clock) {
         this.state = inPort.getState();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setLocation(Point p) {
-        location = p;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Point getLocation() {
-        return location;
     }
 
     /**

@@ -6,13 +6,14 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import nandcat.model.Model;
-import nandcat.model.element.Element;
+import nandcat.model.element.DrawElement;
 import nandcat.model.element.Module;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
@@ -51,7 +52,12 @@ public class AnnotationTool implements Tool {
     /**
      * String representation of the Tool.
      */
-    private List<String> represent; // TODO beschreibung schreiben
+    private List<String> represent = new LinkedList<String>() {
+
+        {
+            add("annotate");
+        }
+    }; // TODO beschreibung schreiben
 
     /**
      * ActionListerner of the Tool on the Buttons.
@@ -124,9 +130,9 @@ public class AnnotationTool implements Tool {
      *            Point of mouse click.
      */
     private void mouseClickedOnWorkspace(Point p) {
-        Set<Element> elements = model.getElementsAt(new Rectangle(p, MOUSE_TOLERANCE));
+        Set<DrawElement> elements = model.getDrawElementsAt(new Rectangle(p, MOUSE_TOLERANCE));
         Module toAnnotate = null;
-        for (Element element : elements) {
+        for (DrawElement element : elements) {
             // annotations on modules only
             if (element instanceof Module) {
                 toAnnotate = (Module) element;

@@ -55,9 +55,16 @@ public class Controller {
      * Initializes the Tool Classes.
      */
     protected void initTools() {
-        AnnotationTool annotationTool = new AnnotationTool(this);
-        tools.add(annotationTool);
-        // TODO Liste Fertig
+        tools.add(new SimulateTool(this));
+        tools.add(new CreateTool(this));
+        tools.add(new SelectTool(this));
+        tools.add(new ViewTool(this));
+        tools.add(new AnnotationTool(this));
+        tools.add(new StateTool(this));
+        tools.add(new DeleteTool(this));
+        tools.add(new ExportTool(this));
+        tools.add(new ImportTool(this));
+        tools.add(new HelpTool(this));
     }
 
     /**
@@ -66,7 +73,7 @@ public class Controller {
      * If available, the given tool will be activated after the current tools is deactivated.
      * 
      * @param tool
-     *            Tool to be activated.
+     *            Tool to be activated.viewElem
      */
     public void requestActivation(Tool tool) {
         if (tool == null) {
@@ -101,6 +108,7 @@ public class Controller {
      * Gives the Functionalities and Listeners of the Tools to the View.
      */
     public void giveFunctionalities() {
+        view.setViewModules(model.getViewModules());
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();
         for (Tool tool : tools) {
             map.putAll(tool.getFunctionalities());

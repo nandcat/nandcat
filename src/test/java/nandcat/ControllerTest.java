@@ -1,94 +1,102 @@
 package nandcat;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import nandcat.controller.Controller;
 import nandcat.controller.Tool;
 import nandcat.model.Model;
 import nandcat.view.View;
-import org.easymock.classextension.EasyMock;
-import org.easymock.classextension.IMocksControl;
+import org.easymock.EasyMock;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 
 public class ControllerTest {
 
     @Test
     public void testConstructor() {
-        View viewMock = EasyMock.createMock(View.class);
-        Model modelMock = EasyMock.createMock(Model.class);
-        EasyMock.replay(viewMock);
-        EasyMock.replay(modelMock);
-        Controller contr = new Controller(viewMock, modelMock);
-        assertEquals(viewMock, contr.getView());
-        assertEquals(modelMock, contr.getModel());
+        View view = mock(View.class);
+        Model model = mock(Model.class);
+        Controller contr = new Controller(view, model);
+        assertEquals(view, contr.getView());
+        assertEquals(model, contr.getModel());
     }
 
     @Test
     public void testRequestActivation() {
-        View viewMock = EasyMock.createMock(View.class);
-        Model modelMock = EasyMock.createMock(Model.class);
-        EasyMock.replay(viewMock);
-        EasyMock.replay(modelMock);
-        Controller contr = new Controller(viewMock, modelMock);
-        IMocksControl mockControl = EasyMock.createStrictControl();
-        Tool firstTool = mockControl.createMock(Tool.class);
-        Tool secondTool = mockControl.createMock(Tool.class);
-        firstTool.setActive(true);
-        firstTool.setActive(false);
-        secondTool.setActive(true);
-        mockControl.replay();
-        contr.requestActivation(firstTool);
-        contr.requestActivation(secondTool);
-        mockControl.verify();
+        View viewMock = mock(View.class);
+        Model modelMock = mock(Model.class);
+        Controller c = new Controller(viewMock, modelMock);
+        Tool toolOne = mock(Tool.class);
+        Tool toolTwo = mock(Tool.class);
+
+        // verify order of tool activation
+        InOrder inOrder = inOrder(toolOne, toolTwo);
+        c.requestActivation(toolOne);
+        inOrder.verify(toolOne).setActive(true);
+        c.requestActivation(toolTwo);
+        inOrder.verify(toolOne).setActive(false);
+        inOrder.verify(toolTwo).setActive(true);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testRequestActivationNull() {
-        View viewMock = EasyMock.createMock(View.class);
-        Model modelMock = EasyMock.createMock(Model.class);
-        EasyMock.replay(viewMock);
-        EasyMock.replay(modelMock);
-        Controller contr = new Controller(viewMock, modelMock);
-        contr.requestActivation(null);
+        View view = mock(View.class);
+        Model model = mock(Model.class);
+        Controller c = new Controller(view, model);
+
+        // Verify exception if tool = null
+        c.requestActivation(null);
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void testGiveFunctionalities() {
-        Model modelMock = EasyMock.createMock(Model.class);
-        FakeView viewMock = new FakeView(modelMock);
-        EasyMock.replay(modelMock);
-        ExtController contr = new ExtController(viewMock, modelMock);
-        IMocksControl mockControl = EasyMock.createStrictControl();
-        Tool firstTool = mockControl.createMock(Tool.class);
-        Tool secondTool = mockControl.createMock(Tool.class);
+        Model model = mock(Model.class);
+        View view = mock(View.class);
+        ExtController c = new ExtController(view, model);
+        Tool toolOne = mock(Tool.class);
+        Tool toolTwo = mock(Tool.class);
+
+        // add tools to controller (subclassing needed because of this)
+        c.addTool(toolOne);
+        c.addTool(toolTwo);
+
+        // Build fake functionalities for tools.
         Map<String, ActionListener> firstToolFunc = new HashMap<String, ActionListener>();
         Map<String, ActionListener> secondToolFunc = new HashMap<String, ActionListener>();
         ActionListener actionListenerTool1 = EasyMock.createMock(ActionListener.class);
         ActionListener actionListenerTool2 = EasyMock.createMock(ActionListener.class);
-        EasyMock.replay(actionListenerTool1);
-        EasyMock.replay(actionListenerTool2);
         firstToolFunc.put("func1tool1", actionListenerTool1);
         firstToolFunc.put("func2tool1", actionListenerTool1);
         secondToolFunc.put("func1tool2", actionListenerTool2);
         secondToolFunc.put("func2tool2", actionListenerTool2);
-        EasyMock.expect(firstTool.getFunctionalities()).andReturn(firstToolFunc);
-        EasyMock.expect(secondTool.getFunctionalities()).andReturn(secondToolFunc);
-        mockControl.replay();
-        contr.addTool(firstTool);
-        contr.addTool(secondTool);
-        contr.giveFunctionalities();
-        assertTrue(viewMock.functionalities.containsKey("func1tool1"));
-        assertEquals(actionListenerTool1, viewMock.functionalities.get("func1tool1"));
-        assertTrue(viewMock.functionalities.containsKey("func1tool2"));
-        assertTrue(viewMock.functionalities.containsKey("func2tool1"));
-        assertEquals(actionListenerTool2, viewMock.functionalities.get("func1tool2"));
-        assertTrue(viewMock.functionalities.containsKey("func2tool2"));
-        assertEquals(4, viewMock.functionalities.size());
-        mockControl.verify();
+
+        // Stub tool give functionalities with fake functionalities
+        when(toolOne.getFunctionalities()).thenReturn(firstToolFunc);
+        when(toolTwo.getFunctionalities()).thenReturn(secondToolFunc);
+
+        // action - c should set functionalities in view.
+        c.giveFunctionalities();
+
+        // capture views input
+        ArgumentCaptor<Map> mapCapture = ArgumentCaptor.forClass(Map.class);
+        verify(view).setFunctionalities(mapCapture.capture());
+
+        // check if functionalities of tool one exist.
+        assertEquals(actionListenerTool1, mapCapture.getValue().get("func1tool1"));
+        assertEquals(actionListenerTool1, mapCapture.getValue().get("func2tool1"));
+
+        // check if functionalities of tool two exist.
+        assertEquals(actionListenerTool2, mapCapture.getValue().get("func1tool2"));
+        assertEquals(actionListenerTool2, mapCapture.getValue().get("func2tool2"));
+
     }
 
     private class ExtController extends Controller {
@@ -103,20 +111,6 @@ public class ControllerTest {
 
         @Override
         protected void initTools() {
-        }
-    }
-
-    private class FakeView extends View {
-
-        public Map<String, ActionListener> functionalities;
-
-        public FakeView(Model model) {
-            super(model);
-        }
-
-        @Override
-        public void setFunctionalities(Map<String, ActionListener> map) {
-            functionalities = map;
         }
     }
 }

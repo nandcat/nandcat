@@ -1,6 +1,5 @@
 package nandcat.model.element;
 
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,11 +14,6 @@ public class ImpulseGenerator implements Module {
      * Default serial version uid.
      */
     private static final long serialVersionUID = 1L;
-
-    /**
-     * Point specifying the Location of the Gate.
-     */
-    private Point location;
 
     /**
      * Impulsegenerator's name.
@@ -47,7 +41,9 @@ public class ImpulseGenerator implements Module {
     private Rectangle rectangle;
 
     /**
-     * Constructor with frequency.
+     * Constructor with frequency. The frequency is basically the necessary amount of ticks of the clock to toggle the
+     * state of this ImpulseGenerator. With frequency 0, the ImpulseGenerator will not change its state. This has
+     * implications for the clock's register-procedure.
      * 
      * @param frequency
      *            frequency of the generator
@@ -58,7 +54,16 @@ public class ImpulseGenerator implements Module {
             new IllegalArgumentException("invalid frequency for impulsegenerator");
         }
         this.frequency = frequency;
+        rectangle = new Rectangle(EXTENT, EXTENT);
         outPort = new Port(this);
+        outPort.locateOnStandardPosition();
+    }
+
+    /**
+     * Default constructor. The frequency will be 1.
+     */
+    public ImpulseGenerator() {
+        this(1);
     }
 
     /**
@@ -114,22 +119,9 @@ public class ImpulseGenerator implements Module {
         if (outPort == null) {
             return;
         }
+        // note that outPort and state are asynchronous
         outPort.setState(state, clock);
         toggleState();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setLocation(Point p) {
-        location = p;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Point getLocation() {
-        return location;
     }
 
     /**

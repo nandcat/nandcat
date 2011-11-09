@@ -4,14 +4,9 @@ import java.awt.Rectangle;
 import java.util.List;
 
 /**
- * Module interface. A Module is an Element with Ports. They can be connected by Connections.
+ * RoModule interface. A read-only Module is an Element with Ports. They can be connected by Connections.
  */
-public interface Module extends Element, DrawModule {
-
-    /**
-     * Default extent for the rectangle of Modules.
-     */
-    int EXTENT = 100;
+public interface DrawModule extends DrawElement {
 
     /**
      * Gets incoming ports.
@@ -33,12 +28,4 @@ public interface Module extends Element, DrawModule {
      * @return Rectangle representing the module's shape.
      */
     Rectangle getRectangle();
-
-    /**
-     * Set the module's rectangle.
-     * 
-     * @param rectangle
-     *            Rectangle to set module's shape to.
-     */
-    void setRectangle(Rectangle rectangle);
 }

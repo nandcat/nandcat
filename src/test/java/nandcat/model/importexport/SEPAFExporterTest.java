@@ -31,17 +31,17 @@ public class SEPAFExporterTest {
         export.setFile(file);
         Circuit c = new Circuit();
         AndGate andGate = new AndGate();
-        andGate.setLocation(new Point(1, 1));
+        andGate.getRectangle().setLocation(new Point(1, 1));
         andGate.setName("AndGate");
         c.addModule(andGate);
 
         OrGate orGate = new OrGate();
-        orGate.setLocation(new Point(2, 2));
+        orGate.getRectangle().setLocation(new Point(2, 2));
         orGate.setName("OrGate");
         c.addModule(orGate);
 
         NotGate notGate = new NotGate();
-        notGate.setLocation(new Point(3, 3));
+        notGate.getRectangle().setLocation(new Point(3, 3));
         notGate.setName("NotGate");
         c.addModule(notGate);
 
@@ -67,11 +67,11 @@ public class SEPAFExporterTest {
         } else {
             c = new Circuit(uuid);
         }
-        c.setLocation(p);
+        c.getRectangle().setLocation(p);
 
         // And gate
         AndGate andGate = new AndGate();
-        andGate.setLocation(new Point(0, 0));
+        andGate.getRectangle().setLocation(new Point(0, 0));
         andGate.setName(prefix + ":AndGate");
         c.addModule(andGate);
 

@@ -30,7 +30,11 @@ public class ElementDrawerNotGateTest extends AbstractElementDrawerTest {
         EasyMock.expect(activePort.getState()).andReturn(true).anyTimes();
         EasyMock.replay(activePort);
         portList.add(activePort);
-        portOutList.add(new Port(gateMock));
+        Port port1 = EasyMock.createMock(Port.class);
+        EasyMock.expect(port1.getState()).andReturn(false).anyTimes();
+        EasyMock.replay(port1);
+        portOutList.add(port1);
+
         rec = new Rectangle(21, 23, 100 + PORT_MARGIN_LEFT + PORT_MARGIN_RIGHT, 100 + PORT_MARGIN_TOP
                 + PORT_MARGIN_BOTTOM);
         EasyMock.expect(gateMock.getRectangle()).andReturn(rec).anyTimes();

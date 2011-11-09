@@ -5,10 +5,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import nandcat.model.Model;
+import nandcat.model.element.Element;
 import nandcat.view.View;
 
 /**
@@ -39,7 +41,12 @@ public class DeleteTool implements Tool {
     /**
      * String representation of the Tool.
      */
-    private List<String> represent; // TODO beschreibung schreiben
+    private List<String> represent = new LinkedList<String>() {
+
+        {
+            add("delete");
+        }
+    };// TODO beschreibung schreiben
 
     /**
      * ActionListerner of the Tool on the Buttons.
@@ -56,12 +63,27 @@ public class DeleteTool implements Tool {
         this.controller = controller;
         this.model = controller.getModel();
         this.view = controller.getView();
+        represent = new LinkedList<String>();
+        represent.add("delete");
         // TODO Funktioniert das mit dem Keylistener so? Ich würde den
         // Keymanager nehmen - Ben
+        setActive(true);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setActive(boolean active) {
+        setListeners();
+    }
+
+    public void setListeners() {
         this.view.addKeyListener(new KeyListener() {
 
             public void keyTyped(KeyEvent e) {
-                // TODO Auto-generated method stub
+                Element element = (Element) e.getSource();
+                model.removeElement(element);
             }
 
             public void keyReleased(KeyEvent e) {
@@ -72,13 +94,6 @@ public class DeleteTool implements Tool {
                 // TODO Auto-generated method stub
             }
         });
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setActive(boolean active) {
-        // Always active
     }
 
     /**

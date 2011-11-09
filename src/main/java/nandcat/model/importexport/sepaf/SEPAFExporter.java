@@ -90,7 +90,7 @@ public class SEPAFExporter implements Exporter {
         this.root = root;
         root.addNamespaceDeclaration(SEPAFFormat.NAMESPACE.NANDCAT);
         try {
-            root.setAttribute("main", circuit.getUUID());
+            root.setAttribute("main", circuit.getUuid());
             root.addContent(buildCircuit(circuit));
             XMLOutputter outputter = new XMLOutputter();
 
@@ -118,7 +118,7 @@ public class SEPAFExporter implements Exporter {
      */
     private Element buildCircuit(Circuit c) throws FormatException {
         org.jdom.Element e = new Element("circuit", SEPAFFormat.NAMESPACE.SEPAF);
-        e.setAttribute("name", c.getUUID());
+        e.setAttribute("name", c.getUuid());
         for (nandcat.model.element.Element circuitE : c.getElements()) {
             e.addContent(buildElement(circuitE));
         }
@@ -143,9 +143,9 @@ public class SEPAFExporter implements Exporter {
         Content c = null;
         if (e instanceof Circuit) {
             c = buildComponent((Module) e);
-            if (!innerCircuitsIndex.contains(((Circuit) e).getUUID())) {
+            if (!innerCircuitsIndex.contains(((Circuit) e).getUuid())) {
                 root.addContent(buildCircuit((Circuit) e));
-                innerCircuitsIndex.add(((Circuit) e).getUUID());
+                innerCircuitsIndex.add(((Circuit) e).getUuid());
             }
         }
 
@@ -196,8 +196,8 @@ public class SEPAFExporter implements Exporter {
      *            Module to get the attribute value from.
      */
     private void setComponentAttributesLocation(Element e, Module m) {
-        e.setAttribute("posx", Integer.toString(m.getLocation().x));
-        e.setAttribute("posy", Integer.toString(m.getLocation().y));
+        e.setAttribute("posx", Integer.toString(m.getRectangle().getLocation().x));
+        e.setAttribute("posy", Integer.toString(m.getRectangle().getLocation().y));
     }
 
     /**
@@ -268,7 +268,7 @@ public class SEPAFExporter implements Exporter {
             e.setAttribute("type", "flipflop");
         } else if (m instanceof Circuit) {
             e.setAttribute("type", "circuit");
-            e.setAttribute("type2", ((Circuit) m).getUUID());
+            e.setAttribute("type2", ((Circuit) m).getUuid());
         } else {
             LOG.debug("Not a supported component type: '" + m.getClass().getName() + "'");
         }

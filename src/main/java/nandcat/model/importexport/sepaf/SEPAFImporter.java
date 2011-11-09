@@ -419,7 +419,7 @@ public class SEPAFImporter implements Importer {
             throw new FormatException("Not a supported component type: '" + aType.getValue() + "'");
         }
 
-        module.setLocation(location);
+        module.getRectangle().setLocation(location);
         if (aAnnotation != null) {
             String annotation = aAnnotation.getValue();
             module.setName(annotation);

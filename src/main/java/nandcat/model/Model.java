@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +14,7 @@ import nandcat.model.check.CircuitCheck;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
+import nandcat.model.element.DrawElement;
 import nandcat.model.element.Element;
 import nandcat.model.element.FlipFlop;
 import nandcat.model.element.IdentityGate;
@@ -74,7 +76,7 @@ public class Model implements ClockListener {
     /**
      * Map ViewModules (view representation) to Modules (datastructure).
      */
-    private HashMap<ViewModule, Module> viewModule2Module;
+    private List<ViewModule> viewModules;
 
     /**
      * List of all custom Modules.
@@ -101,13 +103,23 @@ public class Model implements ClockListener {
      * Fill viewModule2Module data structure with default Gates and custom circuits.
      */
     private void initView2Module() {
-        viewModule2Module = new HashMap<ViewModule, Module>();
-        viewModule2Module.put(new ViewModule("AND", "", null), new AndGate());
-        viewModule2Module.put(new ViewModule("FlipFlop", "", null), new FlipFlop());
-        viewModule2Module.put(new ViewModule("Identity", "", null), new IdentityGate());
-        viewModule2Module.put(new ViewModule("Lamp", "", null), new Lamp());
-        viewModule2Module.put(new ViewModule("NOT", "", null), new NotGate());
-        viewModule2Module.put(new ViewModule("OR", "", null), new OrGate());
+        viewModules = new LinkedList<ViewModule>();
+        // TODO fix this
+        ViewModule andGate = new ViewModule("AND", new AndGate(), "", null);
+        viewModules.add(andGate);
+        ViewModule orGate = new ViewModule("OR", new OrGate(), "", null);
+        viewModules.add(orGate);
+        ViewModule flipFlop = new ViewModule("FlipFlop", new FlipFlop(), "", null);
+        viewModules.add(flipFlop);
+        ViewModule id = new ViewModule("ID", new IdentityGate(), "", null);
+        viewModules.add(id);
+        ViewModule lamp = new ViewModule("Lampe", new Lamp(), "", null);
+        viewModules.add(lamp);
+        ViewModule not = new ViewModule("NOT", new NotGate(), "", null);
+        viewModules.add(not);
+        // FIXME walk through circuit-Ordner and fill viewModule2Module
+        ViewModule circ = new ViewModule("SomeCircuit", null, "circuit.xml", null);
+        viewModules.add(circ);
     }
 
     /**
@@ -120,6 +132,52 @@ public class Model implements ClockListener {
         // check.test(circuit);
         // }
         // }
+    }
+
+    /**
+     * Returns the Port at the Position. If multiple Ports are intersecting the Rectangle, no specific behaviour can be
+     * assured. KTHXBYE.
+     * 
+     * @param rect
+     *            Rectangle containing the x- and y-coordinate
+     * @return the Port at this position, null if no Port is there
+     */
+    public Port getPortAt(Rectangle rect) {
+        for (Module m : getModsAt(rect)) {
+            for (Port p : m.getInPorts()) {
+                if (p.getRectangle().intersects(rect)) {
+                    return p;
+                }
+            }
+            for (Port p : m.getOutPorts()) {
+                if (p.getRectangle().intersects(rect)) {
+                    return p;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get all modules intersecting a rectangle.
+     * 
+     * @param rect
+     *            Rectangle containing the x- and y-coordinate
+     * @return Set of Modules intersecting the given location
+     */
+    private Set<Module> getModsAt(Rectangle rect) {
+        return null;
+    }
+
+    /**
+     * Get all connections intersecting a rectangle.
+     * 
+     * @param rect
+     *            Rectangle containing the x- and y-coordinate
+     * @return Set of Connections intersecting the given location
+     */
+    private Set<Connection> getConnsAt(Rectangle rect) {
+        return null;
     }
 
     /**
@@ -164,7 +222,7 @@ public class Model implements ClockListener {
      * @return List of ViewModules
      */
     public List<ViewModule> getViewModules() {
-        return null;
+        return viewModules;
     }
 
     /**
@@ -211,7 +269,7 @@ public class Model implements ClockListener {
      *            Rectangle containing the x- and y-coordinate.
      * @return Set of Elements at the given location.
      */
-    public Set<Element> getElementsAt(Rectangle rect) {
+    protected Set<Element> getElementsAt(Rectangle rect) {
         // Set<Element> elementsAt = new HashSet<Element>();
         // for (Element element : circuit.getElements()) {
         // if (element.getRectangle.contains(point) {
@@ -219,6 +277,33 @@ public class Model implements ClockListener {
         // elementsAt.add(element);
         // }
         return null;
+    }
+
+    // TODO recheck, faggit!
+    /**
+     * Get a set of elements within a specific rectangle.
+     * 
+     * @param rect
+     *            Rectangle containing the x- and y-coordinate.
+     * @return Set of Elements at the given location.
+     */
+    public Set<DrawElement> getDrawElementsAt(Rectangle rect) {
+        Set<DrawElement> elementsAt = new HashSet<DrawElement>();
+        for (Element element : circuit.getElements()) {
+            if (element instanceof Module) {
+                Module m = (Module) element;
+                if (m.getRectangle().intersects(rect)) {
+                    elementsAt.add((DrawElement) element);
+                }
+            }
+            if (element instanceof Connection) {
+                Connection c = (Connection) element;
+                if (c.getLine().intersects(rect)) {
+                    elementsAt.add((DrawElement) element);
+                }
+            }
+        }
+        return elementsAt;
     }
 
     /**
@@ -235,9 +320,8 @@ public class Model implements ClockListener {
      * 
      * @param rect
      *            The Rectangle defining the zone where elements are selected.
-     * @return A Set of the selected elements.
      */
-    public Set<Element> selectElements(Rectangle rect) {
+    public void selectElements(Rectangle rect) {
         // TODO implement
         // Set<Element> selectedElements = new HashSet<Element>();
         // for (Element element : circuit.getElements()) {
@@ -245,7 +329,6 @@ public class Model implements ClockListener {
         // selectedElements.add(element);
         // }
         // }
-        return null;
     }
 
     /**
@@ -253,8 +336,21 @@ public class Model implements ClockListener {
      * 
      * @return A Set of all elements.
      */
-    public List<Element> getElements() {
+    protected List<Element> getElements() {
         return circuit.getElements();
+    }
+
+    /**
+     * Get all elements from the current circuit.
+     * 
+     * @return A Set of all elements.
+     */
+    public List<DrawElement> getDrawElements() {
+        List<DrawElement> drawElements = new LinkedList<DrawElement>();
+        for (Element element : circuit.getElements()) {
+            drawElements.add((DrawElement) element);
+        }
+        return drawElements;
     }
 
     /**
@@ -284,7 +380,8 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Adds a Connection between two Ports to this Model.
+     * Adds a Connection between two Ports to this Model. <br/>
+     * <b>Note:</b> the inPort of the connection has to be of type outPort and vice versa.<br/>
      * 
      * @param inPort
      *            the Port carrying the input Signal of the Connection
@@ -292,10 +389,10 @@ public class Model implements ClockListener {
      *            the Port carrying the output Signal of the Connection
      */
     public void addConnection(Port inPort, Port outPort) {
-        if (inPort == null) {
+        if (inPort == null || !inPort.isOutPort()) {
             throw new IllegalArgumentException();
         }
-        if (outPort == null) {
+        if (outPort == null || outPort.isOutPort()) {
             throw new IllegalArgumentException();
         }
         // TODO Testen ob die Bausteine dieser Verbindung auch im Model enthalten?
@@ -325,8 +422,25 @@ public class Model implements ClockListener {
      *            Point Location of the Module
      */
     public void addModule(ViewModule m, Point p) {
-        // TODO Fehlerpruefung++
-        circuit.addModule(viewModule2Module.get(m), p);
+        Module module = null;
+        // spawn new circuit / element _object_
+        if (m.getFileName() != "") {
+            module = getCircuitByFileName(m.getFileName());
+        } else {
+            try {
+                module = m.getModule().getClass().getConstructor().newInstance();
+            } catch (Exception e) {
+                throw new IllegalArgumentException("ViewModule does not provide a Module with a default constructor.");
+            }
+        }
+
+        if (module != null) {
+            circuit.addModule(module, p);
+            ModelEvent e = new ModelEvent(module);
+            for (ModelListener l : listeners) {
+                l.elementsChanged(e);
+            }
+        }
     }
 
     /**
@@ -365,13 +479,72 @@ public class Model implements ClockListener {
      *            Module that needs relocation
      * @param p
      *            Point specifying the relative positional change
+     * 
+     * @return boolean specifying if moveoperation was successful
      */
-    public void moveBy(Module module, Point p) {
-        module.getLocation().translate(p.x, p.y);
+    private boolean moveBy(Module module, Point p) {
+        // check if module won't intersect after the move
+        Rectangle r = module.getRectangle();
+        for (Element e : circuit.getElements()) {
+            if (e instanceof Module && ((Module) e).getRectangle().intersects(r)) {
+                return false;
+            }
+        }
+
+        module.getRectangle().getLocation().translate(p.x, p.y);
         ModelEvent e = new ModelEvent(module);
         for (ModelListener l : listeners) {
             l.elementsChanged(e);
         }
+        return true;
+    }
+
+    /**
+     * Instruct model to move given modules' positions by point p.<br>
+     * 
+     * @param modules
+     *            Module that needs relocation
+     * @param p
+     *            Point specifying the relative positional change
+     * 
+     * @return boolean specifying if moveoperation for each module was successful
+     */
+    public boolean moveBy(Set<Module> modules, Point p) {
+        boolean result = true;
+        for (Module m : modules) {
+            if (!moveBy(m, p)) {
+                result = false;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Instruct model to move selected modules' positions by point p.
+     * 
+     * @param p
+     *            Point specifying the relative positional change
+     * 
+     * @return boolean specifying if moveoperation for each module was successful
+     */
+    public boolean moveBy(Point p) {
+        Set<Module> selectedModules = new HashSet<Module>();
+        for (Element element : getSelectedElements()) {
+            if (element instanceof Module) {
+                Module m = (Module) element;
+                selectedModules.add(m);
+            }
+        }
+        return moveBy(selectedModules, p);
+    }
+
+    /**
+     * Get all selected elements from the main circuit.
+     * 
+     * @return Set<Element> containing, oh the magic, all selected elements
+     */
+    private Set<Element> getSelectedElements() {
+        return null;
     }
 
     /**
@@ -406,7 +579,16 @@ public class Model implements ClockListener {
      * @return Map with <b>key:</b> file extension and <b>value:</b> description
      */
     public Map<String, String> getExportFormats() {
-        // TODO implement
+        // nett aber nur Vorlage, im/exportFormats kann dynamisch aus importers/exporters generiert werden
+        // vmtl. (:>) hilfe-Funktion zum finden von: Dateiendung->im/exporter
+        // HashMap<String, String> exportFormats = new HashMap<String, String>();
+        // for (Exporter e : exporters.values()) {
+        // e.getFileFormats().entrySet().iterator().next();
+        // for (Entry<String, String> entry : e.getFileFormats().entrySet()) {
+        // exportFormats.put(entry.getKey(), entry.getValue());
+        // }
+        // }
+        // return exportFormats;
         return null;
     }
 
@@ -428,5 +610,46 @@ public class Model implements ClockListener {
      */
     public void exportToFile(File file) {
         // TODO implement
+        // Exporter exporter;
+        // exporter.setCircuit(circuit);
+        // exporter.setFile(file);
+        // exporter.exportCircuit();
     }
+
+    /**
+     * Returns parsed circuit from given fileName, iff it exists and is falid.
+     * 
+     * @param fileName
+     *            String file to load circuit from
+     * @return Module instantiated circuit, null on failure
+     */
+    public Circuit getCircuitByFileName(String fileName) {
+        // TODO implement
+        // Finde passenden importer
+        Circuit c = null;
+        // Importer importer;
+        // File file = new File(fileName);
+        // importer.setFile(file);
+        // if (importer.importCircuit()) {
+        // c = importer.getCircuit();
+        // }
+        return c;
+    }
+
+    /**
+     * Move the specific port according to the x + y values stored in the point. Throws an Exception if one parameter is
+     * null.
+     * 
+     * @param distance
+     *            Point containing the x and y
+     * @param port
+     *            Port that will be moved
+     */
+    // public void movePortBy(Point distance, Port port) {
+    // if (port == null || distance == null) {
+    // throw (new IllegalArgumentException("port and distancepoint must not be null!"));
+    // }
+    // Rectangle old = port.getRectangle();
+    // port.setRectangle(new Rectangle(old.x + distance.x, old.y + distance.y, old.width, old.height));
+    // }
 }

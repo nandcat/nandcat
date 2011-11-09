@@ -13,10 +13,10 @@ public class FlipFlop extends Circuit {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Default constructor, Creates new RS-FlipFlop.
+     * Create new RS-FlipFlop at p.
      */
     public FlipFlop() {
-        super();
+        super("FlipFlop");
         AndGate r = new AndGate(2, 2);
         AndGate s = new AndGate(2, 2);
         NotGate rNot = new NotGate();
@@ -30,4 +30,5 @@ public class FlipFlop extends Circuit {
         addConnection(rNot.getOutPorts().get(0), s.getInPorts().get(0));
         addConnection(sNot.getOutPorts().get(0), r.getInPorts().get(0));
     }
+
 }

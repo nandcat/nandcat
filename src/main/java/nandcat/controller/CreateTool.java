@@ -1,26 +1,30 @@
 package nandcat.controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import nandcat.model.Model;
-import nandcat.model.element.Element;
-import nandcat.model.element.Port;
+import nandcat.model.ViewModule;
+import nandcat.model.element.DrawElement;
 import nandcat.model.element.Module;
+import nandcat.model.element.Port;
+import nandcat.view.ElementDrawer;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
 import nandcat.view.WorkspaceListenerAdapter;
 
 /**
- * The CreateTool is responsible for the creation of new Modules and Connections.
+ * The CreateTool is responsible for the creation of new Modules and Connections. They will be displayed on the Workspace and added
+ * to the Model.
  */
 public class CreateTool implements Tool {
 
@@ -59,19 +63,30 @@ public class CreateTool implements Tool {
      */
     private WorkspaceListener workspaceListener;
 
-    private Module selectedModule;
+    /**
+     *
+     */
+    private ViewModule selectedModule;
 
+    /*
+     * Port representing the source of a new Connection.
+     * NULL if the user did not click on an Element to create a Connection.
+     */
     private Port sourcePort;
+
     /**
      * Constructs the SelectTool.
      * 
      * @param controller
-     *            Controller component of the application.
+     *            Controller component of the application. It contains the view and model component of the application.
      */
     public CreateTool(Controller controller) {
         this.controller = controller;
         this.view = controller.getView();
         this.model = controller.getModel();
+        represent = new LinkedList<String>();
+        represent.add("createButton");
+        represent.add("selectModule");
     }
 
     /**
@@ -85,41 +100,54 @@ public class CreateTool implements Tool {
         }
     }
 
+    /**
+     * Sets a WorkspaceListener on the Workspace.
+     */
     private void setListeners() {
-    if (workspaceListener == null) {
+        if (workspaceListener == null) {
             workspaceListener = new WorkspaceListenerAdapter() {
+
                 @Override
                 public void mouseClicked(WorkspaceEvent e) {
-                    createElementAtPoint(e.getLocation());
+                    createElement(e.getLocation());
                 }
             };
         }
         view.getWorkspace().addListener(workspaceListener);
     }
 
-    private void createElementAtPoint(Point point) {
-        Set<Element> elementsAt = model.getElementsAt(new Rectangle(point));
+    /**
+     * Creates a new Element at the given Point.
+     */
+    private void createElement(Point point) {
+        Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(point));
+
         if (elementsAt.isEmpty()) {
             if (selectedModule != null) {
                 model.addModule(selectedModule, point);
             }
         } else {
             Module toConnect = null;
-            for (Element element : elementsAt) {
+            for (DrawElement element : elementsAt) {
                 if (element instanceof Module) {
                     toConnect = (Module) element;
                 }
             }
             if (sourcePort == null) {
-                sourcePort = new Port(toConnect);
+                ElementDrawer drawer = view.getDrawer();
+                sourcePort = drawer.getPortAt(new Rectangle(point), toConnect);
             } else {
-                Port targetPort = new Port(toConnect);
+                ElementDrawer drawer = view.getDrawer();
+                Port targetPort = drawer.getPortAt(new Rectangle(point), toConnect);
                 model.addConnection(sourcePort, targetPort);
                 sourcePort = null;
             }
         }
     }
 
+    /**
+     * Removes the Listener from the Workspace.
+     */
     private void removeListeners() {
         view.getWorkspace().removeListener(workspaceListener);
     }
@@ -132,9 +160,14 @@ public class CreateTool implements Tool {
 
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
-                activateTool();
-                JComboBox cb = (JComboBox) e.getSource();
-                selectedModule = (Module) cb.getSelectedItem();
+                if (e.getActionCommand() == "createButton") {
+                    activateTool();
+                } else if (e.getActionCommand() == "selectModule") {
+                  if (e.getSource() instanceof JComboBox) {
+                      selectedModule = (ViewModule) ((JComboBox) e.getSource()).getSelectedItem();
+                  }
+                }
+                
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();

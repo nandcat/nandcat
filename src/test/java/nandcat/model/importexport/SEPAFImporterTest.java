@@ -63,29 +63,29 @@ public class SEPAFImporterTest {
         }
 
         // Check if all element were parsed correctly.
-        assertEquals(new Point(1, 1), notGate.getLocation());
+        assertEquals(new Point(1, 1), notGate.getRectangle().getLocation());
         assertEquals("not", notGate.getName());
 
-        assertEquals(new Point(2, 2), andGate.getLocation());
+        assertEquals(new Point(2, 2), andGate.getRectangle().getLocation());
         assertEquals("and", andGate.getName());
 
-        assertEquals(new Point(3, 3), idGate.getLocation());
+        assertEquals(new Point(3, 3), idGate.getRectangle().getLocation());
         assertEquals("id", idGate.getName());
 
-        assertEquals(new Point(4, 4), orGate.getLocation());
+        assertEquals(new Point(4, 4), orGate.getRectangle().getLocation());
         assertEquals("or", orGate.getName());
 
-        assertEquals(new Point(5, 5), lamp.getLocation());
+        assertEquals(new Point(5, 5), lamp.getRectangle().getLocation());
         assertEquals("out", lamp.getName());
 
-        assertEquals(new Point(6, 6), flipFlop.getLocation());
+        assertEquals(new Point(6, 6), flipFlop.getRectangle().getLocation());
         assertEquals("flipflop", flipFlop.getName());
 
-        assertEquals(new Point(7, 7), in.getLocation());
+        assertEquals(new Point(7, 7), in.getRectangle().getLocation());
         assertEquals(true, in.getState());
         assertEquals("in", in.getName());
 
-        assertEquals(new Point(8, 8), ig.getLocation());
+        assertEquals(new Point(8, 8), ig.getRectangle().getLocation());
         assertEquals(20, ig.getFrequency());
         assertEquals("clock", ig.getName());
 
@@ -169,7 +169,7 @@ public class SEPAFImporterTest {
         List<Element> elements = circuit.getElements();
         for (Element element : elements) {
             if (element instanceof Circuit) {
-                assertEquals("un-iq-ue", ((Circuit) element).getUUID());
+                assertEquals("un-iq-ue", ((Circuit) element).getUuid());
                 for (Element sub : ((Circuit) element).getElements()) {
                     if (sub instanceof AndGate) {
                         assertEquals("c4:AndGate", sub.getName());

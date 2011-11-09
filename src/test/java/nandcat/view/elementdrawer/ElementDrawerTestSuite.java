@@ -8,6 +8,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ ElementDrawerConnectionTest.class, ElementDrawerPortTest.class, ElementDrawerAndGateTest.class,
         ElementDrawerOrGateTest.class, ElementDrawerNotGateTest.class, ElementDrawerCircuitTest.class,
         ElementDrawerLampTest.class, ElementDrawerImpulseGeneratorTest.class, ElementDrawerIdentityGateTest.class,
-        ElementDrawerFlipFlopTest.class })
+        ElementDrawerFlipFlopTest.class, ElementDrawerRectangleTest.class })
 public class ElementDrawerTestSuite {
 }

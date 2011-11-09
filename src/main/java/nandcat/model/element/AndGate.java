@@ -32,10 +32,6 @@ public class AndGate extends Gate {
      */
     public AndGate(int inPorts, int outPorts) {
         super(inPorts, outPorts);
-        // TODO ueberfluesig?
-        if (inPorts < 2 || outPorts < 1) {
-            throw new IllegalStateException("Illegal amount of in or out ports.");
-        }
     }
 
     /**

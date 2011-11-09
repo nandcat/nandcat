@@ -25,7 +25,11 @@ public class ElementDrawerFlipFlopTest extends AbstractElementDrawerTest {
 
     private void gateMockSetGeneralExpectations() {
         LinkedList<Port> portList = new LinkedList<Port>();
-        portList.add(new Port(gateMock));
+        Port port1 = EasyMock.createMock(Port.class);
+        EasyMock.expect(port1.getState()).andReturn(false).anyTimes();
+        EasyMock.replay(port1);
+        portList.add(port1);
+
         Port activePort = EasyMock.createMock(Port.class);
         EasyMock.expect(activePort.getState()).andReturn(true).anyTimes();
         EasyMock.replay(activePort);

@@ -1,18 +1,18 @@
 package nandcat.controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.ImageIcon;
 import nandcat.model.Model;
-import nandcat.model.element.Element;
+import nandcat.model.element.DrawElement;
 import nandcat.model.element.Module;
-import nandcat.model.element.ImpulseGenerator;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
@@ -46,7 +46,12 @@ public class StateTool implements Tool {
     /**
      * String representation of the Tool.
      */
-    private List<String> represent; // TODO beschreibung schreiben
+    private List<String> represent = new LinkedList<String>() {
+
+        {
+            add("toggle");
+        }
+    }; // TODO beschreibung schreiben
 
     /**
      * ActionListerner of the Tool for the Buttons and the Menu.
@@ -99,9 +104,9 @@ public class StateTool implements Tool {
 
     private void changeState(Point point) {
         assert point != null;
-        Set<Element> elementsAt = model.getElementsAt(new Rectangle(point));
+        Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(point));
         Module toChangeState = null;
-        for (Element element : elementsAt) {
+        for (DrawElement element : elementsAt) {
             if (element instanceof Module) {
                 toChangeState = (Module) element;
             }

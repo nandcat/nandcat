@@ -1,14 +1,23 @@
 package nandcat.controller;
 
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.ImageIcon;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import nandcat.model.Model;
+import nandcat.model.element.DrawElement;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
+import nandcat.view.WorkspaceListenerAdapter;
 
 /**
  * The ViewTool is responsible for moving the display range over the Workspace.
@@ -19,6 +28,16 @@ public class ViewTool implements Tool {
      * Current View instance.
      */
     private View view = null;
+
+    /**
+     * Reference to this Tool.
+     */
+    private Tool viewTool;
+
+    /**
+     * Current Model instance.
+     */
+    private Model model;
 
     /**
      * Current Controller instance.
@@ -33,7 +52,12 @@ public class ViewTool implements Tool {
     /**
      * String representation of the Tool.
      */
-    private List<String> represent; // TODO beschreibung schreiben
+    private List<String> represent = new LinkedList<String>() {
+
+        {
+            add("move");
+        }
+    };
 
     /**
      * ActionListerner of the Tool on the Buttons.
@@ -54,6 +78,18 @@ public class ViewTool implements Tool {
     public ViewTool(Controller controller) {
         this.controller = controller;
         view = controller.getView();
+        model = controller.getModel();
+        viewTool = this;
+        view.addViewPortListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                view.giveViewPortRect();
+                List<DrawElement> elem = model.getDrawElements();
+                Set<DrawElement> elements = new HashSet<DrawElement>();
+                elements.addAll(elem);
+                view.getWorkspace().redraw(elements);
+            }
+        });
     }
 
     /**
@@ -62,26 +98,26 @@ public class ViewTool implements Tool {
     public void setActive(boolean active) {
         if (active) {
             if (workspaceListener == null) {
-                workspaceListener = new WorkspaceListener() {
+                workspaceListener = new WorkspaceListenerAdapter() {
 
-                    public void mouseReleased(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
+                    private Point offset;
 
                     public void mousePressed(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseMoved(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
+                        offset = e.getLocation();
                     }
 
                     public void mouseDragged(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseClicked(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
+                        // move ViewPort
+                        int x = e.getLocation().x - offset.x;
+                        int y = e.getLocation().y - offset.y;
+                        view.setViewportPosition(x, y);
+                        offset = e.getLocation();
+                        // redraw new elements in sight
+                        view.giveViewPortRect();
+                        List<DrawElement> elem = model.getDrawElements();
+                        Set<DrawElement> elements = new HashSet<DrawElement>();
+                        elements.addAll(elem);
+                        view.getWorkspace().redraw(elements);
                     }
                 };
             }
@@ -98,7 +134,7 @@ public class ViewTool implements Tool {
         buttonListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
+                controller.requestActivation(viewTool);
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();

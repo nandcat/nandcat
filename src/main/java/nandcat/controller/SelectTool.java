@@ -1,8 +1,10 @@
 package nandcat.controller;
 
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
@@ -10,6 +12,7 @@ import nandcat.model.Model;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
+import nandcat.view.WorkspaceListenerAdapter;
 
 /**
  * The SelectTool is responsible for selecting and moving Elements on the Workspace.
@@ -51,6 +54,8 @@ public class SelectTool implements Tool {
      */
     private WorkspaceListener workspaceListener;
 
+    private Rectangle rect = new Rectangle();
+
     /**
      * Constructs the SelectTool.
      * 
@@ -61,6 +66,8 @@ public class SelectTool implements Tool {
         this.controller = controller;
         this.view = controller.getView();
         this.model = controller.getModel();
+        represent = new LinkedList<String>();
+        represent.add("select");
     }
 
     /**
@@ -68,34 +75,43 @@ public class SelectTool implements Tool {
      */
     public void setActive(boolean active) {
         if (active) {
-            if (workspaceListener == null) {
-                workspaceListener = new WorkspaceListener() {
-
-                    public void mouseReleased(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mousePressed(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseMoved(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseDragged(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseClicked(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-                };
-            }
-            view.getWorkspace().addListener(workspaceListener);
+            setListeners();
         } else {
-            view.getWorkspace().removeListener(workspaceListener);
+            removeListeners();
         }
+    }
+
+    /**
+     * Sets a WorkspaceListener on the Workspace.
+     */
+    private void setListeners() {
+    if (workspaceListener == null) {
+            workspaceListener = new WorkspaceListenerAdapter() {
+                @Override
+                public void mousePressed(WorkspaceEvent e) {
+                    rect = new Rectangle(e.getLocation());
+                }
+                public void mouseDragged(WorkspaceEvent e) {
+                    rect.add(e.getLocation());
+                    selectElements(rect);
+                }
+            };
+        }
+        view.getWorkspace().addListener(workspaceListener);
+    }
+
+    /**
+     * Removes the Listener from the Workspace.
+     */
+    private void removeListeners() {
+        view.getWorkspace().removeListener(workspaceListener);
+    }
+
+    /*
+     * Set the Elements within the rectangle as selected.
+     */
+    private void selectElements(Rectangle rect) {
+        model.selectElements(rect);
     }
 
     /**
@@ -105,7 +121,9 @@ public class SelectTool implements Tool {
         buttonListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
+                if(e.getActionCommand().equals("select")) {
+                    activateTool();
+                }
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();
@@ -113,6 +131,10 @@ public class SelectTool implements Tool {
             map.put(functionality, buttonListener);
         }
         return map;
+        
+    }
+    private void activateTool() {
+        controller.requestActivation(this);
     }
 
     /**

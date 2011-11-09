@@ -16,17 +16,12 @@ import nandcat.model.ClockListener;
  * 
  * @version 7
  */
-public class Circuit implements ClockListener, Module, Serializable {
+public class Circuit implements ClockListener, Module, DrawCircuit, Serializable {
 
     /**
      * Default version uid.
      */
     private static final long serialVersionUID = 1L;
-
-    /**
-     * Contains the Location in this Circuit.
-     */
-    private Point location;
 
     /**
      * The name of this Circuit.
@@ -59,14 +54,32 @@ public class Circuit implements ClockListener, Module, Serializable {
     private String uuid;
 
     /**
-     * Default constructor.
+     * Gets the unique identifier of the circuit.
+     * 
+     * @return The unique identifier.
+     */
+    public String getUuid() {
+        return uuid;
+    }
+
+    /**
+     * Set the uuid.
      * 
      * @param uuid
-     *            UUID of circuit.
+     *            String representing the uuid
+     */
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    /**
+     * Usual constructor for circuits. The UUID will be extracted from the Importer.
+     * 
+     * @param uuid
+     *            String containing the uuid of this circuit
      */
     public Circuit(String uuid) {
         this.uuid = uuid;
-        location = new Point(0, 0);
         name = "";
         elements = new LinkedList<Element>();
         rectangle = new Rectangle();
@@ -155,20 +168,6 @@ public class Circuit implements ClockListener, Module, Serializable {
     /**
      * {@inheritDoc}
      */
-    public void setLocation(Point p) {
-        this.location = p;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Point getLocation() {
-        return location;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public Rectangle getRectangle() {
         return rectangle;
     }
@@ -177,6 +176,7 @@ public class Circuit implements ClockListener, Module, Serializable {
      * {@inheritDoc}
      */
     public void setRectangle(Rectangle rectangle) {
+        // TODO check: set alle child element's rectangles, too?
         this.rectangle = rectangle;
     }
 
@@ -294,7 +294,9 @@ public class Circuit implements ClockListener, Module, Serializable {
     }
 
     /**
-     * Adds a connection between two ports to this Circuit.
+     * Adds a connection between two ports to this Circuit. Note that this function will also set the port's connection
+     * reference. <br/>
+     * <b>Note:</b> the inPort of the connection has to be of type outPort and vice versa.<br/>
      * 
      * @param inPort
      *            Port the Connection will get attached to
@@ -318,7 +320,7 @@ public class Circuit implements ClockListener, Module, Serializable {
      */
     public void addModule(Module m, Point p) {
         addModule(m);
-        m.setLocation(p);
+        m.getRectangle().setLocation(p);
     }
 
     /**
@@ -338,14 +340,5 @@ public class Circuit implements ClockListener, Module, Serializable {
         }
         // one module may not appear more than once in elements (ensured by Set<>)
         elements.add(m);
-    }
-
-    /**
-     * Gets the unique identifier of the circuit.
-     * 
-     * @return The unique identifier.
-     */
-    public String getUUID() {
-        return uuid;
     }
 }

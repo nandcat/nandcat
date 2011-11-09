@@ -1,5 +1,6 @@
 package nandcat.model.element;
 
+import java.awt.geom.Line2D;
 import nandcat.model.Clock;
 
 /**
@@ -29,25 +30,29 @@ public class Connection implements Element {
     private Port outPort;
 
     /**
-     * Default constructor.
-     */
-    public Connection() {
-    }
-
-    /**
      * Connection's state.
      */
     private boolean state;
 
     /**
-     * Create and attach new connection.
+     * Connection's selection-state.
+     */
+    private boolean selected;
+
+    /**
+     * Create and attach new connection.Note that this will also set the port's connection reference.
      * 
      * @param inPort
-     *            Port (a module's <b>outPort</b>) the connection is attached to. Set to one of the modules's outPorts
+     *            Port (a module's <b>outPort</b>) the connection is attached to. Set to one of the modules's outPorts.
+     *            May not be null.
      * @param outPort
-     *            Port (a module's <b>inPort</b>) the connection is attached to. Set to one of the modules's inPorts
+     *            Port (a module's <b>inPort</b>) the connection is attached to. Set to one of the modules's inPorts.
+     *            May not be null.
      */
     public Connection(Port inPort, Port outPort) {
+        if (inPort == null || outPort == null) {
+            throw new IllegalArgumentException("neither in nor outport of a connection may be null");
+        }
         this.inPort = inPort;
         this.outPort = outPort;
         inPort.setConnection(this);
@@ -143,15 +148,14 @@ public class Connection implements Element {
      * {@inheritDoc}
      */
     public void setSelected(boolean b) {
-        // TODO Auto-generated method stub
+        selected = b;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isSelected() {
-        // TODO Auto-generated method stub
-        return false;
+        return selected;
     }
 
     /**
@@ -164,5 +168,15 @@ public class Connection implements Element {
                 clock.addListener(getNextModule());
             }
         }
+    }
+
+    /**
+     * Return Line-object representing this connection (derived from attached in/outPorts).
+     * 
+     * @return Line2D representing the connection's shape
+     */
+    public Line2D getLine() {
+        // TODO exact enough? -> maybe better: public Point inPort.getModuleBoundary()
+        return new Line2D.Double(inPort.getRectangle().getLocation(), outPort.getRectangle().getLocation());
     }
 }
