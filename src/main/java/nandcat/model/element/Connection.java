@@ -9,6 +9,11 @@ import nandcat.model.Clock;
 public class Connection implements Element {
 
     /**
+     * Default serial version uid.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Connection's name.
      */
     private String name;

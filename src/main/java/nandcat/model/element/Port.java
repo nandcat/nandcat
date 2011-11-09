@@ -1,12 +1,18 @@
 package nandcat.model.element;
 
+import java.io.Serializable;
 import nandcat.model.Clock;
 
 /**
  * A Port exists in Modules only. Connection's are attached to the module's Ports. It's responsible to propagate the
  * signal from the connection to the Module.
  */
-public class Port {
+public class Port implements Serializable {
+
+    /**
+     * Default serial version uid.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * Port's state.

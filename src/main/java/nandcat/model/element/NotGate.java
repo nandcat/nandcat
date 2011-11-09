@@ -8,6 +8,11 @@ import nandcat.model.Clock;
 public class NotGate extends Gate {
 
     /**
+     * Default serial version uid.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Default constructor. Create new not gate with 1 incoming and 1 outgoing ports.
      */
     public NotGate() {

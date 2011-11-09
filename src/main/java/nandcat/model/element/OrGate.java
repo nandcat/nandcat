@@ -8,6 +8,11 @@ import nandcat.model.Clock;
 public class OrGate extends Gate {
 
     /**
+     * Default serial version uid.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Default constructor. Create new OR gate with 1 incoming and 2 outcoming ports.
      */
     public OrGate() {

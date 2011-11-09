@@ -95,6 +95,12 @@ public class SEPAFImporter implements Importer {
     private Circuit importedCircuit = null;
 
     /**
+     * Circuit index for fast copy.
+     */
+    // TODO Reset needed if reused
+    private Map<String, Circuit> circuitIndex = new HashMap<String, Circuit>();
+
+    /**
      * XSD files to validate XML against.
      */
     // static final results in null pointer exception at XSD validation (oracle bug?)
@@ -176,51 +182,63 @@ public class SEPAFImporter implements Importer {
      */
     @SuppressWarnings("rawtypes")
     private Circuit buildCircuit(String name, Document doc) throws FormatException {
-        if (name == null) {
-            throw new IllegalArgumentException();
-        }
-        List mainComponents = null;
-        try {
-            mainComponents = getXPathInstance("/c:circuits/c:circuit[@name='" + name + "']/c:component").selectNodes(
-                    doc);
-        } catch (JDOMException e) {
-            // Does not happen!
-            e.printStackTrace();
-        }
-        if (mainComponents == null || mainComponents.isEmpty()) {
-            throw new FormatException("Circuit has no components: '" + name + "'");
-        }
-        Circuit circuit = new Circuit(name);
+        Circuit circuit = null;
 
-        // Index of imported modules used for connections
-        Map<String, Module> moduleIndex = new HashMap<String, Module>();
+        // Used cached circuit if parsed second time.
+        if (circuitIndex.containsKey(name)) {
 
-        for (Object c : mainComponents) {
-            if (c instanceof Element) {
-                Element compE = (Element) c;
-                buildModule(circuit, compE, doc, moduleIndex);
-            }
-        }
-
-        // Connections between modules
-        List connections = null;
-        try {
-            connections = getXPathInstance("/c:circuits/c:circuit[@name='" + name + "']/c:connection").selectNodes(doc);
-        } catch (JDOMException e) {
-            // Does not happen!
-            e.printStackTrace();
-        }
-        if (connections == null || connections.isEmpty()) {
-            LOG.debug("Circuit '" + name + "' has no connections");
+            // Create deep copy of circuit
+            circuit = (Circuit) FastDeepCopy.copy(circuitIndex.get(name));
         } else {
-            for (Object c : connections) {
+            if (name == null) {
+                throw new IllegalArgumentException();
+            }
+            List mainComponents = null;
+            try {
+                mainComponents = getXPathInstance("/c:circuits/c:circuit[@name='" + name + "']/c:component")
+                        .selectNodes(doc);
+            } catch (JDOMException e) {
+                // Does not happen!
+                e.printStackTrace();
+            }
+            if (mainComponents == null || mainComponents.isEmpty()) {
+                throw new FormatException("Circuit has no components: '" + name + "'");
+            }
+            circuit = new Circuit(name);
+
+            // Index of imported modules used for connections
+            Map<String, Module> moduleIndex = new HashMap<String, Module>();
+
+            for (Object c : mainComponents) {
                 if (c instanceof Element) {
-                    Element connE = (Element) c;
-                    buildConnection(circuit, connE, moduleIndex);
+                    Element compE = (Element) c;
+                    buildModule(circuit, compE, doc, moduleIndex);
                 }
             }
-        }
 
+            // Connections between modules
+            List connections = null;
+            try {
+                connections = getXPathInstance("/c:circuits/c:circuit[@name='" + name + "']/c:connection").selectNodes(
+                        doc);
+            } catch (JDOMException e) {
+                // Does not happen!
+                e.printStackTrace();
+            }
+            if (connections == null || connections.isEmpty()) {
+                LOG.debug("Circuit '" + name + "' has no connections");
+            } else {
+                for (Object c : connections) {
+                    if (c instanceof Element) {
+                        Element connE = (Element) c;
+                        buildConnection(circuit, connE, moduleIndex);
+                    }
+                }
+            }
+
+            // Add constructed circuit to cache index
+            circuitIndex.put(name, circuit);
+        }
         return circuit;
     }
 

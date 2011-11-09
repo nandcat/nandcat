@@ -10,6 +10,11 @@ import nandcat.model.Clock;
 public class AndGate extends Gate {
 
     /**
+     * Default serial version uid.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Default constructor. Creates new AND Gate with 2 incoming and 1 outgoing Ports.
      */
     public AndGate() {

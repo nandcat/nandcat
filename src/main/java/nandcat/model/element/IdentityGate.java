@@ -8,6 +8,11 @@ import nandcat.model.Clock;
 public class IdentityGate extends Gate {
 
     /**
+     * Default serial version uid.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Default constructor. Create new identity gate with 1 incoming and 2 outcoming ports.
      */
     public IdentityGate() {

@@ -12,6 +12,11 @@ import nandcat.model.Clock;
 public class Lamp implements Module {
 
     /**
+     * Default serial version uid.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Point specifying the Location of the Lamp.
      */
     private Point location;

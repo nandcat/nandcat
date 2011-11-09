@@ -8,10 +8,12 @@ import java.awt.Point;
 public class FlipFlop extends Circuit {
 
     /**
+     * Default serial version uid.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Default constructor, Creates new RS-FlipFlop.
-     * 
-     * @param p
-     *            Point specifying FlipFlop's location.
      */
     public FlipFlop() {
         super();

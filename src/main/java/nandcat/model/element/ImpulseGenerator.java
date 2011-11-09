@@ -12,6 +12,11 @@ import nandcat.model.Clock;
 public class ImpulseGenerator implements Module {
 
     /**
+     * Default serial version uid.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Point specifying the Location of the Gate.
      */
     private Point location;
