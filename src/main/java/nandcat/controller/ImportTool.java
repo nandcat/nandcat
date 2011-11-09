@@ -2,13 +2,15 @@ package nandcat.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import nandcat.model.Model;
-import nandcat.view.WorkspaceListener;
+import org.apache.log4j.Logger;
 
 /**
  * Tool for importing files. Includes loading.
@@ -36,7 +38,7 @@ public class ImportTool implements Tool {
     private List<String> represent = new LinkedList<String>() {
 
         {
-            add("import");
+            add("load");
         }
     }; // TODO beschreibung schreiben
 
@@ -46,9 +48,9 @@ public class ImportTool implements Tool {
     private ActionListener buttonListener;
 
     /**
-     * WorkspaceListener of the Tool.
+     * Class logger instance.
      */
-    private WorkspaceListener workspaceListener;
+    private static final Logger LOG = Logger.getLogger(ImportTool.class);
 
     /**
      * Constructs the ImportTool.
@@ -69,13 +71,35 @@ public class ImportTool implements Tool {
     }
 
     /**
+     * Request activation of functionality.
+     * 
+     * @param command
+     *            String representing functionality to active.
+     */
+    private void request(String command) {
+        LOG.debug("Request command: " + command);
+        if (command.equals("load")) {
+            JFileChooser fc = new JFileChooser();
+            int returnVal = fc.showOpenDialog(controller.getView());
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                // This is where a real application would open the file.
+                LOG.debug("Opening: " + file.getName() + "." + "\n");
+            } else {
+                LOG.debug("Open command cancelled by user." + "\n");
+            }
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     public Map<String, ActionListener> getFunctionalities() {
         buttonListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
+                request(e.getActionCommand());
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();
