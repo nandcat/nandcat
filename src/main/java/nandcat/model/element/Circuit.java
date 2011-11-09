@@ -2,6 +2,7 @@ package nandcat.model.element;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +16,12 @@ import nandcat.model.ClockListener;
  * 
  * @version 7
  */
-public class Circuit implements ClockListener, Module {
+public class Circuit implements ClockListener, Module, Serializable {
+
+    /**
+     * Default version uid.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * Contains the Location in this Circuit.
