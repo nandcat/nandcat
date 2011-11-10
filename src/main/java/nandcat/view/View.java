@@ -162,9 +162,9 @@ public class View extends JFrame {
                 // TODO Auto-generated method stub
             }
         });
-        frame.setSize(600, 650);
-        frame.setLocation(frameLocation);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600, 650);
+        setLocation(frameLocation);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         workspace = new Workspace();
         workspace.setPreferredSize(workspaceDimension);
         workspace.setBackground(Color.white);
@@ -174,10 +174,9 @@ public class View extends JFrame {
         viewport.setViewPosition(viewportLocation);
         toolBar = new JToolBar();
         menubar = new JMenuBar();
-        frame.getContentPane().add(scroller, "Center");
-        frame.getContentPane().add(toolBar, "West");
-        frame.getContentPane().add(menubar, "North");
-        frame.setVisible(true);
+        getContentPane().add(scroller, "Center");
+        getContentPane().add(toolBar, "West");
+        getContentPane().add(menubar, "North");
     }
 
     /**
