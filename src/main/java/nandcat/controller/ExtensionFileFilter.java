@@ -20,31 +20,13 @@ public class ExtensionFileFilter extends FileFilter {
         if (f.isDirectory()) {
             return true;
         }
-        String extension = getExtension(f);
+        String extension = ImportExportUtils.getExtension(f);
         if (extension != null) {
             if (extension.equals(fileExtension)) {
                 return true;
             }
         }
         return false;
-    }
-
-    /**
-     * Get the extension of a file.
-     * 
-     * @param f
-     *            File to get extension from.
-     */
-    private static String getExtension(File f) {
-        String ext = null;
-        String s = f.getName();
-
-        int i = s.lastIndexOf('.');
-
-        if (i > 0 && i < s.length() - 1) {
-            ext = s.substring(i + 1).toLowerCase();
-        }
-        return ext;
     }
 
     @Override

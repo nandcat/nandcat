@@ -2,13 +2,17 @@ package nandcat.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import nandcat.model.Model;
 import nandcat.view.WorkspaceListener;
+import org.apache.log4j.Logger;
 
 /**
  * Tool for exporting files. Includes saving.
@@ -36,7 +40,8 @@ public class ExportTool implements Tool {
     private List<String> represent = new LinkedList<String>() {
 
         {
-            add("export");
+            add("save");
+            add("saveAs");
         }
     }; // TODO beschreibung schreiben
 
@@ -49,6 +54,11 @@ public class ExportTool implements Tool {
      * WorkspaceListener of the Tool.
      */
     private WorkspaceListener workspaceListener;
+
+    /**
+     * Class logger instance.
+     */
+    private static final Logger LOG = Logger.getLogger(ExportTool.class);
 
     /**
      * Constructs the ExportTool.
@@ -69,13 +79,50 @@ public class ExportTool implements Tool {
     }
 
     /**
+     * Request activation of functionality.
+     * 
+     * @param command
+     *            String representing functionality to active.
+     */
+    private void request(String command) {
+        LOG.debug("Request command: " + command);
+        if (command.equals("save") || command.equals("saveAs")) {
+            JFileChooser fc = new JFileChooser();
+            ImportExportUtils.addFileFilterToChooser(fc, model.getExportFormats());
+            fc.setAcceptAllFileFilterUsed(false);
+            int returnVal = fc.showSaveDialog(controller.getView());
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                if (file != null) {
+                    if (file.exists()) {
+                        int response = JOptionPane.showConfirmDialog(null, "Overwrite existing file?",
+                                "Confirm Overwrite", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                        if (response == JOptionPane.CANCEL_OPTION) {
+                            LOG.debug("Save command cancelled by user.");
+                            return;
+                        }
+                    }
+                    LOG.debug("Exporting: " + file.getName());
+                    // Ergänze extension
+                    model.exportToFile(file);
+                } else {
+                    LOG.debug("File is null");
+                }
+            } else {
+                LOG.debug("Save command cancelled by user.");
+            }
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     public Map<String, ActionListener> getFunctionalities() {
         buttonListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
+                request(e.getActionCommand());
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();
