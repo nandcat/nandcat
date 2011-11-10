@@ -467,8 +467,12 @@ public class Model implements ClockListener {
 
     }
 
+    /**
+     * Replace the old Circuit with a new one. All Elements will be lost.
+     */
     public void newCircuit() {
         this.circuit = new Circuit();
+        ModelEvent e = new ModelEvent();
         for (ModelListener l : listeners) {
             l.elementsChanged(e);
         }
