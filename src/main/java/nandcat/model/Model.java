@@ -187,32 +187,6 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Load an existing file into the program. The file has to be imported by an importer.
-     * 
-     * @param fileName
-     *            String defining the name of the file to be loaded.
-     * @return true if the loading process was successful, false if not
-     */
-    public boolean loadFile(String fileName) {
-        // TODO implement
-        // Importer anstoßen.
-        return false;
-    }
-
-    /**
-     * Save a file to the system.
-     * 
-     * @param fileName
-     *            String defining the name of the file to be saved.
-     * @return true if the loading process was successful, false if not
-     */
-    public boolean saveFile(String fileName) {
-        // TODO implement
-        // Exporter anstoßen.
-        return false;
-    }
-
-    /**
      * Returns the list of ViewModules that are necessary for the view.
      * 
      * @return List of ViewModules
@@ -287,15 +261,6 @@ public class Model implements ClockListener {
      */
     private Set<Connection> getConnsAt(Rectangle rect) {
         Set<Connection> connsAt = new HashSet<Connection>();
-        // for (Element e : getElements()) {
-        // if(e instanceof Connection) {
-        // Connection c = (Connection) e;
-        // if (c.getLine().intersects(rect)) {
-        // connsAt.add(c);
-        // }
-        // }
-        // }
-
         for (Connection c : circuit.getConnections()) {
             if (c.getLine().intersects(rect)) {
                 connsAt.add(c);
@@ -313,14 +278,6 @@ public class Model implements ClockListener {
      */
     private Set<Module> getModsAt(Rectangle rect) {
         Set<Module> connsAt = new HashSet<Module>();
-        // for (Element e : getElements()) {
-        // if(e instanceof Module) {
-        // Module m = (Module) e;
-        // if (m.getRectangle().intersects(rect)) {
-        // connsAt.add(m);
-        // }
-        // }
-        // }
         for (Module m : circuit.getModules()) {
             if (m.getRectangle().intersects(rect)) {
                 connsAt.add(m);
@@ -329,7 +286,6 @@ public class Model implements ClockListener {
         return connsAt;
     }
 
-    // TODO recheck, faggit!
     /**
      * Get a set of elements within a specific rectangle.
      * 
@@ -339,21 +295,6 @@ public class Model implements ClockListener {
      */
     public Set<DrawElement> getDrawElementsAt(Rectangle rect) {
         Set<DrawElement> elementsAt = new HashSet<DrawElement>();
-        // for (Element element : circuit.getElements()) {
-        // if (element instanceof Module) {
-        // Module m = (Module) element;
-        // if (m.getRectangle().intersects(rect)) {
-        // elementsAt.add((DrawElement) element);
-        // }
-        // }
-        // if (element instanceof Connection) {
-        // Connection c = (Connection) element;
-        // if (c.getLine().intersects(rect)) {
-        // elementsAt.add((DrawElement) element);
-        // }
-        // }
-        // }
-
         for (Module m : getModsAt(rect)) {
             elementsAt.add((DrawElement) m);
         }
@@ -381,23 +322,6 @@ public class Model implements ClockListener {
      *            The Rectangle defining the zone where elements are selected
      */
     public void selectElements(Rectangle rect) {
-        // for (Element e : circuit.getElements()) {
-        // boolean selected = false;
-        // if (e instanceof Module) {
-        // if (rect.intersects(((Module) e).getRectangle())) {
-        // selected = true;
-        // }
-        // }
-        // if (e instanceof Connection) {
-        // if (rect.intersectsLine(((Connection) e).getLine())) {
-        // selected = true;
-        // }
-        // }
-        //
-        // if (selected) {
-        // e.setSelected(true);
-        // }
-        // }
         Set<DrawElement> DrawElements = new HashSet<DrawElement>();
         for (Element e : getElementsAt(rect)) {
             e.setSelected(true);
@@ -635,6 +559,14 @@ public class Model implements ClockListener {
 
         module.getRectangle().getLocation().translate(p.x, p.y);
         ModelEvent e = new ModelEvent(module);
+        // ports auch bewegen
+        for (Port pörtli : module.getInPorts()) {
+            pörtli.getRectangle().getLocation().translate(p.x, p.y);
+        }
+        for (Port pörtli : module.getOutPorts()) {
+            pörtli.getRectangle().getLocation().translate(p.x, p.y);
+        }
+
         for (ModelListener l : listeners) {
             l.elementsChanged(e);
         }
