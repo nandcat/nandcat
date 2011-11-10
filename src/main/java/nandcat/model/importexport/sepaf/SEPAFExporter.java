@@ -87,6 +87,7 @@ public class SEPAFExporter implements Exporter {
     public boolean exportCircuit() {
         Document doc = new Document(new Element("circuits", SEPAFFormat.NAMESPACE.SEPAF));
         Element root = doc.getRootElement();
+        root.setAttribute("schemaLocation", SEPAFFormat.NAMESPACE.SCHEMA_LOCATION, SEPAFFormat.NAMESPACE.XSI);
         this.root = root;
         root.addNamespaceDeclaration(SEPAFFormat.NAMESPACE.NANDCAT);
         try {
@@ -141,7 +142,7 @@ public class SEPAFExporter implements Exporter {
      */
     private Content buildElement(nandcat.model.element.Element e) throws FormatException {
         Content c = null;
-        if (e instanceof Circuit) {
+        if (e instanceof Circuit && !(e instanceof FlipFlop)) {
             c = buildComponent((Module) e);
             if (!innerCircuitsIndex.contains(((Circuit) e).getUuid())) {
                 root.addContent(buildCircuit((Circuit) e));

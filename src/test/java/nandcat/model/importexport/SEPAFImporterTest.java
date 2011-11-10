@@ -5,8 +5,14 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.awt.Point;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import nandcat.Nandcat;
 import nandcat.NandcatTest;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
@@ -20,6 +26,9 @@ import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
 import nandcat.model.importexport.sepaf.SEPAFImporter;
 import org.junit.Test;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 public class SEPAFImporterTest {
 
@@ -159,6 +168,19 @@ public class SEPAFImporterTest {
     }
 
     @Test
+    public void testExportedCircuit() throws FileNotFoundException, SAXException, IOException {
+        File file = getFile("../formattest/sepaf-example-valid-fewcomponentsexported.xml");
+        testValidOutput(file);
+        Importer importer = new SEPAFImporter();
+        importer.setFile(file);
+        assertTrue(importer.importCircuit());
+        Circuit circuit = importer.getCircuit();
+        assertTrue(circuit != null);
+        List<Element> elements = circuit.getElements();
+        assertEquals(8, elements.size());
+    }
+
+    @Test
     public void testDoubleRefCircuits() {
         File file = getFile("../formattest/sepaf-example-valid-doublerefcircuits.xml");
         Importer importer = new SEPAFImporter();
@@ -217,6 +239,27 @@ public class SEPAFImporterTest {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private void testValidOutput(File file) throws FileNotFoundException, SAXException, IOException {
+        Source[] xsdSources = new Source[] {
+                new StreamSource(Nandcat.class.getResourceAsStream("../sepaf-extension.xsd")),
+                new StreamSource(Nandcat.class.getResourceAsStream("../circuits-1.0.xsd")) };
+        ErrorHandler throwingErrorHandler = new ErrorHandler() {
+
+            public void warning(SAXParseException exception) throws SAXException {
+                throw exception;
+            }
+
+            public void fatalError(SAXParseException exception) throws SAXException {
+                throw exception;
+            }
+
+            public void error(SAXParseException exception) throws SAXException {
+                throw exception;
+            }
+        };
+        XsdValidation.validate(new StreamSource(new FileInputStream(file)), xsdSources, throwingErrorHandler);
     }
 
 }

@@ -14,6 +14,12 @@ public class SEPAFFormat {
         /**
          * Default namespace (xmlns) without prefix.
          */
+        public static final org.jdom.Namespace XSI = org.jdom.Namespace.getNamespace("xsi",
+                "http://www.w3.org/2001/XMLSchema-instance");
+
+        /**
+         * Default namespace (xmlns) without prefix.
+         */
         public static final org.jdom.Namespace DEFAULT = org.jdom.Namespace.getNamespace("c",
                 "http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0");
 
@@ -33,6 +39,14 @@ public class SEPAFFormat {
          * Namespaces used in the format.
          */
         public static final org.jdom.Namespace[] ALL = new org.jdom.Namespace[] { DEFAULT, SEPAF, NANDCAT };
+
+        /**
+         * Schema location string of used namespaces.
+         */
+        public static final String SCHEMA_LOCATION = "http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0"
+                + " " + "http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0.xsd" + " "
+                + "http://www.nandcat.de/xmlns/sepaf-extension" + " "
+                + "http://www.nandcat.de/xmlns/sepaf-extension.xsd";
     }
 
     /**

@@ -98,24 +98,35 @@ public class SEPAFImporter implements Importer {
      * Circuit index for fast copy.
      */
     // TODO Reset needed if reused
-    private Map<String, Circuit> circuitIndex = new HashMap<String, Circuit>();
+    private Map<String, Circuit> circuitIndex;
 
     /**
      * XSD files to validate XML against.
      */
     // static final results in null pointer exception at XSD validation (oracle bug?)
-    private Source[] xsdSources = new Source[] {
-            new StreamSource(Nandcat.class.getResourceAsStream("../sepaf-extension.xsd")),
-            new StreamSource(Nandcat.class.getResourceAsStream("../circuits-1.0.xsd")) };
+    private Source[] xsdSources;
 
     /**
      * {@inheritDoc}
      */
     public void setFile(File file) {
+        reset();
         if (file == null) {
             throw new IllegalArgumentException();
         }
         this.file = file;
+    }
+
+    /**
+     * Resets internal state.
+     */
+    public void reset() {
+        circuitIndex = new HashMap<String, Circuit>();
+        xsdSources = new Source[] { new StreamSource(Nandcat.class.getResourceAsStream("../sepaf-extension.xsd")),
+                new StreamSource(Nandcat.class.getResourceAsStream("../circuits-1.0.xsd")) };
+        importedCircuit = null;
+        file = null;
+        errorMsg = null;
     }
 
     /**
@@ -603,7 +614,8 @@ public class SEPAFImporter implements Importer {
      *            Error message to set.
      */
     private void setErrorMessage(String errorMsg) {
-        this.errorMsg = errorMsg;
+        LOG.debug("Error: " + errorMsg);
+        this.errorMsg = errorMsg + " | " + this.errorMsg;
     }
 
     /**

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<circuits
+	xmlns="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0"
+	xmlns:nandcat="http://www.nandcat.de/xmlns/sepaf-extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0 http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0.xsd http://www.nandcat.de/xmlns/sepaf-extension http://www.nandcat.de/xmlns/sepaf-extension.xsd"
+	main="myCircuit">
+	<circuit name="myCircuit">
+		<component posx="1" posy="1" name="303bc1a1"
+			nandcat:annotation="not" type="not" nandcat:ports_in="1"
+			nandcat:ports_out="1" />
+		<component posx="2" posy="2" name="232549c4"
+			nandcat:annotation="and" type="and" nandcat:ports_in="2"
+			nandcat:ports_out="2" />
+		<component posx="3" posy="3" name="650df4e2"
+			nandcat:annotation="id" type="id" nandcat:ports_in="1"
+			nandcat:ports_out="1" />
+		<component posx="4" posy="4" name="77485542"
+			nandcat:annotation="or" type="or" nandcat:ports_in="2"
+			nandcat:ports_out="2" />
+		<component posx="5" posy="5" name="2dd59d3c"
+			nandcat:annotation="out" type="out" nandcat:ports_in="1"
+			nandcat:ports_out="1" />
+		<component posx="6" posy="6" name="2345e5a6"
+			nandcat:annotation="flipflop" type="flipflop" nandcat:ports_in="2"
+			nandcat:ports_out="2" />
+		<component posx="7" posy="7" name="41e80761"
+			nandcat:annotation="in" type="in" nandcat:in_state="true"
+			nandcat:ports_in="0" nandcat:ports_out="0" />
+		<component posx="8" posy="8" name="683c9314"
+			nandcat:annotation="clock" type="clock" nandcat:in_timing="20"
+			nandcat:in_state="false" nandcat:ports_in="0" nandcat:ports_out="0" />
+	</circuit>
+</circuits>
