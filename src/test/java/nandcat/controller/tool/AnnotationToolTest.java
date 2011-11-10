@@ -1,7 +1,7 @@
 package nandcat.controller.tool;
 
+import static org.junit.Assert.assertTrue;
 import java.awt.AWTException;
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.SwingUtilities;
-import nandcat.ReflectionUtil;
 import nandcat.controller.AnnotationTool;
 import nandcat.controller.Controller;
 import nandcat.model.Model;
@@ -19,78 +18,91 @@ import nandcat.view.View;
 import nandcat.view.Workspace;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
-import org.easymock.classextension.EasyMock;
-import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 
 public class AnnotationToolTest {
 
-    @Before
-    public void setUp() throws Exception {
-    }
-
     @Test
     public void testRegisterListener() {
-        Controller cMock = EasyMock.createMock(Controller.class);
-        View vMock = EasyMock.createMock(View.class);
-        Model mMock = EasyMock.createMock(Model.class);
-        Workspace wMock = EasyMock.createStrictMock(Workspace.class);
-        EasyMock.expect(cMock.getModel()).andReturn(mMock).anyTimes();
-        EasyMock.expect(cMock.getView()).andReturn(vMock).anyTimes();
-        EasyMock.expect(vMock.getWorkspace()).andReturn(wMock).anyTimes();
-        wMock.addListener((WorkspaceListener) EasyMock.anyObject());
-        wMock.removeListener((WorkspaceListener) EasyMock.anyObject());
-        EasyMock.replay(cMock);
-        EasyMock.replay(vMock);
-        EasyMock.replay(mMock);
-        EasyMock.replay(wMock);
-        AnnotationTool aT = new AnnotationTool(cMock);
-        aT.setActive(true);
-        aT.setActive(false);
-        EasyMock.verify(cMock);
-        EasyMock.verify(vMock);
-        EasyMock.verify(wMock);
+        Controller controller = Mockito.mock(Controller.class);
+        View view = Mockito.mock(View.class);
+        Model model = Mockito.mock(Model.class);
+        Workspace workspace = Mockito.mock(Workspace.class);
+
+        Mockito.when(controller.getView()).thenReturn(view);
+        Mockito.when(view.getWorkspace()).thenReturn(workspace);
+        Mockito.when(controller.getModel()).thenReturn(model);
+
+        AnnotationTool aTool = new AnnotationTool(controller);
+
+        InOrder inOrder = Mockito.inOrder(workspace);
+        ArgumentCaptor<WorkspaceListener> argument = ArgumentCaptor.forClass(WorkspaceListener.class);
+
+        // action: activate
+        aTool.setActive(true);
+
+        // verify addListener
+        inOrder.verify(workspace).addListener(argument.capture());
+        assertTrue(argument.getValue() != null);
+
+        // action: deactivate
+        aTool.setActive(false);
+        inOrder.verify(workspace).removeListener(argument.getValue());
     }
 
     @Test
     public void test() throws AWTException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
-        Controller cMock = EasyMock.createMock(Controller.class);
-        Model mMock = EasyMock.createNiceMock(Model.class);
-        FakeView fakeView = new FakeView(mMock);
-        final FakeWorkspace fakeWorkspace = new FakeWorkspace();
-        fakeView.w = fakeWorkspace;
-        EasyMock.expect(cMock.getModel()).andReturn(mMock).anyTimes();
-        EasyMock.expect(cMock.getView()).andReturn(fakeView).anyTimes();
-        Point pointOfClick = new Point(10, 50);
-        Dimension tolerance = (Dimension) ReflectionUtil.getPrivateField(AnnotationTool.class, null, "MOUSE_TOLERANCE");
-        Rectangle recOfClick = new Rectangle(pointOfClick, tolerance);
-        AndGate andGate = EasyMock.createMock(AndGate.class);
-        EasyMock.expect(andGate.getName()).andReturn("Old Annotation").anyTimes();
-        // Hot point
-        andGate.setName(EasyMock.eq("Old Annotation2"));
+        Controller controller = Mockito.mock(Controller.class);
+
+        Model model = Mockito.mock(Model.class);
+        Workspace workspace = Mockito.mock(Workspace.class);
+
+        View realview = new View(model);
+        View view = Mockito.spy(realview);
+
+        Mockito.when(controller.getView()).thenReturn(view);
+        Mockito.when(view.getWorkspace()).thenReturn(workspace);
+        Mockito.when(controller.getModel()).thenReturn(model);
+
+        AnnotationTool aTool = new AnnotationTool(controller);
+        aTool.setActive(true);
+
+        ArgumentCaptor<WorkspaceListener> argument = ArgumentCaptor.forClass(WorkspaceListener.class);
+        Mockito.verify(workspace).addListener(argument.capture());
+
+        final WorkspaceListener capturedListener = argument.getValue();
+        assertTrue(capturedListener != null);
+
+        // create click event
+        final WorkspaceEvent event = Mockito.mock(WorkspaceEvent.class);
+
+        // stub event for click on 10,5
+        Mockito.when(event.getLocation()).thenReturn(new Point(10, 5));
+
+        // stub model elements
         Set<DrawElement> elements = new HashSet<DrawElement>();
+
+        // create and gate
+        AndGate andGate = Mockito.mock(AndGate.class);
+        Mockito.when(andGate.getName()).thenReturn("Old Annotation");
         elements.add(andGate);
-        EasyMock.expect(mMock.getDrawElementsAt(EasyMock.eq(recOfClick))).andReturn(elements);
-        EasyMock.replay(andGate);
-        EasyMock.replay(cMock);
-        EasyMock.replay(mMock);
-        AnnotationTool aT = new AnnotationTool(cMock);
-        aT.setActive(true);
-        final WorkspaceEvent workspaceEvent = EasyMock.createMock(WorkspaceEvent.class);
-        EasyMock.expect(workspaceEvent.getLocation()).andReturn(pointOfClick);
-        EasyMock.replay(workspaceEvent);
+
+        // stub model return andGate
+        ArgumentCaptor<Rectangle> requestedRectangleCaptor = ArgumentCaptor.forClass(Rectangle.class);
+        Mockito.when(model.getDrawElementsAt(requestedRectangleCaptor.capture())).thenReturn(elements);
+
+        // action: trigger click on capturedListener
+        // capturedListener.mouseClicked(event);
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                fakeWorkspace.getWorkspaceListener().mouseClicked(workspaceEvent);
+                capturedListener.mouseClicked(event);
             }
         });
-        // TODO: Use FEST instead!
-        // FrameFixture fixture = new FrameFixture(fakeView);
-        // fixture.show();
-        // fakeWorkspace.getWorkspaceListener().mouseClicked(workspaceEvent);
-        // fixture.optionPane().buttonWithText("OK").click();
-        // // Test dialogbox using Robot!
+
         Robot robot = new Robot();
         robot.delay(500);
         robot.keyPress(KeyEvent.VK_RIGHT);
@@ -102,35 +114,11 @@ public class AnnotationToolTest {
         robot.keyRelease(KeyEvent.VK_ENTER);
         robot.delay(500);
         robot = null;
-        EasyMock.verify(cMock);
-        EasyMock.verify(andGate);
-    }
 
-    private class FakeWorkspace extends Workspace {
+        // verify click point is inside the tolerance rectangle
+        assertTrue(requestedRectangleCaptor.getValue().intersects(new Rectangle(10, 5, 1, 1)));
 
-        private WorkspaceListener wl;
-
-        @Override
-        public void addListener(WorkspaceListener l) {
-            this.wl = l;
-        }
-
-        public WorkspaceListener getWorkspaceListener() {
-            return wl;
-        }
-    }
-
-    private class FakeView extends View {
-
-        Workspace w;
-
-        public FakeView(Model model) {
-            super(model);
-        }
-
-        @Override
-        public Workspace getWorkspace() {
-            return w;
-        }
+        // verify correct name change.
+        Mockito.verify(andGate).setName("Old Annotation2");
     }
 }
