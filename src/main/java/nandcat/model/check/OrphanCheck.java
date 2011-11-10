@@ -9,18 +9,19 @@ import nandcat.model.element.Port;
  * OrphanCheck.
  * 
  * Checks if elements are without connection to other elements.
+ * @version 4
  */
 public class OrphanCheck implements CircuitCheck {
     
     /**
      * Listeners for this check.
      */
-    Set<CheckListener> listener;
+    private Set<CheckListener> listener;
 
     /**
      * Check is active or not.
      */
-    boolean active;
+    private boolean active;
     
     /**
      * {@inheritDoc}
@@ -42,17 +43,20 @@ public class OrphanCheck implements CircuitCheck {
      * {@inheritDoc}
      */
     public boolean test(Circuit circuit) {
-        // TODO missing a small snippet of (correct!) code!
         for (Module m : circuit.getModules()) {
+            boolean current = false;
             for (Port p : m.getInPorts()) {
                 if (p.getConnection().getNextModule() != null) {
-                    return false;
+                    current = true;
                 }
             }
             for (Port p : m.getOutPorts()) {
                 if (p.getConnection().getNextModule() != null) {
-                    return false;
+                    current = true;
                 }
+            }
+            if (!current) {
+                return false;
             }
         }
         return true;
