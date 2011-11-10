@@ -1,7 +1,9 @@
 package nandcat.model.check;
 
+import java.util.List;
 import java.util.Set;
 import nandcat.model.element.Circuit;
+import nandcat.model.element.Element;
 
 /**
  * CountCheck.
@@ -9,16 +11,16 @@ import nandcat.model.element.Circuit;
  * Checks if a given amount of elements exceeded, which could result in performance issues.
  */
 public class CountCheck implements CircuitCheck {
-    
+
     /**
      * Listeners for this check.
      */
-    Set<CheckListener> listener;
-    
+    private Set<CheckListener> listener;
+
     /**
      * Check is active or not.
      */
-    boolean active;
+    private boolean active;
 
     /**
      * {@inheritDoc}
@@ -40,8 +42,8 @@ public class CountCheck implements CircuitCheck {
      * {@inheritDoc}
      */
     public boolean test(Circuit circuit) {
-        // TODO Auto-generated method stub
-        return false;
+        List<Element> elem = circuit.getElements();
+        return elem.size() < 1000;
     }
 
     /**
@@ -55,6 +57,6 @@ public class CountCheck implements CircuitCheck {
      * {@inheritDoc}
      */
     public void removeListener(CheckListener l) {
-        listener.remove(l);    
+        listener.remove(l);
     }
 }
