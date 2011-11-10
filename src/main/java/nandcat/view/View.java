@@ -301,10 +301,10 @@ public class View extends JFrame {
             msave.setActionCommand("save");
             msave.setName("save");
         }
-        if (toolFunctionalities.containsKey("saveUnder")) {
-            msave2.addActionListener(toolFunctionalities.get("saveUnder"));
-            msave2.setActionCommand("saveUnder");
-            msave2.setName("saveUnder");
+        if (toolFunctionalities.containsKey("saveAs")) {
+            msave2.addActionListener(toolFunctionalities.get("saveAs"));
+            msave2.setActionCommand("saveAs");
+            msave2.setName("saveAs");
         }
         if (toolFunctionalities.containsKey("loaddef")) {
             mloaddef.addActionListener(toolFunctionalities.get("loaddef"));
