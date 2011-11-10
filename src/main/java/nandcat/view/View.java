@@ -33,9 +33,9 @@ import nandcat.model.ViewModule;
 public class View extends JFrame {
 
     /**
-     * frame of the Program.
+     * Frame title of the main frame.
      */
-    private JFrame frame = new JFrame("NANDCat");
+    private static final String FRAME_TITLE = "NANDcat";
 
     /**
      * View over the Workspace.
@@ -167,9 +167,10 @@ public class View extends JFrame {
                 // TODO Auto-generated method stub
             }
         });
-        frame.setSize(600, 650);
-        frame.setLocation(frameLocation);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle(FRAME_TITLE);
+        setSize(600, 650);
+        setLocation(frameLocation);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         workspace = new Workspace(model, this);
         workspace.setPreferredSize(workspaceDimension);
         workspace.setBackground(Color.white);
@@ -179,10 +180,9 @@ public class View extends JFrame {
         viewport.setViewPosition(viewportLocation);
         toolBar = new JToolBar();
         menubar = new JMenuBar();
-        frame.getContentPane().add(scroller, "Center");
-        frame.getContentPane().add(toolBar, "West");
-        frame.getContentPane().add(menubar, "North");
-        frame.setVisible(true);
+        getContentPane().add(scroller, "Center");
+        getContentPane().add(toolBar, "West");
+        getContentPane().add(menubar, "North");
     }
 
     /**
