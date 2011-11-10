@@ -33,11 +33,6 @@ import nandcat.model.ViewModule;
 public class View extends JFrame {
 
     /**
-     * frame of the Program.
-     */
-    private JFrame frame = new JFrame("NANDCat");
-
-    /**
      * View over the Workspace.
      */
     private JScrollPane scroller;
@@ -114,6 +109,7 @@ public class View extends JFrame {
      *            The Model component of the application.
      */
     public View(Model model) {
+        super("NANDcat");
         setupGui(model);
     }
 
