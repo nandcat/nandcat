@@ -1,6 +1,7 @@
 package nandcat.model.element;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 
 /**
  * FlipFlop implementation. A FlipFlop is used to "hold" a boolean state for a certain amount of time.
@@ -13,7 +14,7 @@ public class FlipFlop extends Circuit {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Create new RS-FlipFlop at p.
+     * Create new RS-FlipFlop.
      */
     public FlipFlop() {
         super("FlipFlop");

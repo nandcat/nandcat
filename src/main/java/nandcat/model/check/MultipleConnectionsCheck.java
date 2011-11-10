@@ -1,5 +1,6 @@
 package nandcat.model.check;
 
+import java.util.Set;
 import nandcat.model.element.Circuit;
 
 /**
@@ -8,6 +9,25 @@ import nandcat.model.element.Circuit;
  * Checks if any Ports has two Connections.
  */
 public class MultipleConnectionsCheck implements CircuitCheck {
+
+    /*
+     * ***********************************
+     */
+    // TODO MultipleOrgasmen check überflüssig, da wenn überhaupt implizit in illegal connection check mit dabei und
+    // technisch gar nicht möglich dass der fehlschlägt
+    /*
+     * ***********************************
+     */
+
+    /**
+     * Listeners for this check.
+     */
+    Set<CheckListener> listener;
+
+    /**
+     * Check is active or not.
+     */
+    boolean active;
 
     /**
      * {@inheritDoc}
@@ -37,13 +57,13 @@ public class MultipleConnectionsCheck implements CircuitCheck {
      * {@inheritDoc}
      */
     public void addListener(CheckListener l) {
-        // TODO Auto-generated method stub
+        listener.add(l);
     }
 
     /**
      * {@inheritDoc}
      */
     public void removeListener(CheckListener l) {
-        // TODO Auto-generated method stub
+        listener.remove(l);
     }
 }
