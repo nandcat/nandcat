@@ -80,15 +80,42 @@ public class ImportTool implements Tool {
         LOG.debug("Request command: " + command);
         if (command.equals("load")) {
             JFileChooser fc = new JFileChooser();
+            addFileFilterToChooser(fc, model.getImportFormats());
+            fc.setAcceptAllFileFilterUsed(false);
             int returnVal = fc.showOpenDialog(controller.getView());
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
-                // This is where a real application would open the file.
-                LOG.debug("Opening: " + file.getName() + "." + "\n");
+                if (file != null) {
+                    LOG.debug("Importing: " + file.getName());
+                    model.importFromFile(file);
+                } else {
+                    LOG.debug("File is null");
+                }
             } else {
-                LOG.debug("Open command cancelled by user." + "\n");
+                LOG.debug("Open command cancelled by user.");
             }
+        }
+    }
+
+    /**
+     * Adds file filter to the given file chooser depending on the given map of formats and descriptions.
+     * 
+     * @param fc
+     *            JFileChooser to set filter on.
+     * @param formats
+     *            Formats as a map of extension and description.
+     */
+    private void addFileFilterToChooser(JFileChooser fc, Map<String, String> formats) {
+        if (fc == null) {
+            throw new IllegalArgumentException();
+        }
+        if (formats == null) {
+            throw new IllegalArgumentException();
+        }
+
+        for (Map.Entry<String, String> entry : formats.entrySet()) {
+            fc.addChoosableFileFilter(new ExtensionFileFilter(entry.getKey(), entry.getValue()));
         }
     }
 

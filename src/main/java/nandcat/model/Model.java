@@ -26,6 +26,9 @@ import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
 import nandcat.model.importexport.Exporter;
 import nandcat.model.importexport.Importer;
+import nandcat.model.importexport.sepaf.SEPAFExporter;
+import nandcat.model.importexport.sepaf.SEPAFImporter;
+import org.apache.log4j.Logger;
 
 /**
  * The model class contains the logic and data of the program as well as methods to manipulate said data. It is one of
@@ -84,6 +87,11 @@ public class Model implements ClockListener {
     private List<Module> loadedModules;
 
     /**
+     * Class logger instance.
+     */
+    private static final Logger LOG = Logger.getLogger(Model.class);
+
+    /**
      * The constructor for the model class.
      */
     public Model() {
@@ -97,6 +105,8 @@ public class Model implements ClockListener {
         clock = new Clock(0, this);
         initView2Module();
         loadedModules = new LinkedList<Module>();
+        initExporters();
+        initImporters();
     }
 
     /**
@@ -564,13 +574,46 @@ public class Model implements ClockListener {
     }
 
     /**
+     * Initializes all importers.
+     */
+    private void initImporters() {
+
+        // Can be extended to multiple importers by merging maps. No need for it right now.
+        importers.clear();
+        importFormats.clear();
+        Importer sepafImporter = new SEPAFImporter();
+        Map<String, String> sepafFormats = sepafImporter.getFileFormats();
+        for (Map.Entry<String, String> format : sepafFormats.entrySet()) {
+            importers.put(format.getKey(), sepafImporter);
+        }
+
+        importFormats = sepafFormats;
+    }
+
+    /**
+     * Initializes all importers.
+     */
+    private void initExporters() {
+
+        // Can be extended to multiple importers by merging maps. No need for it right now.
+        exporters.clear();
+        exportFormats.clear();
+        Exporter sepafExporter = new SEPAFExporter();
+        Map<String, String> sepafFormats = sepafExporter.getFileFormats();
+        for (Map.Entry<String, String> format : sepafFormats.entrySet()) {
+            exporters.put(format.getKey(), sepafExporter);
+        }
+
+        exportFormats = sepafFormats;
+    }
+
+    /**
      * Return map containing valid file extensions and description for import.
      * 
      * @return Map with <b>key:</b> file extension and <b>value:</b> description
      */
     public Map<String, String> getImportFormats() {
-        // TODO implement
-        return null;
+        return importFormats;
     }
 
     /**
@@ -579,17 +622,26 @@ public class Model implements ClockListener {
      * @return Map with <b>key:</b> file extension and <b>value:</b> description
      */
     public Map<String, String> getExportFormats() {
-        // nett aber nur Vorlage, im/exportFormats kann dynamisch aus importers/exporters generiert werden
-        // vmtl. (:>) hilfe-Funktion zum finden von: Dateiendung->im/exporter
-        // HashMap<String, String> exportFormats = new HashMap<String, String>();
-        // for (Exporter e : exporters.values()) {
-        // e.getFileFormats().entrySet().iterator().next();
-        // for (Entry<String, String> entry : e.getFileFormats().entrySet()) {
-        // exportFormats.put(entry.getKey(), entry.getValue());
-        // }
-        // }
-        // return exportFormats;
-        return null;
+        return exportFormats;
+    }
+
+    /**
+     * Get the extension of a file.
+     * 
+     * @param f
+     *            File to get extension from.
+     * @return Extension of given file.
+     */
+    private static String getFileExtension(File f) {
+        String ext = null;
+        String s = f.getName();
+
+        int i = s.lastIndexOf('.');
+
+        if (i > 0 && i < s.length() - 1) {
+            ext = s.substring(i + 1).toLowerCase();
+        }
+        return ext;
     }
 
     /**
@@ -599,7 +651,20 @@ public class Model implements ClockListener {
      *            File to import top-level Circuit from
      */
     public void importFromFile(File file) {
-        // TODO implement
+        if (file == null) {
+            throw new IllegalArgumentException();
+        }
+        String ext = getFileExtension(file);
+        if (importers.containsKey(ext)) {
+            Importer im = importers.get(ext);
+            im.setFile(file);
+            if (im.importCircuit()) {
+                this.circuit = im.getCircuit();
+            } else {
+                LOG.warn("File import failed! File: " + file.getAbsolutePath());
+                // TODO Fehlermeldung an View?
+            }
+        }
     }
 
     /**
@@ -609,11 +674,21 @@ public class Model implements ClockListener {
      *            File to export top-level Circuit from
      */
     public void exportToFile(File file) {
-        // TODO implement
-        // Exporter exporter;
-        // exporter.setCircuit(circuit);
-        // exporter.setFile(file);
-        // exporter.exportCircuit();
+        if (file == null) {
+            throw new IllegalArgumentException();
+        }
+        String ext = getFileExtension(file);
+        if (exporters.containsKey(ext)) {
+            Exporter ex = exporters.get(ext);
+            ex.setFile(file);
+            ex.setCircuit(circuit);
+            if (ex.exportCircuit()) {
+                LOG.debug("File exported successfully");
+            } else {
+                LOG.warn("File export failed! File: " + file.getAbsolutePath());
+                // TODO Fehlermeldung an View?
+            }
+        }
     }
 
     /**

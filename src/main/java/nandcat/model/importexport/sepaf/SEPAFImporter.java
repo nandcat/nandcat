@@ -291,20 +291,20 @@ public class SEPAFImporter implements Importer {
         // Parse attribute for amount of incoming and outgoing ports if available.
         Integer portsIn = null;
         Integer portsOut = null;
-        if (aPortsIn != null) {
-            try {
-                portsIn = aPortsIn.getIntValue();
-            } catch (DataConversionException e) {
-                throw new FormatException("ports_in not integer", e);
-            }
-        }
-        if (aPortsOut != null) {
-            try {
-                portsOut = aPortsOut.getIntValue();
-            } catch (DataConversionException e) {
-                throw new FormatException("ports_in not integer", e);
-            }
-        }
+        // if (aPortsIn != null) {
+        // try {
+        // portsIn = aPortsIn.getIntValue();
+        // } catch (DataConversionException e) {
+        // throw new FormatException("ports_in not integer", e);
+        // }
+        // }
+        // if (aPortsOut != null) {
+        // try {
+        // portsOut = aPortsOut.getIntValue();
+        // } catch (DataConversionException e) {
+        // throw new FormatException("ports_in not integer", e);
+        // }
+        // }
 
         // Instantiate specified module.
         Module module = null;
