@@ -34,4 +34,8 @@ public class ExtensionFileFilter extends FileFilter {
         return description;
     }
 
+    public String getExtension() {
+        return fileExtension;
+    }
+
 }

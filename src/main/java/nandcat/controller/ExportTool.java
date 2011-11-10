@@ -95,6 +95,13 @@ public class ExportTool implements Tool {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 if (file != null) {
+                    String extension = ImportExportUtils.getExtension(file);
+                    if (extension == null) {
+                        ExtensionFileFilter eFileFilter = (ExtensionFileFilter) fc.getFileFilter();
+                        String ext = eFileFilter.getExtension();
+                        file = new File(file.getAbsolutePath() + "." + ext);
+                    }
+
                     if (file.exists()) {
                         int response = JOptionPane.showConfirmDialog(null, "Overwrite existing file?",
                                 "Confirm Overwrite", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
