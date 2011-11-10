@@ -169,28 +169,6 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Get all modules intersecting a rectangle.
-     * 
-     * @param rect
-     *            Rectangle containing the x- and y-coordinate
-     * @return Set of Modules intersecting the given location
-     */
-    private Set<Module> getModsAt(Rectangle rect) {
-        return null;
-    }
-
-    /**
-     * Get all connections intersecting a rectangle.
-     * 
-     * @param rect
-     *            Rectangle containing the x- and y-coordinate
-     * @return Set of Connections intersecting the given location
-     */
-    private Set<Connection> getConnsAt(Rectangle rect) {
-        return null;
-    }
-
-    /**
      * Set a given check on the circuit to active or inactive.
      * 
      * @param check
@@ -209,10 +187,12 @@ public class Model implements ClockListener {
      * 
      * @param fileName
      *            String defining the name of the file to be loaded.
+     * @return true if the loading process was successful, false if not
      */
-    public void loadFile(String fileName) {
+    public boolean loadFile(String fileName) {
         // TODO implement
         // Importer anstoßen.
+        return false;
     }
 
     /**
@@ -220,10 +200,12 @@ public class Model implements ClockListener {
      * 
      * @param fileName
      *            String defining the name of the file to be saved.
+     * @return true if the loading process was successful, false if not
      */
-    public void saveFile(String fileName) {
+    public boolean saveFile(String fileName) {
         // TODO implement
         // Exporter anstoßen.
+        return false;
     }
 
     /**
@@ -249,6 +231,7 @@ public class Model implements ClockListener {
      * Loads or reloads the List containing the custom-circuits.
      */
     public void loadCustomList() {
+        // TODO
     }
 
     /**
@@ -270,6 +253,7 @@ public class Model implements ClockListener {
      *            true if selected, false if not selected
      */
     public void setModuleSelected(Module m, boolean b) {
+        m.setSelected(b);
     }
 
     /**
@@ -279,14 +263,62 @@ public class Model implements ClockListener {
      *            Rectangle containing the x- and y-coordinate.
      * @return Set of Elements at the given location.
      */
-    protected Set<Element> getElementsAt(Rectangle rect) {
-        // Set<Element> elementsAt = new HashSet<Element>();
-        // for (Element element : circuit.getElements()) {
-        // if (element.getRectangle.contains(point) {
-        // TODO Get position of Element
-        // elementsAt.add(element);
+    private Set<Element> getElementsAt(Rectangle rect) {
+        Set<Element> elementsAt = new HashSet<Element>();
+        elementsAt.addAll(getConnsAt(rect));
+        elementsAt.addAll(getModsAt(rect));
+        return elementsAt;
+    }
+
+    /**
+     * Get all connections intersecting a rectangle.
+     * 
+     * @param rect
+     *            Rectangle containing the x- and y-coordinate
+     * @return Set of Connections intersecting the given location
+     */
+    private Set<Connection> getConnsAt(Rectangle rect) {
+        Set<Connection> connsAt = new HashSet<Connection>();
+        // for (Element e : getElements()) {
+        // if(e instanceof Connection) {
+        // Connection c = (Connection) e;
+        // if (c.getLine().intersects(rect)) {
+        // connsAt.add(c);
         // }
-        return null;
+        // }
+        // }
+
+        for (Connection c : circuit.getConnections()) {
+            if (c.getLine().intersects(rect)) {
+                connsAt.add(c);
+            }
+        }
+        return connsAt;
+    }
+
+    /**
+     * Get all modules intersecting a rectangle.
+     * 
+     * @param rect
+     *            Rectangle containing the x- and y-coordinate
+     * @return Set of Modules intersecting the given location
+     */
+    private Set<Module> getModsAt(Rectangle rect) {
+        Set<Module> connsAt = new HashSet<Module>();
+        // for (Element e : getElements()) {
+        // if(e instanceof Module) {
+        // Module m = (Module) e;
+        // if (m.getRectangle().intersects(rect)) {
+        // connsAt.add(m);
+        // }
+        // }
+        // }
+        for (Module m : circuit.getModules()) {
+            if (m.getRectangle().intersects(rect)) {
+                connsAt.add(m);
+            }
+        }
+        return connsAt;
     }
 
     // TODO recheck, faggit!
@@ -299,20 +331,28 @@ public class Model implements ClockListener {
      */
     public Set<DrawElement> getDrawElementsAt(Rectangle rect) {
         Set<DrawElement> elementsAt = new HashSet<DrawElement>();
-        for (Element element : circuit.getElements()) {
-            if (element instanceof Module) {
-                Module m = (Module) element;
-                if (m.getRectangle().intersects(rect)) {
-                    elementsAt.add((DrawElement) element);
-                }
-            }
-            if (element instanceof Connection) {
-                Connection c = (Connection) element;
-                if (c.getLine().intersects(rect)) {
-                    elementsAt.add((DrawElement) element);
-                }
-            }
+        // for (Element element : circuit.getElements()) {
+        // if (element instanceof Module) {
+        // Module m = (Module) element;
+        // if (m.getRectangle().intersects(rect)) {
+        // elementsAt.add((DrawElement) element);
+        // }
+        // }
+        // if (element instanceof Connection) {
+        // Connection c = (Connection) element;
+        // if (c.getLine().intersects(rect)) {
+        // elementsAt.add((DrawElement) element);
+        // }
+        // }
+        // }
+
+        for (Module m : getModsAt(rect)) {
+            elementsAt.add((DrawElement) m);
         }
+        for (Connection c : getConnsAt(rect)) {
+            elementsAt.add((DrawElement) c);
+        }
+
         return elementsAt;
     }
 
@@ -326,19 +366,54 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Select elements from the circuit. An element is selected when it lies within a given rectangle.
+     * Select elements from the circuit. An element is selected when it lies within a given rectangle. Note that does
+     * not deselect previously selected elements! Use this for multiple selections, e.g. via SHIFT.
      * 
      * @param rect
-     *            The Rectangle defining the zone where elements are selected.
+     *            The Rectangle defining the zone where elements are selected
      */
     public void selectElements(Rectangle rect) {
-        // TODO implement
-        // Set<Element> selectedElements = new HashSet<Element>();
-        // for (Element element : circuit.getElements()) {
-        // if (rect.contains(element.getRectangle)){
-        // selectedElements.add(element);
+        // for (Element e : circuit.getElements()) {
+        // boolean selected = false;
+        // if (e instanceof Module) {
+        // if (rect.intersects(((Module) e).getRectangle())) {
+        // selected = true;
         // }
         // }
+        // if (e instanceof Connection) {
+        // if (rect.intersectsLine(((Connection) e).getLine())) {
+        // selected = true;
+        // }
+        // }
+        //
+        // if (selected) {
+        // e.setSelected(true);
+        // }
+        // }
+        for (Element e : getElementsAt(rect)) {
+            e.setSelected(true);
+        }
+    }
+
+    /**
+     * Select elements from the circuit. An element is selected when it lies within a given rectangle. Warning - this
+     * will deselect all previously selected elements!
+     * 
+     * @param rect
+     *            The Rectangle defining the zone where elements are selected
+     */
+    public void exclusiveSelectElements(Rectangle rect) {
+        deselectAll();
+        selectElements(rect);
+    }
+
+    /**
+     * Deselects all Elements on the top level circuit.
+     */
+    public void deselectAll() {
+        for (Element e : getElements()) {
+            e.setSelected(false);
+        }
     }
 
     /**
@@ -348,6 +423,20 @@ public class Model implements ClockListener {
      */
     protected List<Element> getElements() {
         return circuit.getElements();
+    }
+
+    /**
+     * Get all selected elements from the main circuit.
+     * 
+     * @return Set<Element> containing, oh the magic, all selected elements
+     */
+    private Set<Element> getSelectedElements() {
+        Set<Element> selectitt = new HashSet<Element>();
+        for (Element e : getElements()) {
+            if (e.isSelected())
+                selectitt.add(e);
+        }
+        return selectitt;
     }
 
     /**
@@ -379,7 +468,7 @@ public class Model implements ClockListener {
      * Stops the simulation on the current circuit.
      */
     public void stopSimulation() {
-        // TODO Auto-generated method stub
+        clock.stopSimulation();
     }
 
     /**
@@ -406,6 +495,8 @@ public class Model implements ClockListener {
             throw new IllegalArgumentException();
         }
         // TODO Testen ob die Bausteine dieser Verbindung auch im Model enthalten?
+        // NOTE not sure - importer muss zb in untercircuits verbindungen schaffen. und circuit contains würde da
+        // vmtl(!) false zurückgeben.
         Connection connection = circuit.addConnection(inPort, outPort);
         inPort.setConnection(connection);
         outPort.setConnection(connection);
@@ -549,15 +640,6 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Get all selected elements from the main circuit.
-     * 
-     * @return Set<Element> containing, oh the magic, all selected elements
-     */
-    private Set<Element> getSelectedElements() {
-        return null;
-    }
-
-    /**
      * Toggle state of given module (if possible).
      * 
      * @param m
@@ -692,7 +774,7 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Returns parsed circuit from given fileName, iff it exists and is falid.
+     * Returns parsed circuit from given fileName, iff it exists and is valid.
      * 
      * @param fileName
      *            String file to load circuit from
@@ -711,15 +793,16 @@ public class Model implements ClockListener {
         return c;
     }
 
-    /**
-     * Move the specific port according to the x + y values stored in the point. Throws an Exception if one parameter is
-     * null.
-     * 
-     * @param distance
-     *            Point containing the x and y
-     * @param port
-     *            Port that will be moved
-     */
+    // /**
+    // * Move the specific port according to the x + y values stored in the point. Throws an Exception if one parameter
+    // is
+    // * null.
+    // *
+    // * @param distance
+    // * Point containing the x and y
+    // * @param port
+    // * Port that will be moved
+    // */
     // public void movePortBy(Point distance, Port port) {
     // if (port == null || distance == null) {
     // throw (new IllegalArgumentException("port and distancepoint must not be null!"));

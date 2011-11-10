@@ -87,7 +87,7 @@ public class ViewTool implements Tool {
                 List<DrawElement> elem = model.getDrawElements();
                 Set<DrawElement> elements = new HashSet<DrawElement>();
                 elements.addAll(elem);
-                view.getWorkspace().redraw(elements);
+                view.getWorkspace().redraw();
             }
         });
     }
@@ -117,7 +117,7 @@ public class ViewTool implements Tool {
                         List<DrawElement> elem = model.getDrawElements();
                         Set<DrawElement> elements = new HashSet<DrawElement>();
                         elements.addAll(elem);
-                        view.getWorkspace().redraw(elements);
+                        view.getWorkspace().redraw();
                     }
                 };
             }

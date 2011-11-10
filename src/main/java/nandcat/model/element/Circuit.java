@@ -2,9 +2,11 @@ package nandcat.model.element;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.io.Serializable;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.io.Serializable;
 import java.util.UUID;
 import nandcat.model.Clock;
 import nandcat.model.ClockListener;
@@ -82,7 +84,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         this.uuid = uuid;
         name = "";
         elements = new LinkedList<Element>();
-        rectangle = new Rectangle();
+        rectangle = new Rectangle(Module.EXTENT,Module.EXTENT);
         symbol = new byte[0];
         selected = false;
     }
@@ -116,7 +118,39 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     public List<Element> getElements() {
         return elements;
     }
-
+    
+    /**
+     * Get only Modules.
+     * 
+     * @return Set containing all Modules
+     */
+    public Set<Module> getModules() {
+        Set<Module> modsAt = new HashSet<Module>();
+        for (Element e : getElements()) {
+            if(e instanceof Module) {
+                Module c = (Module) e;
+                modsAt.add(c);
+            }
+        }
+        return modsAt;
+    }
+    
+    /**
+     * Get only Connections.
+     * 
+     * @return Set containing all Connections
+     */
+    public Set<Connection> getConnections() {
+        Set<Connection> consAt = new HashSet<Connection>();
+        for (Element e : getElements()) {
+            if(e instanceof Connection) {
+                Connection c = (Connection) e;
+                consAt.add(c);
+            }
+        }
+        return consAt;
+    }
+    
     /**
      * Setter for Elements.
      * 
