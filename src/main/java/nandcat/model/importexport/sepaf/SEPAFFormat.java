@@ -1,5 +1,13 @@
 package nandcat.model.importexport.sepaf;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import org.apache.log4j.Logger;
+import org.apache.xerces.impl.dv.util.Base64;
+
 public class SEPAFFormat {
 
     /**
@@ -50,6 +58,11 @@ public class SEPAFFormat {
     }
 
     /**
+     * Class logger instance.
+     */
+    private static final Logger LOG = Logger.getLogger(SEPAFFormat.class);
+
+    /**
      * Gets the string representation of a port.
      * 
      * @param isOutPort
@@ -78,5 +91,57 @@ public class SEPAFFormat {
      */
     public static String getObjectAsUniqueString(Object o) {
         return Integer.toHexString(System.identityHashCode(o));
+    }
+
+    /**
+     * Encodes an image to a base64 encoded string.
+     * 
+     * @param im
+     *            Image to encode.
+     * @param format
+     *            ImageFormat to export image as.
+     * @return String as a result of the encoding.
+     */
+    public static String encodeImage(BufferedImage im, String format) {
+        if (im == null) {
+            throw new IllegalArgumentException();
+        }
+        if (format == null) {
+            throw new IllegalArgumentException();
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            if (!ImageIO.write(im, format, baos)) {
+                return null;
+            }
+            baos.flush();
+        } catch (IOException e) {
+            LOG.warn("Image could not be encoded" + e.getMessage());
+            LOG.warn(e.getStackTrace());
+            return null;
+        }
+        byte[] imageInByte = baos.toByteArray();
+        return Base64.encode(imageInByte);
+    }
+
+    /**
+     * Decodes a base64 encoded string to an image.
+     * 
+     * @param base64string
+     *            String to decode.
+     * @return BufferedImage as a result of the decoding.
+     */
+    public static BufferedImage decodeImage(String base64string) {
+        if (base64string == null) {
+            throw new IllegalArgumentException();
+        }
+        byte[] decoded = Base64.decode(base64string);
+        try {
+            return ImageIO.read(new ByteArrayInputStream(decoded));
+        } catch (IOException e) {
+            LOG.warn("Image could not be encoded" + e.getMessage());
+            LOG.warn(e.getStackTrace());
+            return null;
+        }
     }
 }

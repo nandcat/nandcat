@@ -247,6 +247,20 @@ public class SEPAFImporter implements Importer {
                 }
             }
 
+            // Parse symbol if existing
+            try {
+                Object symbol = getXPathInstance("/c:circuits/c:circuit[@name='" + name + "']/nandcat:symbol")
+                        .selectSingleNode(doc);
+                if (symbol != null && symbol instanceof Element) {
+                    Element symbolElement = (Element) symbol;
+                    circuit.setSymbol(SEPAFFormat.decodeImage(symbolElement.getText()));
+                    LOG.debug("Symbol set to circuit successfully");
+                }
+            } catch (JDOMException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
             // Add constructed circuit to cache index
             circuitIndex.put(name, circuit);
         }

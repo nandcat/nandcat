@@ -2,11 +2,12 @@ package nandcat.model.element;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.io.Serializable;
 import java.util.UUID;
 import nandcat.model.Clock;
 import nandcat.model.ClockListener;
@@ -41,9 +42,9 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     private Rectangle rectangle;
 
     /**
-     * (Base64 encoded) byte-arrray representation of the Circuit symbol (if used as Module).
+     * Image representation of the Circuit symbol (if used as Module).
      */
-    private byte[] symbol;
+    private BufferedImage symbol;
 
     /**
      * Selection state of the circuit.
@@ -84,8 +85,8 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         this.uuid = uuid;
         name = "";
         elements = new LinkedList<Element>();
-        rectangle = new Rectangle(Module.EXTENT,Module.EXTENT);
-        symbol = new byte[0];
+        rectangle = new Rectangle(Module.EXTENT, Module.EXTENT);
+        symbol = null;
         selected = false;
     }
 
@@ -118,7 +119,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     public List<Element> getElements() {
         return elements;
     }
-    
+
     /**
      * Get only Modules.
      * 
@@ -127,14 +128,14 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     public Set<Module> getModules() {
         Set<Module> modsAt = new HashSet<Module>();
         for (Element e : getElements()) {
-            if(e instanceof Module) {
+            if (e instanceof Module) {
                 Module c = (Module) e;
                 modsAt.add(c);
             }
         }
         return modsAt;
     }
-    
+
     /**
      * Get only Connections.
      * 
@@ -143,14 +144,14 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     public Set<Connection> getConnections() {
         Set<Connection> consAt = new HashSet<Connection>();
         for (Element e : getElements()) {
-            if(e instanceof Connection) {
+            if (e instanceof Connection) {
                 Connection c = (Connection) e;
                 consAt.add(c);
             }
         }
         return consAt;
     }
-    
+
     /**
      * Setter for Elements.
      * 
@@ -215,22 +216,21 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     }
 
     /**
-     * Returns base64-encoded PNG symbol representation of the circuit. Conversion to a BufferedImage via<br />
-     * <b>BufferedImage image = ImageIO.read(new ByteArrayInputStream(circuit.getSymbol()));</b>
+     * Returns PNG symbol representation of the circuit.
      * 
-     * @return byte[] representation of PNG symbol
+     * @return BufferedImage representation of PNG symbol
      */
-    public byte[] getSymbol() {
+    public BufferedImage getSymbol() {
         return symbol;
     }
 
     /**
-     * Set the Circuit's <b>base64-encoded</b> symbol.
+     * Set the Circuit's symbol.
      * 
      * @param symbol
-     *            byte[] encoded PNG symbol
+     *            BufferedImage PNG symbol.
      */
-    public void setSymbol(byte[] symbol) {
+    public void setSymbol(BufferedImage symbol) {
         this.symbol = symbol;
     }
 

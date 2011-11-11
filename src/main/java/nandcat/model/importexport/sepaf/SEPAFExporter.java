@@ -92,7 +92,7 @@ public class SEPAFExporter implements Exporter {
         root.addNamespaceDeclaration(SEPAFFormat.NAMESPACE.NANDCAT);
         try {
             root.setAttribute("main", circuit.getUuid());
-            root.addContent(buildCircuit(circuit));
+            root.addContent(buildCircuit(circuit, true));
             XMLOutputter outputter = new XMLOutputter();
 
             outputter.output(doc, new FileOutputStream(file));
@@ -113,15 +113,23 @@ public class SEPAFExporter implements Exporter {
      * 
      * @param c
      *            Circuit to build DOM element of.
+     * @param mainCircuit
+     *            True iff circuit is main circuit.
      * @return Element representing the circuit.
      * @throws FormatException
      *             If generation of sub elements went wrong.
      */
-    private Element buildCircuit(Circuit c) throws FormatException {
+    private Element buildCircuit(Circuit c, boolean mainCircuit) throws FormatException {
         org.jdom.Element e = new Element("circuit", SEPAFFormat.NAMESPACE.SEPAF);
         e.setAttribute("name", c.getUuid());
         for (nandcat.model.element.Element circuitE : c.getElements()) {
             e.addContent(buildElement(circuitE));
+        }
+        if (mainCircuit && c.getSymbol() != null) {
+            org.jdom.Element symbol = new Element("symbol", SEPAFFormat.NAMESPACE.NANDCAT);
+            symbol.setAttribute("format", "png", SEPAFFormat.NAMESPACE.NANDCAT);
+            symbol.setText(SEPAFFormat.encodeImage(c.getSymbol(), "png"));
+            e.addContent(symbol);
         }
         return e;
     }
@@ -145,7 +153,7 @@ public class SEPAFExporter implements Exporter {
         if (e instanceof Circuit && !(e instanceof FlipFlop)) {
             c = buildComponent((Module) e);
             if (!innerCircuitsIndex.contains(((Circuit) e).getUuid())) {
-                root.addContent(buildCircuit((Circuit) e));
+                root.addContent(buildCircuit((Circuit) e, false));
                 innerCircuitsIndex.add(((Circuit) e).getUuid());
             }
         }
