@@ -18,6 +18,7 @@ import nandcat.view.View;
 import nandcat.view.Workspace;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
@@ -53,6 +54,7 @@ public class AnnotationToolTest {
         inOrder.verify(workspace).removeListener(argument.getValue());
     }
 
+    @Ignore
     @Test
     public void test() throws AWTException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
         Controller controller = Mockito.mock(Controller.class);
