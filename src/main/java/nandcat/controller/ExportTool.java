@@ -2,11 +2,14 @@ package nandcat.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -85,7 +88,6 @@ public class ExportTool implements Tool {
      *            String representing functionality to active.
      */
     private void request(String command) {
-        LOG.debug("Request command: " + command);
         if (command.equals("save") || command.equals("saveAs")) {
             JFileChooser fc = new JFileChooser();
             ImportExportUtils.addFileFilterToChooser(fc, model.getExportFormats());
@@ -102,6 +104,7 @@ public class ExportTool implements Tool {
                         file = new File(file.getAbsolutePath() + "." + ext);
                     }
 
+                    // Overwrite Dialog
                     if (file.exists()) {
                         int response = JOptionPane.showConfirmDialog(null, "Overwrite existing file?",
                                 "Confirm Overwrite", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -110,6 +113,18 @@ public class ExportTool implements Tool {
                             return;
                         }
                     }
+
+                    // Add Image to circuit
+                    Object[] options = { "Yes, please", "No, thanks", "Delete existing Image" };
+                    int n = JOptionPane.showOptionDialog(controller.getView(),
+                            "Would you like to add a image to the current circuit?", "Circuit Image",
+                            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+                    if (n == 0) {
+                        showImageLoadFileChooser();
+                    } else if (n == 2) {
+                        model.getCircuit().setSymbol(null);
+                    }
+
                     LOG.debug("Exporting: " + file.getName());
                     // Ergänze extension
                     model.exportToFile(file);
@@ -118,6 +133,39 @@ public class ExportTool implements Tool {
                 }
             } else {
                 LOG.debug("Save command cancelled by user.");
+            }
+        }
+    }
+
+    private void showImageLoadFileChooser() {
+        JFileChooser fc = new JFileChooser();
+        fc.setAcceptAllFileFilterUsed(false);
+        int returnVal = fc.showOpenDialog(controller.getView());
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            if (file != null) {
+                boolean imgSuccess = false;
+                try {
+                    LOG.debug("Importing image: " + file.getName());
+                    BufferedImage im = ImageIO.read(file);
+                    if (im != null) {
+                        model.getCircuit().setSymbol(im);
+                        LOG.debug("Imported image successful");
+                        imgSuccess = true;
+                    }
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                if (!imgSuccess) {
+                    JOptionPane.showMessageDialog(controller.getView(), "Image can not be attached to circuit!",
+                            "Export error", JOptionPane.ERROR_MESSAGE);
+                    showImageLoadFileChooser();
+                }
+
+            } else {
+                LOG.debug("File is null");
             }
         }
     }

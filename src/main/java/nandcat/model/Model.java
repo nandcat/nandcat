@@ -810,4 +810,13 @@ public class Model implements ClockListener {
     // Rectangle old = port.getRectangle();
     // port.setRectangle(new Rectangle(old.x + distance.x, old.y + distance.y, old.width, old.height));
     // }
+
+    /**
+     * Gets the current circuit.
+     * 
+     * @return Circuit, null if there is no circuit.
+     */
+    public Circuit getCircuit() {
+        return circuit;
+    }
 }

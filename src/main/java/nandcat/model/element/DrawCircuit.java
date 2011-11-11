@@ -1,6 +1,7 @@
 package nandcat.model.element;
 
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 /**
@@ -40,12 +41,11 @@ public interface DrawCircuit extends DrawModule {
     Rectangle getRectangle();
 
     /**
-     * Returns base64-encoded PNG symbol representation of the circuit. Conversion to a BufferedImage via<br />
-     * <b>BufferedImage image = ImageIO.read(new ByteArrayInputStream(circuit.getSymbol()));</b>
+     * Returns PNG symbol representation of the circuit.
      * 
-     * @return byte[] representation of PNG symbol
+     * @return BufferedImage representation of PNG symbol
      */
-    byte[] getSymbol();
+    BufferedImage getSymbol();
 
     /**
      * {@inheritDoc}
