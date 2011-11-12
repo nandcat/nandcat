@@ -51,13 +51,13 @@ public class OrGate extends Gate {
      * {@inheritDoc}
      */
     protected boolean isValidOutBoundary(int outPorts) {
-        return (outPorts == 1);
+        return (outPorts >= 1);
     }
 
     /**
      * {@inheritDoc}
      */
     protected boolean isValidInBoundary(int inPorts) {
-        return (inPorts == 2);
+        return (inPorts >= 1);
     }
 }

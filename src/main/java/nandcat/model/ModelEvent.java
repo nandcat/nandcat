@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 import nandcat.model.check.CircuitCheck;
 import nandcat.model.element.DrawElement;
-import nandcat.model.element.Module;
 
 /**
  * Modelevent object fired by Model to inform its listeners about state changes (Elements/Checks/Simulation/... changed)
@@ -35,12 +34,12 @@ public class ModelEvent {
     /**
      * Constructor for initialization of the ModelEvent with a Module.
      * 
-     * @param module
-     *            Module to initialize elements with.
+     * @param element
+     *            DrawElement to initialize elements with.
      */
-    public ModelEvent(Module module) {
+    public ModelEvent(DrawElement element) {
         elements = new HashSet<DrawElement>();
-        elements.add(module);
+        elements.add(element);
     }
 
     /**

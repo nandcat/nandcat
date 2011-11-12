@@ -70,7 +70,6 @@ public class DeleteTool implements Tool {
         setActive(true);
     }
 
-
     /**
      * {@inheritDoc}
      */

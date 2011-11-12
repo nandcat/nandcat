@@ -127,6 +127,10 @@ public class Model implements ClockListener {
         viewModules.add(lamp);
         ViewModule not = new ViewModule("NOT", new NotGate(), "", null);
         viewModules.add(not);
+        ViewModule andGate3 = new ViewModule("AND-3", new AndGate(3, 1), "", null);
+        viewModules.add(andGate3);
+        ViewModule orGate3 = new ViewModule("OR-3", new OrGate(3, 1), "", null);
+        viewModules.add(orGate3);
         // FIXME walk through circuit-Ordner and fill viewModule2Module
         ViewModule circ = new ViewModule("SomeCircuit", null, "circuit.xml", null);
         viewModules.add(circ);
@@ -254,6 +258,10 @@ public class Model implements ClockListener {
      */
     public void setModuleSelected(Module m, boolean b) {
         m.setSelected(b);
+        ModelEvent e = new ModelEvent(m);
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
+        }
     }
 
     /**
@@ -390,8 +398,16 @@ public class Model implements ClockListener {
         // e.setSelected(true);
         // }
         // }
+        Set<DrawElement> DrawElements = new HashSet<DrawElement>();
         for (Element e : getElementsAt(rect)) {
             e.setSelected(true);
+            DrawElements.add((DrawElement) e);
+        }
+        // TODO jaja Codeduplikation checken wir spaeter
+        ModelEvent e = new ModelEvent();
+        e.setElements(DrawElements);
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
         }
     }
 
@@ -411,9 +427,17 @@ public class Model implements ClockListener {
      * Deselects all Elements on the top level circuit.
      */
     public void deselectAll() {
+        Set<DrawElement> elements = new HashSet<DrawElement>();
         for (Element e : getElements()) {
             e.setSelected(false);
+            elements.add(e);
         }
+        ModelEvent e = new ModelEvent();
+        e.setElements(elements);
+        for (ModelListener l : listeners) {
+            l.simulationStopped(e);
+        }
+
     }
 
     /**
@@ -462,6 +486,10 @@ public class Model implements ClockListener {
         }
         // TODO auskommentiert für simulation
         // clock.startSimulation();
+        ModelEvent e = new ModelEvent();
+        for (ModelListener l : listeners) {
+            l.simulationStarted(e);
+        }
     }
 
     /**
@@ -469,6 +497,10 @@ public class Model implements ClockListener {
      */
     public void stopSimulation() {
         clock.stopSimulation();
+        ModelEvent e = new ModelEvent();
+        for (ModelListener l : listeners) {
+            l.simulationStopped(e);
+        }
     }
 
     /**
@@ -476,6 +508,11 @@ public class Model implements ClockListener {
      */
     public void clearCircuit() {
         circuit.getElements().clear();
+        ModelEvent e = new ModelEvent();
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
+        }
+
     }
 
     /**
@@ -500,6 +537,10 @@ public class Model implements ClockListener {
         Connection connection = circuit.addConnection(inPort, outPort);
         inPort.setConnection(connection);
         outPort.setConnection(connection);
+        ModelEvent e = new ModelEvent(connection);
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
+        }
     }
 
     /**
@@ -512,6 +553,10 @@ public class Model implements ClockListener {
      */
     public void addModule(Module m, Point p) {
         circuit.addModule(m, p);
+        ModelEvent e = new ModelEvent(m);
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
+        }
     }
 
     /**
@@ -528,19 +573,11 @@ public class Model implements ClockListener {
         if (m.getFileName() != "") {
             module = getCircuitByFileName(m.getFileName());
         } else {
-            try {
-                module = m.getModule().getClass().getConstructor().newInstance();
-            } catch (Exception e) {
-                throw new IllegalArgumentException("ViewModule does not provide a Module with a default constructor.");
-            }
+            module = m.getModule();
         }
 
         if (module != null) {
             circuit.addModule(module, p);
-            ModelEvent e = new ModelEvent(module);
-            for (ModelListener l : listeners) {
-                l.elementsChanged(e);
-            }
         }
     }
 
@@ -552,6 +589,10 @@ public class Model implements ClockListener {
      */
     public void removeElement(Element e) {
         circuit.removeElement(e);
+        ModelEvent event = new ModelEvent();
+        for (ModelListener l : listeners) {
+            l.elementsChanged(event);
+        }
     }
 
     /**

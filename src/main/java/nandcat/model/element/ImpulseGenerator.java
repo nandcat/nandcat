@@ -41,6 +41,11 @@ public class ImpulseGenerator implements Module {
     private Rectangle rectangle;
 
     /**
+     * Selection state of Impulsegeneator.
+     */
+    private boolean selected;
+
+    /**
      * Constructor with frequency. The frequency is basically the necessary amount of ticks of the clock to toggle the
      * state of this ImpulseGenerator. With frequency 0, the ImpulseGenerator will not change its state. This has
      * implications for the clock's register-procedure.
@@ -158,14 +163,13 @@ public class ImpulseGenerator implements Module {
      * {@inheritDoc}
      */
     public void setSelected(boolean b) {
-        // TODO Auto-generated method stub
+        selected = b;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isSelected() {
-        // TODO Auto-generated method stub
-        return false;
+        return selected;
     }
 }
