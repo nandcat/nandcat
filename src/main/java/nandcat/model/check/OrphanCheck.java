@@ -1,5 +1,6 @@
 package nandcat.model.check;
 
+import java.util.HashSet;
 import java.util.Set;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Module;
@@ -9,10 +10,11 @@ import nandcat.model.element.Port;
  * OrphanCheck.
  * 
  * Checks if elements are without connection to other elements.
+ * 
  * @version 4
  */
 public class OrphanCheck implements CircuitCheck {
-    
+
     /**
      * Listeners for this check.
      */
@@ -22,13 +24,17 @@ public class OrphanCheck implements CircuitCheck {
      * Check is active or not.
      */
     private boolean active;
-    
+
+    public OrphanCheck() {
+        listener = new HashSet<CheckListener>();
+    }
+
     /**
      * {@inheritDoc}
      */
     public boolean isActive() {
         // TODO Auto-generated method stub
-        return false;
+        return active;
     }
 
     /**
@@ -36,7 +42,7 @@ public class OrphanCheck implements CircuitCheck {
      */
     public boolean setActive(boolean active) {
         // TODO Auto-generated method stub
-        return false;
+        return this.active = active;
     }
 
     /**
@@ -66,6 +72,7 @@ public class OrphanCheck implements CircuitCheck {
      * {@inheritDoc}
      */
     public void addListener(CheckListener l) {
+
         listener.add(l);
     }
 
@@ -73,6 +80,10 @@ public class OrphanCheck implements CircuitCheck {
      * {@inheritDoc}
      */
     public void removeListener(CheckListener l) {
-        listener.remove(l);    
+        listener.remove(l);
+    }
+    
+    public String toString() {
+        return "Test auf Verwaisung";
     }
 }
