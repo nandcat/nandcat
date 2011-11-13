@@ -14,7 +14,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import nandcat.model.Model;
-import nandcat.view.WorkspaceListener;
 import org.apache.log4j.Logger;
 
 /**
@@ -38,9 +37,24 @@ public class ExportTool implements Tool {
     private ImageIcon icon; // TODO icon setzen
 
     /**
+     * Holds uuid of last saved circuit.
+     */
+    private String saveLastUUID = "";
+
+    /**
+     * Holds file handle to last saved circuit file.
+     */
+    private File saveLastFile = null;
+
+    /**
      * String representation of the Tool.
      */
     private List<String> represent = new LinkedList<String>() {
+
+        /**
+         * Default serial verion uid.
+         */
+        private static final long serialVersionUID = 1L;
 
         {
             add("save");
@@ -53,11 +67,6 @@ public class ExportTool implements Tool {
      * ActionListerner of the Tool on the Buttons.
      */
     private ActionListener buttonListener;
-
-    /**
-     * WorkspaceListener of the Tool.
-     */
-    private WorkspaceListener workspaceListener;
 
     /**
      * Class logger instance.
@@ -89,10 +98,30 @@ public class ExportTool implements Tool {
      *            String representing functionality to activate.
      */
     private void request(String command) {
-        if (command.equals("save") || command.equals("saveAs")) {
-            actionSave(command);
+        if (command.equals("saveAs")) {
+            actionSaveAs();
+        } else if (command.equals("save")) {
+            actionSave();
         } else {
             actionNew(command);
+        }
+    }
+
+    /**
+     * Performs a quicksave to the last used file if available.
+     */
+    private void actionSave() {
+
+        // check if current circuit is same as last save
+        if (model.getCircuit().getUuid().equals(saveLastUUID)) {
+            LOG.debug("Try to quick save to last file used: " + saveLastFile.getAbsolutePath());
+            if (saveLastFile != null) {
+                model.exportToFile(saveLastFile);
+            }
+        } else {
+            LOG.debug("Last save not available - no quicksave");
+            JOptionPane.showMessageDialog(controller.getView(), "Please save to a file first to use quicksave",
+                    "Quicksave not possible", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -108,11 +137,8 @@ public class ExportTool implements Tool {
 
     /**
      * Shows save dialogs to export the circuit.
-     * 
-     * @param command
-     *            command requested.
      */
-    private void actionSave(String command) {
+    private void actionSaveAs() {
         JFileChooser fc = new JFileChooser();
         ImportExportUtils.addFileFilterToChooser(fc, model.getExportFormats());
         fc.setAcceptAllFileFilterUsed(false);
@@ -150,7 +176,8 @@ public class ExportTool implements Tool {
                 }
 
                 LOG.debug("Exporting: " + file.getName());
-                // Ergänze extension
+                saveLastFile = file;
+                saveLastUUID = model.getCircuit().getUuid();
                 model.exportToFile(file);
             } else {
                 LOG.debug("File is null");
@@ -160,6 +187,9 @@ public class ExportTool implements Tool {
         }
     }
 
+    /**
+     * Shows the image chooser dialog for changing circuits symbol.
+     */
     private void showImageLoadFileChooser() {
         JFileChooser fc = new JFileChooser();
         fc.setAcceptAllFileFilterUsed(false);
@@ -178,7 +208,7 @@ public class ExportTool implements Tool {
                         imgSuccess = true;
                     }
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
+                    // TODO Check exception
                     e.printStackTrace();
                 }
                 if (!imgSuccess) {
