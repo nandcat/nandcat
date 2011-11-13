@@ -124,6 +124,9 @@ public class CreateTool implements Tool {
      * Creates a new Element at the given Point.
      */
     private void createElement(Point point) {
+        point.x -= MOUSE_TOLERANCE.height / 2;
+        point.y -= MOUSE_TOLERANCE.width / 2;
+
         Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(point, MOUSE_TOLERANCE));
 
         // First check if the user clicked on an empty space on the workspace. This means they want to create a new
