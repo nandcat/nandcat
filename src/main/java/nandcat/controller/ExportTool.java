@@ -45,6 +45,7 @@ public class ExportTool implements Tool {
         {
             add("save");
             add("saveAs");
+            add("new");
         }
     }; // TODO beschreibung schreiben
 
@@ -85,55 +86,77 @@ public class ExportTool implements Tool {
      * Request activation of functionality.
      * 
      * @param command
-     *            String representing functionality to active.
+     *            String representing functionality to activate.
      */
     private void request(String command) {
         if (command.equals("save") || command.equals("saveAs")) {
-            JFileChooser fc = new JFileChooser();
-            ImportExportUtils.addFileFilterToChooser(fc, model.getExportFormats());
-            fc.setAcceptAllFileFilterUsed(false);
-            int returnVal = fc.showSaveDialog(controller.getView());
+            actionSave(command);
+        } else {
+            actionNew(command);
+        }
+    }
 
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File file = fc.getSelectedFile();
-                if (file != null) {
-                    String extension = ImportExportUtils.getExtension(file);
-                    if (extension == null) {
-                        ExtensionFileFilter eFileFilter = (ExtensionFileFilter) fc.getFileFilter();
-                        String ext = eFileFilter.getExtension();
-                        file = new File(file.getAbsolutePath() + "." + ext);
-                    }
+    /**
+     * Replaces the existing circuit against a new one.
+     * 
+     * @param command
+     *            String representing functionality to activate
+     */
+    private void actionNew(String command) {
+        // IMPL Neue Schaltung anlegen. Model funktionen?
+    }
 
-                    // Overwrite Dialog
-                    if (file.exists()) {
-                        int response = JOptionPane.showConfirmDialog(null, "Overwrite existing file?",
-                                "Confirm Overwrite", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-                        if (response == JOptionPane.CANCEL_OPTION) {
-                            LOG.debug("Save command cancelled by user.");
-                            return;
-                        }
-                    }
+    /**
+     * Shows save dialogs to export the circuit.
+     * 
+     * @param command
+     *            command requested.
+     */
+    private void actionSave(String command) {
+        JFileChooser fc = new JFileChooser();
+        ImportExportUtils.addFileFilterToChooser(fc, model.getExportFormats());
+        fc.setAcceptAllFileFilterUsed(false);
+        int returnVal = fc.showSaveDialog(controller.getView());
 
-                    // Add Image to circuit
-                    Object[] options = { "Yes, please", "No, thanks", "Delete existing Image" };
-                    int n = JOptionPane.showOptionDialog(controller.getView(),
-                            "Would you like to add a image to the current circuit?", "Circuit Image",
-                            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
-                    if (n == 0) {
-                        showImageLoadFileChooser();
-                    } else if (n == 2) {
-                        model.getCircuit().setSymbol(null);
-                    }
-
-                    LOG.debug("Exporting: " + file.getName());
-                    // Ergänze extension
-                    model.exportToFile(file);
-                } else {
-                    LOG.debug("File is null");
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            if (file != null) {
+                String extension = ImportExportUtils.getExtension(file);
+                if (extension == null) {
+                    ExtensionFileFilter eFileFilter = (ExtensionFileFilter) fc.getFileFilter();
+                    String ext = eFileFilter.getExtension();
+                    file = new File(file.getAbsolutePath() + "." + ext);
                 }
+
+                // Overwrite Dialog
+                if (file.exists()) {
+                    int response = JOptionPane.showConfirmDialog(null, "Overwrite existing file?", "Confirm Overwrite",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    if (response == JOptionPane.CANCEL_OPTION) {
+                        LOG.debug("Save command cancelled by user.");
+                        return;
+                    }
+                }
+
+                // Add Image to circuit
+                Object[] options = { "Yes, please", "No, thanks", "Delete existing Image" };
+                int n = JOptionPane.showOptionDialog(controller.getView(),
+                        "Would you like to add a image to the current circuit?", "Circuit Image",
+                        JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+                if (n == 0) {
+                    showImageLoadFileChooser();
+                } else if (n == 2) {
+                    model.getCircuit().setSymbol(null);
+                }
+
+                LOG.debug("Exporting: " + file.getName());
+                // Ergänze extension
+                model.exportToFile(file);
             } else {
-                LOG.debug("Save command cancelled by user.");
+                LOG.debug("File is null");
             }
+        } else {
+            LOG.debug("Save command cancelled by user.");
         }
     }
 
