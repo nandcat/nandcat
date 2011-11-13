@@ -14,7 +14,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import nandcat.model.Model;
-import nandcat.view.WorkspaceListener;
 import org.apache.log4j.Logger;
 
 /**
@@ -38,13 +37,29 @@ public class ExportTool implements Tool {
     private ImageIcon icon; // TODO icon setzen
 
     /**
+     * Holds uuid of last saved circuit.
+     */
+    private String saveLastUUID = "";
+
+    /**
+     * Holds file handle to last saved circuit file.
+     */
+    private File saveLastFile = null;
+
+    /**
      * String representation of the Tool.
      */
     private List<String> represent = new LinkedList<String>() {
 
+        /**
+         * Default serial verion uid.
+         */
+        private static final long serialVersionUID = 1L;
+
         {
             add("save");
             add("saveAs");
+            add("new");
         }
     }; // TODO beschreibung schreiben
 
@@ -52,11 +67,6 @@ public class ExportTool implements Tool {
      * ActionListerner of the Tool on the Buttons.
      */
     private ActionListener buttonListener;
-
-    /**
-     * WorkspaceListener of the Tool.
-     */
-    private WorkspaceListener workspaceListener;
 
     /**
      * Class logger instance.
@@ -85,58 +95,101 @@ public class ExportTool implements Tool {
      * Request activation of functionality.
      * 
      * @param command
-     *            String representing functionality to active.
+     *            String representing functionality to activate.
      */
     private void request(String command) {
-        if (command.equals("save") || command.equals("saveAs")) {
-            JFileChooser fc = new JFileChooser();
-            ImportExportUtils.addFileFilterToChooser(fc, model.getExportFormats());
-            fc.setAcceptAllFileFilterUsed(false);
-            int returnVal = fc.showSaveDialog(controller.getView());
-
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File file = fc.getSelectedFile();
-                if (file != null) {
-                    String extension = ImportExportUtils.getExtension(file);
-                    if (extension == null) {
-                        ExtensionFileFilter eFileFilter = (ExtensionFileFilter) fc.getFileFilter();
-                        String ext = eFileFilter.getExtension();
-                        file = new File(file.getAbsolutePath() + "." + ext);
-                    }
-
-                    // Overwrite Dialog
-                    if (file.exists()) {
-                        int response = JOptionPane.showConfirmDialog(null, "Overwrite existing file?",
-                                "Confirm Overwrite", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-                        if (response == JOptionPane.CANCEL_OPTION) {
-                            LOG.debug("Save command cancelled by user.");
-                            return;
-                        }
-                    }
-
-                    // Add Image to circuit
-                    Object[] options = { "Yes, please", "No, thanks", "Delete existing Image" };
-                    int n = JOptionPane.showOptionDialog(controller.getView(),
-                            "Would you like to add a image to the current circuit?", "Circuit Image",
-                            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
-                    if (n == 0) {
-                        showImageLoadFileChooser();
-                    } else if (n == 2) {
-                        model.getCircuit().setSymbol(null);
-                    }
-
-                    LOG.debug("Exporting: " + file.getName());
-                    // Ergänze extension
-                    model.exportToFile(file);
-                } else {
-                    LOG.debug("File is null");
-                }
-            } else {
-                LOG.debug("Save command cancelled by user.");
-            }
+        if (command.equals("saveAs")) {
+            actionSaveAs();
+        } else if (command.equals("save")) {
+            actionSave();
+        } else {
+            actionNew(command);
         }
     }
 
+    /**
+     * Performs a quicksave to the last used file if available.
+     */
+    private void actionSave() {
+
+        // check if current circuit is same as last save
+        if (model.getCircuit().getUuid().equals(saveLastUUID)) {
+            LOG.debug("Try to quick save to last file used: " + saveLastFile.getAbsolutePath());
+            if (saveLastFile != null) {
+                model.exportToFile(saveLastFile);
+            }
+        } else {
+            LOG.debug("Last save not available - no quicksave");
+            JOptionPane.showMessageDialog(controller.getView(), "Please save to a file first to use quicksave",
+                    "Quicksave not possible", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    /**
+     * Replaces the existing circuit against a new one.
+     * 
+     * @param command
+     *            String representing functionality to activate
+     */
+    private void actionNew(String command) {
+        // IMPL Neue Schaltung anlegen. Model funktionen?
+    }
+
+    /**
+     * Shows save dialogs to export the circuit.
+     */
+    private void actionSaveAs() {
+        JFileChooser fc = new JFileChooser();
+        ImportExportUtils.addFileFilterToChooser(fc, model.getExportFormats());
+        fc.setAcceptAllFileFilterUsed(false);
+        int returnVal = fc.showSaveDialog(controller.getView());
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            if (file != null) {
+                String extension = ImportExportUtils.getExtension(file);
+                if (extension == null) {
+                    ExtensionFileFilter eFileFilter = (ExtensionFileFilter) fc.getFileFilter();
+                    String ext = eFileFilter.getExtension();
+                    file = new File(file.getAbsolutePath() + "." + ext);
+                }
+
+                // Overwrite Dialog
+                if (file.exists()) {
+                    int response = JOptionPane.showConfirmDialog(null, "Overwrite existing file?", "Confirm Overwrite",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    if (response == JOptionPane.CANCEL_OPTION) {
+                        LOG.debug("Save command cancelled by user.");
+                        return;
+                    }
+                }
+
+                // Add Image to circuit
+                Object[] options = { "Yes, please", "No, thanks", "Delete existing Image" };
+                int n = JOptionPane.showOptionDialog(controller.getView(),
+                        "Would you like to add a image to the current circuit?", "Circuit Image",
+                        JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+                if (n == 0) {
+                    showImageLoadFileChooser();
+                } else if (n == 2) {
+                    model.getCircuit().setSymbol(null);
+                }
+
+                LOG.debug("Exporting: " + file.getName());
+                saveLastFile = file;
+                saveLastUUID = model.getCircuit().getUuid();
+                model.exportToFile(file);
+            } else {
+                LOG.debug("File is null");
+            }
+        } else {
+            LOG.debug("Save command cancelled by user.");
+        }
+    }
+
+    /**
+     * Shows the image chooser dialog for changing circuits symbol.
+     */
     private void showImageLoadFileChooser() {
         JFileChooser fc = new JFileChooser();
         fc.setAcceptAllFileFilterUsed(false);
@@ -155,7 +208,7 @@ public class ExportTool implements Tool {
                         imgSuccess = true;
                     }
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
+                    // TODO Check exception
                     e.printStackTrace();
                 }
                 if (!imgSuccess) {

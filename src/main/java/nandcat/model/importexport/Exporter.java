@@ -22,6 +22,16 @@ public interface Exporter {
     void setFile(File file);
 
     /**
+     * Sets a list of available external circuits, which can be used while exporting a file. Should be a set of circuits
+     * mapped with the circuits unique identifier. The Circuits will not be exported inside the file.
+     * 
+     * @param circuits
+     *            Circuits uuid mapped with the circuit object. Circuit object is the prototype for further instances of
+     *            this circuit.
+     */
+    void setExternalCircuits(Map<String, Circuit> circuits);
+
+    /**
      * Exports circuit from file.
      * 
      * @return True iff circuit was correctly exported.
