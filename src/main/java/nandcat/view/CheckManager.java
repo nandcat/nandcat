@@ -1,11 +1,13 @@
 package nandcat.view;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
 import nandcat.model.check.CheckEvent;
 import nandcat.model.check.CheckListener;
@@ -19,7 +21,7 @@ public class CheckManager extends JFrame {
     /**
      * frame of the CheckManager.
      */
-    private JFrame frame = new JFrame("CheckManager");
+    //private JFrame frame = new JFrame("CheckManager");
 
     /**
      * Default serial version uid.
@@ -29,7 +31,7 @@ public class CheckManager extends JFrame {
     /**
      * CheckListener of the CheckManager, listening on the Checks.
      */
-    private CheckListener checkListener;
+    //private CheckListener checkListener;
 
     /**
      * Icon representing a check has not started yet.
@@ -54,7 +56,7 @@ public class CheckManager extends JFrame {
     /**
      * Reference on this CheckManager.
      */
-    private CheckManager checkManager;
+    //private CheckManager checkManager;
 
     /**
      * Location of upper left corner of the frame on the screen.
@@ -71,7 +73,7 @@ public class CheckManager extends JFrame {
      */
     public CheckManager(Set<CircuitCheck> set, ItemHandler boxListener) {
         setupCheckmanager(set, boxListener);
-        checkListener = new CheckListener() {
+        CheckListener checkListener = new CheckListener() {
 
             public void checkStarted() {
                 changeSymbol(checkStarted);
@@ -82,9 +84,11 @@ public class CheckManager extends JFrame {
             }
         };
         for (CircuitCheck c : set) {
+
+            //why null?
             c.addListener(checkListener);
         }
-        checkManager = this;
+        //checkManager = this;
     }
 
     /**
@@ -94,7 +98,8 @@ public class CheckManager extends JFrame {
      *            boolean represents if visible or not.
      */
     public void setVisible(boolean visible) {
-        checkManager.setVisible(visible);
+        //checkManager.setVisible(visible);
+        super.setVisible(visible);
     }
 
     /**
@@ -106,15 +111,22 @@ public class CheckManager extends JFrame {
      *            Listener for the CheckBoxes
      */
     private void setupCheckmanager(Set<CircuitCheck> checks, ItemHandler boxListener) {
-        frame.setSize(600, 400);
-        frame.setLocation(frameLocation);
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        //frame.setSize(600, 400);
+        //frame.setLocation(frameLocation);
+        //frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setSize(600, 400);
+        setLocation(frameLocation);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.white);
         JCheckBox checkbox = new JCheckBox();
         for (CircuitCheck check : checks) {
             JCheckBoxMenuItem item = new JCheckBoxMenuItem(check.toString(), checkPending);
             item.addItemListener(boxListener);
             checkbox.add(item);
         }
+        panel.add(checkbox);
+        this.add(panel);
     }
 
     /**
