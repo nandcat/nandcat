@@ -72,9 +72,9 @@ public class SEPAFExporter implements Exporter {
     private Element root = null;
 
     /**
-     * Prototype circuits mapped with their uuid used if missing circuits occur.
+     * External circuits mapped with their uuid and external uuid.
      */
-    private Map<String, Circuit> externalCircuits = new HashMap<String, Circuit>();
+    private Map<String, String> externalCircuits = new HashMap<String, String>();
 
     /**
      * {@inheritDoc}
@@ -295,7 +295,7 @@ public class SEPAFExporter implements Exporter {
         } else if (m instanceof Circuit) {
             if (externalCircuits.containsKey(((Circuit) m).getUuid())) {
                 e.setAttribute("type", "missing-circuit");
-                e.setAttribute("type2", ((Circuit) m).getUuid());
+                e.setAttribute("type2", externalCircuits.get(((Circuit) m).getUuid()));
             } else {
                 e.setAttribute("type", "circuit");
                 e.setAttribute("type2", ((Circuit) m).getUuid());
@@ -360,7 +360,7 @@ public class SEPAFExporter implements Exporter {
     /**
      * {@inheritDoc}
      */
-    public void setExternalCircuits(Map<String, Circuit> circuits) {
+    public void setExternalCircuits(Map<String, String> circuits) {
         externalCircuits = circuits;
     }
 }
