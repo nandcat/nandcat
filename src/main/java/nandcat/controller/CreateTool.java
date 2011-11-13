@@ -15,17 +15,15 @@ import javax.swing.JComboBox;
 import nandcat.model.Model;
 import nandcat.model.ViewModule;
 import nandcat.model.element.DrawElement;
-import nandcat.model.element.Module;
 import nandcat.model.element.Port;
-import nandcat.view.ElementDrawer;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
 import nandcat.view.WorkspaceListenerAdapter;
 
 /**
- * The CreateTool is responsible for the creation of new Modules and Connections. They will be displayed on the Workspace and added
- * to the Model.
+ * The CreateTool is responsible for the creation of new Modules and Connections. They will be displayed on the
+ * Workspace and added to the Model.
  */
 public class CreateTool implements Tool {
 
@@ -72,11 +70,11 @@ public class CreateTool implements Tool {
     /**
      * Tolerance used if mouse clicked.
      */
-    private static final Dimension MOUSE_TOLERANCE = new Dimension(2, 2);
+    private static final Dimension MOUSE_TOLERANCE = new Dimension(10, 10);
 
     /**
-     * Port representing the source of a new Connection.
-     * NULL if the user did not click on an Element to create a Connection.
+     * Port representing the source of a new Connection. NULL if the user did not click on an Element to create a
+     * Connection.
      */
     private Port sourcePort;
 
@@ -128,26 +126,27 @@ public class CreateTool implements Tool {
     private void createElement(Point point) {
         Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(point, MOUSE_TOLERANCE));
 
+        // First check if the user clicked on an empty space on the workspace. This means they want to create a new
+        // module.
         if (elementsAt.isEmpty()) {
             if (selectedModule != null) {
                 model.addModule(selectedModule, point);
             }
         } else {
-            Module toConnect = null;
-            for (DrawElement element : elementsAt) {
-                if (element instanceof Module) {
-                    toConnect = (Module) element;
-                }
-            }
             if (sourcePort == null) {
-                /*
-                ElementDrawer drawer = view.getDrawer();
-                sourcePort = drawer.getPortAt(new Rectangle(point), toConnect);*/
-                sourcePort = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
+                if (model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE)) != null) {
+                    sourcePort = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
+                }
             } else {
-                Port targetPort = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
-                model.addConnection(sourcePort, targetPort);
-                sourcePort = null;
+                if (model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE)) != null) {
+                    Port targetPort = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
+                    if (!sourcePort.isOutPort()) {
+                        model.addConnection(targetPort, sourcePort);
+                    } else {
+                        model.addConnection(sourcePort, targetPort);
+                    }
+                    sourcePort = null;
+                }
             }
         }
     }
@@ -157,6 +156,7 @@ public class CreateTool implements Tool {
      */
     private void removeListeners() {
         view.getWorkspace().removeListener(workspaceListener);
+        sourcePort = null;
     }
 
     /**
@@ -171,9 +171,9 @@ public class CreateTool implements Tool {
                     // User first has to click on CreateButton before he can add a module to the workspace
                     activateTool();
                 } else if (e.getActionCommand().equals("selectModule")) {
-                  if (e.getSource() instanceof JComboBox) {
-                      selectedModule = (ViewModule) ((JComboBox) e.getSource()).getSelectedItem();
-                  }
+                    if (e.getSource() instanceof JComboBox) {
+                        selectedModule = (ViewModule) ((JComboBox) e.getSource()).getSelectedItem();
+                    }
                 }
             }
         };

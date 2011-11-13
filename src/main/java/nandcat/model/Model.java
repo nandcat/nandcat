@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import nandcat.model.check.CircuitCheck;
+import nandcat.model.check.OrphanCheck;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
@@ -107,6 +108,7 @@ public class Model implements ClockListener {
         loadedModules = new LinkedList<Module>();
         initExporters();
         initImporters();
+        checks.add(new OrphanCheck());
     }
 
     /**
@@ -503,6 +505,10 @@ public class Model implements ClockListener {
         if (module != null) {
             circuit.addModule(module, p);
         }
+        ModelEvent e = new ModelEvent(module);
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
+        }
     }
 
     /**
@@ -589,6 +595,10 @@ public class Model implements ClockListener {
             if (!moveBy(m, p)) {
                 result = false;
             }
+        }
+        ModelEvent e = new ModelEvent();
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
         }
         return result;
     }
