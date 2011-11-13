@@ -1,19 +1,16 @@
 package nandcat.controller;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import nandcat.model.Model;
-import nandcat.model.element.DrawElement;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
@@ -35,11 +32,6 @@ public class ViewTool implements Tool {
     private Tool viewTool;
 
     /**
-     * Current Model instance.
-     */
-    private Model model;
-
-    /**
      * Current Controller instance.
      */
     private Controller controller;
@@ -54,6 +46,10 @@ public class ViewTool implements Tool {
      */
     private List<String> represent = new LinkedList<String>() {
 
+        /**
+         * Default uid.
+         */
+        private static final long serialVersionUID = 1L;
         {
             add("move");
         }
@@ -70,6 +66,11 @@ public class ViewTool implements Tool {
     private WorkspaceListener workspaceListener;
 
     /**
+     * Rectangle representing the visible Part of the Workspace.
+     */
+    private Rectangle viewportRect;
+
+    /**
      * Constructs the ViewTool.
      * 
      * @param controller
@@ -78,15 +79,12 @@ public class ViewTool implements Tool {
     public ViewTool(Controller controller) {
         this.controller = controller;
         view = controller.getView();
-        model = controller.getModel();
         viewTool = this;
         view.addViewPortListener(new ChangeListener() {
 
+            // if size is changed it my happen that former invisible elements come in sight.
             public void stateChanged(ChangeEvent e) {
                 view.giveViewPortRect();
-                List<DrawElement> elem = model.getDrawElements();
-                Set<DrawElement> elements = new HashSet<DrawElement>();
-                elements.addAll(elem);
                 view.getWorkspace().redraw();
             }
         });
@@ -108,20 +106,22 @@ public class ViewTool implements Tool {
 
                     public void mouseDragged(WorkspaceEvent e) {
                         // move ViewPort
-                        int x = e.getLocation().x - offset.x;
-                        int y = e.getLocation().y - offset.y;
-                        view.setViewportPosition(x, y);
+                        // viewportRect.x += (e.getLocation().x - offset.x);
+                        // viewportRect.y += (e.getLocation().y - offset.y);
+                        viewportRect.setLocation(e.getLocation().x - offset.x, e.getLocation().y - offset.y);
+                        view.setViewportPosition(viewportRect);
+                        // int x = e.getLocation().x - offset.x;
+                        // int y = e.getLocation().y - offset.y;
+                        // view.setViewportPosition(x, y);
                         offset = e.getLocation();
                         // redraw new elements in sight
                         view.giveViewPortRect();
-                        List<DrawElement> elem = model.getDrawElements();
-                        Set<DrawElement> elements = new HashSet<DrawElement>();
-                        elements.addAll(elem);
                         view.getWorkspace().redraw();
                     }
                 };
             }
             view.getWorkspace().addListener(workspaceListener);
+            viewportRect = view.getViewRect();
         } else {
             view.getWorkspace().removeListener(workspaceListener);
         }
