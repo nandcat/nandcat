@@ -143,6 +143,8 @@ public class Model implements ClockListener {
         viewModules.add(lamp);
         ViewModule not = new ViewModule("NOT", new NotGate(), "", null);
         viewModules.add(not);
+        ViewModule impy = new ViewModule("ImpulseGenerator", new ImpulseGenerator(), "", null);
+        viewModules.add(impy);
         ViewModule andGate3 = new ViewModule("AND-3", new AndGate(3, 1), "", null);
         viewModules.add(andGate3);
         ViewModule orGate3 = new ViewModule("OR-3", new OrGate(3, 1), "", null);
@@ -175,12 +177,12 @@ public class Model implements ClockListener {
     public Port getPortAt(Rectangle rect) {
         for (Module m : getModsAt(rect)) {
             for (Port p : m.getInPorts()) {
-                if (p.getRectangle().intersects(rect)) {
+                if (p.getRectangle() != null && p.getRectangle().intersects(rect)) {
                     return p;
                 }
             }
             for (Port p : m.getOutPorts()) {
-                if (p.getRectangle().intersects(rect)) {
+                if (p.getRectangle() != null && p.getRectangle().intersects(rect)) {
                     return p;
                 }
             }
