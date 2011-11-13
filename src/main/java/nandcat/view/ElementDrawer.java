@@ -2,6 +2,7 @@ package nandcat.view;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.geom.Line2D;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
@@ -106,4 +107,12 @@ public interface ElementDrawer {
      *            Rectangle to draw.
      */
     void draw(Rectangle r);
+
+    /**
+     * Draws a line on the workspace. Used e.g. for "live" drawing a connection line.
+     * 
+     * @param l
+     *            Line to draw.
+     */
+    void draw(Line2D l);
 }

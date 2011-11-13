@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
+import java.awt.geom.Line2D;
 import java.util.List;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
@@ -194,6 +195,11 @@ public class StandardElementDrawer implements ElementDrawer {
      * Default lamp dimension.
      */
     private static final Dimension LAMP_DIMENSION = new Dimension(40, 40);
+
+    /**
+     * Color of the line drawn using draw(Line).
+     */
+    private static final Color LINE_COLOR = Color.BLACK;
 
     /**
      * Class logger instance.
@@ -619,6 +625,16 @@ public class StandardElementDrawer implements ElementDrawer {
         }
         g.setColor(RECTANGLE_COLOR);
         g.drawRect(r.x, r.y, r.width, r.height);
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void draw(Line2D l) {
+        if (l == null) {
+            throw new IllegalArgumentException();
+        }
+        g.setColor(LINE_COLOR);
+        g.drawLine((int) l.getX1(), (int) l.getY1(), (int) l.getX2(), (int) l.getY2());
     }
 }
