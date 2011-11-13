@@ -1,7 +1,10 @@
 package nandcat.model.check;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
+import nandcat.model.check.CheckEvent.State;
 import nandcat.model.element.Circuit;
+import nandcat.model.element.Element;
 
 /**
  * SinkCheck.
@@ -9,7 +12,7 @@ import nandcat.model.element.Circuit;
  * Checks if all elements are (in)directly connected to a sink.
  */
 public class SinkCheck implements CircuitCheck {
-    
+
     /**
      * Listeners for this check.
      */
@@ -18,30 +21,53 @@ public class SinkCheck implements CircuitCheck {
     /**
      * Check is active or not.
      */
-    boolean active;
-    
+    private boolean active;
+
+    /**
+     * Constructor for SinkCheck. By default the check is active.
+     */
+    public SinkCheck() {
+        listener = new LinkedHashSet<CheckListener>();
+        active = true;
+    }
+
     /**
      * {@inheritDoc}
      */
     public boolean isActive() {
-        // TODO Auto-generated method stub
-        return false;
+        return active;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean setActive(boolean active) {
-        // TODO Auto-generated method stub
-        return false;
+        return this.active = active;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean test(Circuit circuit) {
-        // TODO Auto-generated method stub
+        Set<Element> elements = new LinkedHashSet<Element>();
+        informListeners(State.RUNNING, elements);
         return false;
+    }
+
+    /**
+     * Notifies the Classes implementing the CheckListener interface about a change in this Check.
+     * 
+     * @param state
+     *            State of the check.
+     * @param elements
+     *            Elements causing a fail in the check. Empty if the check started or succeeded.
+     */
+    private void informListeners(State state, Set<Element> elements) {
+        // Event informing listeners that check has started.
+        CheckEvent e = new CheckEvent(State.RUNNING, elements, this);
+        for (CheckListener l : listener) {
+            l.checkChanged(e);
+        }
     }
 
     /**
@@ -55,6 +81,13 @@ public class SinkCheck implements CircuitCheck {
      * {@inheritDoc}
      */
     public void removeListener(CheckListener l) {
-        listener.remove(l);    
+        listener.remove(l);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return "Prüft ob alle Bausteine indirekt mit einer Lampe verbunden sind";
     }
 }

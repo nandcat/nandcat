@@ -1,10 +1,13 @@
 package nandcat.model.check;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
+import nandcat.model.check.CheckEvent.State;
 import nandcat.model.element.Circuit;
+import nandcat.model.element.Element;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 
@@ -14,7 +17,7 @@ import nandcat.model.element.Port;
  * Checks if all elements are (in)directly connected to a source.
  */
 public class SourceCheck implements CircuitCheck {
-    
+
     /**
      * Listeners for this check.
      */
@@ -24,27 +27,35 @@ public class SourceCheck implements CircuitCheck {
      * Check is active or not.
      */
     boolean active;
-    
+
+    /**
+     * Constructor for SourceCheck. By default the check is active.
+     */
+    public SourceCheck() {
+        listener = new LinkedHashSet<CheckListener>();
+        active = true;
+    }
+
     /**
      * {@inheritDoc}
      */
     public boolean isActive() {
-        // TODO Auto-generated method stub
-        return false;
+        return active;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean setActive(boolean active) {
-        // TODO Auto-generated method stub
-        return false;
+        return this.active = active;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean test(Circuit circuit) {
+        Set<Element> elements = new LinkedHashSet<Element>();
+        informListeners(State.RUNNING, elements);
         /*
          * idea is: start at starting elements. go with the flow and well, you should visit every module....
          */
@@ -58,8 +69,9 @@ public class SourceCheck implements CircuitCheck {
             all.remove(current);
 
             /*
-             * without visited set the amount of queue-loops might go up not only to over 9000, but straight through the roof to
-             * infinity if there is a feedback. and this check should work even if feedback check fails, kthxbye.
+             * without visited set the amount of queue-loops might go up not only to over 9000, but straight through the
+             * roof to infinity if there is a feedback. and this check should work even if feedback check fails,
+             * kthxbye.
              */
             if (!visited.contains(current)) {
                 for (Port p : current.getOutPorts()) {
@@ -69,7 +81,29 @@ public class SourceCheck implements CircuitCheck {
                 }
             }
         }
-        return all.isEmpty();
+        if (all.isEmpty()) {
+            informListeners(State.SUCCEEDED, elements);
+            return true;
+        }
+        elements.addAll(all);
+        informListeners(State.FAILED,elements);
+        return false;
+    }
+
+    /**
+     * Notifies the Classes implementing the CheckListener interface about a change in this Check.
+     * 
+     * @param state
+     *            State of the check.
+     * @param elements
+     *            Elements causing a fail in the check. Empty if the check started or succeeded.
+     */
+    private void informListeners(State state, Set<Element> elements) {
+        // Event informing listeners that check has started.
+        CheckEvent e = new CheckEvent(State.RUNNING, elements, this);
+        for (CheckListener l : listener) {
+            l.checkChanged(e);
+        }
     }
 
     /**
@@ -84,5 +118,12 @@ public class SourceCheck implements CircuitCheck {
      */
     public void removeListener(CheckListener l) {
         listener.remove(l);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return "Prüft ob alle Bausteine indirekt mit einem Taktgeber verbunden sind";
     }
 }

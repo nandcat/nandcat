@@ -11,7 +11,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import nandcat.model.check.CircuitCheck;
+import nandcat.model.check.CountCheck;
+import nandcat.model.check.FeedbackCheck;
+import nandcat.model.check.IllegalConnectionCheck;
 import nandcat.model.check.OrphanCheck;
+import nandcat.model.check.SinkCheck;
+import nandcat.model.check.SourceCheck;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
@@ -40,7 +45,17 @@ public class Model implements ClockListener {
     /**
      * A set of checks which can be performed on the circuit.
      */
-    private Set<CircuitCheck> checks;
+    private Set<CircuitCheck> checks = new LinkedHashSet<CircuitCheck>() {
+
+        {
+            add(new CountCheck());
+            add(new FeedbackCheck());
+            add(new IllegalConnectionCheck());
+            add(new OrphanCheck());
+            add(new SinkCheck());
+            add(new SourceCheck());
+        }
+    };
 
     /**
      * Set of all model listeners on the model. The listener informs the implementing class about changes in the model.
@@ -96,7 +111,7 @@ public class Model implements ClockListener {
      * The constructor for the model class.
      */
     public Model() {
-        checks = new LinkedHashSet<CircuitCheck>();
+        // checks = new LinkedHashSet<CircuitCheck>();
         listeners = new LinkedHashSet<ModelListener>();
         importFormats = new HashMap<String, String>();
         exportFormats = new HashMap<String, String>();
@@ -108,7 +123,6 @@ public class Model implements ClockListener {
         loadedModules = new LinkedList<Module>();
         initExporters();
         initImporters();
-        checks.add(new OrphanCheck());
     }
 
     /**
@@ -143,11 +157,11 @@ public class Model implements ClockListener {
      */
     public void startChecks() {
         // TODO implement
-        // for (CircuitCheck check : checks) {
-        // if (check.isActive()) {
-        // check.test(circuit);
-        // }
-        // }
+        for (CircuitCheck check : checks) {
+            if (check.isActive()) {
+                check.test(circuit);
+            }
+        }
     }
 
     /**

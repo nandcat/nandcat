@@ -172,6 +172,7 @@ public class SimulateTool implements Tool {
                         checkManager = new CheckManager(model.getChecks(), comboboxListener);
                     }
                     checkManager.setVisible(true);
+                    model.startChecks();
                 } else if (e.getActionCommand() == "editcheck") {
                     if (checkManager == null) {
                         checkManager = new CheckManager(model.getChecks(), comboboxListener);
