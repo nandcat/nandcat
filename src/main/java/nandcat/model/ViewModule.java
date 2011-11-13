@@ -1,5 +1,6 @@
 package nandcat.model;
 
+import java.lang.reflect.Constructor;
 import nandcat.model.element.Module;
 
 /**
@@ -116,7 +117,20 @@ public class ViewModule {
      * @return Module represented by this ViewModule
      */
     public Module getModule() {
-        return module;
+        Module m = null;
+        Constructor<? extends Module> x = null;
+        try {
+            x = module.getClass().getConstructor(new Class[] { int.class, int.class });
+            m = x.newInstance(module.getInPorts().size(), module.getOutPorts().size());
+            return m;
+        } catch (Exception e) {
+        }
+        try {
+            x = module.getClass().getConstructor();
+            m = x.newInstance();
+        } catch (Exception e) {
+        }
+        return m;
     }
 
     /**

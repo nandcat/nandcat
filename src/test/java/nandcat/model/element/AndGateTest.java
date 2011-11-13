@@ -65,7 +65,10 @@ public class AndGateTest extends TestCase {
         assertFalse(and.getOutPorts().get(0).getState());
 
         // check in/outBoundaries
-        assertFalse(and.isValidInBoundary(5));
-        assertFalse(and.isValidOutBoundary(5));
+        assertFalse(and.isValidInBoundary(0));
+        assertFalse(and.isValidOutBoundary(0));
+        assertTrue(and.isValidInBoundary(3));
+        assertTrue(and.isValidOutBoundary(3));
+
     }
 }

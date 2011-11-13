@@ -55,13 +55,13 @@ public class AndGate extends Gate {
      */
     protected boolean isValidOutBoundary(int outPorts) {
         // allowed for FlipFlop
-        return (outPorts > 0 && outPorts <= 2);
+        return (outPorts >= 1);
     }
 
     /**
      * {@inheritDoc}
      */
     protected boolean isValidInBoundary(int inPorts) {
-        return (inPorts == 2);
+        return (inPorts >= 1);
     }
 }

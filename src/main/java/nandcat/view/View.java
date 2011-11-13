@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -114,7 +115,7 @@ public class View extends JFrame {
     /**
      * Dimension of Buttons.
      */
-    private Dimension buttonDim = new Dimension(48, 48);
+    private Dimension buttonDim = new Dimension(32, 32);
 
     /**
      * Model instance.
@@ -371,42 +372,42 @@ public class View extends JFrame {
      */
     private void buildToolbar(JToolBar toolBar) {
         // Create Buttons of the Application. Setting Icons and Descriptions and Size.
-        ImageIcon startButtonIcon = new ImageIcon("src/resources/startbig.png");
+        ImageIcon startButtonIcon = new ImageIcon("src/resources/startmiddle.png");
         JButton start = new JButton("", startButtonIcon);
         start.setPreferredSize(buttonDim);
         start.setToolTipText("Startet die Simulation.");
         disableElements.add(start);
-        ImageIcon moveButtonIcon = new ImageIcon("src/resources/movebig.png");
+        ImageIcon moveButtonIcon = new ImageIcon("src/resources/movemiddle.png");
         JButton move = new JButton("", moveButtonIcon);
         move.setPreferredSize(buttonDim);
         move.setToolTipText("Aktiviert den Modus in welchem Mit der Maus gescrollt werden kann.");
         disableElements.add(move);
-        ImageIcon stopButtonIcon = new ImageIcon("src/resources/stopbig.png");
+        ImageIcon stopButtonIcon = new ImageIcon("src/resources/stopmiddle.png");
         JButton stop = new JButton("", stopButtonIcon);
         stop.setPreferredSize(buttonDim);
         stop.setToolTipText("Stoppt die Simulation.");
         noDisableElements.add(stop);
-        ImageIcon fasterButtonIcon = new ImageIcon("src/resources/plusbig.png");
+        ImageIcon fasterButtonIcon = new ImageIcon("src/resources/plusmiddle.png");
         JButton faster = new JButton("", fasterButtonIcon);
         faster.setPreferredSize(buttonDim);
         faster.setToolTipText("Beschleunigt die Simulationsgeschwindigkeit.");
         noDisableElements.add(faster);
-        ImageIcon slowerButtonIcon = new ImageIcon("src/resources/minusbig.png");
+        ImageIcon slowerButtonIcon = new ImageIcon("src/resources/minusmiddle.png");
         JButton slower = new JButton("", slowerButtonIcon);
         slower.setPreferredSize(buttonDim);
         slower.setToolTipText("Verlangsamt die Simulationsgeschwindigkeit.");
         noDisableElements.add(slower);
-        ImageIcon createButtonIcon = new ImageIcon("src/resources/createbig.png");
+        ImageIcon createButtonIcon = new ImageIcon("src/resources/createmiddle.png");
         JButton create = new JButton("", createButtonIcon);
         create.setPreferredSize(buttonDim);
         create.setToolTipText("Versetzt das Programm in den Modus in welchem neue Bausteine und Leitungen gesetzt werden können.");
         disableElements.add(create);
-        ImageIcon selectButtonIcon = new ImageIcon("src/resources/selectbig.png");
+        ImageIcon selectButtonIcon = new ImageIcon("src/resources/selectmiddle.png");
         JButton select = new JButton("", selectButtonIcon);
         select.setPreferredSize(buttonDim);
         select.setToolTipText("Versetzt das Programm in den Modus in welchem Bausteine und Leitungen markiert werden können.");
         disableElements.add(select);
-        ImageIcon toggleButtonIcon = new ImageIcon("src/resources/togglebig.png");
+        ImageIcon toggleButtonIcon = new ImageIcon("src/resources/togglemiddle.png");
         JButton toggle = new JButton("", toggleButtonIcon);
         toggle.setPreferredSize(buttonDim);
         toggle.setToolTipText("Versetzt das Programm in den Modus in welchem Schalter auf An und Aus gestellt werden können");
@@ -575,10 +576,11 @@ public class View extends JFrame {
      * @param y
      *            double value by which the x -coord is changed
      */
-    public void setViewportPosition(int x, int y) {
-        viewportLocation.x -= x;
-        viewportLocation.y -= y;
-        viewport.setViewPosition(viewportLocation);
+    public void setViewportPosition(Rectangle rect) {
+        // viewportLocation.x -= x;
+        // viewportLocation.y -= y;
+        // viewport.setViewPosition(viewportLocation);
+        viewport.scrollRectToVisible(rect);
     }
 
     /**
@@ -638,5 +640,14 @@ public class View extends JFrame {
      */
     public void giveViewPortRect() {
         workspace.setViewPortRect(viewport.getViewRect());
+    }
+
+    /**
+     * Getter for the ViewPort Rectangle.
+     * 
+     * @return Rectangle representing the visible part of the Workspace.
+     */
+    public Rectangle getViewRect() {
+        return viewport.getViewRect();
     }
 }

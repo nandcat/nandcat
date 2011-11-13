@@ -44,7 +44,7 @@ public class NotGate extends Gate {
      * {@inheritDoc}
      */
     protected boolean isValidOutBoundary(int outPorts) {
-        return (outPorts == 1);
+        return (outPorts >= 1);
     }
 
     /**
