@@ -24,19 +24,9 @@ import nandcat.model.check.CircuitCheck;
 public class CheckManager extends JFrame {
 
     /**
-     * frame of the CheckManager.
-     */
-    // private JFrame frame = new JFrame("CheckManager");
-
-    /**
      * Default serial version uid.
      */
     private static final long serialVersionUID = 1L;
-
-    /**
-     * CheckListener of the CheckManager, listening on the Checks.
-     */
-    // private CheckListener checkListener;
 
     /**
      * Icon representing a check has not started yet.
@@ -59,17 +49,13 @@ public class CheckManager extends JFrame {
     private ImageIcon checkFailed = new ImageIcon("src/resources/cross_icon1.gif");;
 
     /**
-     * Reference on this CheckManager.
-     */
-    // private CheckManager checkManager;
-
-    /**
      * Location of upper left corner of the frame on the screen.
      */
     private Point frameLocation = new Point(300, 250);
 
-    private ImageIcon icon;
-
+    /**
+     * JPanel on which the CheckBoxes with its CheckBoxMenuItem are placed.
+     */
     private JPanel panel;
 
     /**
@@ -101,7 +87,6 @@ public class CheckManager extends JFrame {
         for (CircuitCheck c : set) {
             c.addListener(checkListener);
         }
-        // checkManager = this;
     }
 
     /**
@@ -111,8 +96,20 @@ public class CheckManager extends JFrame {
      *            boolean represents if visible or not.
      */
     public void setVisible(boolean visible) {
-        // checkManager.setVisible(visible);
         super.setVisible(visible);
+
+        // When the CheckManager is re-opened all states are set to pending.
+        for (Component checkbox : panel.getComponents()) {
+            if (checkbox instanceof JCheckBox) {
+
+                // Then get the MenuItem and change its icon.
+                for (Component menuitem : ((JCheckBox) checkbox).getComponents()) {
+                    if (menuitem instanceof JCheckBoxMenuItem) {
+                        ((JCheckBoxMenuItem) menuitem).setIcon(checkPending);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -124,9 +121,6 @@ public class CheckManager extends JFrame {
      *            Listener for the CheckBoxes
      */
     private void setupCheckmanager(final Set<CircuitCheck> checks, ItemHandler boxListener) {
-        // frame.setSize(600, 400);
-        // frame.setLocation(frameLocation);
-        // frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setSize(620, 300);
         setLocation(frameLocation);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -150,16 +144,11 @@ public class CheckManager extends JFrame {
         };
         JCheckBox checkbox = null;
         JCheckBoxMenuItem checkboxItem = null;
-        icon = checkPending;
         for (CircuitCheck check : checks) {
-            // JCheckBoxMenuItem item = new JCheckBoxMenuItem(check.toString(), icon);
-            // item.addItemListener(boxListener);
-            // checkbox.add(item);
             checkbox = new JCheckBox();
 
             // By default all checks will be executed.
-            checkboxItem = new JCheckBoxMenuItem(check.toString(), icon, true);
-
+            checkboxItem = new JCheckBoxMenuItem(check.toString(), checkPending, true);
             checkboxItem.addItemListener(itemListener);
             checkbox.add(checkboxItem);
             panel.add(checkbox);
@@ -176,14 +165,14 @@ public class CheckManager extends JFrame {
     private void changeSymbol(ImageIcon icon, CircuitCheck check) {
 
         // First get the CheckBox from the panel.
-        for (Component comps : panel.getComponents()) {
-            if (comps instanceof JCheckBox) {
+        for (Component checkbox : panel.getComponents()) {
+            if (checkbox instanceof JCheckBox) {
 
                 // Then get the MenuItem and change its icon.
-                for (Component comp : ((JCheckBox) comps).getComponents()) {
-                    if (comp instanceof JCheckBoxMenuItem) {
-                        if (((JCheckBoxMenuItem) comp).getActionCommand().equals(check.toString())) {
-                            ((JCheckBoxMenuItem) comp).setIcon(icon);
+                for (Component menuitem : ((JCheckBox) checkbox).getComponents()) {
+                    if (menuitem instanceof JCheckBoxMenuItem) {
+                        if (((JCheckBoxMenuItem) menuitem).getActionCommand().equals(check.toString())) {
+                            ((JCheckBoxMenuItem) menuitem).setIcon(icon);
                             super.repaint();
                         }
                     }

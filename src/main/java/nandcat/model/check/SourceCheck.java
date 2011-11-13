@@ -3,11 +3,14 @@ package nandcat.model.check;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import nandcat.model.check.CheckEvent.State;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Element;
+import nandcat.model.element.ImpulseGenerator;
+import nandcat.model.element.Lamp;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 
@@ -56,27 +59,20 @@ public class SourceCheck implements CircuitCheck {
     public boolean test(Circuit circuit) {
         Set<Element> elements = new LinkedHashSet<Element>();
         informListeners(State.RUNNING, elements);
-        /*
-         * idea is: start at starting elements. go with the flow and well, you should visit every module....
-         */
+
         Set<Module> visited = new HashSet<Module>();
         Set<Module> all = new HashSet<Module>();
         Queue<Module> q = new LinkedList<Module>();
-        q.addAll(circuit.getStartingModules());
+        q.addAll(getEndingModules(circuit));
         q.addAll(circuit.getModules());
         while (!q.isEmpty()) {
             Module current = q.poll();
             all.remove(current);
 
-            /*
-             * without visited set the amount of queue-loops might go up not only to over 9000, but straight through the
-             * roof to infinity if there is a feedback. and this check should work even if feedback check fails,
-             * kthxbye.
-             */
             if (!visited.contains(current)) {
-                for (Port p : current.getOutPorts()) {
+                for (Port p : current.getInPorts()) {
                     if (p.getConnection() != null) {
-                        q.add(p.getConnection().getNextModule());
+                        q.add(p.getConnection().getPreviousModule());
                     }
                 }
             }
@@ -86,7 +82,7 @@ public class SourceCheck implements CircuitCheck {
             return true;
         }
         elements.addAll(all);
-        informListeners(State.FAILED,elements);
+        informListeners(State.FAILED, elements);
         return false;
     }
 
@@ -100,10 +96,39 @@ public class SourceCheck implements CircuitCheck {
      */
     private void informListeners(State state, Set<Element> elements) {
         // Event informing listeners that check has started.
-        CheckEvent e = new CheckEvent(State.RUNNING, elements, this);
+        CheckEvent e = new CheckEvent(state, elements, this);
         for (CheckListener l : listener) {
             l.checkChanged(e);
         }
+    }
+
+    /**
+     * Returns the "last" Modules in this Circuit.
+     * 
+     * @return List<Module> containing the starting Modules of this Circuit.
+     */
+    public List<Module> getEndingModules(Circuit circuit) {
+        List<Module> result = new LinkedList<Module>();
+        for (Element e : circuit.getElements()) {
+            if (e instanceof Module) {
+                boolean isEndingModule = false;
+                Module m = (Module) e;
+                if (m instanceof Lamp) {
+                    isEndingModule = true;
+                } else {
+                    for (Port p : m.getOutPorts()) {
+                        if (p.getConnection() == null) {
+                            isEndingModule = true;
+                            break;
+                        }
+                    }
+                }
+                if (isEndingModule) {
+                    result.add(m);
+                }
+            }
+        }
+        return result;
     }
 
     /**

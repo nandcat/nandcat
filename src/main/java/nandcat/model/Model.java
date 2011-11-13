@@ -527,13 +527,17 @@ public class Model implements ClockListener {
         }
     }
 
+    /*
+     * I changed this method to removeElement, which now removes all selected elements.
+     * Seemed to be more intuitive for me.
+     */
     /**
      * Remove given element.
      * 
      * @param e
      *            Element to remove
      */
-    public void removeElement(Element e) {
+    private void removeElement(Element e) {
         circuit.removeElement(e);
         ModelEvent event = new ModelEvent();
         for (ModelListener l : listeners) {
@@ -817,5 +821,14 @@ public class Model implements ClockListener {
      */
     public Circuit getCircuit() {
         return circuit;
+    }
+
+    /**
+     * Remove the selected Elements from the workspace.
+     */
+    public void removeElement() {
+        for (Element element : getSelectedElements()) {
+            removeElement(element);
+        }
     }
 }

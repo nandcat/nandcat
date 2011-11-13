@@ -1,10 +1,15 @@
 package nandcat.model.check;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 import nandcat.model.check.CheckEvent.State;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Element;
+import nandcat.model.element.Module;
+import nandcat.model.element.Port;
 
 /**
  * SinkCheck.
@@ -51,6 +56,34 @@ public class SinkCheck implements CircuitCheck {
     public boolean test(Circuit circuit) {
         Set<Element> elements = new LinkedHashSet<Element>();
         informListeners(State.RUNNING, elements);
+        Set<Module> visited = new HashSet<Module>();
+        Set<Module> all = new HashSet<Module>();
+        Queue<Module> q = new LinkedList<Module>();
+        q.addAll(circuit.getStartingModules());
+        q.addAll(circuit.getModules());
+        while (!q.isEmpty()) {
+            Module current = q.poll();
+            all.remove(current);
+
+            /*
+             * without visited set the amount of queue-loops might go up not only to over 9000, but straight through the
+             * roof to infinity if there is a feedback. and this check should work even if feedback check fails,
+             * kthxbye.
+             */
+            if (!visited.contains(current)) {
+                for (Port p : current.getOutPorts()) {
+                    if (p.getConnection() != null) {
+                        q.add(p.getConnection().getNextModule());
+                    }
+                }
+            }
+        }
+        if (all.isEmpty()) {
+            informListeners(State.SUCCEEDED, elements);
+            return true;
+        }
+        elements.addAll(all);
+        informListeners(State.FAILED,elements);
         return false;
     }
 
@@ -64,7 +97,7 @@ public class SinkCheck implements CircuitCheck {
      */
     private void informListeners(State state, Set<Element> elements) {
         // Event informing listeners that check has started.
-        CheckEvent e = new CheckEvent(State.RUNNING, elements, this);
+        CheckEvent e = new CheckEvent(state, elements, this);
         for (CheckListener l : listener) {
             l.checkChanged(e);
         }

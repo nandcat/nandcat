@@ -63,16 +63,16 @@ public class OrphanCheck implements CircuitCheck {
         }
         for (Module m : circuit.getModules()) {
             boolean current = false;
-//            for (Port p : m.getInPorts()) {
-//                if (p.getConnection().getNextModule() != null) {
-//                    current = true;
-//                }
-//            }
-//            for (Port p : m.getOutPorts()) {
-//                if (p.getConnection().getNextModule() != null) {
-//                    current = true;
-//                }
-//            }
+            for (Port p : m.getInPorts()) {
+                if (p.getConnection().getNextModule() != null) {
+                    current = true;
+                }
+            }
+            for (Port p : m.getOutPorts()) {
+                if (p.getConnection().getNextModule() != null) {
+                    current = true;
+                }
+            }
             if (!current) {
                 
                 // If the test fails fire CheckEvent and add the module which caused the failure to the event.
