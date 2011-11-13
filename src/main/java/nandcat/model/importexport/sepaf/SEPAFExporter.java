@@ -72,13 +72,28 @@ public class SEPAFExporter implements Exporter {
     private Element root = null;
 
     /**
+     * Prototype circuits mapped with their uuid used if missing circuits occur.
+     */
+    private Map<String, Circuit> externalCircuits = new HashMap<String, Circuit>();
+
+    /**
      * {@inheritDoc}
      */
     public void setFile(File file) {
+        reset();
         if (file == null) {
             throw new IllegalArgumentException();
         }
         this.file = file;
+    }
+
+    /**
+     * Resets internal state.
+     */
+    public void reset() {
+        innerCircuitsIndex = new LinkedHashSet<String>();
+        file = null;
+        errorMsg = null;
     }
 
     /**
@@ -152,7 +167,9 @@ public class SEPAFExporter implements Exporter {
         Content c = null;
         if (e instanceof Circuit && !(e instanceof FlipFlop)) {
             c = buildComponent((Module) e);
-            if (!innerCircuitsIndex.contains(((Circuit) e).getUuid())) {
+            if (!innerCircuitsIndex.contains(((Circuit) e).getUuid())
+                    && !externalCircuits.containsKey(((Circuit) e).getUuid())) {
+
                 root.addContent(buildCircuit((Circuit) e, false));
                 innerCircuitsIndex.add(((Circuit) e).getUuid());
             }
@@ -276,8 +293,13 @@ public class SEPAFExporter implements Exporter {
         } else if (m instanceof FlipFlop) {
             e.setAttribute("type", "flipflop");
         } else if (m instanceof Circuit) {
-            e.setAttribute("type", "circuit");
-            e.setAttribute("type2", ((Circuit) m).getUuid());
+            if (externalCircuits.containsKey(((Circuit) m).getUuid())) {
+                e.setAttribute("type", "missing-circuit");
+                e.setAttribute("type2", ((Circuit) m).getUuid());
+            } else {
+                e.setAttribute("type", "circuit");
+                e.setAttribute("type2", ((Circuit) m).getUuid());
+            }
         } else {
             LOG.debug("Not a supported component type: '" + m.getClass().getName() + "'");
         }
@@ -333,5 +355,12 @@ public class SEPAFExporter implements Exporter {
      */
     public Map<String, String> getFileFormats() {
         return SUPPORTED_FORMATS;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setExternalCircuits(Map<String, Circuit> circuits) {
+        externalCircuits = circuits;
     }
 }

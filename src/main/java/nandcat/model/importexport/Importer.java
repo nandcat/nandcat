@@ -20,6 +20,17 @@ public interface Importer {
     void setFile(File file);
 
     /**
+     * Sets a list of available external circuits, which can be used while importing a file. Should be a set of circuits
+     * mapped with the circuits unique identifier. The Circuit will be cloned before inserting in the internal
+     * structure. The prototypes should not be immutable.
+     * 
+     * @param circuits
+     *            Circuits uuid mapped with the circuit object. Circuit object is the prototype for further instances of
+     *            this circuit.
+     */
+    void setExternalCircuits(Map<String, Circuit> circuits);
+
+    /**
      * Gets the imported circuit.
      * 
      * @return Imported circuit.

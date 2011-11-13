@@ -107,6 +107,18 @@ public class SEPAFImporter implements Importer {
     private Source[] xsdSources;
 
     /**
+     * Prototype circuits mapped with their uuid used if missing circuits occur.
+     */
+    private Map<String, Circuit> externalCircuits = new HashMap<String, Circuit>();
+
+    /**
+     * Sets the instance up.
+     */
+    public SEPAFImporter() {
+        reset();
+    }
+
+    /**
      * {@inheritDoc}
      */
     public void setFile(File file) {
@@ -440,6 +452,15 @@ public class SEPAFImporter implements Importer {
             module = ig;
         } else if (aType.getValue().equals("circuit")) {
             module = buildCircuit(el.getAttributeValue("type2"), doc);
+        } else if (aType.getValue().equals("missing-circuit")) {
+            module = buildCircuit(el.getAttributeValue("type2"), doc);
+            String uuid = el.getAttributeValue("type2");
+            if (externalCircuits.containsKey(uuid)) {
+                module = (Circuit) FastDeepCopy.copy(externalCircuits.get(uuid));
+            } else {
+                throw new FormatException("External circuit not found: type: '" + aType.getValue() + "' type2: '"
+                        + uuid + "'");
+            }
         } else {
             throw new FormatException("Not a supported component type: '" + aType.getValue() + "'");
         }
@@ -637,5 +658,12 @@ public class SEPAFImporter implements Importer {
      */
     public Map<String, String> getFileFormats() {
         return SUPPORTED_FORMATS;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setExternalCircuits(Map<String, Circuit> circuits) {
+        externalCircuits = circuits;
     }
 }
