@@ -613,15 +613,6 @@ public class StandardElementDrawer implements ElementDrawer {
     /**
      * {@inheritDoc}
      */
-    public Port getPortAt(Rectangle rec, Module m) {
-        LOG.warn("Deprecated function! Change to model call!");
-        // FIXME Veraltete Methode raus!
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public void draw(Rectangle r) {
         if (r == null) {
             throw new IllegalArgumentException();

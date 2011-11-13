@@ -9,10 +9,8 @@ import nandcat.model.element.FlipFlop;
 import nandcat.model.element.IdentityGate;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
-import nandcat.model.element.Module;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
-import nandcat.model.element.Port;
 
 /**
  * ElementDrawer.
@@ -108,18 +106,4 @@ public interface ElementDrawer {
      *            Rectangle to draw.
      */
     void draw(Rectangle r);
-
-    /**
-     * Gets the first port of the module intersecting the given rectangle.
-     * 
-     * Used for hit testing on an port.
-     * 
-     * @param rec
-     *            Rectangle to intersect port with.
-     * @param m
-     *            Module with ports to check.
-     * @return First intersecting port, otherwise null.
-     * @deprecated Diese funktion gibts nur noch im Model!
-     */
-    Port getPortAt(Rectangle rec, Module m);
 }
