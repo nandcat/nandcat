@@ -1,5 +1,6 @@
 package nandcat.controller;
 
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -8,8 +9,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.ImageIcon;
 import nandcat.model.Model;
+import nandcat.model.element.DrawElement;
 import nandcat.model.element.Element;
 import nandcat.view.View;
 
@@ -81,8 +84,7 @@ public class DeleteTool implements Tool {
         this.view.addKeyListener(new KeyListener() {
 
             public void keyTyped(KeyEvent e) {
-                Element element = (Element) e.getSource();
-                model.removeElement(element);
+                model.removeElement();
             }
 
             public void keyReleased(KeyEvent e) {
