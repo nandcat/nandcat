@@ -115,7 +115,7 @@ public class View extends JFrame {
     /**
      * Dimension of Buttons.
      */
-    private Dimension buttonDim = new Dimension(48, 48);
+    private Dimension buttonDim = new Dimension(32, 32);
 
     /**
      * Model instance.
