@@ -12,6 +12,7 @@ import nandcat.model.Clock;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListener;
+import nandcat.model.ModelListenerAdapter;
 import nandcat.view.CheckManager;
 import nandcat.view.View;
 
@@ -99,10 +100,7 @@ public class SimulateTool implements Tool {
     public void setActive(boolean active) {
         if (active) {
             if (modelListener == null) {
-                modelListener = new ModelListener() {
-
-                    public void elementsChanged(ModelEvent e) {
-                    }
+                modelListener = new ModelListenerAdapter() {
 
                     public void checksStarted(ModelEvent e) {
                         if (checkManager == null) {
@@ -111,32 +109,8 @@ public class SimulateTool implements Tool {
                         checkManager.setVisible(true);
                     }
 
-                    public void checksStopped(ModelEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void simulationStarted(ModelEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
                     public void simulationStopped(ModelEvent e) {
                         view.enableButtons();
-                    }
-
-                    public void importSucceeded(ModelEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void importFailed(ModelEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void exportSucceeded(ModelEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void exportFailed(ModelEvent e) {
-                        // TODO Auto-generated method stub
                     }
                 };
             }
