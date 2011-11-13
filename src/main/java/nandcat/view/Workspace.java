@@ -183,6 +183,7 @@ public class Workspace extends JPanel {
      */
     public void setViewPortRect(Rectangle rect) {
         this.viewPortRect = rect;
+        // if size of visible part is bigger than the workspace by itself it must be extended
         if (rect.getWidth() >= this.getWidth()) {
             view.setWorkspaceWidth((int) rect.getWidth());
         }
