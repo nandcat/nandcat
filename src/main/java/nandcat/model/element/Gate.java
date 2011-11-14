@@ -206,15 +206,11 @@ public abstract class Gate implements Module {
         String x = this.getClass().getSimpleName() + "(" + getRectangle().x + "/" + getRectangle().y + ") ";
         x += "(In) ";
         for (Port in : inPorts) {
-            if (in.getRectangle() != null) {
-                x += in.getRectangle().x + "/" + in.getRectangle().y + ", ";
-            }
+            x += in + ", ";
         }
         x += "(Out) ";
         for (Port out : outPorts) {
-            if (out.getRectangle() != null) {
-                x += out.getRectangle().x + "/" + out.getRectangle().y + ", ";
-            }
+            x += out + ", ";
         }
         return x;
     }

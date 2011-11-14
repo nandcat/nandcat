@@ -176,4 +176,14 @@ public class Port implements Serializable {
     public Point getCenter() {
         return (new Point(bounds.x + (int) bounds.getCenterX(), bounds.y + (int) bounds.getCenterY()));
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        if (bounds == null) {
+            return "NULL!";
+        }
+        return bounds.x + "/" + bounds.y;
+    }
 }

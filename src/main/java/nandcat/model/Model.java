@@ -180,20 +180,6 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Set a given check on the circuit to active or inactive.
-     * 
-     * @param check
-     *            The CircuitCheck to be set to active.
-     * @param isActive
-     *            TRUE if the check is set to active, FALSE otherwise.
-     */
-    // TODO public method? why?
-    public void setCheckActive(CircuitCheck check, boolean isActive) {
-        // TODO implement
-        // check.setActive(isActive);
-    }
-
-    /**
      * Returns the list of ViewModules that are necessary for the view.
      * 
      * @return List of ViewModules
@@ -251,14 +237,14 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Selects or deselects a Module.
+     * Selects or deselects an Element.
      * 
      * @param m
-     *            Module that will be selected
+     *            Element that will be selected
      * @param b
      *            true if selected, false if not selected
      */
-    public void setModuleSelected(Module m, boolean b) {
+    public void setElementSelected(Element m, boolean b) {
         m.setSelected(b);
         ModelEvent e = new ModelEvent(m);
         for (ModelListener l : listeners) {
@@ -350,14 +336,14 @@ public class Model implements ClockListener {
      *            The Rectangle defining the zone where elements are selected
      */
     public void selectElements(Rectangle rect) {
-        Set<DrawElement> DrawElements = new HashSet<DrawElement>();
+        Set<DrawElement> drawElements = new HashSet<DrawElement>();
         for (Element e : getElementsAt(rect)) {
             e.setSelected(true);
-            DrawElements.add((DrawElement) e);
+            drawElements.add((DrawElement) e);
         }
         // TODO jaja Codeduplikation checken wir spaeter
         ModelEvent e = new ModelEvent();
-        e.setElements(DrawElements);
+        e.setElements(drawElements);
         for (ModelListener l : listeners) {
             l.elementsChanged(e);
         }
