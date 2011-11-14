@@ -454,6 +454,17 @@ public class Model implements ClockListener {
     }
 
     /**
+     * Replace the old Circuit with a new one. All Elements will be lost.
+     */
+    public void newCircuit() {
+        this.circuit = new Circuit();
+        ModelEvent e = new ModelEvent();
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
+        }
+    }
+
+    /**
      * Adds a Connection between two Ports to this Model. <br/>
      * <b>Note:</b> the inPort of the connection has to be of type outPort and vice versa.<br/>
      * 
