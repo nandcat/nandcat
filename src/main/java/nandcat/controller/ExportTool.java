@@ -2,6 +2,9 @@ package nandcat.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -100,6 +103,7 @@ public class ExportTool implements Tool {
         this.controller = controller;
         this.model = controller.getModel();
         this.model.addListener(getModelListener());
+        this.controller.getView().addWindowListener(getWindowListener());
     }
 
     /**
@@ -112,23 +116,46 @@ public class ExportTool implements Tool {
 
             @Override
             public boolean changeCircuitRequested(ModelEvent e) {
-                if (model.getCircuit().isDirty()) {
-                    int n = showCircuitChangeConfirmDialog();
-                    switch (n) {
-                        case CIRCUIT_CHANGE_CONFIRM_OPTION_YES:
-                            actionSave();
-                            break;
-                        case CIRCUIT_CHANGE_CONFIRM_OPTION_CANCEL:
-                            return true;
-                        case CIRCUIT_CHANGE_CONFIRM_OPTION_NO:
-                            return false;
-                        default:
-                            return false;
-                    }
-                }
-                return false;
+                return actionSaveBeforeLost();
             }
         };
+    }
+
+    /**
+     * Gets the window listener used to interrupt if window is closing.
+     * 
+     * @return The Windowlistener.
+     */
+    private WindowListener getWindowListener() {
+        return new WindowAdapter() {
+
+            public void windowClosing(WindowEvent e) {
+                actionSaveBeforeLost();
+            }
+        };
+    }
+
+    /**
+     * Action executed to save last progress before the changes would be lost.
+     * 
+     * @return True to interrupt the process if possible.
+     */
+    private boolean actionSaveBeforeLost() {
+        if (model.getCircuit().isDirty()) {
+            int n = showCircuitChangeConfirmDialog();
+            switch (n) {
+                case CIRCUIT_CHANGE_CONFIRM_OPTION_YES:
+                    actionSave();
+                    break;
+                case CIRCUIT_CHANGE_CONFIRM_OPTION_CANCEL:
+                    return true;
+                case CIRCUIT_CHANGE_CONFIRM_OPTION_NO:
+                    return false;
+                default:
+                    return false;
+            }
+        }
+        return false;
     }
 
     /**
