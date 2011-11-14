@@ -37,6 +37,16 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     private List<Element> elements;
 
     /**
+     * Set of incoming ports, initialized during construction.
+     */
+    private List<Port> inPorts;
+
+    /**
+     * Set of outcoming ports, initialized during construction.
+     */
+    private List<Port> outPorts;
+
+    /**
      * Rectangle representing the circuit's shape.
      */
     private Rectangle rectangle;
@@ -55,25 +65,6 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      * The unique identifier of the circuit.
      */
     private String uuid;
-
-    /**
-     * Gets the unique identifier of the circuit.
-     * 
-     * @return The unique identifier.
-     */
-    public String getUuid() {
-        return uuid;
-    }
-
-    /**
-     * Set the uuid.
-     * 
-     * @param uuid
-     *            String representing the uuid
-     */
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
 
     /**
      * Usual constructor for circuits. The UUID will be extracted from the Importer.
@@ -95,6 +86,25 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      */
     public Circuit() {
         this(UUID.randomUUID().toString());
+    }
+
+    /**
+     * Gets the unique identifier of the circuit.
+     * 
+     * @return The unique identifier.
+     */
+    public String getUuid() {
+        return uuid;
+    }
+
+    /**
+     * Set the uuid.
+     * 
+     * @param uuid
+     *            String representing the uuid
+     */
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     /**
@@ -163,6 +173,22 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     }
 
     /**
+     * Initialize inPorts (invoked after each {add,remove}{Module,Connection} action i.e. manipulation of List<Element>
+     * elements).
+     */
+    private void createInPorts() {
+        for (Module m : getStartingModules()) {
+            for (Port p : m.getInPorts()) {
+                // Port is not connected or connted to a module outside the circuit or a impulsegenerator
+                if (p.getConnection() == null || !elements.contains(p.getConnection().getPreviousModule())
+                        || p.getConnection().getNextModule() instanceof ImpulseGenerator) {
+                    inPorts.add(p);
+                }
+            }
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     public List<Port> getInPorts() {
@@ -177,6 +203,26 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
             }
         }
         return result;
+    }
+
+    /**
+     * Initialize outPorts (invoked after each {add,remove}{Module,Connection} action i.e. manipulation of List<Element>
+     * elements).
+     */
+    private void createOutPorts() {
+        for (Element e : elements) {
+            if (e instanceof Module) {
+                Module m = (Module) e;
+                for (Port p : m.getOutPorts()) {
+                    // empty ports are outPorts
+                    // not-emptyports with connections leading to modules outside the circuit or lamps are also outPorts
+                    if ((p.getConnection() == null) || !(this.elements.contains(p.getConnection().getNextModule()))
+                            || p.getConnection().getNextModule() instanceof Lamp) {
+                        outPorts.add(p);
+                    }
+                }
+            }
+        }
     }
 
     /**

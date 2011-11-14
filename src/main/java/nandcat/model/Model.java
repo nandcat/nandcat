@@ -147,7 +147,6 @@ public class Model implements ClockListener {
      * Start the selected checks on the current circuit.
      */
     public void startChecks() {
-        // TODO implement
         for (CircuitCheck check : checks) {
             if (check.isActive()) {
                 check.test(circuit);
