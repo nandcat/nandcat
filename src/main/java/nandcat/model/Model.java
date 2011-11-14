@@ -588,15 +588,16 @@ public class Model implements ClockListener {
             }
         }
 
-        module.getRectangle().getLocation().translate(p.x, p.y);
+        Point pr = module.getRectangle().getLocation();
+        module.getRectangle().setLocation(pr.x - p.x, pr.y - p.y);
         ModelEvent e = new ModelEvent(module);
         // ports auch bewegen
         // TODO was ist, wenn Module ein Circuit ist?
         for (Port pörtli : module.getInPorts()) {
-            pörtli.getRectangle().getLocation().translate(p.x, p.y);
+            pörtli.getRectangle().setLocation(pr.x - p.x, pr.y - p.y);
         }
         for (Port pörtli : module.getOutPorts()) {
-            pörtli.getRectangle().getLocation().translate(p.x, p.y);
+            pörtli.getRectangle().setLocation(pr.x - p.x, pr.y - p.y);
         }
 
         for (ModelListener l : listeners) {
