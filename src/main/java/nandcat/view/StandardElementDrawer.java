@@ -122,6 +122,11 @@ public class StandardElementDrawer implements ElementDrawer {
     private static final Color CONNECTION_COLOR_ACTIVE = Color.RED;
 
     /**
+     * Color of an selected connection.
+     */
+    private static final Color CONNECTION_COLOR_SELECTED = Color.RED;
+
+    /**
      * Height of a drawn label. Used for calculations, not for setting height.
      */
     private static final int LABEL_HEIGHT = 10;
@@ -227,7 +232,10 @@ public class StandardElementDrawer implements ElementDrawer {
         } else {
             g.setColor(CONNECTION_COLOR_DEFAULT);
         }
-        // LOG.trace("Draw Line: " + outPoint.x + "," + outPoint.y + "," + inPoint.x + "," + inPoint.y);
+
+        if (connection.isSelected()) {
+            g.setColor(CONNECTION_COLOR_SELECTED);
+        }
         g.drawLine(outPoint.x, outPoint.y, inPoint.x, inPoint.y);
     }
 
