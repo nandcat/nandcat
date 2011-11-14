@@ -14,12 +14,30 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import nandcat.model.Model;
+import nandcat.model.ModelEvent;
+import nandcat.model.ModelListener;
+import nandcat.model.ModelListenerAdapter;
 import org.apache.log4j.Logger;
 
 /**
  * Tool for exporting files. Includes saving.
  */
 public class ExportTool implements Tool {
+
+    /**
+     * Option 'YES' of the dialog shown if circuit is changed.
+     */
+    private static final int CIRCUIT_CHANGE_CONFIRM_OPTION_YES = 2;
+
+    /**
+     * Option 'NO' of the dialog shown if circuit is changed.
+     */
+    private static final int CIRCUIT_CHANGE_CONFIRM_OPTION_NO = 0;
+
+    /**
+     * Option 'CANCEL' of the dialog shown if circuit is changed.
+     */
+    private static final int CIRCUIT_CHANGE_CONFIRM_OPTION_CANCEL = 1;
 
     /**
      * Current Model instance.
@@ -82,6 +100,48 @@ public class ExportTool implements Tool {
     public ExportTool(Controller controller) {
         this.controller = controller;
         this.model = controller.getModel();
+        this.model.addListener(getModelListener());
+    }
+
+    /**
+     * Gets the model listener used to interrupt if circuit is changed.
+     * 
+     * @return The ModelListener.
+     */
+    private ModelListener getModelListener() {
+        return new ModelListenerAdapter() {
+
+            @Override
+            public boolean changeCircuitRequested(ModelEvent e) {
+                if (model.getCircuit().isDirty()) {
+                    int n = showCircuitChangeConfirmDialog();
+                    switch (n) {
+                        case CIRCUIT_CHANGE_CONFIRM_OPTION_YES:
+                            actionSave();
+                            break;
+                        case CIRCUIT_CHANGE_CONFIRM_OPTION_CANCEL:
+                            return true;
+                        case CIRCUIT_CHANGE_CONFIRM_OPTION_NO:
+                            return false;
+                        default:
+                            return false;
+                    }
+                }
+                return false;
+            }
+        };
+    }
+
+    /**
+     * Shows the dialog to check next step after circuit will change and circuit is modified.
+     * 
+     * @return Option No, Cancel, Yes as Integer.
+     */
+    private int showCircuitChangeConfirmDialog() {
+        Object[] options = { "No", "Cancel", "Yes" };
+        return JOptionPane.showOptionDialog(controller.getView(), "Circuit has been modified. Save changes?",
+                "Save Circuit", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
+                options[2]);
     }
 
     /**
@@ -108,20 +168,23 @@ public class ExportTool implements Tool {
     }
 
     /**
-     * Performs a quicksave to the last used file if available.
+     * Checks if the action 'quick save' is available.
+     * 
+     * @return True if 'quick save' is available.
+     */
+    private boolean isQuickSaveAvailable() {
+        return (model.getCircuit().getUuid().equals(saveLastUUID) && saveLastFile != null);
+    }
+
+    /**
+     * Performs a 'quicksave' to the last used file if available, otherwise a 'save as'.
      */
     private void actionSave() {
-
-        // check if current circuit is same as last save
-        if (model.getCircuit().getUuid().equals(saveLastUUID)) {
-            LOG.debug("Try to quick save to last file used: " + saveLastFile.getAbsolutePath());
-            if (saveLastFile != null) {
-                model.exportToFile(saveLastFile);
-            }
+        if (isQuickSaveAvailable()) {
+            model.exportToFile(saveLastFile);
         } else {
             LOG.debug("Last save not available - no quicksave");
-            JOptionPane.showMessageDialog(controller.getView(), "Please save to a file first to use quicksave",
-                    "Quicksave not possible", JOptionPane.WARNING_MESSAGE);
+            actionSaveAs();
         }
     }
 
@@ -165,7 +228,7 @@ public class ExportTool implements Tool {
                 }
 
                 // Add Image to circuit
-                Object[] options = { "Yes, please", "No, thanks", "Delete existing Image" };
+                Object[] options = { "Yes", "No", "Delete existing Image" };
                 int n = JOptionPane.showOptionDialog(controller.getView(),
                         "Would you like to add a image to the current circuit?", "Circuit Image",
                         JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
