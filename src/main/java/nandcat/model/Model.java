@@ -523,7 +523,8 @@ public class Model implements ClockListener {
         Module module = null;
         // spawn new circuit / element _object_
         if (m.getFileName() != "") {
-            module = getCircuitByFileName(m.getFileName());
+            // TODO error checking?
+            module = importFromFile(new File(m.getFileName()));
         } else {
             module = m.getModule();
         }
@@ -741,17 +742,28 @@ public class Model implements ClockListener {
      * @param file
      *            File to import top-level Circuit from
      */
-    public void importFromFile(File file) {
+    public void importRootFromFile(File file) {
+        this.circuit = importFromFile(file);
+    }
+
+    /**
+     * Import a Circuit and all its elements from a file.
+     * 
+     * @param file
+     *            File to import Circuit from
+     */
+    private Circuit importFromFile(File file) {
         if (file == null) {
             throw new IllegalArgumentException();
         }
+        Circuit m = null;
         String ext = getFileExtension(file);
         if (importers.containsKey(ext)) {
             Importer im = importers.get(ext);
             im.setFile(file);
             if (im.importCircuit()) {
-                this.circuit = im.getCircuit();
-                if (this.circuit == null) {
+                m = im.getCircuit();
+                if (m == null) {
                     LOG.error("circuit from " + file.getAbsolutePath() + " was null: " + im.getErrorMessage());
                 }
             } else {
@@ -759,6 +771,7 @@ public class Model implements ClockListener {
                 // TODO Fehlermeldung an View?
             }
         }
+        return m;
     }
 
     /**
@@ -783,26 +796,6 @@ public class Model implements ClockListener {
                 // TODO Fehlermeldung an View?
             }
         }
-    }
-
-    /**
-     * Returns parsed circuit from given fileName, iff it exists and is valid.
-     * 
-     * @param fileName
-     *            String file to load circuit from
-     * @return Module instantiated circuit, null on failure
-     */
-    public Circuit getCircuitByFileName(String fileName) {
-        // TODO implement
-        // Finde passenden importer!
-        Circuit c = null;
-        Importer importer = new SEPAFImporter();
-        File file = new File(fileName);
-        importer.setFile(file);
-        if (importer.importCircuit()) {
-            c = importer.getCircuit();
-        }
-        return c;
     }
 
     // /**

@@ -88,7 +88,7 @@ public class ImportTool implements Tool {
                 File file = fc.getSelectedFile();
                 if (file != null) {
                     LOG.debug("Importing: " + file.getName());
-                    model.importFromFile(file);
+                    model.importRootFromFile(file);
                 } else {
                     LOG.debug("File is null");
                 }
