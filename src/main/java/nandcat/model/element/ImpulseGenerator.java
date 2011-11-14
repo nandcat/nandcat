@@ -139,6 +139,19 @@ public class ImpulseGenerator implements Module {
     }
 
     /**
+     * Set ImpulseGenerator's frequency.
+     * 
+     * @param frequency
+     *            the new frequency of this ImpulseGenerator
+     */
+    public void setFrequency(int frequency) {
+        if (frequency < 0) {
+            return;
+        }
+        this.frequency = frequency;
+    }
+
+    /**
      * Toggle state.
      */
     public void toggleState() {

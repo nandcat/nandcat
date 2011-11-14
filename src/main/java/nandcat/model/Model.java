@@ -125,6 +125,26 @@ public class Model implements ClockListener {
     }
 
     /**
+     * Changes the frequency of the Module to the given value.
+     * 
+     * @param m
+     *            the Module to be modified
+     * @param i
+     *            the new value of m's frequency
+     * @return true iff (m instanceof ImpulseGenerator returns true && i >= 0)
+     */
+    public boolean setFrequency(Module m, int i) {
+        if (m instanceof ImpulseGenerator && i >= 0) {
+            ((ImpulseGenerator) m).setFrequency(i);
+            for (ModelListener l : listeners) {
+                l.elementsChanged(new ModelEvent());
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Initialize list of available checks.
      */
     private void initChecks() {

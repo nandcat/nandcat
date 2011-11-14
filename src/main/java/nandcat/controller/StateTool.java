@@ -132,6 +132,10 @@ public class StateTool implements Tool {
         }
     }
 
+    /**
+     * 
+     * @param point
+     */
     private void popTextField(Point point) {
         assert point != null;
         Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(point, new Dimension(1, 1)));
@@ -139,14 +143,26 @@ public class StateTool implements Tool {
             if (element instanceof ImpulseGenerator) {
                 ImpulseGenerator ig = (ImpulseGenerator) element;
                 String frequenzy = askForFrequenz(ig.getFrequency());
-                // TODO was soll jetzt damit geschenen.
+                boolean worked = false;
+                int freq = -1;
+                try {
+                    freq = Integer.parseInt(frequenzy);
+                    worked = (freq >= 0 ? true : false);
+                    System.out.println(worked);
+                } catch (Exception e) {
+                }
+                worked = model.setFrequency(ig, freq);
+                if (!worked) {
+                    JOptionPane.showMessageDialog(view, i18n.getString("dialog.state.freqerrormsg"),
+                            i18n.getString("dialog.state.freqerrortitle"), JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }
 
     private String askForFrequenz(int frequency) {
-        return (String) JOptionPane.showInputDialog(view, i18n.getString("dialog.state.text"), i18n.getString("dialog.state.title"),
-                JOptionPane.PLAIN_MESSAGE, null, null, frequency);
+        return (String) JOptionPane.showInputDialog(view, i18n.getString("dialog.state.text"),
+                i18n.getString("dialog.state.title"), JOptionPane.PLAIN_MESSAGE, null, null, frequency);
     }
 
     /**
