@@ -220,6 +220,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(Connection connection) {
+        LOG.debug("Draw: " + connection);
         if (connection == null) {
             throw new IllegalArgumentException("Connection is null");
         }
@@ -250,6 +251,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(Circuit circuit) {
+        LOG.debug("Draw: " + circuit);
         if (circuit == null) {
             throw new IllegalArgumentException();
         }
@@ -268,6 +270,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(IdentityGate gate) {
+        LOG.debug("Draw: " + gate);
         if (gate == null) {
             throw new IllegalArgumentException();
         }
@@ -287,6 +290,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(NotGate gate) {
+        LOG.debug("Draw: " + gate);
         if (gate == null) {
             throw new IllegalArgumentException();
         }
@@ -306,6 +310,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(AndGate gate) {
+        LOG.debug("Draw: " + gate);
         if (gate == null) {
             throw new IllegalArgumentException();
         }
@@ -325,6 +330,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(OrGate gate) {
+        LOG.debug("Draw: " + gate);
         if (gate == null) {
             throw new IllegalArgumentException();
         }
@@ -543,6 +549,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(Lamp lamp) {
+        LOG.debug("Draw: " + lamp);
         if (lamp == null) {
             throw new IllegalArgumentException();
         }
@@ -577,6 +584,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(FlipFlop flipflop) {
+        LOG.debug("Draw: " + flipflop);
         if (flipflop == null) {
             throw new IllegalArgumentException();
         }
@@ -596,6 +604,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(ImpulseGenerator ig) {
+        LOG.debug("Draw: " + ig);
         if (ig == null) {
             throw new IllegalArgumentException();
         }
