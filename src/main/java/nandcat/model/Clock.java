@@ -141,7 +141,8 @@ public class Clock {
             // } else if (cycle % listener.getFrequency() == 0) {
             // listener.clockTicked(this);
             // }
-            if (cycle == 0 || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
+            if ((cycle == 0) || (listener.getFrequency() == 1)
+                    || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
                 listener.clockTicked(this);
             }
             // // ALTERNATIVE 2
