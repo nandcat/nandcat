@@ -375,4 +375,14 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         // one module may not appear more than once in elements (ensured by Set<>)
         elements.add(m);
     }
+
+    /**
+     * Checks if circuit has unsaved changes.
+     * 
+     * @return True if circuit has unsaved changes.
+     */
+    public boolean isDirty() {
+        // TODO Implementierung fehlt. Zurücksetzen auf false bei exportToFile
+        return true;
+    }
 }
