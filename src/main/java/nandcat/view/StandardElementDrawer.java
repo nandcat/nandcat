@@ -225,9 +225,12 @@ public class StandardElementDrawer implements ElementDrawer {
             throw new IllegalArgumentException("Connection is null");
         }
         Port inPort = connection.getInPort();
-        Point inPoint = getPortCenter(inPort);
+        Point inPoint = inPort.getCenter();
         Port outPort = connection.getOutPort();
-        Point outPoint = getPortCenter(outPort);
+        Point outPoint = outPort.getCenter();
+        LOG.debug("InPort point of connection:" + inPoint.toString());
+        LOG.debug("OutPort point of connection:" + outPoint.toString());
+
         if (connection.getState()) {
             g.setColor(CONNECTION_COLOR_ACTIVE);
         } else {
@@ -237,6 +240,7 @@ public class StandardElementDrawer implements ElementDrawer {
         if (connection.isSelected()) {
             g.setColor(CONNECTION_COLOR_SELECTED);
         }
+        LOG.debug("Draw line: " + outPoint.x + ", " + outPoint.y + ", " + inPoint.x + ", " + inPoint.y);
         g.drawLine(outPoint.x, outPoint.y, inPoint.x, inPoint.y);
     }
 
@@ -417,41 +421,6 @@ public class StandardElementDrawer implements ElementDrawer {
             drawPort(port.getRectangle(), port.getState());
             i++;
         }
-    }
-
-    /**
-     * Gets the center point of the given port.
-     * 
-     * @param port
-     *            Port to calculate center of.
-     * @return Center Point object of the given port.
-     */
-    private Point getPortCenter(Port port) {
-        Module module = port.getModule();
-        if (module == null) {
-            throw new IllegalArgumentException("Port has no module");
-        }
-        Rectangle rec = module.getRectangle();
-        if (rec == null) {
-            throw new IllegalArgumentException("Portmodule has no rectangle");
-        }
-        int indexOfPort;
-        int numberOfPortsInColumn;
-        if (port.isOutPort()) {
-            indexOfPort = module.getOutPorts().indexOf(port);
-            numberOfPortsInColumn = module.getOutPorts().size();
-        } else {
-            indexOfPort = module.getInPorts().indexOf(port);
-            numberOfPortsInColumn = module.getInPorts().size();
-        }
-        if (indexOfPort == -1) {
-            throw new IllegalArgumentException("Port not found in modules ports");
-        }
-        if (numberOfPortsInColumn == 0) {
-            throw new IllegalArgumentException("Module has no (in/out) ports");
-        }
-        Rectangle position = getPortBounds(rec, port.isOutPort(), indexOfPort, numberOfPortsInColumn);
-        return new Point(position.x + (position.width / 2), position.y + (position.height / 2));
     }
 
     /**
