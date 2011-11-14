@@ -1,5 +1,6 @@
 package nandcat.model.check;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 import nandcat.model.element.Circuit;
 
@@ -28,6 +29,10 @@ public class MultipleConnectionsCheck implements CircuitCheck {
      * Check is active or not.
      */
     boolean active;
+
+    public MultipleConnectionsCheck() {
+        listener = new LinkedHashSet<CheckListener>();
+    }
 
     /**
      * {@inheritDoc}

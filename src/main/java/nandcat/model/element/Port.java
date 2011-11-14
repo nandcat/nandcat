@@ -142,26 +142,28 @@ public class Port implements Serializable {
      * Not called in constructor! Note that this can lead to immense and horrific errors and unexpected behaviour if the
      * Module is smaller than the size of the according list of ports.
      * 
+     * @param parent
+     *            Module to use as parent-element reference
      * @return Rectangle specifying the standard Location of this Port
      */
-    public Rectangle locateOnStandardPosition() {
+    public Rectangle locateOnStandardPosition(Module parent) {
 
         // rectangle containing the standard size, but not position of the port
         Rectangle result = new Rectangle(-1, -1, 1, 1);
 
         // index starts at 0, so +1. first port is number 1. derp.
-        int numberOfPort = isOutPort() ? module.getOutPorts().indexOf(this) + 1 : module.getInPorts().indexOf(this) + 1;
+        int numberOfPort = isOutPort() ? parent.getOutPorts().indexOf(this) + 1 : parent.getInPorts().indexOf(this) + 1;
 
         // amount of ports on this side
-        int amountOfPorts = isOutPort() ? module.getOutPorts().size() : module.getInPorts().size();
+        int amountOfPorts = isOutPort() ? parent.getOutPorts().size() : parent.getInPorts().size();
 
         /*
          * one port: position at half the height two ports: position at one third, etcpp +1
          */
-        int yOffset = module.getRectangle().height / (amountOfPorts + 1);
+        int yOffset = parent.getRectangle().height / (amountOfPorts + 1);
 
-        result.y = module.getRectangle().y + (yOffset * numberOfPort);
-        result.x = module.getRectangle().x + (isOutPort() ? 0 : module.getRectangle().width - result.width);
+        result.y = parent.getRectangle().y + (yOffset * numberOfPort);
+        result.x = parent.getRectangle().x + (isOutPort() ? 0 : parent.getRectangle().width - result.width);
 
         return result;
     }
@@ -172,6 +174,16 @@ public class Port implements Serializable {
      * @return Point of the center
      */
     public Point getCenter() {
-        return (new Point(bounds.x + (int) bounds.getCenterX(), bounds.y + (int) bounds.getCenterY()));
+        return new Point(bounds.x + (bounds.width / 2), bounds.y + (bounds.height / 2));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        if (bounds == null) {
+            return "NULL!";
+        }
+        return bounds.x + "/" + bounds.y;
     }
 }

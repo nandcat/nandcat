@@ -11,7 +11,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import nandcat.model.check.CircuitCheck;
+import nandcat.model.check.CountCheck;
+import nandcat.model.check.FeedbackCheck;
+import nandcat.model.check.IllegalConnectionCheck;
 import nandcat.model.check.OrphanCheck;
+import nandcat.model.check.SinkCheck;
+import nandcat.model.check.SourceCheck;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
@@ -40,7 +45,17 @@ public class Model implements ClockListener {
     /**
      * A set of checks which can be performed on the circuit.
      */
-    private Set<CircuitCheck> checks;
+    private Set<CircuitCheck> checks = new LinkedHashSet<CircuitCheck>() {
+
+        {
+            add(new CountCheck());
+            add(new FeedbackCheck());
+            add(new IllegalConnectionCheck());
+            add(new OrphanCheck());
+            add(new SinkCheck());
+            add(new SourceCheck());
+        }
+    };
 
     /**
      * Set of all model listeners on the model. The listener informs the implementing class about changes in the model.
@@ -96,7 +111,7 @@ public class Model implements ClockListener {
      * The constructor for the model class.
      */
     public Model() {
-        checks = new LinkedHashSet<CircuitCheck>();
+        // checks = new LinkedHashSet<CircuitCheck>();
         listeners = new LinkedHashSet<ModelListener>();
         importFormats = new HashMap<String, String>();
         exportFormats = new HashMap<String, String>();
@@ -108,7 +123,6 @@ public class Model implements ClockListener {
         loadedModules = new LinkedList<Module>();
         initExporters();
         initImporters();
-        checks.add(new OrphanCheck());
     }
 
     /**
@@ -117,25 +131,16 @@ public class Model implements ClockListener {
     private void initView2Module() {
         viewModules = new LinkedList<ViewModule>();
         // TODO fix this
-        ViewModule andGate = new ViewModule("AND", new AndGate(), "", null);
-        viewModules.add(andGate);
-        ViewModule orGate = new ViewModule("OR", new OrGate(), "", null);
-        viewModules.add(orGate);
-        ViewModule flipFlop = new ViewModule("FlipFlop", new FlipFlop(), "", null);
-        viewModules.add(flipFlop);
-        ViewModule id = new ViewModule("ID", new IdentityGate(), "", null);
-        viewModules.add(id);
-        ViewModule lamp = new ViewModule("Lampe", new Lamp(), "", null);
-        viewModules.add(lamp);
-        ViewModule not = new ViewModule("NOT", new NotGate(), "", null);
-        viewModules.add(not);
-        ViewModule andGate3 = new ViewModule("AND-3", new AndGate(3, 1), "", null);
-        viewModules.add(andGate3);
-        ViewModule orGate3 = new ViewModule("OR-3", new OrGate(3, 1), "", null);
-        viewModules.add(orGate3);
-        // FIXME walk through circuit-Ordner and fill viewModule2Module
-        ViewModule circ = new ViewModule("SomeCircuit", null, "circuit.xml", null);
-        viewModules.add(circ);
+        viewModules.add(new ViewModule("AND", new AndGate(), "", null));
+        viewModules.add(new ViewModule("OR", new OrGate(), "", null));
+        viewModules.add(new ViewModule("FlipFlop", new FlipFlop(), "", null));
+        viewModules.add(new ViewModule("ID", new IdentityGate(), "", null));
+        viewModules.add(new ViewModule("Lampe", new Lamp(), "", null));
+        viewModules.add(new ViewModule("NOT", new NotGate(), "", null));
+        viewModules.add(new ViewModule("ImpulseGenerator", new ImpulseGenerator(), "", null));
+        viewModules.add(new ViewModule("AND-3", new AndGate(2 + 1, 1), "", null));
+        viewModules.add(new ViewModule("OR-3", new OrGate(2 + 1, 1), "", null));
+        loadCustomList();
     }
 
     /**
@@ -143,11 +148,11 @@ public class Model implements ClockListener {
      */
     public void startChecks() {
         // TODO implement
-        // for (CircuitCheck check : checks) {
-        // if (check.isActive()) {
-        // check.test(circuit);
-        // }
-        // }
+        for (CircuitCheck check : checks) {
+            if (check.isActive()) {
+                check.test(circuit);
+            }
+        }
     }
 
     /**
@@ -161,31 +166,17 @@ public class Model implements ClockListener {
     public Port getPortAt(Rectangle rect) {
         for (Module m : getModsAt(rect)) {
             for (Port p : m.getInPorts()) {
-                if (p.getRectangle().intersects(rect)) {
+                if (p.getRectangle() != null && p.getRectangle().intersects(rect)) {
                     return p;
                 }
             }
             for (Port p : m.getOutPorts()) {
-                if (p.getRectangle().intersects(rect)) {
+                if (p.getRectangle() != null && p.getRectangle().intersects(rect)) {
                     return p;
                 }
             }
         }
         return null;
-    }
-
-    /**
-     * Set a given check on the circuit to active or inactive.
-     * 
-     * @param check
-     *            The CircuitCheck to be set to active.
-     * @param isActive
-     *            TRUE if the check is set to active, FALSE otherwise.
-     */
-    // TODO public method? why?
-    public void setCheckActive(CircuitCheck check, boolean isActive) {
-        // TODO implement
-        // check.setActive(isActive);
     }
 
     /**
@@ -211,7 +202,28 @@ public class Model implements ClockListener {
      * Loads or reloads the List containing the custom-circuits.
      */
     public void loadCustomList() {
-        // TODO
+        // search PATH for circuits, non-recursive.
+        File file = new File(".");
+        // TODO CONT
+        Importer importer = new SEPAFImporter();
+        Map<String, String> formats = importer.getFileFormats();
+
+        for (File f : file.listFiles()) {
+            if (f.isFile() && f.canRead() && getFileExtension(f) != null) {
+                if (formats.containsKey(getFileExtension(f))) {
+                    importer.setFile(f);
+                    if (importer.importCircuit()) {
+                        viewModules.add(new ViewModule(f.getName(), null, f.getName(), null));
+                    } else {
+                        ModelEvent e = new ModelEvent();
+                        e.setMessage("import failed: " + importer.getErrorMessage());
+                        // for (ModelListener l : listeners) {
+                        // l.importFailed(e);
+                        // }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -225,14 +237,14 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Selects or deselects a Module.
+     * Selects or deselects an Element.
      * 
      * @param m
-     *            Module that will be selected
+     *            Element that will be selected
      * @param b
      *            true if selected, false if not selected
      */
-    public void setModuleSelected(Module m, boolean b) {
+    public void setElementSelected(Element m, boolean b) {
         m.setSelected(b);
         ModelEvent e = new ModelEvent(m);
         for (ModelListener l : listeners) {
@@ -324,14 +336,14 @@ public class Model implements ClockListener {
      *            The Rectangle defining the zone where elements are selected
      */
     public void selectElements(Rectangle rect) {
-        Set<DrawElement> DrawElements = new HashSet<DrawElement>();
+        Set<DrawElement> drawElements = new HashSet<DrawElement>();
         for (Element e : getElementsAt(rect)) {
             e.setSelected(true);
-            DrawElements.add((DrawElement) e);
+            drawElements.add((DrawElement) e);
         }
         // TODO jaja Codeduplikation checken wir spaeter
         ModelEvent e = new ModelEvent();
-        e.setElements(DrawElements);
+        e.setElements(drawElements);
         for (ModelListener l : listeners) {
             l.elementsChanged(e);
         }
@@ -452,11 +464,16 @@ public class Model implements ClockListener {
      */
     public void addConnection(Port inPort, Port outPort) {
         if (inPort == null || !inPort.isOutPort()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(inPort.toString());
         }
         if (outPort == null || outPort.isOutPort()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(outPort.toString());
         }
+        // remove old connections
+        circuit.removeElement(inPort.getConnection());
+        // this is NOT redundant because one new connection can destroy two old ones
+        circuit.removeElement(outPort.getConnection());
+
         // TODO Testen ob die Bausteine dieser Verbindung auch im Model enthalten?
         // NOTE not sure - importer muss zb in untercircuits verbindungen schaffen. und circuit contains würde da
         // vmtl(!) false zurückgeben.
@@ -467,6 +484,9 @@ public class Model implements ClockListener {
         for (ModelListener l : listeners) {
             l.elementsChanged(e);
         }
+        // System.out.println("inPort: " + inPort.getRectangle().x + "/" + inPort.getRectangle().y);
+        // System.out.println("outPort: " + outPort.getRectangle().x + "/" + outPort.getRectangle().y);
+        // System.out.println(circuit);
     }
 
     /**
@@ -478,6 +498,7 @@ public class Model implements ClockListener {
      *            Point Location of the Module
      */
     public void addModule(Module m, Point p) {
+        // System.out.println("addModule: " + m + " an: " + p.x + "/" + p.y);
         circuit.addModule(m, p);
         ModelEvent e = new ModelEvent(m);
         for (ModelListener l : listeners) {
@@ -497,7 +518,8 @@ public class Model implements ClockListener {
         Module module = null;
         // spawn new circuit / element _object_
         if (m.getFileName() != "") {
-            module = getCircuitByFileName(m.getFileName());
+            // TODO error checking?
+            module = importFromFile(new File(m.getFileName()));
         } else {
             module = m.getModule();
         }
@@ -566,6 +588,7 @@ public class Model implements ClockListener {
         module.getRectangle().getLocation().translate(p.x, p.y);
         ModelEvent e = new ModelEvent(module);
         // ports auch bewegen
+        // TODO was ist, wenn Module ein Circuit ist?
         for (Port pörtli : module.getInPorts()) {
             pörtli.getRectangle().getLocation().translate(p.x, p.y);
         }
@@ -715,21 +738,36 @@ public class Model implements ClockListener {
      * @param file
      *            File to import top-level Circuit from
      */
-    public void importFromFile(File file) {
+    public void importRootFromFile(File file) {
+        this.circuit = importFromFile(file);
+    }
+
+    /**
+     * Import a Circuit and all its elements from a file.
+     * 
+     * @param file
+     *            File to import Circuit from
+     */
+    private Circuit importFromFile(File file) {
         if (file == null) {
             throw new IllegalArgumentException();
         }
+        Circuit m = null;
         String ext = getFileExtension(file);
         if (importers.containsKey(ext)) {
             Importer im = importers.get(ext);
             im.setFile(file);
             if (im.importCircuit()) {
-                this.circuit = im.getCircuit();
+                m = im.getCircuit();
+                if (m == null) {
+                    LOG.error("circuit from " + file.getAbsolutePath() + " was null: " + im.getErrorMessage());
+                }
             } else {
                 LOG.warn("File import failed! File: " + file.getAbsolutePath());
                 // TODO Fehlermeldung an View?
             }
         }
+        return m;
     }
 
     /**
@@ -754,26 +792,6 @@ public class Model implements ClockListener {
                 // TODO Fehlermeldung an View?
             }
         }
-    }
-
-    /**
-     * Returns parsed circuit from given fileName, iff it exists and is valid.
-     * 
-     * @param fileName
-     *            String file to load circuit from
-     * @return Module instantiated circuit, null on failure
-     */
-    public Circuit getCircuitByFileName(String fileName) {
-        // TODO implement
-        // Finde passenden importer
-        Circuit c = null;
-        // Importer importer;
-        // File file = new File(fileName);
-        // importer.setFile(file);
-        // if (importer.importCircuit()) {
-        // c = importer.getCircuit();
-        // }
-        return c;
     }
 
     // /**
@@ -804,7 +822,7 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Replaces the current circuit with a new one.
+     * Replaces the current circuit with a new one. All Elements will be lost.
      */
     public void newCircuit() {
         ModelEvent e = new ModelEvent();
@@ -816,6 +834,8 @@ public class Model implements ClockListener {
             }
         }
         this.circuit = new Circuit();
-        // TODO View benachrichtigen zum neu zeichnen.
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
+        }
     }
 }

@@ -1,10 +1,12 @@
 package nandcat.controller;
 
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Line2D;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -78,6 +80,8 @@ public class CreateTool implements Tool {
      */
     private Port sourcePort;
 
+    // private Line2D connectionPreview;
+
     /**
      * Constructs the SelectTool.
      * 
@@ -115,6 +119,11 @@ public class CreateTool implements Tool {
                 public void mouseClicked(WorkspaceEvent e) {
                     createElement(e.getLocation());
                 }
+
+                @Override
+                public void mouseMoved(WorkspaceEvent e) {
+                    moveCursor(e.getLocation());
+                }
             };
         }
         view.getWorkspace().addListener(workspaceListener);
@@ -124,6 +133,9 @@ public class CreateTool implements Tool {
      * Creates a new Element at the given Point.
      */
     private void createElement(Point point) {
+        point.x -= MOUSE_TOLERANCE.height / 2;
+        point.y -= MOUSE_TOLERANCE.width / 2;
+
         Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(point, MOUSE_TOLERANCE));
 
         // First check if the user clicked on an empty space on the workspace. This means they want to create a new
@@ -136,18 +148,51 @@ public class CreateTool implements Tool {
             if (sourcePort == null) {
                 if (model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE)) != null) {
                     sourcePort = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
+                    // connectionPreview = new Line2D.Double();
+                    // connectionPreview.setLine(sourcePort.getCenter(), sourcePort.getCenter());
+                    // view.getWorkspace().redraw(connectionPreview);
                 }
             } else {
                 if (model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE)) != null) {
                     Port targetPort = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
-                    if (!sourcePort.isOutPort()) {
+                    if (!sourcePort.isOutPort() && targetPort.isOutPort()) {
                         model.addConnection(targetPort, sourcePort);
-                    } else {
+                        sourcePort = null;
+                    } else if (sourcePort.isOutPort() && !targetPort.isOutPort()) {
                         model.addConnection(sourcePort, targetPort);
+                        sourcePort = null;
                     }
-                    sourcePort = null;
+                    // connectionPreview = new Line2D.Double(0, 0, 0, 0);
+                    // view.getWorkspace().redraw(connectionPreview);
                 }
             }
+        }
+    }
+
+    /**
+     * Change the cursor when its moved. Show error symbol if the cursor is at a position, where an inport would be
+     * connected with another inport and vice versa. Draw a preview of the connection to be set by the user.
+     * 
+     * @param point
+     *            Point representing the location of the mouse cursor.
+     */
+    private void moveCursor(Point point) {
+        point.x -= MOUSE_TOLERANCE.height / 2;
+        point.y -= MOUSE_TOLERANCE.width / 2;
+        if (sourcePort != null) {
+            // connectionPreview.setLine(sourcePort.getCenter(), point);
+            // view.getWorkspace().redraw(connectionPreview);
+            Set<DrawElement> elements = model.getDrawElementsAt(new Rectangle(point, MOUSE_TOLERANCE));
+            Port portAt = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
+            if (!elements.isEmpty() && portAt != null) {
+                if ((sourcePort.isOutPort() && portAt.isOutPort()) || (!sourcePort.isOutPort() && !portAt.isOutPort())) {
+                    view.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                }
+            } else {
+                view.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+        } else {
+            view.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
     }
 

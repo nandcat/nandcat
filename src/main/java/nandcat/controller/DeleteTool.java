@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import nandcat.model.Model;
+import nandcat.model.element.DrawElement;
 import nandcat.model.element.Element;
 import nandcat.view.View;
 
@@ -81,8 +82,11 @@ public class DeleteTool implements Tool {
         this.view.addKeyListener(new KeyListener() {
 
             public void keyTyped(KeyEvent e) {
-                Element element = (Element) e.getSource();
-                model.removeElement(element);
+                for (DrawElement d : model.getDrawElements()) {
+                    if (d.isSelected()) {
+                        model.removeElement((Element) d);
+                    }
+                }
             }
 
             public void keyReleased(KeyEvent e) {

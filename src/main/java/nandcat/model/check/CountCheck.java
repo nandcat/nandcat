@@ -1,7 +1,9 @@
 package nandcat.model.check;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import nandcat.model.check.CheckEvent.State;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Element;
 
@@ -23,27 +25,51 @@ public class CountCheck implements CircuitCheck {
     private boolean active;
 
     /**
+     * Constructor for CountCheck. By default the check is active.
+     */
+    public CountCheck() {
+        listener = new LinkedHashSet<CheckListener>();
+        active = true;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public boolean isActive() {
-        // TODO Auto-generated method stub
-        return false;
+        return active;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean setActive(boolean active) {
-        // TODO Auto-generated method stub
-        return false;
+        return this.active = active;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean test(Circuit circuit) {
+        Set<Element> elements = new LinkedHashSet<Element>();
+
+        // Event informing listeners that check has started.
+        CheckEvent e = new CheckEvent(State.RUNNING, elements, this);
+        for (CheckListener l : listener) {
+            l.checkChanged(e);
+        }
         List<Element> elem = circuit.getElements();
-        return elem.size() < 1000;
+        if (elem.size() > 1000) {
+            e = new CheckEvent(State.FAILED, elements, this);
+            for (CheckListener l : listener) {
+                l.checkChanged(e);
+            }
+            return false;
+        }
+        e = new CheckEvent(State.SUCCEEDED, elements, this);
+        for (CheckListener l : listener) {
+            l.checkChanged(e);
+        }
+        return true;
     }
 
     /**
@@ -58,5 +84,12 @@ public class CountCheck implements CircuitCheck {
      */
     public void removeListener(CheckListener l) {
         listener.remove(l);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return "Prüfen ob Anzahl der Gatter eine Grenzwert überschreitet";
     }
 }

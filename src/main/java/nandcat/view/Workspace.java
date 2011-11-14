@@ -203,10 +203,10 @@ public class Workspace extends JPanel {
                     elementDrawer.draw((Connection) elem);
                 } else if (elem instanceof AndGate) {
                     elementDrawer.draw((AndGate) elem);
-                } else if (elem instanceof Circuit) {
-                    elementDrawer.draw((Circuit) elem);
                 } else if (elem instanceof FlipFlop) {
                     elementDrawer.draw((FlipFlop) elem);
+                } else if (elem instanceof Circuit) {
+                    elementDrawer.draw((Circuit) elem);
                 } else if (elem instanceof ImpulseGenerator) {
                     elementDrawer.draw((ImpulseGenerator) elem);
                 } else if (elem instanceof IdentityGate) {

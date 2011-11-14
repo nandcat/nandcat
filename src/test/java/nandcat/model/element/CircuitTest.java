@@ -55,6 +55,11 @@ public class CircuitTest extends TestCase {
         AndGate and2 = new AndGate(2, 1);
         ImpulseGenerator impy = new ImpulseGenerator(0);
         Circuit c = new Circuit();
+        // NOTE will fail ???
+        // Importer impo = new SEPAFImporter();
+        // impo.setFile(new File("/tmp/fuck.xml"));
+        // impo.importCircuit();
+        // Circuit c = impo.getCircuit();
         c.addModule(and0, p);
         c.addModule(and1, p);
         c.addModule(and2, p);
@@ -66,6 +71,10 @@ public class CircuitTest extends TestCase {
         assertTrue(c.getStartingModules().contains(and0));
         assertTrue(c.getStartingModules().contains(and1));
         assertFalse(c.getStartingModules().contains(and2));
+        // Exporter expo = new SEPAFExporter();
+        // expo.setCircuit(c);
+        // expo.setFile(new File("/tmp/fuck1.xml"));
+        // expo.exportCircuit();
     }
 
     /**

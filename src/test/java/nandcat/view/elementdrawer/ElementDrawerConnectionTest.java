@@ -10,6 +10,7 @@ import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 import org.easymock.classextension.EasyMock;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -24,6 +25,7 @@ public class ElementDrawerConnectionTest extends AbstractElementDrawerTest {
     public void setUp() {
     }
 
+    @Ignore
     @Test
     public void testDrawConnection() throws Exception {
         Graphics graphicMock = EasyMock.createNiceMock(Graphics.class);
@@ -69,6 +71,7 @@ public class ElementDrawerConnectionTest extends AbstractElementDrawerTest {
         EasyMock.verify(graphicMock);
     }
 
+    @Ignore
     @Test(expected = IllegalArgumentException.class)
     public void testPortHasNullModule() {
         Graphics graphicMock = EasyMock.createNiceMock(Graphics.class);
@@ -101,6 +104,7 @@ public class ElementDrawerConnectionTest extends AbstractElementDrawerTest {
         EasyMock.verify(graphicMock);
     }
 
+    @Ignore
     @Test(expected = IllegalArgumentException.class)
     public void testPortHasNullModuleRectangle() {
         Graphics graphicMock = EasyMock.createNiceMock(Graphics.class);
