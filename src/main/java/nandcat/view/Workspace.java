@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import javax.swing.JPanel;
@@ -197,10 +198,12 @@ public class Workspace extends JPanel {
         super.paint(g);
         elementDrawer.setGraphics(g);
         List<DrawElement> elementsToDraw = model.getDrawElements();
+
+        List<Connection> cachedConnections = new LinkedList<Connection>();
         for (DrawElement elem : elementsToDraw) {
             if (isInView(elem)) {
                 if (elem instanceof Connection) {
-                    elementDrawer.draw((Connection) elem);
+                    cachedConnections.add((Connection) elem);
                 } else if (elem instanceof AndGate) {
                     elementDrawer.draw((AndGate) elem);
                 } else if (elem instanceof FlipFlop) {
@@ -219,6 +222,9 @@ public class Workspace extends JPanel {
                     elementDrawer.draw((Lamp) elem);
                 }
             }
+        }
+        for (Connection connection : cachedConnections) {
+            elementDrawer.draw(connection);
         }
         if (selectRect != null) {
             elementDrawer.draw(selectRect);
