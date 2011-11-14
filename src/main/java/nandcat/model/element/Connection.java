@@ -186,9 +186,7 @@ public class Connection implements Element, DrawConnection {
     }
 
     /**
-     * Test.
-     * 
-     * @return something
+     * {@inheritDoc}
      */
     public String toString() {
         String x;
