@@ -131,27 +131,16 @@ public class Model implements ClockListener {
     private void initView2Module() {
         viewModules = new LinkedList<ViewModule>();
         // TODO fix this
-        ViewModule andGate = new ViewModule("AND", new AndGate(), "", null);
-        viewModules.add(andGate);
-        ViewModule orGate = new ViewModule("OR", new OrGate(), "", null);
-        viewModules.add(orGate);
-        ViewModule flipFlop = new ViewModule("FlipFlop", new FlipFlop(), "", null);
-        viewModules.add(flipFlop);
-        ViewModule id = new ViewModule("ID", new IdentityGate(), "", null);
-        viewModules.add(id);
-        ViewModule lamp = new ViewModule("Lampe", new Lamp(), "", null);
-        viewModules.add(lamp);
-        ViewModule not = new ViewModule("NOT", new NotGate(), "", null);
-        viewModules.add(not);
-        ViewModule impy = new ViewModule("ImpulseGenerator", new ImpulseGenerator(), "", null);
-        viewModules.add(impy);
-        ViewModule andGate3 = new ViewModule("AND-3", new AndGate(3, 1), "", null);
-        viewModules.add(andGate3);
-        ViewModule orGate3 = new ViewModule("OR-3", new OrGate(3, 1), "", null);
-        viewModules.add(orGate3);
-        // FIXME walk through circuit-Ordner and fill viewModule2Module
-        ViewModule circ = new ViewModule("SomeCircuit", null, "circuit.xml", null);
-        viewModules.add(circ);
+        viewModules.add(new ViewModule("AND", new AndGate(), "", null));
+        viewModules.add(new ViewModule("OR", new OrGate(), "", null));
+        viewModules.add(new ViewModule("FlipFlop", new FlipFlop(), "", null));
+        viewModules.add(new ViewModule("ID", new IdentityGate(), "", null));
+        viewModules.add(new ViewModule("Lampe", new Lamp(), "", null));
+        viewModules.add(new ViewModule("NOT", new NotGate(), "", null));
+        viewModules.add(new ViewModule("ImpulseGenerator", new ImpulseGenerator(), "", null));
+        viewModules.add(new ViewModule("AND-3", new AndGate(3, 1), "", null));
+        viewModules.add(new ViewModule("OR-3", new OrGate(3, 1), "", null));
+        loadCustomList();
     }
 
     /**
@@ -227,7 +216,28 @@ public class Model implements ClockListener {
      * Loads or reloads the List containing the custom-circuits.
      */
     public void loadCustomList() {
-        // TODO
+        // search PATH for circuits, non-recursive.
+        File file = new File(".");
+        // TODO CONT
+        Importer importer = new SEPAFImporter();
+        Map<String, String> formats = importer.getFileFormats();
+
+        for (File f : file.listFiles()) {
+            if (f.isFile() && f.canRead() && getFileExtension(f) != null) {
+                if (formats.containsKey(getFileExtension(f))) {
+                    importer.setFile(f);
+                    if (importer.importCircuit()) {
+                        viewModules.add(new ViewModule(f.getName(), null, f.getName(), null));
+                    } else {
+                        ModelEvent e = new ModelEvent();
+                        e.setMessage("import failed: " + importer.getErrorMessage());
+                        // for (ModelListener l : listeners) {
+                        // l.importFailed(e);
+                        // }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -468,10 +478,10 @@ public class Model implements ClockListener {
      */
     public void addConnection(Port inPort, Port outPort) {
         if (inPort == null || !inPort.isOutPort()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(inPort.toString());
         }
         if (outPort == null || outPort.isOutPort()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(outPort.toString());
         }
         // TODO Testen ob die Bausteine dieser Verbindung auch im Model enthalten?
         // NOTE not sure - importer muss zb in untercircuits verbindungen schaffen. und circuit contains würde da
@@ -527,17 +537,13 @@ public class Model implements ClockListener {
         }
     }
 
-    /*
-     * I changed this method to removeElement, which now removes all selected elements.
-     * Seemed to be more intuitive for me.
-     */
     /**
      * Remove given element.
      * 
      * @param e
      *            Element to remove
      */
-    private void removeElement(Element e) {
+    public void removeElement(Element e) {
         circuit.removeElement(e);
         ModelEvent event = new ModelEvent();
         for (ModelListener l : listeners) {
@@ -745,6 +751,9 @@ public class Model implements ClockListener {
             im.setFile(file);
             if (im.importCircuit()) {
                 this.circuit = im.getCircuit();
+                if (this.circuit == null) {
+                    LOG.error("circuit from " + file.getAbsolutePath() + " was null: " + im.getErrorMessage());
+                }
             } else {
                 LOG.warn("File import failed! File: " + file.getAbsolutePath());
                 // TODO Fehlermeldung an View?
@@ -785,14 +794,14 @@ public class Model implements ClockListener {
      */
     public Circuit getCircuitByFileName(String fileName) {
         // TODO implement
-        // Finde passenden importer
+        // Finde passenden importer!
         Circuit c = null;
-        // Importer importer;
-        // File file = new File(fileName);
-        // importer.setFile(file);
-        // if (importer.importCircuit()) {
-        // c = importer.getCircuit();
-        // }
+        Importer importer = new SEPAFImporter();
+        File file = new File(fileName);
+        importer.setFile(file);
+        if (importer.importCircuit()) {
+            c = importer.getCircuit();
+        }
         return c;
     }
 
@@ -821,14 +830,5 @@ public class Model implements ClockListener {
      */
     public Circuit getCircuit() {
         return circuit;
-    }
-
-    /**
-     * Remove the selected Elements from the workspace.
-     */
-    public void removeElement() {
-        for (Element element : getSelectedElements()) {
-            removeElement(element);
-        }
     }
 }
