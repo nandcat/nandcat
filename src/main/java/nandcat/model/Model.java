@@ -333,12 +333,15 @@ public class Model implements ClockListener {
      * 
      * @param rect
      *            The Rectangle defining the zone where elements are selected
+     * @return true iff at least one element has been selected
      */
-    public void selectElements(Rectangle rect) {
+    public boolean selectElements(Rectangle rect) {
+        boolean result = false;
         Set<DrawElement> drawElements = new HashSet<DrawElement>();
         for (Element e : getElementsAt(rect)) {
             e.setSelected(true);
             drawElements.add((DrawElement) e);
+            result = true;
         }
         // TODO jaja Codeduplikation checken wir spaeter
         ModelEvent e = new ModelEvent();
@@ -346,6 +349,7 @@ public class Model implements ClockListener {
         for (ModelListener l : listeners) {
             l.elementsChanged(e);
         }
+        return result;
     }
 
     /**
