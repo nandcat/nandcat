@@ -138,8 +138,8 @@ public class Model implements ClockListener {
         viewModules.add(new ViewModule("Lampe", new Lamp(), "", null));
         viewModules.add(new ViewModule("NOT", new NotGate(), "", null));
         viewModules.add(new ViewModule("ImpulseGenerator", new ImpulseGenerator(), "", null));
-        viewModules.add(new ViewModule("AND-3", new AndGate(3, 1), "", null));
-        viewModules.add(new ViewModule("OR-3", new OrGate(3, 1), "", null));
+        viewModules.add(new ViewModule("AND-3", new AndGate(2 + 1, 1), "", null));
+        viewModules.add(new ViewModule("OR-3", new OrGate(2 + 1, 1), "", null));
         loadCustomList();
     }
 
@@ -483,6 +483,11 @@ public class Model implements ClockListener {
         if (outPort == null || outPort.isOutPort()) {
             throw new IllegalArgumentException(outPort.toString());
         }
+        // remove old connections
+        circuit.removeElement(inPort.getConnection());
+        // this is NOT redundant because one new connection can destroy two old ones
+        circuit.removeElement(outPort.getConnection());
+
         // TODO Testen ob die Bausteine dieser Verbindung auch im Model enthalten?
         // NOTE not sure - importer muss zb in untercircuits verbindungen schaffen. und circuit contains würde da
         // vmtl(!) false zurückgeben.
@@ -493,6 +498,9 @@ public class Model implements ClockListener {
         for (ModelListener l : listeners) {
             l.elementsChanged(e);
         }
+        // System.out.println("inPort: " + inPort.getRectangle().x + "/" + inPort.getRectangle().y);
+        // System.out.println("outPort: " + outPort.getRectangle().x + "/" + outPort.getRectangle().y);
+        // System.out.println(circuit);
     }
 
     /**
@@ -504,6 +512,7 @@ public class Model implements ClockListener {
      *            Point Location of the Module
      */
     public void addModule(Module m, Point p) {
+        // System.out.println("addModule: " + m + " an: " + p.x + "/" + p.y);
         circuit.addModule(m, p);
         ModelEvent e = new ModelEvent(m);
         for (ModelListener l : listeners) {
@@ -593,6 +602,7 @@ public class Model implements ClockListener {
         module.getRectangle().getLocation().translate(p.x, p.y);
         ModelEvent e = new ModelEvent(module);
         // ports auch bewegen
+        // TODO was ist, wenn Module ein Circuit ist?
         for (Port pörtli : module.getInPorts()) {
             pörtli.getRectangle().getLocation().translate(p.x, p.y);
         }

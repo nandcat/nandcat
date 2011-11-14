@@ -164,10 +164,10 @@ public abstract class Gate implements Module {
 
         // (standard)relocate all ports
         for (Port p : this.inPorts) {
-            p.locateOnStandardPosition();
+            p.locateOnStandardPosition(this);
         }
         for (Port p : this.outPorts) {
-            p.locateOnStandardPosition();
+            p.locateOnStandardPosition(this);
         }
     }
 
@@ -197,5 +197,25 @@ public abstract class Gate implements Module {
      */
     public boolean isSelected() {
         return selected;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        String x = this.getClass().getSimpleName() + "(" + getRectangle().x + "/" + getRectangle().y + ") ";
+        x += "(In) ";
+        for (Port in : inPorts) {
+            if (in.getRectangle() != null) {
+                x += in.getRectangle().x + "/" + in.getRectangle().y + ", ";
+            }
+        }
+        x += "(Out) ";
+        for (Port out : outPorts) {
+            if (out.getRectangle() != null) {
+                x += out.getRectangle().x + "/" + out.getRectangle().y + ", ";
+            }
+        }
+        return x;
     }
 }

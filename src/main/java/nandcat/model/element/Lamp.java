@@ -144,4 +144,16 @@ public class Lamp implements Module {
     public boolean isSelected() {
         return selected;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        String x = this.getClass().getSimpleName() + "(" + getRectangle().x + "/" + getRectangle().y + ") ";
+        x += "(In) ";
+        if (inPort.getRectangle() != null) {
+            x += inPort.getRectangle().x + "/" + inPort.getRectangle().y + ", ";
+        }
+        return x;
+    }
 }

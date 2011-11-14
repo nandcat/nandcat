@@ -372,7 +372,13 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
                 }
             }
         }
-        // one module may not appear more than once in elements (ensured by Set<>)
+        for (Port in : m.getInPorts()) {
+            in.locateOnStandardPosition(this);
+        }
+        for (Port out : m.getOutPorts()) {
+            out.locateOnStandardPosition(this);
+        }
+        // one module may not appear more than once in elements (guaranteed by Set<>)
         elements.add(m);
     }
 
@@ -384,5 +390,31 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     public boolean isDirty() {
         // TODO Implementierung fehlt. Zurücksetzen auf false bei exportToFile
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        String x = "";
+        x = "Circuit: " + this.getClass().getSimpleName() + "(" + rectangle.x + "/" + rectangle.y + ")" + "\n";
+        x += " inPorts ";
+        x += "(In) ";
+        for (Port in : getInPorts()) {
+            if (in.getRectangle() != null) {
+                x += in.getRectangle().x + "/" + in.getRectangle().y + ", ";
+            }
+        }
+        x += "(Out) ";
+        for (Port out : getOutPorts()) {
+            if (out.getRectangle() != null) {
+                x += out.getRectangle().x + "/" + out.getRectangle().y + ", ";
+            }
+        }
+        x += "\n";
+        for (Element e : elements) {
+            x = x + e + "\n";
+        }
+        return x + "-----------------------------------------------------------------------";
     }
 }
