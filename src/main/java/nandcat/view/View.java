@@ -156,10 +156,6 @@ public class View extends JFrame {
                 redraw(e);
             }
 
-            public void checksStopped(ModelEvent e) {
-                enableButtons();
-            }
-
             public void simulationStopped(ModelEvent e) {
                 enableButtons();
             }
