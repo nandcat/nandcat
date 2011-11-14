@@ -579,7 +579,7 @@ public class Model implements ClockListener {
         // check if module won't intersect after the move
         Rectangle r = module.getRectangle();
         for (Element e : circuit.getElements()) {
-            if (e instanceof Module && ((Module) e).getRectangle().intersects(r)) {
+            if (e instanceof Module && ((Module) e).getRectangle().intersects(r) && e != module) {
                 return false;
             }
         }
