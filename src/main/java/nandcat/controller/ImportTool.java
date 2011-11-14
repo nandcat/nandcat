@@ -38,6 +38,7 @@ public class ImportTool implements Tool {
     private List<String> represent = new LinkedList<String>() {
 
         {
+            add("new");
             add("load");
         }
     }; // TODO beschreibung schreiben
@@ -79,22 +80,38 @@ public class ImportTool implements Tool {
     private void request(String command) {
         LOG.debug("Request command: " + command);
         if (command.equals("load")) {
-            JFileChooser fc = new JFileChooser();
-            ImportExportUtils.addFileFilterToChooser(fc, model.getImportFormats());
-            fc.setAcceptAllFileFilterUsed(false);
-            int returnVal = fc.showOpenDialog(controller.getView());
+            actionLoad();
+        } else if (command.equals("new")) {
+            actionNew();
+        }
+    }
 
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File file = fc.getSelectedFile();
-                if (file != null) {
-                    LOG.debug("Importing: " + file.getName());
-                    model.importFromFile(file);
-                } else {
-                    LOG.debug("File is null");
-                }
+    /**
+     * Requests to create a new Circuit and replace the old one.
+     */
+    private void actionNew() {
+        model.newCircuit();
+    }
+
+    /**
+     * Shows a file dialog to load a file as a circuit.
+     */
+    private void actionLoad() {
+        JFileChooser fc = new JFileChooser();
+        ImportExportUtils.addFileFilterToChooser(fc, model.getImportFormats());
+        fc.setAcceptAllFileFilterUsed(false);
+        int returnVal = fc.showOpenDialog(controller.getView());
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            if (file != null) {
+                LOG.debug("Importing: " + file.getName());
+                model.importFromFile(file);
             } else {
-                LOG.debug("Open command cancelled by user.");
+                LOG.debug("File is null");
             }
+        } else {
+            LOG.debug("Open command cancelled by user.");
         }
     }
 

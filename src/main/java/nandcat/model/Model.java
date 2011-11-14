@@ -802,4 +802,20 @@ public class Model implements ClockListener {
     public Circuit getCircuit() {
         return circuit;
     }
+
+    /**
+     * Replaces the current circuit with a new one.
+     */
+    public void newCircuit() {
+        ModelEvent e = new ModelEvent();
+
+        // Let listeners interrupt. If interrupted don't create a new circuit.
+        for (ModelListener l : listeners) {
+            if (l.changeCircuitRequested(e)) {
+                return;
+            }
+        }
+        this.circuit = new Circuit();
+        // TODO View benachrichtigen zum neu zeichnen.
+    }
 }

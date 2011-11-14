@@ -77,7 +77,6 @@ public class ExportTool implements Tool {
         {
             add("save");
             add("saveAs");
-            add("new");
         }
     }; // TODO beschreibung schreiben
 
@@ -163,7 +162,7 @@ public class ExportTool implements Tool {
         } else if (command.equals("save")) {
             actionSave();
         } else {
-            actionNew(command);
+            LOG.debug("Command '" + command + "' not supported.");
         }
     }
 
@@ -186,16 +185,6 @@ public class ExportTool implements Tool {
             LOG.debug("Last save not available - no quicksave");
             actionSaveAs();
         }
-    }
-
-    /**
-     * Replaces the existing circuit against a new one.
-     * 
-     * @param command
-     *            String representing functionality to activate
-     */
-    private void actionNew(String command) {
-        // IMPL Neue Schaltung anlegen. Model funktionen?
     }
 
     /**
