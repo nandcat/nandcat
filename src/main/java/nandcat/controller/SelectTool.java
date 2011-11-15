@@ -41,12 +41,12 @@ public class SelectTool implements Tool {
     /**
      * Icon representation of the Tool.
      */
-    private ImageIcon icon; // TODO icon setzen
+    private ImageIcon icon;
 
     /**
      * String representation of the Tool.
      */
-    private List<String> represent; // TODO beschreibung schreiben
+    private List<String> represent;
 
     /**
      * ActionListerner of the Tool on the Buttons.
@@ -66,7 +66,13 @@ public class SelectTool implements Tool {
     /**
      * Tolerance used if mouse clicked.
      */
-    private static final Dimension MOUSE_TOLERANCE = new Dimension(2, 2);
+    private static final Dimension MOUSE_TOLERANCE = new Dimension(1, 1);
+
+    private Point startPoint;
+
+    boolean notEmpty = false;
+
+    boolean isSelect = false;
 
     /**
      * Constructs the SelectTool.
@@ -90,6 +96,7 @@ public class SelectTool implements Tool {
             setListeners();
         } else {
             removeListeners();
+            model.deselectAll();
         }
     }
 
@@ -102,33 +109,51 @@ public class SelectTool implements Tool {
 
                 @Override
                 public void mousePressed(WorkspaceEvent e) {
-                    model.deselectAll();
-                    if (model.getDrawElementsAt(new Rectangle(e.getLocation(), MOUSE_TOLERANCE)).isEmpty()) {
+                    Set<DrawElement> elements = model
+                            .getDrawElementsAt(new Rectangle(e.getLocation(), MOUSE_TOLERANCE));
+                    startPoint = e.getLocation();
+                    if (elements.isEmpty()) {
                         rect = new Rectangle(e.getLocation());
+                        isSelect = true;
+                    } else {
+                        if (notEmpty) {
+                            boolean oneSelected = false;
+                            for (DrawElement element : elements) {
+                                if (element.isSelected()) {
+                                    oneSelected = true;
+                                }
+                            }
+                            if (oneSelected) {
+                                isSelect = false;
+                            } else {
+                                rect = new Rectangle(e.getLocation());
+                                isSelect = true;
+                            }
+                        } else {
+                            rect = new Rectangle(e.getLocation());
+                            isSelect = true;
+                        }
                     }
                 }
 
                 @Override
                 public void mouseReleased(WorkspaceEvent e) {
-                    rect = null;
+                    view.getWorkspace().redraw();
                 }
 
                 @Override
                 public void mouseDragged(WorkspaceEvent e) {
-
-                    Set<DrawElement> elements = model
-                            .getDrawElementsAt(new Rectangle(e.getLocation(), MOUSE_TOLERANCE));
-                    if (elements.isEmpty() || (rect != null)) {
+                    if (isSelect) {
                         selectElements(rect, e.getLocation());
                     } else {
-                        model.moveBy(e.getLocation());
+                        moveElements(e.getLocation());
                     }
                 }
 
                 @Override
                 public void mouseClicked(WorkspaceEvent e) {
                     model.deselectAll();
-                    model.selectElements(new Rectangle(e.getLocation(), MOUSE_TOLERANCE));
+                    notEmpty = model.selectElements(new Rectangle(e.getLocation(), MOUSE_TOLERANCE));
                 }
             };
         }
@@ -147,23 +172,24 @@ public class SelectTool implements Tool {
      * Set the Elements within the rectangle as selected and paints the selection rectangle on the workspace.
      */
     private void selectElements(Rectangle rect, Point point) {
-
-        if (point.y < rect.y && point.x < rect.x) {
-            rect.x = point.x;
-            rect.y = point.y;
-        } else if (point.x < rect.x) {
-            rect.x = point.x;
-        } else if (point.y < rect.y) {
-            rect.y = point.y;
-        }
-        int xCoord = Math.min(rect.x, point.x);
-        int yCoord = Math.min(rect.y, point.y);
-        int width = Math.abs(rect.x - point.x);
-        int height = Math.abs(rect.y - point.y);
-
-        rect.setBounds(xCoord, yCoord, width, height);
+        model.deselectAll();
+        rect.setFrameFromDiagonal(point, this.startPoint);
         view.getWorkspace().redraw(rect);
-        model.selectElements(rect);
+        notEmpty = model.selectElements(rect);
+    }
+
+    /**
+     * Move the selected elements to the current location of the mouse.
+     * 
+     * @param point
+     *            Point indicating the mouse position.
+     */
+    private void moveElements(Point point) {
+        Point offset = new Point();
+        offset.x = (startPoint.x - point.x);
+        offset.y = (startPoint.y - point.y);
+        model.moveBy(offset);
+        this.startPoint = point;
     }
 
     /**

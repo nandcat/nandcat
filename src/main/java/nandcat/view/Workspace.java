@@ -143,11 +143,11 @@ public class Workspace extends JPanel {
     }
 
     /**
-     * Redraws the workspace with its elements. By calling the repaint() method. And sets a Line2D which represents the
-     * Connection which the user tries to place but is not complete yet.
+     * Redraws the workspace with its elements. By calling the repaint() method. And sets a connectLine which represents
+     * the Connection which the user tries to place but is not established yet.
      * 
      * @param line
-     *            Line2D Line representing the Connection to be placed.
+     *            Line2D line which represents the connectionLine while trying to set the connection.
      */
     public void redraw(Line2D line) {
         this.connectLine = line;
@@ -290,6 +290,8 @@ public class Workspace extends JPanel {
     private void notifyMouseReleased(MouseEvent altE) {
         WorkspaceEvent e = new WorkspaceEvent();
         e.setLocation(altE.getPoint());
+        selectRect = null;
+        connectLine = null;
         for (WorkspaceListener l : listeners) {
             l.mouseReleased(e);
         }
