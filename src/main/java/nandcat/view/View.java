@@ -28,6 +28,8 @@ import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.event.ChangeListener;
+import nandcat.I18N;
+import nandcat.I18N.I18NBundle;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListenerAdapter;
@@ -123,6 +125,11 @@ public class View extends JFrame {
     private Model model;
 
     /**
+     * Translation unit.
+     */
+    private I18NBundle i18n = I18N.getBundle("view");
+
+    /**
      * Constructs the view.
      * 
      * @param model
@@ -187,72 +194,73 @@ public class View extends JFrame {
      *            the menuBar to be build
      */
     private void buildMenubar(JMenuBar menubar) {
+
         // Create the Menus. Setting Shortcuts.
-        JMenu file = new JMenu("Datei");
+        JMenu file = new JMenu(i18n.getString("menu.file"));
         file.setMnemonic(KeyEvent.VK_D);
         disableElements.add(file);
-        JMenu edit = new JMenu("Bearbeiten");
+        JMenu edit = new JMenu(i18n.getString("menu.edit"));
         edit.setMnemonic(KeyEvent.VK_B);
         disableElements.add(edit);
-        JMenu sim = new JMenu("Simulation");
+        JMenu sim = new JMenu(i18n.getString("menu.simulation"));
         sim.setMnemonic(KeyEvent.VK_T);
         noDisableElements.add(sim);
-        JMenu help = new JMenu("?");
+        JMenu help = new JMenu(i18n.getString("menu.help"));
         help.setMnemonic(KeyEvent.VK_H);
         disableElements.add(help);
         // Create MenuItems. Setting Shortcuts.
-        JMenuItem mstart = new JMenuItem("Simulation starten", KeyEvent.VK_S);
+        JMenuItem mstart = new JMenuItem(i18n.getString("menu.simulation.start"), KeyEvent.VK_S);
         mstart.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0));
         disableElements.add(mstart);
-        JMenuItem mstop = new JMenuItem("Simulation beenden", KeyEvent.VK_E);
+        JMenuItem mstop = new JMenuItem(i18n.getString("menu.simulation.stop"), KeyEvent.VK_E);
         mstop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0));
         noDisableElements.add(mstop);
-        JMenuItem mslower = new JMenuItem("Langsamer", KeyEvent.VK_MINUS);
+        JMenuItem mslower = new JMenuItem(i18n.getString("menu.simulation.slower"), KeyEvent.VK_MINUS);
         mslower.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, ActionEvent.CTRL_MASK));
         noDisableElements.add(mslower);
-        JMenuItem mfaster = new JMenuItem("Schneller", KeyEvent.VK_PLUS);
+        JMenuItem mfaster = new JMenuItem(i18n.getString("menu.simulation.faster"), KeyEvent.VK_PLUS);
         mfaster.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, ActionEvent.CTRL_MASK));
         noDisableElements.add(mfaster);
-        JMenuItem mcreate = new JMenuItem("Erstellen", KeyEvent.VK_E);
+        JMenuItem mcreate = new JMenuItem(i18n.getString("menu.edit.create"), KeyEvent.VK_E);
         mcreate.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
         noDisableElements.add(mcreate);
-        JMenuItem mmove = new JMenuItem("Bewegen", KeyEvent.VK_B);
+        JMenuItem mmove = new JMenuItem(i18n.getString("menu.edit.move"), KeyEvent.VK_B);
         mmove.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.CTRL_MASK));
         noDisableElements.add(mmove);
-        JMenuItem mselect = new JMenuItem("Auswählen", KeyEvent.VK_W);
+        JMenuItem mselect = new JMenuItem(i18n.getString("menu.edit.select"), KeyEvent.VK_W);
         mselect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
         noDisableElements.add(mselect);
-        JMenuItem mstartcheck = new JMenuItem("Tests Ausführen", KeyEvent.VK_T);
+        JMenuItem mstartcheck = new JMenuItem(i18n.getString("menu.test.execute"), KeyEvent.VK_T);
         mstartcheck.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
         disableElements.add(mstartcheck);
-        JMenuItem meditcheck = new JMenuItem("Tests Verwalten", KeyEvent.VK_V);
+        JMenuItem meditcheck = new JMenuItem(i18n.getString("menu.test.manage"), KeyEvent.VK_V);
         meditcheck.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
         disableElements.add(meditcheck);
-        JMenuItem mnew = new JMenuItem("Neu", KeyEvent.VK_N);
+        JMenuItem mnew = new JMenuItem(i18n.getString("menu.file.new"), KeyEvent.VK_N);
         mnew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
         noDisableElements.add(mnew);
-        JMenuItem mload = new JMenuItem("Schaltung laden", KeyEvent.VK_L);
+        JMenuItem mload = new JMenuItem(i18n.getString("menu.file.load"), KeyEvent.VK_L);
         mload.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
         noDisableElements.add(mload);
-        JMenuItem msave = new JMenuItem("Speichern", KeyEvent.VK_S);
+        JMenuItem msave = new JMenuItem(i18n.getString("menu.file.save"), KeyEvent.VK_S);
         msave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
         noDisableElements.add(msave);
-        JMenuItem msave2 = new JMenuItem("Speichern unter..", KeyEvent.VK_A);
+        JMenuItem msave2 = new JMenuItem(i18n.getString("menu.file.saveas"), KeyEvent.VK_A);
         msave2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
         noDisableElements.add(msave2);
-        JMenuItem mloaddef = new JMenuItem("Schaltungsdefinitionen neu laden", KeyEvent.VK_F5);
+        JMenuItem mloaddef = new JMenuItem(i18n.getString("menu.file.defload"), KeyEvent.VK_F5);
         mloaddef.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
         noDisableElements.add(mloaddef);
-        JMenuItem mclose = new JMenuItem("Schließen");
+        JMenuItem mclose = new JMenuItem(i18n.getString("menu.file.close"));
         mclose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, ActionEvent.ALT_MASK));
         noDisableElements.add(mclose);
-        JMenuItem mdelete = new JMenuItem("Löschen", KeyEvent.VK_DELETE);
+        JMenuItem mdelete = new JMenuItem(i18n.getString("menu.edit.delete"), KeyEvent.VK_DELETE);
         mdelete.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
         noDisableElements.add(mdelete);
-        JMenuItem mannotate = new JMenuItem("Benennen", KeyEvent.VK_N);
+        JMenuItem mannotate = new JMenuItem(i18n.getString("menu.edit.annotate"), KeyEvent.VK_N);
         mannotate.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
         disableElements.add(mannotate);
-        JMenuItem mtoggle = new JMenuItem("Setze Schalter", KeyEvent.VK_T);
+        JMenuItem mtoggle = new JMenuItem(i18n.getString("menu.edit.toggle"), KeyEvent.VK_T);
         mtoggle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
         disableElements.add(mtoggle);
         /*
@@ -348,46 +356,47 @@ public class View extends JFrame {
      *            ToolBar to be build.
      */
     private void buildToolbar(JToolBar toolBar) {
+
         // Create Buttons of the Application. Setting Icons and Descriptions and Size.
         ImageIcon startButtonIcon = new ImageIcon("src/resources/startmiddle.png");
         JButton start = new JButton("", startButtonIcon);
         start.setPreferredSize(buttonDim);
-        start.setToolTipText("Startet die Simulation.");
+        start.setToolTipText(i18n.getString("tooltip.simulation.start"));
         disableElements.add(start);
         ImageIcon moveButtonIcon = new ImageIcon("src/resources/movemiddle.png");
         JButton move = new JButton("", moveButtonIcon);
         move.setPreferredSize(buttonDim);
-        move.setToolTipText("Aktiviert den Modus in welchem Mit der Maus gescrollt werden kann.");
+        move.setToolTipText(i18n.getString("tooltip.view.move"));
         disableElements.add(move);
         ImageIcon stopButtonIcon = new ImageIcon("src/resources/stopmiddle.png");
         JButton stop = new JButton("", stopButtonIcon);
         stop.setPreferredSize(buttonDim);
-        stop.setToolTipText("Stoppt die Simulation.");
+        stop.setToolTipText(i18n.getString("tooltip.simulation.stop"));
         noDisableElements.add(stop);
         ImageIcon fasterButtonIcon = new ImageIcon("src/resources/plusmiddle.png");
         JButton faster = new JButton("", fasterButtonIcon);
         faster.setPreferredSize(buttonDim);
-        faster.setToolTipText("Beschleunigt die Simulationsgeschwindigkeit.");
+        faster.setToolTipText(i18n.getString("tooltip.simulation.faster"));
         noDisableElements.add(faster);
         ImageIcon slowerButtonIcon = new ImageIcon("src/resources/minusmiddle.png");
         JButton slower = new JButton("", slowerButtonIcon);
         slower.setPreferredSize(buttonDim);
-        slower.setToolTipText("Verlangsamt die Simulationsgeschwindigkeit.");
+        slower.setToolTipText(i18n.getString("tooltip.simulation.slower"));
         noDisableElements.add(slower);
         ImageIcon createButtonIcon = new ImageIcon("src/resources/createmiddle.png");
         JButton create = new JButton("", createButtonIcon);
         create.setPreferredSize(buttonDim);
-        create.setToolTipText("Versetzt das Programm in den Modus in welchem neue Bausteine und Leitungen gesetzt werden können.");
+        create.setToolTipText(i18n.getString("tooltip.create"));
         disableElements.add(create);
         ImageIcon selectButtonIcon = new ImageIcon("src/resources/selectmiddle.png");
         JButton select = new JButton("", selectButtonIcon);
         select.setPreferredSize(buttonDim);
-        select.setToolTipText("Versetzt das Programm in den Modus in welchem Bausteine und Leitungen markiert werden können.");
+        select.setToolTipText(i18n.getString("tooltip.select"));
         disableElements.add(select);
         ImageIcon toggleButtonIcon = new ImageIcon("src/resources/togglemiddle.png");
         JButton toggle = new JButton("", toggleButtonIcon);
         toggle.setPreferredSize(buttonDim);
-        toggle.setToolTipText("Versetzt das Programm in den Modus in welchem Schalter auf An und Aus gestellt werden können");
+        toggle.setToolTipText(i18n.getString("tooltip.state.toggle"));
         disableElements.add(toggle);
         JComboBox modules = null;
         // Check if there are Functionalities for the Buttons and if yes calling the setup.
@@ -418,7 +427,7 @@ public class View extends JFrame {
         if (viewModules != null) {
             modules = new JComboBox(viewModules.toArray());
             modules.setMaximumSize(new Dimension(80, 40));
-            modules.setToolTipText("Liste mit verfügbaren Bausteinen");
+            modules.setToolTipText(i18n.getString("tooltip.modules"));
         }
         if (toolFunctionalities.containsKey("selectModule")) {
             modules.addActionListener(toolFunctionalities.get("selectModule"));
