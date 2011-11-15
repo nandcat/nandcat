@@ -740,6 +740,15 @@ public class Model implements ClockListener {
      */
     public void importRootFromFile(File file) {
         this.circuit = importFromFile(file);
+
+        // import failed
+        if (circuit == null) {
+            newCircuit();
+        }
+        ModelEvent e = new ModelEvent();
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
+        }
     }
 
     /**

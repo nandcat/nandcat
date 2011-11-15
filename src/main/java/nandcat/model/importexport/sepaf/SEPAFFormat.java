@@ -72,6 +72,9 @@ public class SEPAFFormat {
      * @return
      */
     public static String getPortAsString(boolean isOutPort, int index) {
+        if (index < 0) {
+            throw new IllegalArgumentException("Port index < 0");
+        }
         char t;
         if (isOutPort) {
             t = (char) (index + ((int) 'o'));

@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import nandcat.model.element.AndGate;
@@ -137,8 +139,18 @@ public class SEPAFExporter implements Exporter {
     private Element buildCircuit(Circuit c, boolean mainCircuit) throws FormatException {
         org.jdom.Element e = new Element("circuit", SEPAFFormat.NAMESPACE.SEPAF);
         e.setAttribute("name", c.getUuid());
+
+        // Connections have to be after all components.
+        List<Connection> cachedConnections = new LinkedList<Connection>();
         for (nandcat.model.element.Element circuitE : c.getElements()) {
-            e.addContent(buildElement(circuitE));
+            if (circuitE instanceof Connection) {
+                cachedConnections.add((Connection) circuitE);
+            } else {
+                e.addContent(buildElement(circuitE));
+            }
+        }
+        for (Connection connection : cachedConnections) {
+            e.addContent(buildElement(connection));
         }
         if (mainCircuit && c.getSymbol() != null) {
             org.jdom.Element symbol = new Element("symbol", SEPAFFormat.NAMESPACE.NANDCAT);
@@ -316,10 +328,10 @@ public class SEPAFExporter implements Exporter {
         Element e = new Element("connection", SEPAFFormat.NAMESPACE.SEPAF);
         e.setAttribute("source", SEPAFFormat.getObjectAsUniqueString(c.getPreviousModule()));
         e.setAttribute("target", SEPAFFormat.getObjectAsUniqueString(c.getNextModule()));
-        e.setAttribute("sourcePort",
-                SEPAFFormat.getPortAsString(true, c.getPreviousModule().getInPorts().indexOf(c.getInPort())));
         e.setAttribute("targetPort",
-                SEPAFFormat.getPortAsString(false, c.getNextModule().getOutPorts().indexOf(c.getOutPort())));
+                SEPAFFormat.getPortAsString(false, c.getNextModule().getInPorts().indexOf(c.getOutPort())));
+        e.setAttribute("sourcePort",
+                SEPAFFormat.getPortAsString(true, c.getPreviousModule().getOutPorts().indexOf(c.getInPort())));
         return e;
     }
 
