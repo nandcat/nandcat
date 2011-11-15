@@ -804,13 +804,17 @@ public class Model implements ClockListener {
         }
         this.circuit = importFromFile(file);
 
+        ModelEvent e2 = new ModelEvent();
         // import failed
         if (circuit == null) {
             newCircuit();
-        }
-        ModelEvent e2 = new ModelEvent();
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e2);
+            for (ModelListener l : listeners) {
+                l.importFailed(e2);
+            }
+        } else {
+            for (ModelListener l : listeners) {
+                l.importSucceeded(e2);
+            }
         }
     }
 
