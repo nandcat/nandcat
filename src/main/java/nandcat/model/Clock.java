@@ -72,6 +72,10 @@ public class Clock {
         this.model = model;
     }
 
+    protected int getCycle() {
+        return cycle;
+    }
+
     /**
      * Add a ClockListener to the Clock. It will be notified if the Clock ticks.
      * 

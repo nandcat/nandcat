@@ -187,7 +187,7 @@ public class Model implements ClockListener {
 
     /**
      * Returns the Port at the Position. If multiple Ports are intersecting the Rectangle, no specific behaviour can be
-     * assured. KTHXBYE.
+     * assured.
      * 
      * @param rect
      *            Rectangle containing the x- and y-coordinate
@@ -413,6 +413,15 @@ public class Model implements ClockListener {
             l.simulationStopped(e);
         }
 
+    }
+
+    /**
+     * Get the number of the current cycle.
+     * 
+     * @return the number of the current cycle
+     */
+    public int getCycle() {
+        return clock.getCycle();
     }
 
     /**
