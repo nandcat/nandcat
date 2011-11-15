@@ -220,7 +220,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(Connection connection) {
-        LOG.debug("Draw: " + connection);
+        LOG.trace("Draw: " + connection);
         if (connection == null) {
             throw new IllegalArgumentException("Connection is null");
         }
@@ -228,8 +228,8 @@ public class StandardElementDrawer implements ElementDrawer {
         Point inPoint = inPort.getCenter();
         Port outPort = connection.getOutPort();
         Point outPoint = outPort.getCenter();
-        LOG.debug("InPort point of connection:" + inPoint.toString());
-        LOG.debug("OutPort point of connection:" + outPoint.toString());
+        LOG.trace("InPort point of connection:" + inPoint.toString());
+        LOG.trace("OutPort point of connection:" + outPoint.toString());
 
         if (connection.getState()) {
             g.setColor(CONNECTION_COLOR_ACTIVE);
@@ -240,7 +240,7 @@ public class StandardElementDrawer implements ElementDrawer {
         if (connection.isSelected()) {
             g.setColor(CONNECTION_COLOR_SELECTED);
         }
-        LOG.debug("Draw line: " + outPoint.x + ", " + outPoint.y + ", " + inPoint.x + ", " + inPoint.y);
+        LOG.trace("Draw line: " + outPoint.x + ", " + outPoint.y + ", " + inPoint.x + ", " + inPoint.y);
         g.drawLine(outPoint.x, outPoint.y, inPoint.x, inPoint.y);
     }
 
@@ -255,7 +255,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(Circuit circuit) {
-        LOG.debug("Draw: " + circuit);
+        LOG.trace("Draw: " + circuit);
         if (circuit == null) {
             throw new IllegalArgumentException();
         }
@@ -288,7 +288,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(IdentityGate gate) {
-        LOG.debug("Draw: " + gate);
+        LOG.trace("Draw: " + gate);
         if (gate == null) {
             throw new IllegalArgumentException();
         }
@@ -308,7 +308,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(NotGate gate) {
-        LOG.debug("Draw: " + gate);
+        LOG.trace("Draw: " + gate);
         if (gate == null) {
             throw new IllegalArgumentException();
         }
@@ -328,7 +328,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(AndGate gate) {
-        LOG.debug("Draw: " + gate);
+        LOG.trace("Draw: " + gate);
         if (gate == null) {
             throw new IllegalArgumentException();
         }
@@ -348,7 +348,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(OrGate gate) {
-        LOG.debug("Draw: " + gate);
+        LOG.trace("Draw: " + gate);
         if (gate == null) {
             throw new IllegalArgumentException();
         }
@@ -532,7 +532,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(Lamp lamp) {
-        LOG.debug("Draw: " + lamp);
+        LOG.trace("Draw: " + lamp);
         if (lamp == null) {
             throw new IllegalArgumentException();
         }
@@ -567,7 +567,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(FlipFlop flipflop) {
-        LOG.debug("Draw: " + flipflop);
+        LOG.trace("Draw: " + flipflop);
         if (flipflop == null) {
             throw new IllegalArgumentException();
         }
@@ -587,7 +587,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(ImpulseGenerator ig) {
-        LOG.debug("Draw: " + ig);
+        LOG.trace("Draw: " + ig);
         if (ig == null) {
             throw new IllegalArgumentException();
         }

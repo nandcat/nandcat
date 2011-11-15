@@ -293,7 +293,7 @@ public class SEPAFImporter implements Importer {
         if (el == null) {
             throw new IllegalArgumentException();
         }
-        LOG.debug("Build module: " + el.getQualifiedName() + " : " + el.getAttributeValue("name"));
+        LOG.trace("Build module: " + el.getQualifiedName() + " : " + el.getAttributeValue("name"));
         Attribute aType = el.getAttribute("type");
         Attribute aSubtype = el.getAttribute("type2");
         Attribute aName = el.getAttribute("name");
@@ -326,20 +326,20 @@ public class SEPAFImporter implements Importer {
         // Parse attribute for amount of incoming and outgoing ports if available.
         Integer portsIn = null;
         Integer portsOut = null;
-        // if (aPortsIn != null) {
-        // try {
-        // portsIn = aPortsIn.getIntValue();
-        // } catch (DataConversionException e) {
-        // throw new FormatException("ports_in not integer", e);
-        // }
-        // }
-        // if (aPortsOut != null) {
-        // try {
-        // portsOut = aPortsOut.getIntValue();
-        // } catch (DataConversionException e) {
-        // throw new FormatException("ports_in not integer", e);
-        // }
-        // }
+        if (aPortsIn != null) {
+            try {
+                portsIn = aPortsIn.getIntValue();
+            } catch (DataConversionException e) {
+                throw new FormatException("ports_in not integer", e);
+            }
+        }
+        if (aPortsOut != null) {
+            try {
+                portsOut = aPortsOut.getIntValue();
+            } catch (DataConversionException e) {
+                throw new FormatException("ports_in not integer", e);
+            }
+        }
 
         // Instantiate specified module.
         Module module = null;
