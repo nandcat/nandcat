@@ -3,11 +3,13 @@ package nandcat.model.check;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import nandcat.model.check.CheckEvent.State;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Element;
+import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 
@@ -63,7 +65,7 @@ public class FeedbackCheck implements CircuitCheck {
         }
         HashSet<Module> visited = new HashSet<Module>();
         Queue<Module> q = new LinkedList<Module>();
-        q.addAll(circuit.getStartingModules());
+        q.addAll(getStartModules(circuit));
         while (!q.isEmpty()) {
             Module current = q.poll();
             if (visited.contains(current)) {
@@ -90,6 +92,35 @@ public class FeedbackCheck implements CircuitCheck {
             l.checkChanged(e);
         }
         return true;
+    }
+
+    /**
+     * Returns the "first" Modules in this Circuit. "First" modules are those which do not have any ingoing connection.
+     * 
+     * @return List<Module> containing the starting Modules of this Circuit.
+     */
+    public List<Module> getStartModules(Circuit circuit) {
+        List<Module> result = new LinkedList<Module>();
+        for (Element e : circuit.getElements()) {
+            if (e instanceof Module) {
+                boolean isStartModule = false;
+                Module m = (Module) e;
+                if (m instanceof ImpulseGenerator) {
+                    isStartModule = true;
+                } else {
+                    isStartModule = true;
+                    for (Port p : m.getInPorts()) {
+                        if (p.getConnection() != null) {
+                            isStartModule = false;
+                        }
+                    }
+                }
+                if (isStartModule) {
+                    result.add(m);
+                }
+            }
+        }
+        return result;
     }
 
     /**

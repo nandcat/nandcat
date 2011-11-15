@@ -2,7 +2,10 @@ package nandcat.model.check;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import nandcat.model.check.CheckEvent.State;
 import nandcat.model.element.Circuit;
+import nandcat.model.element.Connection;
+import nandcat.model.element.Element;
 
 /**
  * MultipleConnectionsCheck.
@@ -16,6 +19,7 @@ public class MultipleConnectionsCheck implements CircuitCheck {
      */
     // TODO MultipleOrgasmen check überflüssig, da wenn überhaupt implizit in illegal connection check mit dabei und
     // technisch gar nicht möglich dass der fehlschlägt
+    // edit : ist aber im lastenheft vorgegeben.
     /*
      * ***********************************
      */
@@ -23,39 +27,60 @@ public class MultipleConnectionsCheck implements CircuitCheck {
     /**
      * Listeners for this check.
      */
-    Set<CheckListener> listener;
+    private Set<CheckListener> listener;
 
     /**
      * Check is active or not.
      */
-    boolean active;
+    private boolean active;
 
+    /**
+     * Constructor for MultipleConnectionsCheck. By default the check is active.
+     */
     public MultipleConnectionsCheck() {
         listener = new LinkedHashSet<CheckListener>();
+        active = true;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isActive() {
-        // TODO Auto-generated method stub
-        return false;
+        return active;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean setActive(boolean active) {
-        // TODO Auto-generated method stub
-        return false;
+        return this.active = active;
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean test(Circuit circuit) {
-        // TODO Auto-generated method stub
-        return false;
+        Set<Element> elements = new LinkedHashSet<Element>();
+        informListeners(State.RUNNING, elements);
+        // MultipleConnections are not supported by the model.
+        informListeners(State.SUCCEEDED, elements);
+        return true;
+    }
+
+    /**
+     * Notifies the Classes implementing the CheckListener interface about a change in this Check.
+     * 
+     * @param state
+     *            State of the check.
+     * @param elements
+     *            Elements causing a fail in the check. Empty if the check started or succeeded.
+     */
+    private void informListeners(State state, Set<Element> elements) {
+        // Event informing listeners that check has started.
+        CheckEvent e = new CheckEvent(state, elements, this);
+        for (CheckListener l : listener) {
+            l.checkChanged(e);
+        }
     }
 
     /**
@@ -70,5 +95,12 @@ public class MultipleConnectionsCheck implements CircuitCheck {
      */
     public void removeListener(CheckListener l) {
         listener.remove(l);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return "Prüfen ob ein Eingang mit mehreren Ausgängen verbunden ist";
     }
 }

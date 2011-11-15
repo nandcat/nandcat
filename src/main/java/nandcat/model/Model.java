@@ -926,13 +926,28 @@ public class Model implements ClockListener {
         return dirty;
     }
 
-    // Circuit getCircuitFromSelected() {
-    // Circuit result = new Circuit();
-    //
-    // for (Element e : getSelectedElements()) {
-    //
-    // }
-    //
-    // return result;
-    // }
+    /**
+     * Creates a new Circuit containing selected Elements only. Connections leading to a Module outside the new Circuit
+     * won't be accepted.
+     * 
+     * @return the Circuit containing the selected Elements
+     */
+    Circuit getCircuitFromSelected() {
+        Circuit result = new Circuit();
+
+        for (Module m : circuit.getModules()) {
+            if (m.isSelected()) {
+                result.addModule(m);
+            }
+        }
+        for (Connection c : circuit.getConnections()) {
+            if (c.isSelected()) {
+                if (result.getModules().contains(c.getOutPort().getModule())) {
+                    result.addConnection(c.getInPort(), c.getInPort());
+                }
+            }
+        }
+
+        return result;
+    }
 }

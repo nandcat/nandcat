@@ -57,27 +57,38 @@ public class SinkCheck implements CircuitCheck {
      * {@inheritDoc}
      */
     public boolean test(Circuit circuit) {
-        Set<Element> elements = new LinkedHashSet<Element>();
+        Set<Element> elements = new HashSet<Element>();
         informListeners(State.RUNNING, elements);
-
+        /*
+         * idea is: start at starting elements. go with the flow and well, you should visit every module....
+         */
         Set<Module> visited = new HashSet<Module>();
         Set<Module> all = new HashSet<Module>();
         Queue<Module> q = new LinkedList<Module>();
-        q.addAll(getEndingModules(circuit));
+        q.addAll(getStartModules(circuit));
         while (!q.isEmpty()) {
             Module current = q.poll();
             all.remove(current);
 
+            /*
+             * without visited set the amount of queue-loops might go up not only to over 9000, but straight through the
+             * roof to infinity if there is a feedback. and this check should work even if feedback check fails,
+             * kthxbye.
+             */
             if (!visited.contains(current)) {
+                visited.add(current);
                 boolean isLast = true;
-                for (Port p : current.getInPorts()) {
+                for (Port p : current.getOutPorts()) {
                     if (p.getConnection() != null) {
                         isLast = false;
-                        q.add(p.getConnection().getPreviousModule());
+                        q.add(p.getConnection().getNextModule());
                     }
                 }
+
+                // If the current module does not have a connection to a following module it represents a sink of
+                // the circuit and therefore has to be a lamp.
                 if (isLast) {
-                    if (!(current instanceof ImpulseGenerator)) {
+                    if (!(current instanceof Lamp)) {
                         all.add(current);
                     }
                 }
@@ -108,27 +119,27 @@ public class SinkCheck implements CircuitCheck {
     }
 
     /**
-     * Returns the "last" Modules in this Circuit.
+     * Returns the "first" Modules in this Circuit. "First" modules are those which do not have any ingoing connection.
      * 
      * @return List<Module> containing the starting Modules of this Circuit.
      */
-    public List<Module> getEndingModules(Circuit circuit) {
+    public List<Module> getStartModules(Circuit circuit) {
         List<Module> result = new LinkedList<Module>();
         for (Element e : circuit.getElements()) {
             if (e instanceof Module) {
-                boolean isEndingModule = false;
+                boolean isStartModule = false;
                 Module m = (Module) e;
-                if (m instanceof Lamp) {
-                    isEndingModule = true;
+                if (m instanceof ImpulseGenerator) {
+                    isStartModule = true;
                 } else {
-                    for (Port p : m.getOutPorts()) {
-                        if (p.getConnection() == null) {
-                            isEndingModule = true;
-                            break;
+                    isStartModule = true;
+                    for (Port p : m.getInPorts()) {
+                        if (p.getConnection() != null) {
+                            isStartModule = false;
                         }
                     }
                 }
-                if (isEndingModule) {
+                if (isStartModule) {
                     result.add(m);
                 }
             }
@@ -154,6 +165,6 @@ public class SinkCheck implements CircuitCheck {
      * {@inheritDoc}
      */
     public String toString() {
-        return "Prüft ob alle Bausteine indirekt mit einem Taktgeber verbunden sind";
+        return "Prüft ob alle Bausteine indirekt mit einer Lampe verbunden sind";
     }
 }
