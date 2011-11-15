@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import nandcat.I18N;
+import nandcat.I18N.I18NBundle;
 import nandcat.model.Model;
 import nandcat.model.element.DrawElement;
 import nandcat.model.element.Module;
@@ -48,6 +50,11 @@ public class AnnotationTool implements Tool {
      * Icon representation of the Tool.
      */
     private ImageIcon icon; // TODO icon setzen
+
+    /**
+     * Translation unit.
+     */
+    private I18NBundle i18n = I18N.getBundle("toolannotation");
 
     /**
      * String representation of the Tool.
@@ -154,8 +161,8 @@ public class AnnotationTool implements Tool {
      * @return String entered as new annotation.
      */
     private String askForAnnotation(String oldAnnotation) {
-        return (String) JOptionPane.showInputDialog(view, "Baustein mit Text versehen:\n", "Customized Dialog",
-                JOptionPane.PLAIN_MESSAGE, icon, null, oldAnnotation);
+        return (String) JOptionPane.showInputDialog(view, i18n.getString("dialog.annotate.text"),
+                i18n.getString("dialog.annotate.title"), JOptionPane.PLAIN_MESSAGE, null, null, oldAnnotation);
     }
 
     /**

@@ -47,7 +47,7 @@ public class CreateTool implements Tool {
     /**
      * Icon representation of the Tool.
      */
-    private ImageIcon icon; // TODO icon setzen
+    private ImageIcon icon;
 
     /**
      * String representation of the Tool.
@@ -65,9 +65,19 @@ public class CreateTool implements Tool {
     private WorkspaceListener workspaceListener;
 
     /**
-     *
+     * Module the user selected which will be created next.
      */
     private ViewModule selectedModule;
+
+    /**
+     * Tolerance for creating a gate.
+     */
+    private static final Dimension GATE_TOLERANCE = new Dimension(80, 60);
+
+    /**
+     * Size of a gate.
+     */
+    private static final Dimension GATE_SIZE = new Dimension(60, 40);
 
     /**
      * Tolerance used if mouse clicked.
@@ -80,7 +90,15 @@ public class CreateTool implements Tool {
      */
     private Port sourcePort;
 
-    // private Line2D connectionPreview;
+    /**
+     * A line drawn to see where the connection will be set to.
+     */
+    private Line2D connectionPreview;
+
+    /**
+     * Boolean indicating if the tool is already active. Avoids double activation of it.
+     */
+    private boolean isYetActive = false;
 
     /**
      * Constructs the SelectTool.
@@ -103,8 +121,10 @@ public class CreateTool implements Tool {
     public void setActive(boolean active) {
         if (active) {
             setListeners();
+            isYetActive = true;
         } else {
             removeListeners();
+            isYetActive = false;
         }
     }
 
@@ -131,26 +151,46 @@ public class CreateTool implements Tool {
 
     /**
      * Creates a new Element at the given Point.
+     * 
+     * @param point
+     *            Point where the Element will be created.
      */
     private void createElement(Point point) {
-        point.x -= MOUSE_TOLERANCE.height / 2;
-        point.y -= MOUSE_TOLERANCE.width / 2;
 
-        Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(point, MOUSE_TOLERANCE));
+        // Offset for avoiding intersecting modules.
+        Point offset = new Point();
+        offset.x = point.x - (GATE_TOLERANCE.width) / 2;
+        offset.y = point.y - (GATE_TOLERANCE.height) / 2;
+        Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(offset, GATE_TOLERANCE));
 
         // First check if the user clicked on an empty space on the workspace. This means they want to create a new
         // module.
         if (elementsAt.isEmpty()) {
-            if (selectedModule != null) {
-                model.addModule(selectedModule, point);
+            offset.x = point.x - (GATE_SIZE.width) / 2;
+            offset.y = point.y - (GATE_SIZE.height) / 2;
+            if (sourcePort != null) {
+
+                // If the user clicked on an empty space on the workspace but a sourcePort is selected, the sourcePort
+                // will be set to null. The connection preview is reseted and a new gate can be created.
+                sourcePort = null;
+                view.getWorkspace().redraw();
+            } else if (selectedModule == null) {
+
+                // Sets a default Module.
+                selectedModule = model.getViewModules().get(0);
+                model.addModule(selectedModule, offset);
+            } else {
+                model.addModule(selectedModule, offset);
             }
         } else {
+            point.x -= MOUSE_TOLERANCE.height / 2;
+            point.y -= MOUSE_TOLERANCE.width / 2;
             if (sourcePort == null) {
                 if (model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE)) != null) {
                     sourcePort = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
-                    // connectionPreview = new Line2D.Double();
-                    // connectionPreview.setLine(sourcePort.getCenter(), sourcePort.getCenter());
-                    // view.getWorkspace().redraw(connectionPreview);
+                    connectionPreview = new Line2D.Double();
+                    connectionPreview.setLine(sourcePort.getCenter(), sourcePort.getCenter());
+                    view.getWorkspace().redraw(connectionPreview);
                 }
             } else {
                 if (model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE)) != null) {
@@ -162,8 +202,6 @@ public class CreateTool implements Tool {
                         model.addConnection(sourcePort, targetPort);
                         sourcePort = null;
                     }
-                    // connectionPreview = new Line2D.Double(0, 0, 0, 0);
-                    // view.getWorkspace().redraw(connectionPreview);
                 }
             }
         }
@@ -177,11 +215,16 @@ public class CreateTool implements Tool {
      *            Point representing the location of the mouse cursor.
      */
     private void moveCursor(Point point) {
-        point.x -= MOUSE_TOLERANCE.height / 2;
-        point.y -= MOUSE_TOLERANCE.width / 2;
         if (sourcePort != null) {
-            // connectionPreview.setLine(sourcePort.getCenter(), point);
-            // view.getWorkspace().redraw(connectionPreview);
+
+            // Draw a preview of the connection
+            connectionPreview.setLine(sourcePort.getCenter(), point);
+            view.getWorkspace().redraw(connectionPreview);
+
+            point.x -= MOUSE_TOLERANCE.height / 2;
+            point.y -= MOUSE_TOLERANCE.width / 2;
+
+            // Inform the user if the underlying port cannot be connected to the chosen port.
             Set<DrawElement> elements = model.getDrawElementsAt(new Rectangle(point, MOUSE_TOLERANCE));
             Port portAt = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
             if (!elements.isEmpty() && portAt != null) {
@@ -211,14 +254,15 @@ public class CreateTool implements Tool {
         buttonListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                if (e.getActionCommand().equals("createButton")) {
-
-                    // User first has to click on CreateButton before he can add a module to the workspace
-                    activateTool();
-                } else if (e.getActionCommand().equals("selectModule")) {
+                if (e.getActionCommand().equals("createButton") || e.getActionCommand().equals("selectModule")) {
+                    if (!isYetActive) {
+                        activateTool();
+                    }
                     if (e.getSource() instanceof JComboBox) {
                         selectedModule = (ViewModule) ((JComboBox) e.getSource()).getSelectedItem();
                     }
+                } else if (e.getActionCommand().equals("new")) {
+                    model.clearCircuit();
                 }
             }
         };
@@ -229,6 +273,9 @@ public class CreateTool implements Tool {
         return map;
     }
 
+    /**
+     * Activate this tool by registering it on the view.
+     */
     private void activateTool() {
         controller.requestActivation(this);
     }

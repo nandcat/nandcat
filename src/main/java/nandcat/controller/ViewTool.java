@@ -86,6 +86,7 @@ public class ViewTool implements Tool {
             public void stateChanged(ChangeEvent e) {
                 view.giveViewPortRect();
                 view.getWorkspace().redraw();
+                viewportRect = view.getViewRect();
             }
         });
     }
@@ -105,14 +106,8 @@ public class ViewTool implements Tool {
                     }
 
                     public void mouseDragged(WorkspaceEvent e) {
-                        // move ViewPort
-                        // viewportRect.x += (e.getLocation().x - offset.x);
-                        // viewportRect.y += (e.getLocation().y - offset.y);
-                        viewportRect.setLocation(e.getLocation().x - offset.x, e.getLocation().y - offset.y);
+                        viewportRect.translate(e.getLocation().x - offset.x, e.getLocation().y - offset.y);
                         view.setViewportPosition(viewportRect);
-                        // int x = e.getLocation().x - offset.x;
-                        // int y = e.getLocation().y - offset.y;
-                        // view.setViewportPosition(x, y);
                         offset = e.getLocation();
                         // redraw new elements in sight
                         view.giveViewPortRect();

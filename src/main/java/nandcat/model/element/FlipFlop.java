@@ -29,7 +29,6 @@ public class FlipFlop extends Circuit {
         addConnection(s.getOutPorts().get(0), sNot.getInPorts().get(0));
         addConnection(rNot.getOutPorts().get(0), s.getInPorts().get(0));
         addConnection(sNot.getOutPorts().get(0), r.getInPorts().get(0));
-        // FIXME try to fix location of ports.
     }
 
 }

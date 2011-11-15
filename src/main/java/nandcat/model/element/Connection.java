@@ -58,7 +58,6 @@ public class Connection implements Element, DrawConnection {
         inPort.setConnection(this);
         outPort.setConnection(this);
         state = false;
-        System.out.println("New Connection from " + inPort + " to " + outPort);
     }
 
     /**

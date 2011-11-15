@@ -264,9 +264,23 @@ public class StandardElementDrawer implements ElementDrawer {
         }
         setModuleDefaultDimension(circuit);
         drawModuleOutline(circuit);
+        drawCircuitSymbol(circuit);
         drawAndSetModulePorts(circuit);
         if (circuit.getName() != null && !circuit.getName().isEmpty()) {
             drawLabel(circuit.getName(), circuit.getRectangle());
+        }
+    }
+
+    /**
+     * Draws the symbol of the circuit in the background of the circuit if a symbol exists.
+     * 
+     * @param circuit
+     *            Circuit to draw symbol of.
+     */
+    private void drawCircuitSymbol(Circuit circuit) {
+        if (circuit.getSymbol() != null) {
+            g.drawImage(circuit.getSymbol(), circuit.getRectangle().x + 1, circuit.getRectangle().y + 1,
+                    circuit.getRectangle().width - 1, circuit.getRectangle().height - 1, null);
         }
     }
 

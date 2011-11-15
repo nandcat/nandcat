@@ -37,6 +37,16 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     private List<Element> elements;
 
     /**
+     * Set of incoming ports, initialized during construction.
+     */
+    private List<Port> inPorts;
+
+    /**
+     * Set of outcoming ports, initialized during construction.
+     */
+    private List<Port> outPorts;
+
+    /**
      * Rectangle representing the circuit's shape.
      */
     private Rectangle rectangle;
@@ -57,6 +67,30 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     private String uuid;
 
     /**
+     * Usual constructor for circuits. The UUID will be extracted from the Importer.
+     * 
+     * @param uuid
+     *            String containing the uuid of this circuit
+     */
+    public Circuit(String uuid) {
+        this.uuid = uuid;
+        name = "";
+        elements = new LinkedList<Element>();
+        inPorts = new LinkedList<Port>();
+        outPorts = new LinkedList<Port>();
+        rectangle = new Rectangle(Module.EXTENT, Module.EXTENT);
+        symbol = null;
+        selected = false;
+    }
+
+    /**
+     * Constructs the circuit with a new random uuid.
+     */
+    public Circuit() {
+        this(UUID.randomUUID().toString());
+    }
+
+    /**
      * Gets the unique identifier of the circuit.
      * 
      * @return The unique identifier.
@@ -73,28 +107,6 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      */
     public void setUuid(String uuid) {
         this.uuid = uuid;
-    }
-
-    /**
-     * Usual constructor for circuits. The UUID will be extracted from the Importer.
-     * 
-     * @param uuid
-     *            String containing the uuid of this circuit
-     */
-    public Circuit(String uuid) {
-        this.uuid = uuid;
-        name = "";
-        elements = new LinkedList<Element>();
-        rectangle = new Rectangle(Module.EXTENT, Module.EXTENT);
-        symbol = null;
-        selected = false;
-    }
-
-    /**
-     * Constructs the circuit with a new random uuid.
-     */
-    public Circuit() {
-        this(UUID.randomUUID().toString());
     }
 
     /**
@@ -163,27 +175,35 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     }
 
     /**
-     * {@inheritDoc}
+     * Initialize inPorts (invoked after each {add,remove}{Module,Connection} action i.e. manipulation of List<Element>
+     * elements).
      */
-    public List<Port> getInPorts() {
-        List<Port> result = new LinkedList<Port>();
+    private void createInPorts() {
+        inPorts.clear();
         for (Module m : getStartingModules()) {
             for (Port p : m.getInPorts()) {
                 // Port is not connected or connted to a module outside the circuit or a impulsegenerator
                 if (p.getConnection() == null || !elements.contains(p.getConnection().getPreviousModule())
                         || p.getConnection().getNextModule() instanceof ImpulseGenerator) {
-                    result.add(p);
+                    inPorts.add(p);
                 }
             }
         }
-        return result;
     }
 
     /**
      * {@inheritDoc}
      */
-    public List<Port> getOutPorts() {
-        List<Port> result = new LinkedList<Port>();
+    public List<Port> getInPorts() {
+        return inPorts;
+    }
+
+    /**
+     * Initialize outPorts (invoked after each {add,remove}{Module,Connection} action i.e. manipulation of List<Element>
+     * elements).
+     */
+    private void createOutPorts() {
+        outPorts.clear();
         for (Element e : elements) {
             if (e instanceof Module) {
                 Module m = (Module) e;
@@ -192,12 +212,18 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
                     // not-emptyports with connections leading to modules outside the circuit or lamps are also outPorts
                     if ((p.getConnection() == null) || !(this.elements.contains(p.getConnection().getNextModule()))
                             || p.getConnection().getNextModule() instanceof Lamp) {
-                        result.add(p);
+                        outPorts.add(p);
                     }
                 }
             }
         }
-        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Port> getOutPorts() {
+        return outPorts;
     }
 
     /**
@@ -296,6 +322,8 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         if (e == null) {
             return;
         }
+        // check if we need to scan for new potential outports. Was removed connection a inner-connection?
+        boolean rescan = elements.contains(e);
         if (e instanceof Connection) {
             Connection c = (Connection) e;
             c.getInPort().setConnection(null);
@@ -311,6 +339,11 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
                 removeElement(p.getConnection());
             }
             elements.remove(m);
+        }
+
+        if (rescan) {
+            createInPorts();
+            createOutPorts();
         }
     }
 
@@ -341,6 +374,13 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     public Connection addConnection(Port inPort, Port outPort) {
         Connection connection = new Connection(inPort, outPort);
         elements.add(connection);
+        // check if a rescan for in/outPorts is needed
+        if (inPort != null && elements.contains(inPort.getModule())) {
+            createOutPorts();
+        }
+        if (outPort != null && elements.contains(outPort.getModule())) {
+            createInPorts();
+        }
         return connection;
     }
 
@@ -380,16 +420,9 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         }
         // one module may not appear more than once in elements (guaranteed by Set<>)
         elements.add(m);
-    }
-
-    /**
-     * Checks if circuit has unsaved changes.
-     * 
-     * @return True if circuit has unsaved changes.
-     */
-    public boolean isDirty() {
-        // TODO Implementierung fehlt. Zurücksetzen auf false bei exportToFile
-        return true;
+        // scan for new potential in/outPorts
+        createInPorts();
+        createOutPorts();
     }
 
     /**
