@@ -159,7 +159,7 @@ public class Model implements ClockListener {
     /**
      * Fill viewModule2Module data structure with default Gates and custom circuits.
      */
-    private void initView2Module() {
+    public void initView2Module() {
         viewModules = new LinkedList<ViewModule>();
         viewModules.add(new ViewModule("AND", new AndGate(), "", null));
         viewModules.add(new ViewModule("OR", new OrGate(), "", null));
@@ -243,7 +243,7 @@ public class Model implements ClockListener {
     /**
      * Loads or reloads the List containing the custom-circuits.
      */
-    public void loadCustomList() {
+    private void loadCustomList() {
         // search PATH for circuits, non-recursive.
         File dir = new File(".");
         LOG.debug("Load custom circuits: " + dir.getAbsolutePath());
