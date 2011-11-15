@@ -3,6 +3,7 @@ package nandcat;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import org.apache.log4j.Logger;
 
 /**
  * Manages the internationalization of the application using resource bundles.
@@ -10,9 +11,18 @@ import java.util.ResourceBundle;
 public final class I18N {
 
     /**
-     * Currently selected locale.
+     * Locale to use for translation.
      */
     private static Locale locale = Locale.GERMAN;
+
+    static {
+        Locale.setDefault(Locale.GERMAN);
+    }
+
+    /**
+     * Class logger instance.
+     */
+    private static final Logger LOG = Logger.getLogger(I18N.class);
 
     /**
      * Private constructor prevents instantiation from outside.
@@ -28,6 +38,7 @@ public final class I18N {
      * @return ResourceBundle to get text from.
      */
     public static I18N.I18NBundle getBundle(String section) {
+        LOG.debug("Get bunde '" + section + "' using locale: " + locale.getDisplayName());
         ResourceBundle resBundle = ResourceBundle.getBundle(section, locale);
         return new I18N().new I18NBundle(locale, resBundle);
     }
@@ -39,6 +50,29 @@ public final class I18N {
      */
     public static Locale getLocale() {
         return locale;
+    }
+
+    /**
+     * Sets the locale.
+     * 
+     * @param l
+     *            Locale to set.
+     */
+    public static void setLocale(Locale l) {
+        LOG.debug("Locale set to: " + l.getDisplayName());
+        locale = l;
+    }
+
+    /**
+     * Sets the locale.
+     * 
+     * @param language
+     *            Language to get Locale to set from.
+     */
+    public static void setLocale(String language) {
+        Locale l = new Locale(language);
+        LOG.debug("Locale set to: " + l.getDisplayName());
+        locale = l;
     }
 
     /**
