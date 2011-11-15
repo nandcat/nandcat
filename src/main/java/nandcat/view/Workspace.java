@@ -262,6 +262,7 @@ public class Workspace extends JPanel {
     private void notifyMouseClicked(MouseEvent altE) {
         WorkspaceEvent e = new WorkspaceEvent();
         e.setLocation(altE.getPoint());
+        e.setButton(altE.getButton());
         for (WorkspaceListener l : listeners) {
             l.mouseClicked(e);
         }
