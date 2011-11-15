@@ -59,22 +59,22 @@ public class StandardElementDrawer implements ElementDrawer {
     /**
      * Left margin of the port inside the bounds.
      */
-    private static final int PORT_MARGIN_LEFT = 2;
+    private static final int PORT_MARGIN_LEFT = 3;
 
     /**
      * Right margin of the port inside the bounds.
      */
-    private static final int PORT_MARGIN_RIGHT = 2;
+    private static final int PORT_MARGIN_RIGHT = 3;
 
     /**
      * Top margin of the port inside the bounds.
      */
-    private static final int PORT_MARGIN_TOP = 2;
+    private static final int PORT_MARGIN_TOP = 3;
 
     /**
      * Bottom margin of the port inside the bounds.
      */
-    private static final int PORT_MARGIN_BOTTOM = 2;
+    private static final int PORT_MARGIN_BOTTOM = 3;
 
     /**
      * Top margin of the state indicating area of the impulse generator.
@@ -99,7 +99,7 @@ public class StandardElementDrawer implements ElementDrawer {
     /**
      * Diameter of the port.
      */
-    private static final int PORT_DIAMETER = 4;
+    private static final int PORT_DIAMETER = 6;
 
     /**
      * Color of a port with inactive state.
@@ -194,12 +194,12 @@ public class StandardElementDrawer implements ElementDrawer {
     /**
      * Default gate dimension.
      */
-    private static final Dimension GATE_DIMENSION = new Dimension(60, 40);
+    private static final Dimension GATE_DIMENSION = new Dimension(70, 50);
 
     /**
      * Default lamp dimension.
      */
-    private static final Dimension LAMP_DIMENSION = new Dimension(40, 40);
+    private static final Dimension LAMP_DIMENSION = new Dimension(60, 60);
 
     /**
      * Color of the line drawn using draw(Line).
