@@ -1,7 +1,6 @@
 package nandcat.model.check;
 
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import nandcat.model.check.CheckEvent.State;
 import nandcat.model.element.Circuit;
@@ -57,8 +56,7 @@ public class CountCheck implements CircuitCheck {
         for (CheckListener l : listener) {
             l.checkChanged(e);
         }
-        List<Element> elem = circuit.getElements();
-        if (elem.size() > 1000) {
+        if (countElems(circuit) > 1000) {
             e = new CheckEvent(State.FAILED, elements, this);
             for (CheckListener l : listener) {
                 l.checkChanged(e);
@@ -91,5 +89,24 @@ public class CountCheck implements CircuitCheck {
      */
     public String toString() {
         return "Prüfen ob Anzahl der Gatter eine Grenzwert überschreitet";
+    }
+
+    /**
+     * Counts all Elements (and thanks to recursion also all sub-elements) in this circuit.
+     * 
+     * @param c
+     *            Circuit that needs to be checked
+     * @return number of elements
+     */
+    private int countElems(Circuit c) {
+        int zaehlchen = 0;
+        for (Element e : c.getElements()) {
+            if (e instanceof Circuit) {
+                zaehlchen += countElems((Circuit) e);
+            } else {
+                zaehlchen++;
+            }
+        }
+        return zaehlchen;
     }
 }
