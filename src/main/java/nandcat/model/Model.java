@@ -178,10 +178,22 @@ public class Model implements ClockListener {
      * Start the selected checks on the current circuit.
      */
     public void startChecks() {
+        ModelEvent e = new ModelEvent();
+        for (ModelListener l : listeners) {
+            l.checksStarted(e);
+        }
+        boolean allChecksPassed = true;
         for (CircuitCheck check : checks) {
             if (check.isActive()) {
-                check.test(circuit);
+                allChecksPassed = check.test(circuit);
             }
+            if (!allChecksPassed) {
+                break;
+            }
+        }
+        e.setChecksPassed(allChecksPassed);
+        for (ModelListener l : listeners) {
+            l.checksStarted(e);
         }
     }
 
@@ -914,4 +926,13 @@ public class Model implements ClockListener {
         return dirty;
     }
 
+    // Circuit getCircuitFromSelected() {
+    // Circuit result = new Circuit();
+    //
+    // for (Element e : getSelectedElements()) {
+    //
+    // }
+    //
+    // return result;
+    // }
 }
