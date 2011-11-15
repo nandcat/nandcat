@@ -1,7 +1,8 @@
-package nandcat.model.importexport;
+package nandcat.model.importexport.sepaf;
 
 import java.io.IOException;
 import nandcat.NandcatTest;
+import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.sepaf.SEPAFCheckCircuitReference;
 import nandcat.model.importexport.sepaf.XMLCheck;
 import org.jdom.Document;

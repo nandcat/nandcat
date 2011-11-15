@@ -1,5 +1,8 @@
 package nandcat.model.importexport;
 
+import nandcat.model.importexport.sepaf.SEPAFCheckReferenceTest;
+import nandcat.model.importexport.sepaf.SEPAFExporterTest;
+import nandcat.model.importexport.sepaf.SEPAFImporterTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;

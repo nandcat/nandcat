@@ -1,4 +1,4 @@
-package nandcat.model.importexport;
+package nandcat.model.importexport.sepaf;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -16,6 +16,7 @@ import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
+import nandcat.model.importexport.XsdValidation;
 import nandcat.model.importexport.sepaf.SEPAFExporter;
 import org.junit.Test;
 import org.xml.sax.ErrorHandler;

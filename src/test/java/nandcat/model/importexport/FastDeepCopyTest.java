@@ -6,6 +6,11 @@ import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
 import nandcat.model.element.Element;
+import nandcat.model.element.FlipFlop;
+import nandcat.model.element.IdentityGate;
+import nandcat.model.element.ImpulseGenerator;
+import nandcat.model.element.Lamp;
+import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 import nandcat.model.importexport.sepaf.FastDeepCopy;
 import org.junit.Test;
@@ -105,5 +110,21 @@ public class FastDeepCopyTest {
                 assertTrue(verifyCircuit((Circuit) e));
             }
         }
+    }
+
+    @Test
+    public void testAllElements() {
+        FastDeepCopy.copy(new AndGate());
+        FastDeepCopy.copy(new OrGate());
+        FastDeepCopy.copy(new FlipFlop());
+        FastDeepCopy.copy(new IdentityGate());
+        FastDeepCopy.copy(new ImpulseGenerator(0));
+        FastDeepCopy.copy(new Lamp());
+        FastDeepCopy.copy(new NotGate());
+        AndGate gate = new AndGate();
+        OrGate gate2 = new OrGate();
+        FastDeepCopy.copy(gate.getInPorts().get(0));
+        FastDeepCopy.copy(new Connection(gate.getOutPorts().get(0), gate2.getInPorts().get(0)));
+        // FastDeepCopy.copy(new Connection(null, null));
     }
 }
