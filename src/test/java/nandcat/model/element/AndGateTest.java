@@ -45,13 +45,13 @@ public class AndGateTest extends TestCase {
         assertFalse(conn.getState());
         // true, true liegt an, false geht raus
         // nächster tick setzt ausgang und leitung auf true
-        // eingang lampe true, lampe selber derpt false
+        // eingang lampe true, lampe selber derpt jetzt true
         and.clockTicked(null);
         conn.clockTicked(null);
         assertTrue(and.getOutPorts().get(0).getState());
         assertTrue(conn.getState());
         assertTrue(lamp.getInPorts().get(0).getState());
-        assertFalse(lamp.getState());
+        assertTrue(lamp.getState());
         // nächster tick setzt lampe auf true, sonst ändert si nix
         lamp.clockTicked(null);
         assertTrue(and.getOutPorts().get(0).getState());

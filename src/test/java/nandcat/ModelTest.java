@@ -1,11 +1,11 @@
 package nandcat;
 
 import java.awt.Point;
+import junit.framework.TestCase;
 import nandcat.model.Model;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
-import junit.framework.TestCase;
 
 public class ModelTest extends TestCase {
 
@@ -36,7 +36,7 @@ public class ModelTest extends TestCase {
         assertTrue(two.getOutPorts().get(0).getState());
         assertFalse(and.getInPorts().get(0).getState());
         assertTrue(and.getInPorts().get(1).getState());
-        
+
         assertFalse(and.getOutPorts().get(0).getState());
         assertFalse(lamp.getState());
 
@@ -46,7 +46,7 @@ public class ModelTest extends TestCase {
         assertTrue(two.getOutPorts().get(0).getState());
         assertTrue(and.getInPorts().get(0).getState());
         assertTrue(and.getInPorts().get(1).getState());
-        
+
         assertFalse(and.getOutPorts().get(0).getState());
         assertFalse(lamp.getState());
 
@@ -56,16 +56,16 @@ public class ModelTest extends TestCase {
         assertTrue(two.getOutPorts().get(0).getState());
         assertFalse(and.getInPorts().get(0).getState());
         assertTrue(and.getInPorts().get(1).getState());
-        
+
         assertTrue(and.getOutPorts().get(0).getState());
-        assertFalse(lamp.getState());
+        assertTrue(lamp.getState());
 
         // cycle four
         model.getClock().cycle();
         assertTrue(one.getOutPorts().get(0).getState());
         assertTrue(two.getOutPorts().get(0).getState());
-        
+
         assertFalse(and.getOutPorts().get(0).getState());
-        assertTrue(lamp.getState());
+        assertFalse(lamp.getState());
     }
 }

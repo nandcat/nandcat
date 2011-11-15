@@ -48,13 +48,13 @@ public class OrGateTest extends TestCase {
         assertFalse(conn.getState());
         // true, false liegt an, false geht raus
         // nächster tick setzt ausgang und leitung auf true
-        // eingang lampe true, lampe selber derpt false
+        // eingang lampe true, lampe selber derpt jetzt wieder true
         or.clockTicked(null);
         conn.clockTicked(null);
         assertTrue(or.getOutPorts().get(0).getState());
         assertTrue(conn.getState());
         assertTrue(lamp.getInPorts().get(0).getState());
-        assertFalse(lamp.getState());
+        assertTrue(lamp.getState());
         // nächster tick setzt lampe auf true, sonst ändert si nix
         lamp.clockTicked(null);
         assertTrue(or.getOutPorts().get(0).getState());
@@ -69,7 +69,7 @@ public class OrGateTest extends TestCase {
         assertFalse(or.getOutPorts().get(0).getState());
         assertFalse(conn.getState());
         assertFalse(lamp.getInPorts().get(0).getState());
-        assertTrue(lamp.getState());
+        assertFalse(lamp.getState());
         lamp.clockTicked(null);
         // der Letzte macht das Licht aus
         assertFalse(lamp.getState());

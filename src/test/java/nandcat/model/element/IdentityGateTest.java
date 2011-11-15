@@ -78,8 +78,8 @@ public class IdentityGateTest extends TestCase {
         assertTrue(lamp1.getInPorts().get(0).getState());
         assertTrue(lamp2.getInPorts().get(0).getState());
         // Lampen noch aus, noch nicht berechnet
-        assertFalse(lamp1.getState());
-        assertFalse(lamp2.getState());
+        assertTrue(lamp1.getState());
+        assertTrue(lamp2.getState());
         // Lamp{1,2} aufwecken
         lamp1.clockTicked(null);
         lamp2.clockTicked(null);
