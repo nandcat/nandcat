@@ -19,6 +19,7 @@ import nandcat.model.element.Module;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
+import nandcat.model.importexport.ExternalCircuitSource;
 import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
 import nandcat.model.importexport.XsdValidation;
@@ -106,10 +107,7 @@ public class SEPAFImporter implements Importer {
     // static final results in null pointer exception at XSD validation (oracle bug?)
     private Source[] xsdSources;
 
-    /**
-     * Prototype circuits mapped with their uuid used if missing circuits occur.
-     */
-    private Map<String, Circuit> externalCircuits = new HashMap<String, Circuit>();
+    private ExternalCircuitSource externalCircuitSource;
 
     /**
      * Sets the instance up.
@@ -453,13 +451,17 @@ public class SEPAFImporter implements Importer {
         } else if (aType.getValue().equals("circuit")) {
             module = buildCircuit(el.getAttributeValue("type2"), doc);
         } else if (aType.getValue().equals("missing-circuit")) {
-            module = buildCircuit(el.getAttributeValue("type2"), doc);
-            String uuid = el.getAttributeValue("type2");
-            if (externalCircuits.containsKey(uuid)) {
-                module = (Circuit) FastDeepCopy.copy(externalCircuits.get(uuid));
+            String externalIdentifier = el.getAttributeValue("type2");
+            if (externalCircuitSource != null) {
+                Circuit externalCircuit = externalCircuitSource.getExternalCircuit(externalIdentifier);
+                if (externalCircuit != null) {
+                    module = (Circuit) FastDeepCopy.copy(externalCircuit);
+                } else {
+                    throw new FormatException("External circuit cannot be found: " + externalIdentifier);
+                }
             } else {
-                throw new FormatException("External circuit not found: type: '" + aType.getValue() + "' type2: '"
-                        + uuid + "'");
+                throw new FormatException("External circuit source is not available but circuit is missing: "
+                        + externalIdentifier);
             }
         } else {
             throw new FormatException("Not a supported component type: '" + aType.getValue() + "'");
@@ -663,7 +665,7 @@ public class SEPAFImporter implements Importer {
     /**
      * {@inheritDoc}
      */
-    public void setExternalCircuits(Map<String, Circuit> circuits) {
-        externalCircuits = circuits;
+    public void setExternalCircuitSource(ExternalCircuitSource source) {
+        this.externalCircuitSource = source;
     }
 }

@@ -61,7 +61,7 @@ public class ImpulseGenerator implements Module {
         this.frequency = frequency;
         rectangle = new Rectangle(EXTENT, EXTENT);
         outPort = new Port(this);
-        outPort.locateOnStandardPosition();
+        outPort.locateOnStandardPosition(this);
     }
 
     /**
@@ -172,4 +172,17 @@ public class ImpulseGenerator implements Module {
     public boolean isSelected() {
         return selected;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        String x = this.getClass().getSimpleName() + "(" + getRectangle().x + "/" + getRectangle().y + ") ";
+        x += "(out) ";
+        if (outPort.getRectangle() != null) {
+            x += outPort.getRectangle().x + "/" + outPort.getRectangle().y + ", ";
+        }
+        return x;
+    }
+
 }

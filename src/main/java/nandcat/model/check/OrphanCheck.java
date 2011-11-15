@@ -56,43 +56,44 @@ public class OrphanCheck implements CircuitCheck {
     public boolean test(Circuit circuit) {
         Set<Element> elements = new LinkedHashSet<Element>();
         
-        // Event informing listeners that check has started.
-        CheckEvent e = new CheckEvent(State.RUNNING, elements, this);
-        for (CheckListener l : listener) {
-            l.checkChanged(e);
-        }
+        informListeners(State.RUNNING, elements);
         for (Module m : circuit.getModules()) {
             boolean current = false;
             for (Port p : m.getInPorts()) {
-                if (p.getConnection().getNextModule() != null) {
+                if (p.getConnection() != null) {
                     current = true;
                 }
             }
             for (Port p : m.getOutPorts()) {
-                if (p.getConnection().getNextModule() != null) {
+                if (p.getConnection() != null) {
                     current = true;
                 }
             }
             if (!current) {
-                
-                // If the test fails fire CheckEvent and add the module which caused the failure to the event.
-                e = new CheckEvent(State.FAILED, elements, this);
                 elements.add(m);
-                for (CheckListener l : listener) {
-                    l.checkChanged(e);
-                }
+                informListeners(State.FAILED, elements);
                 return false;
             }
         }
-        
-        // If everything went fine fire CheckEvent with empty set.
-        e = new CheckEvent(State.SUCCEEDED, elements, this);
-        for (CheckListener l : listener) {
-            l.checkChanged(e);
-        }
+        informListeners(State.SUCCEEDED, elements);
         return true;
     }
 
+    /**
+     * Notifies the Classes implementing the CheckListener interface about a change in this Check.
+     * 
+     * @param state
+     *            State of the check.
+     * @param elements
+     *            Elements causing a fail in the check. Empty if the check started or succeeded.
+     */
+    private void informListeners(State state, Set<Element> elements) {
+        CheckEvent e = new CheckEvent(state, elements, this);
+        for (CheckListener l : listener) {
+            l.checkChanged(e);
+        }
+    }
+    
     /**
      * {@inheritDoc}
      */

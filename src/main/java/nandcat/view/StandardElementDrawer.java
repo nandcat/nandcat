@@ -122,6 +122,11 @@ public class StandardElementDrawer implements ElementDrawer {
     private static final Color CONNECTION_COLOR_ACTIVE = Color.RED;
 
     /**
+     * Color of an selected connection.
+     */
+    private static final Color CONNECTION_COLOR_SELECTED = Color.RED;
+
+    /**
      * Height of a drawn label. Used for calculations, not for setting height.
      */
     private static final int LABEL_HEIGHT = 10;
@@ -215,19 +220,27 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(Connection connection) {
+        LOG.debug("Draw: " + connection);
         if (connection == null) {
             throw new IllegalArgumentException("Connection is null");
         }
         Port inPort = connection.getInPort();
-        Point inPoint = getPortCenter(inPort);
+        Point inPoint = inPort.getCenter();
         Port outPort = connection.getOutPort();
-        Point outPoint = getPortCenter(outPort);
+        Point outPoint = outPort.getCenter();
+        LOG.debug("InPort point of connection:" + inPoint.toString());
+        LOG.debug("OutPort point of connection:" + outPoint.toString());
+
         if (connection.getState()) {
             g.setColor(CONNECTION_COLOR_ACTIVE);
         } else {
             g.setColor(CONNECTION_COLOR_DEFAULT);
         }
-        // LOG.trace("Draw Line: " + outPoint.x + "," + outPoint.y + "," + inPoint.x + "," + inPoint.y);
+
+        if (connection.isSelected()) {
+            g.setColor(CONNECTION_COLOR_SELECTED);
+        }
+        LOG.debug("Draw line: " + outPoint.x + ", " + outPoint.y + ", " + inPoint.x + ", " + inPoint.y);
         g.drawLine(outPoint.x, outPoint.y, inPoint.x, inPoint.y);
     }
 
@@ -242,6 +255,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(Circuit circuit) {
+        LOG.debug("Draw: " + circuit);
         if (circuit == null) {
             throw new IllegalArgumentException();
         }
@@ -260,6 +274,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(IdentityGate gate) {
+        LOG.debug("Draw: " + gate);
         if (gate == null) {
             throw new IllegalArgumentException();
         }
@@ -279,6 +294,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(NotGate gate) {
+        LOG.debug("Draw: " + gate);
         if (gate == null) {
             throw new IllegalArgumentException();
         }
@@ -298,6 +314,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(AndGate gate) {
+        LOG.debug("Draw: " + gate);
         if (gate == null) {
             throw new IllegalArgumentException();
         }
@@ -317,6 +334,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(OrGate gate) {
+        LOG.debug("Draw: " + gate);
         if (gate == null) {
             throw new IllegalArgumentException();
         }
@@ -403,41 +421,6 @@ public class StandardElementDrawer implements ElementDrawer {
             drawPort(port.getRectangle(), port.getState());
             i++;
         }
-    }
-
-    /**
-     * Gets the center point of the given port.
-     * 
-     * @param port
-     *            Port to calculate center of.
-     * @return Center Point object of the given port.
-     */
-    private Point getPortCenter(Port port) {
-        Module module = port.getModule();
-        if (module == null) {
-            throw new IllegalArgumentException("Port has no module");
-        }
-        Rectangle rec = module.getRectangle();
-        if (rec == null) {
-            throw new IllegalArgumentException("Portmodule has no rectangle");
-        }
-        int indexOfPort;
-        int numberOfPortsInColumn;
-        if (port.isOutPort()) {
-            indexOfPort = module.getOutPorts().indexOf(port);
-            numberOfPortsInColumn = module.getOutPorts().size();
-        } else {
-            indexOfPort = module.getInPorts().indexOf(port);
-            numberOfPortsInColumn = module.getInPorts().size();
-        }
-        if (indexOfPort == -1) {
-            throw new IllegalArgumentException("Port not found in modules ports");
-        }
-        if (numberOfPortsInColumn == 0) {
-            throw new IllegalArgumentException("Module has no (in/out) ports");
-        }
-        Rectangle position = getPortBounds(rec, port.isOutPort(), indexOfPort, numberOfPortsInColumn);
-        return new Point(position.x + (position.width / 2), position.y + (position.height / 2));
     }
 
     /**
@@ -535,6 +518,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(Lamp lamp) {
+        LOG.debug("Draw: " + lamp);
         if (lamp == null) {
             throw new IllegalArgumentException();
         }
@@ -569,6 +553,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(FlipFlop flipflop) {
+        LOG.debug("Draw: " + flipflop);
         if (flipflop == null) {
             throw new IllegalArgumentException();
         }
@@ -588,6 +573,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(ImpulseGenerator ig) {
+        LOG.debug("Draw: " + ig);
         if (ig == null) {
             throw new IllegalArgumentException();
         }

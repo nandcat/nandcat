@@ -1,5 +1,6 @@
 package nandcat.controller;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -89,6 +90,7 @@ public class StateTool implements Tool {
     private void setListeners() {
         if (workspaceListener == null) {
             workspaceListener = new WorkspaceListenerAdapter() {
+
                 @Override
                 public void mouseClicked(WorkspaceEvent e) {
                     changeState(e.getLocation());
@@ -104,7 +106,7 @@ public class StateTool implements Tool {
 
     private void changeState(Point point) {
         assert point != null;
-        Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(point));
+        Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(point, new Dimension(1, 1)));
         Module toChangeState = null;
         for (DrawElement element : elementsAt) {
             if (element instanceof Module) {
@@ -137,6 +139,7 @@ public class StateTool implements Tool {
     private void activateTool() {
         controller.requestActivation(this);
     }
+
     /**
      * {@inheritDoc}
      */

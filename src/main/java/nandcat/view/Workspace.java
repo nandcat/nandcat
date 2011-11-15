@@ -4,7 +4,9 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Line2D;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import javax.swing.JPanel;
@@ -65,6 +67,11 @@ public class Workspace extends JPanel {
      * Rectangle to draw while selecting Elements.
      */
     private Rectangle selectRect;
+
+    /**
+     * Line2D to draw while trying to place a connection.
+     */
+    private Line2D connectLine;
 
     /**
      * View instance.
@@ -136,6 +143,18 @@ public class Workspace extends JPanel {
     }
 
     /**
+     * Redraws the workspace with its elements. By calling the repaint() method. And sets a Line2D which represents the
+     * Connection which the user tries to place but is not complete yet.
+     * 
+     * @param line
+     *            Line2D Line representing the Connection to be placed.
+     */
+    public void redraw(Line2D line) {
+        this.connectLine = line;
+        repaint();
+    }
+
+    /**
      * Adds a listener to the collection of listeners, which will be notified.
      * 
      * @param l
@@ -197,16 +216,17 @@ public class Workspace extends JPanel {
         super.paint(g);
         elementDrawer.setGraphics(g);
         List<DrawElement> elementsToDraw = model.getDrawElements();
+        List<Connection> cachedConnections = new LinkedList<Connection>();
         for (DrawElement elem : elementsToDraw) {
             if (isInView(elem)) {
                 if (elem instanceof Connection) {
-                    elementDrawer.draw((Connection) elem);
+                    cachedConnections.add((Connection) elem);
                 } else if (elem instanceof AndGate) {
                     elementDrawer.draw((AndGate) elem);
-                } else if (elem instanceof Circuit) {
-                    elementDrawer.draw((Circuit) elem);
                 } else if (elem instanceof FlipFlop) {
                     elementDrawer.draw((FlipFlop) elem);
+                } else if (elem instanceof Circuit) {
+                    elementDrawer.draw((Circuit) elem);
                 } else if (elem instanceof ImpulseGenerator) {
                     elementDrawer.draw((ImpulseGenerator) elem);
                 } else if (elem instanceof IdentityGate) {
@@ -220,9 +240,16 @@ public class Workspace extends JPanel {
                 }
             }
         }
+        for (Connection connection : cachedConnections) {
+            elementDrawer.draw(connection);
+        }
         if (selectRect != null) {
             elementDrawer.draw(selectRect);
             selectRect = null;
+        }
+        if (connectLine != null) {
+            elementDrawer.draw(connectLine);
+            connectLine = null;
         }
     }
 

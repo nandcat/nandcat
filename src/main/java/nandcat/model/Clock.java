@@ -46,7 +46,7 @@ public class Clock {
     private Set<ClockListener> listeners;
 
     /**
-     * List of (starting elements, i.e. ImpulseGenerators, TODO anything else?).
+     * List of (starting elements, i.e. ImpulseGenerators).
      */
     private Set<ImpulseGenerator> generators;
 
@@ -59,36 +59,19 @@ public class Clock {
      *            The model for the new clock.
      */
     public Clock(int cycle, Model model) {
-        // TODO check Exception.
         if (model == null || cycle < 0) {
             throw new IllegalArgumentException("negative cycle or null-model not allow for clock");
         }
 
         this.cycle = cycle;
+        sleepTime = 100;
+        running = false;
         listeners = new HashSet<ClockListener>();
         generators = new HashSet<ImpulseGenerator>();
         connections = new HashSet<ClockListener>();
         this.model = model;
     }
 
-    // /**
-    // * Start the simulation of the Clock in a separate thread. The Clock sleeps until the time has reached a new
-    // cycle.
-    // * Then the Clock ticks and notifies its listeners.
-    // */
-    // public void simulate() {
-    // // TODO implement
-    // // new LazyThread;
-    // // int sleep = cycle;
-    // // while (sleep > 0) {
-    // // sleep();
-    // // sleep--;
-    // // }
-    // // for (ClockListener listener : listeners) {
-    // // listener.clockTicked(this);
-    // // }
-    // // then restart
-    // }
     /**
      * Add a ClockListener to the Clock. It will be notified if the Clock ticks.
      * 
@@ -122,7 +105,6 @@ public class Clock {
         }
     }
 
-    // TODO Alternativen ausloten, Chancen eruieren
     /**
      * Makes the clock notify the listeners.
      */
@@ -141,7 +123,8 @@ public class Clock {
             // } else if (cycle % listener.getFrequency() == 0) {
             // listener.clockTicked(this);
             // }
-            if (cycle == 0 || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
+            if ((cycle == 0) || (listener.getFrequency() == 1)
+                    || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
                 listener.clockTicked(this);
             }
             // // ALTERNATIVE 2
@@ -164,9 +147,9 @@ public class Clock {
      * Start the simulation for this clock.
      */
     public void startSimulation() {
-        // TODO check for synch.
         // starting elements already added.
         // spawn new thread
+        running = true;
         new Thread() {
 
             public void run() {
@@ -180,6 +163,7 @@ public class Clock {
                         e.printStackTrace();
                     }
                 }
+                // reset States of alle modules to avoid inconsitencies
                 for (Element e : model.getElements()) {
                     if (e instanceof Module) {
                         Module m = (Module) e;
@@ -192,7 +176,7 @@ public class Clock {
                 listeners.clear();
                 generators.clear();
             }
-        };
+        }.start();
     }
 
     /**
@@ -226,7 +210,7 @@ public class Clock {
      * @param sleepTime
      *            int to set thread's sleepTime to
      */
-    public void setSleepTime(int sleepTime) {
+    public synchronized void setSleepTime(int sleepTime) {
         this.sleepTime = sleepTime;
     }
 }

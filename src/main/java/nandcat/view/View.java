@@ -30,7 +30,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.event.ChangeListener;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
-import nandcat.model.ModelListener;
+import nandcat.model.ModelListenerAdapter;
 import nandcat.model.ViewModule;
 import nandcat.model.element.DrawElement;
 import nandcat.model.element.Module;
@@ -150,20 +150,10 @@ public class View extends JFrame {
      *            Model we put the ModelListener on.
      */
     private void setupGui(Model model) {
-        model.addListener(new ModelListener() {
+        model.addListener(new ModelListenerAdapter() {
 
             public void elementsChanged(ModelEvent e) {
                 redraw(e);
-            }
-
-            public void checksStarted(ModelEvent e) {
-            }
-
-            public void checksStopped(ModelEvent e) {
-                enableButtons();
-            }
-
-            public void simulationStarted(ModelEvent e) {
             }
 
             public void simulationStopped(ModelEvent e) {
@@ -172,15 +162,6 @@ public class View extends JFrame {
 
             public void importSucceeded(ModelEvent e) {
                 allModulesInSight();
-            }
-
-            public void importFailed(ModelEvent e) {
-            }
-
-            public void exportSucceeded(ModelEvent e) {
-            }
-
-            public void exportFailed(ModelEvent e) {
             }
         });
         setTitle(FRAME_TITLE);

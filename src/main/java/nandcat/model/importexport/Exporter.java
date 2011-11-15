@@ -22,14 +22,17 @@ public interface Exporter {
     void setFile(File file);
 
     /**
-     * Sets a list of available external circuits, which can be used while exporting a file. Should be a set of circuits
-     * mapped with the circuits unique identifier. The Circuits will not be exported inside the file.
+     * Sets a map of external circuits. The <b>key</b> represents the internal uuid of the circuit. The <b>value</b>
+     * represents the reference to use when exporting. This is needed to know which circuits should not be exported into
+     * the file. E.g. if there is a circuit with uuid="513" which is referenced inside the current circuit and this
+     * circuit should not be exported, but the file which holds the external circuit is named "andgate" there should be
+     * a Map entry Enry<"513","andgate">.
      * 
      * @param circuits
      *            Circuits uuid mapped with the circuit object. Circuit object is the prototype for further instances of
      *            this circuit.
      */
-    void setExternalCircuits(Map<String, Circuit> circuits);
+    void setExternalCircuits(Map<String, String> circuits);
 
     /**
      * Exports circuit from file.

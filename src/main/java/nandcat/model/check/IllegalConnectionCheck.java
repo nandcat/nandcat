@@ -93,7 +93,7 @@ public class IllegalConnectionCheck implements CircuitCheck {
      */
     private void informListeners(State state, Set<Element> elements) {
         // Event informing listeners that check has started.
-        CheckEvent e = new CheckEvent(State.RUNNING, elements, this);
+        CheckEvent e = new CheckEvent(state, elements, this);
         for (CheckListener l : listener) {
             l.checkChanged(e);
         }

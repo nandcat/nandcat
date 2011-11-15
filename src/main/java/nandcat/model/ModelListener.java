@@ -55,6 +55,16 @@ public interface ModelListener {
     void importSucceeded(ModelEvent e);
 
     /**
+     * Invoked when current circuit will be changed completely. E.g. if the import from file is started while there are
+     * unsaved changes. If no listener interrupts using the return value <b>true</b> the change will continue.
+     * 
+     * @param e
+     *            ModelEvent
+     * @return True to interrupt the change process.
+     */
+    boolean changeCircuitRequested(ModelEvent e);
+
+    /**
      * Invoked when import failed.
      * 
      * @param e
