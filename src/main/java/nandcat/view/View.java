@@ -156,10 +156,6 @@ public class View extends JFrame {
                 redraw(e);
             }
 
-            public void simulationStopped(ModelEvent e) {
-                enableButtons();
-            }
-
             public void importSucceeded(ModelEvent e) {
                 allModulesInSight();
             }
@@ -434,7 +430,6 @@ public class View extends JFrame {
         toolBar.add(create);
         toolBar.add(toggle);
         toolBar.add(select);
-        toolBar.add(toggle);
         toolBar.add(move);
         toolBar.add(faster);
         toolBar.add(slower);
@@ -551,18 +546,13 @@ public class View extends JFrame {
     }
 
     /**
-     * Change Viewport Position on the workspace.
+     * Change ViewPort Position on the workspace.
      * 
-     * @param x
-     *            double value by which the x -coord is changed
-     * @param y
-     *            double value by which the x -coord is changed
+     * @param rect
+     *            Rectangle which will be scrolled to Visible.
      */
     public void setViewportPosition(Rectangle rect) {
-        // viewportLocation.x -= x;
-        // viewportLocation.y -= y;
-        // viewport.setViewPosition(viewportLocation);
-        viewport.scrollRectToVisible(rect);
+        workspace.scrollRectToVisible(rect);
     }
 
     /**

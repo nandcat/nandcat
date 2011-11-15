@@ -1,7 +1,6 @@
 package nandcat.view;
 
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -80,11 +79,6 @@ public class Workspace extends JPanel {
     private View view;
 
     /**
-     * 
-     */
-    private Line2D line;
-
-    /**
      * Constructs the workspace.
      * 
      * @param model
@@ -129,21 +123,6 @@ public class Workspace extends JPanel {
         this.elementDrawer = new StandardElementDrawer();
     }
 
-//    public void drawGrid() {
-//        gridLine = new Line2D.Double();
-//        Point upperRight = new Point(this.getX(), this.getX() + this.getWidth());
-//        gridLine.setLine(this.getLocation(), upperRight);
-//        for (int i = 0; i < this.getHeight(); ++i) {
-//            gridLine.setLine(gridLine.getX1(), gridLine.getY1() + 10, gridLine.getX2(), gridLine.getY2() + 10);
-//            repaint();
-//        }
-//        for (int i = 0; i < this.getHeight(); ++i) {
-//            gridLine.setLine(gridLine.getX1() + 10, gridLine.getY1(), gridLine.getX2() + 10, gridLine.getY2());
-//            repaint();
-//        }
-//
-//    }
-
     /**
      * Redraws the workspace with its elements. By calling the repaint() method.
      */
@@ -164,14 +143,14 @@ public class Workspace extends JPanel {
     }
 
     /**
-     * Redraws the workspace with its elements. By calling the repaint() method. And sets a rectangle which represents
-     * the selecting area.
+     * Redraws the workspace with its elements. By calling the repaint() method. And sets a connectLine which represents
+     * the Connection which the user tries to place but is not established yet.
      * 
-     * @param rect
-     *            Rectangle size and position of the "seeking-rectangle".
+     * @param line
+     *            Line2D line which represents the connectionLine while trying to set the connection.
      */
     public void redraw(Line2D line) {
-        this.line = line;
+        this.connectLine = line;
         repaint();
     }
 
@@ -268,9 +247,9 @@ public class Workspace extends JPanel {
             elementDrawer.draw(selectRect);
             selectRect = null;
         }
-        if (line != null) {
-            elementDrawer.draw(line);
-            line = null;
+        if (connectLine != null) {
+            elementDrawer.draw(connectLine);
+            connectLine = null;
         }
     }
 
@@ -311,6 +290,8 @@ public class Workspace extends JPanel {
     private void notifyMouseReleased(MouseEvent altE) {
         WorkspaceEvent e = new WorkspaceEvent();
         e.setLocation(altE.getPoint());
+        selectRect = null;
+        connectLine = null;
         for (WorkspaceListener l : listeners) {
             l.mouseReleased(e);
         }
