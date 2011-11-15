@@ -212,17 +212,18 @@ public class SEPAFExporter implements Exporter {
 
         // Set specific attributes.
         setModuleSpecificAttributes(e, m);
-
-        // Set incoming and outgoing ports.
-        if (m.getInPorts() != null) {
-            e.setAttribute("ports_in", Integer.toString(m.getInPorts().size()), SEPAFFormat.NAMESPACE.NANDCAT);
-        }
-
-        if (m.getInPorts() != null) {
-            e.setAttribute("ports_out", Integer.toString(m.getInPorts().size()), SEPAFFormat.NAMESPACE.NANDCAT);
-        }
+        setComponentPorts(e, m);
 
         return e;
+    }
+
+    private void setComponentPorts(Element e, Module m) {
+        if (!SEPAFFormat.hasDefaultAmountOfInPorts(m)) {
+            e.setAttribute("ports_in", Integer.toString(m.getInPorts().size()), SEPAFFormat.NAMESPACE.NANDCAT);
+        }
+        if (!SEPAFFormat.hasDefaultAmountOfOutPorts(m)) {
+            e.setAttribute("ports_out", Integer.toString(m.getOutPorts().size()), SEPAFFormat.NAMESPACE.NANDCAT);
+        }
     }
 
     /**
@@ -285,13 +286,6 @@ public class SEPAFExporter implements Exporter {
                 e.setAttribute("in_timing", Integer.toString(((ImpulseGenerator) m).getFrequency()),
                         SEPAFFormat.NAMESPACE.NANDCAT);
             }
-            String inState = "";
-            if (((ImpulseGenerator) m).getState()) {
-                inState = "true";
-            } else {
-                inState = "false";
-            }
-            e.setAttribute("in_state", inState, SEPAFFormat.NAMESPACE.NANDCAT);
         } else if (m instanceof AndGate) {
             e.setAttribute("type", "and");
         } else if (m instanceof OrGate) {
