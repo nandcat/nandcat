@@ -97,7 +97,10 @@ public class CheckManager extends JFrame {
      */
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-
+        
+        if(visible){
+            super.setExtendedState(JFrame.NORMAL);
+        }
         // When the CheckManager is re-opened all states are set to pending.
         for (Component checkbox : panel.getComponents()) {
             if (checkbox instanceof JCheckBox) {
