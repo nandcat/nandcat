@@ -44,6 +44,7 @@ public class SimulateTool implements Tool {
     /**
      * String representation of the Tool.
      */
+    @SuppressWarnings("serial")
     private List<String> represent = new LinkedList<String>() {
 
         {
@@ -54,7 +55,7 @@ public class SimulateTool implements Tool {
             add("startcheck");
             add("editcheck");
         }
-    }; // TODO beschreibung schreiben
+    };
 
     /**
      * ActionListener of the Tool on the Buttons.
@@ -69,7 +70,7 @@ public class SimulateTool implements Tool {
     /**
      * ItemHanlder of the Tool the the ComboBox in the CheckManager.
      */
-    private ItemHandler comboboxListener;// TODO nachschaun wie des funzt!!
+    private ItemHandler comboboxListener;
 
     /**
      * Reference on this Tool.
@@ -108,7 +109,15 @@ public class SimulateTool implements Tool {
                         }
                         checkManager.setVisible(true);
                     }
+                    
+                    public void checksStopped(ModelEvent e) {
+                        model.startSimulation();
+                    }
 
+                    public void simulationStarted(ModelEvent e){
+                        view.disableButtons();
+                    }
+                    
                     public void simulationStopped(ModelEvent e) {
                         view.enableButtons();
                     }
@@ -133,14 +142,12 @@ public class SimulateTool implements Tool {
                     view.disableButtons();
                 } else if (e.getActionCommand() == "stop") {
                     model.stopSimulation();
-                    // nur solang net alle modelevents funzen.
-                    view.enableButtons();
                 } else if (e.getActionCommand() == "faster") {
                     Clock clock = model.getClock();
-                    clock.setSleepTime(clock.getSleepTime() + 5);
+                    clock.setSleepTime(clock.getSleepTime() - 30); // TODO richtige Schritte ausprobieren.
                 } else if (e.getActionCommand() == "slower") {
                     Clock clock = model.getClock();
-                    clock.setSleepTime(clock.getSleepTime() - 5);
+                    clock.setSleepTime(clock.getSleepTime() + 30);
                 } else if (e.getActionCommand() == "startcheck") {
                     if (checkManager == null) {
                         checkManager = new CheckManager(model.getChecks(), comboboxListener);
