@@ -178,16 +178,28 @@ public class Model implements ClockListener {
      * Start the selected checks on the current circuit.
      */
     public void startChecks() {
+        ModelEvent e = new ModelEvent();
+        for (ModelListener l : listeners) {
+            l.checksStarted(e);
+        }
+        boolean allChecksPassed = true;
         for (CircuitCheck check : checks) {
             if (check.isActive()) {
-                check.test(circuit);
+                allChecksPassed = check.test(circuit);
             }
+            if (!allChecksPassed) {
+                break;
+            }
+        }
+        e.setChecksPassed(allChecksPassed);
+        for (ModelListener l : listeners) {
+            l.checksStarted(e);
         }
     }
 
     /**
      * Returns the Port at the Position. If multiple Ports are intersecting the Rectangle, no specific behaviour can be
-     * assured. KTHXBYE.
+     * assured.
      * 
      * @param rect
      *            Rectangle containing the x- and y-coordinate
@@ -413,6 +425,15 @@ public class Model implements ClockListener {
             l.simulationStopped(e);
         }
 
+    }
+
+    /**
+     * Get the number of the current cycle.
+     * 
+     * @return the number of the current cycle
+     */
+    public int getCycle() {
+        return clock.getCycle();
     }
 
     /**
@@ -905,4 +926,28 @@ public class Model implements ClockListener {
         return dirty;
     }
 
+    /**
+     * Creates a new Circuit containing selected Elements only. Connections leading to a Module outside the new Circuit
+     * won't be accepted.
+     * 
+     * @return the Circuit containing the selected Elements
+     */
+    Circuit getCircuitFromSelected() {
+        Circuit result = new Circuit();
+
+        for (Module m : circuit.getModules()) {
+            if (m.isSelected()) {
+                result.addModule(m);
+            }
+        }
+        for (Connection c : circuit.getConnections()) {
+            if (c.isSelected()) {
+                if (result.getModules().contains(c.getOutPort().getModule())) {
+                    result.addConnection(c.getInPort(), c.getInPort());
+                }
+            }
+        }
+
+        return result;
+    }
 }

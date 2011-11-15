@@ -11,6 +11,11 @@ import nandcat.model.element.DrawElement;
 public class ModelEvent {
 
     /**
+     * Boolean for tests.
+     */
+    private boolean checksPassed;
+
+    /**
      * Elements relevant for the fired event.
      */
     private Set<DrawElement> elements;
@@ -68,6 +73,25 @@ public class ModelEvent {
      */
     public String getMessage() {
         return message;
+    }
+
+    /**
+     * Get checksPassed.
+     * 
+     * @return boolean relevant for the event
+     */
+    public boolean allChecksPassed() {
+        return checksPassed;
+    }
+
+    /**
+     * Set checksPassed to b.
+     * 
+     * @param b
+     *            new value of checksPassed
+     */
+    public void setChecksPassed(boolean b) {
+
     }
 
     /**
