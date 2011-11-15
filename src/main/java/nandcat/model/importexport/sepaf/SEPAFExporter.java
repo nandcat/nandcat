@@ -102,6 +102,12 @@ public class SEPAFExporter implements Exporter {
      * {@inheritDoc}
      */
     public boolean exportCircuit() {
+        if (circuit == null) {
+            throw new IllegalArgumentException("Circuit is null");
+        }
+        if (file == null) {
+            throw new IllegalArgumentException("File is null");
+        }
         Document doc = new Document(new Element("circuits", SEPAFFormat.NAMESPACE.SEPAF));
         Element root = doc.getRootElement();
         root.setAttribute("schemaLocation", SEPAFFormat.NAMESPACE.SCHEMA_LOCATION, SEPAFFormat.NAMESPACE.XSI);
@@ -322,6 +328,7 @@ public class SEPAFExporter implements Exporter {
         Element e = new Element("connection", SEPAFFormat.NAMESPACE.SEPAF);
         e.setAttribute("source", SEPAFFormat.getObjectAsUniqueString(c.getPreviousModule()));
         e.setAttribute("target", SEPAFFormat.getObjectAsUniqueString(c.getNextModule()));
+
         e.setAttribute("targetPort",
                 SEPAFFormat.getPortAsString(false, c.getNextModule().getInPorts().indexOf(c.getOutPort())));
         e.setAttribute("sourcePort",

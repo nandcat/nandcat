@@ -292,7 +292,7 @@ public class SEPAFExporterSingleTest {
     }
 
     @Test
-    public void testMssingCircuit() throws Exception {
+    public void testMissingCircuit() throws Exception {
         Circuit circuit = new Circuit();
         AndGate gate = new AndGate();
         gate.setRectangle(new Rectangle(10, 20, 30, 40));
@@ -329,6 +329,7 @@ public class SEPAFExporterSingleTest {
     @After
     public void validateOutput() throws FileNotFoundException, SAXException, IOException {
         ImportExportUtil.testValidOutput(file);
+        file.delete();
     }
 
 }
