@@ -129,7 +129,6 @@ public class View extends JFrame {
      * Translation unit.
      */
     private I18NBundle i18n = I18N.getBundle("view");
-    
 
     private JLabel cycle = new JLabel();
 
@@ -198,7 +197,6 @@ public class View extends JFrame {
      *            the menuBar to be build
      */
     private void buildMenubar(JMenuBar menubar) {
-
         // Create the Menus. Setting Shortcuts.
         JMenu file = new JMenu(i18n.getString("menu.file"));
         file.setMnemonic(KeyEvent.VK_D);
@@ -267,9 +265,7 @@ public class View extends JFrame {
         JMenuItem mtoggle = new JMenuItem(i18n.getString("menu.edit.toggle"), KeyEvent.VK_T);
         mtoggle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
         disableElements.add(mtoggle);
-
         cycle.setText(i18n.getString("cycle.stand"));
-        
         /*
          * check if there are functionalities given for the MenuItems.
          */
@@ -364,7 +360,6 @@ public class View extends JFrame {
      *            ToolBar to be build.
      */
     private void buildToolbar(JToolBar toolBar) {
-
         // Create Buttons of the Application. Setting Icons and Descriptions and Size.
         ImageIcon startButtonIcon = new ImageIcon("src/resources/startmiddle.png");
         JButton start = new JButton("", startButtonIcon);
@@ -494,11 +489,13 @@ public class View extends JFrame {
         for (DrawElement elem : model.getDrawElements()) {
             if (elem instanceof Module) {
                 // If elem is a Module we must check if it is out of the workspace and if yes extend the workspace.
-                if (((Module) elem).getRectangle().x >= workspace.getWidth() + 50) {
+                if (((Module) elem).getRectangle().x >= workspace.getWidth()) {
                     workspace.setSize(((Module) elem).getRectangle().x, workspace.getHeight());
+                    workspace.setPreferredSize(new Dimension(((Module) elem).getRectangle().x + 100, workspace.getHeight()));
                 }
-                if (((Module) elem).getRectangle().y >= workspace.getHeight() + 50) {
+                if (((Module) elem).getRectangle().y >= workspace.getHeight()) {
                     workspace.setSize(workspace.getWidth(), ((Module) elem).getRectangle().y);
+                    workspace.setPreferredSize(new Dimension(workspace.getWidth(), ((Module) elem).getRectangle().y + 100));
                 }
             }
         }
@@ -639,7 +636,6 @@ public class View extends JFrame {
     public Rectangle getViewRect() {
         return viewport.getViewRect();
     }
-    
 
     public void setCycleCount(String text) {
         cycle.setText(text);

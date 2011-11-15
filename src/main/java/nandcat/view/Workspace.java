@@ -218,7 +218,7 @@ public class Workspace extends JPanel {
         List<DrawElement> elementsToDraw = model.getDrawElements();
         List<Connection> cachedConnections = new LinkedList<Connection>();
         for (DrawElement elem : elementsToDraw) {
-            if (isInView(elem)) {
+//            if (isInView(elem)) {
                 if (elem instanceof Connection) {
                     cachedConnections.add((Connection) elem);
                 } else if (elem instanceof AndGate) {
@@ -238,7 +238,7 @@ public class Workspace extends JPanel {
                 } else if (elem instanceof Lamp) {
                     elementDrawer.draw((Lamp) elem);
                 }
-            }
+//            }
         }
         for (Connection connection : cachedConnections) {
             elementDrawer.draw(connection);

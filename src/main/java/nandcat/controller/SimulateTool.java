@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
+import nandcat.I18N;
+import nandcat.I18N.I18NBundle;
 import nandcat.model.Clock;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
@@ -39,7 +41,12 @@ public class SimulateTool implements Tool {
     /**
      * Icon representation of the Tool.
      */
-    private ImageIcon icon; // TODO icon setzen
+    private ImageIcon icon;
+
+    /**
+     * Translation unit.
+     */
+    private I18NBundle i18n = I18N.getBundle("toolsimulate");
 
     /**
      * String representation of the Tool.
@@ -75,12 +82,22 @@ public class SimulateTool implements Tool {
     /**
      * Reference on this Tool.
      */
-    protected Tool simulateTool;
+    private Tool simulateTool;
 
     /**
      * View instance.
      */
     private View view;
+
+    /**
+     * Represents if the user wants to start a simulation.
+     */
+    private boolean simToStart = false;
+
+    /**
+     * Integer by which the simulation speed is raised or reduced.
+     */
+    private static final int SPEED_STEPS = 100;
 
     /**
      * Constructs the SimulateTool.
@@ -103,11 +120,12 @@ public class SimulateTool implements Tool {
             if (modelListener == null) {
                 modelListener = new ModelListenerAdapter() {
 
-                    boolean simulating= false;
-                    
+                    private boolean simulating = false;
+
                     public void elementsChanged(ModelEvent e) {
                         if (simulating) {
-                            view.setCycleCount("Simulationsdurchlauf: " + model.getCycle());
+                            // set the cycle count on the current cycle.
+                            view.setCycleCount(i18n.getString("cycle.count") + model.getCycle());
                         }
                     }
 
@@ -117,15 +135,17 @@ public class SimulateTool implements Tool {
                     }
 
                     public void simulationStopped(ModelEvent e) {
+                        // Stopping the simulation needs to enable the buttons and set the "Counter".
                         simulating = false;
                         view.enableButtons();
-                        view.setCycleCount("Simulation gestoppt");
+                        view.setCycleCount(i18n.getString("cycle.stand"));
                     }
-                    
+
                     public void checksStopped(ModelEvent e) {
-                        if(e.allChecksPassed()) {
-                            model.startSimulation();
+                        // All checks are passed if everyone was successful we can start the simulation.
+                        if (e.allChecksPassed() && simToStart) {
                             checkManager.setVisible(false);
+                            model.startSimulation();
                         }
                     }
                 };
@@ -143,28 +163,33 @@ public class SimulateTool implements Tool {
         buttonListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                if (e.getActionCommand() == "start") {
+                if (e.getActionCommand().equals("start")) {
+                    // User wants to start simulation. First we have to perform Checks.
                     controller.requestActivation(simulateTool);
+                    simToStart = true;
                     if (checkManager == null) {
                         checkManager = new CheckManager(model.getChecks(), comboboxListener);
                     }
                     checkManager.setVisible(true);
                     model.startChecks();
-                } else if (e.getActionCommand() == "stop") {
+                } else if (e.getActionCommand().equals("stop")) {
                     model.stopSimulation();
-                } else if (e.getActionCommand() == "faster") {
+                    simToStart = false;
+                } else if (e.getActionCommand().equals("faster")) {
+                    // reduce clock sleep time -> faster simulation.
                     Clock clock = model.getClock();
-                    clock.setSleepTime(clock.getSleepTime() - 100);
-                } else if (e.getActionCommand() == "slower") {
+                    clock.setSleepTime(clock.getSleepTime() - SPEED_STEPS);
+                } else if (e.getActionCommand().equals("slower")) {
+                    // raise clock sleep time -> slower simulation.
                     Clock clock = model.getClock();
-                    clock.setSleepTime(clock.getSleepTime() + 100);
-                } else if (e.getActionCommand() == "startcheck") {
+                    clock.setSleepTime(clock.getSleepTime() + SPEED_STEPS);
+                } else if (e.getActionCommand().equals("startcheck")) {
                     if (checkManager == null) {
                         checkManager = new CheckManager(model.getChecks(), comboboxListener);
                     }
                     checkManager.setVisible(true);
                     model.startChecks();
-                } else if (e.getActionCommand() == "editcheck") {
+                } else if (e.getActionCommand().equals("editcheck")) {
                     if (checkManager == null) {
                         checkManager = new CheckManager(model.getChecks(), comboboxListener);
                     }
