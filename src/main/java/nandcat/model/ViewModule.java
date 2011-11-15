@@ -25,7 +25,7 @@ public class ViewModule {
      * ViewModule's filename (may be null in case of standard gates). This has to be used to reference
      * circuit-definition files.
      */
-    private final String fileName; // TODO data-type: Filename/File?
+    private final String fileName;
 
     /**
      * Module reference to the gate represented by this ViewModule. May be null in case of circuits.

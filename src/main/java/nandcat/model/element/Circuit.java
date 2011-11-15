@@ -76,6 +76,8 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         this.uuid = uuid;
         name = "";
         elements = new LinkedList<Element>();
+        inPorts = new LinkedList<Port>();
+        outPorts = new LinkedList<Port>();
         rectangle = new Rectangle(Module.EXTENT, Module.EXTENT);
         symbol = null;
         selected = false;
@@ -177,6 +179,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      * elements).
      */
     private void createInPorts() {
+        inPorts.clear();
         for (Module m : getStartingModules()) {
             for (Port p : m.getInPorts()) {
                 // Port is not connected or connted to a module outside the circuit or a impulsegenerator
@@ -192,17 +195,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      * {@inheritDoc}
      */
     public List<Port> getInPorts() {
-        List<Port> result = new LinkedList<Port>();
-        for (Module m : getStartingModules()) {
-            for (Port p : m.getInPorts()) {
-                // Port is not connected or connted to a module outside the circuit or a impulsegenerator
-                if (p.getConnection() == null || !elements.contains(p.getConnection().getPreviousModule())
-                        || p.getConnection().getNextModule() instanceof ImpulseGenerator) {
-                    result.add(p);
-                }
-            }
-        }
-        return result;
+        return inPorts;
     }
 
     /**
@@ -210,6 +203,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      * elements).
      */
     private void createOutPorts() {
+        outPorts.clear();
         for (Element e : elements) {
             if (e instanceof Module) {
                 Module m = (Module) e;
@@ -229,21 +223,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      * {@inheritDoc}
      */
     public List<Port> getOutPorts() {
-        List<Port> result = new LinkedList<Port>();
-        for (Element e : elements) {
-            if (e instanceof Module) {
-                Module m = (Module) e;
-                for (Port p : m.getOutPorts()) {
-                    // empty ports are outPorts
-                    // not-emptyports with connections leading to modules outside the circuit or lamps are also outPorts
-                    if ((p.getConnection() == null) || !(this.elements.contains(p.getConnection().getNextModule()))
-                            || p.getConnection().getNextModule() instanceof Lamp) {
-                        result.add(p);
-                    }
-                }
-            }
-        }
-        return result;
+        return outPorts;
     }
 
     /**
@@ -342,6 +322,8 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         if (e == null) {
             return;
         }
+        // check if we need to scan for new potential outports. Was removed connection a inner-connection?
+        boolean rescan = elements.contains(e);
         if (e instanceof Connection) {
             Connection c = (Connection) e;
             c.getInPort().setConnection(null);
@@ -357,6 +339,11 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
                 removeElement(p.getConnection());
             }
             elements.remove(m);
+        }
+
+        if (rescan) {
+            createInPorts();
+            createOutPorts();
         }
     }
 
@@ -387,6 +374,13 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     public Connection addConnection(Port inPort, Port outPort) {
         Connection connection = new Connection(inPort, outPort);
         elements.add(connection);
+        // check if a rescan for in/outPorts is needed
+        if (inPort != null && elements.contains(inPort.getModule())) {
+            createOutPorts();
+        }
+        if (outPort != null && elements.contains(outPort.getModule())) {
+            createInPorts();
+        }
         return connection;
     }
 
@@ -426,16 +420,9 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         }
         // one module may not appear more than once in elements (guaranteed by Set<>)
         elements.add(m);
-    }
-
-    /**
-     * Checks if circuit has unsaved changes.
-     * 
-     * @return True if circuit has unsaved changes.
-     */
-    public boolean isDirty() {
-        // TODO Implementierung fehlt. Zurücksetzen auf false bei exportToFile
-        return true;
+        // scan for new potential in/outPorts
+        createInPorts();
+        createOutPorts();
     }
 
     /**

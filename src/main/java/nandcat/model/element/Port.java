@@ -182,8 +182,9 @@ public class Port implements Serializable {
      */
     public String toString() {
         if (bounds == null) {
-            return "NULL!";
+            return getModule().getClass().getSimpleName() + "(" + this.getState() + ")";
         }
-        return bounds.x + "/" + bounds.y;
+        // beware of getState
+        return bounds.x + "/" + bounds.y + "[" + this.getState() + "]";
     }
 }

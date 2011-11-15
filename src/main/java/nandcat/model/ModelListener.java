@@ -59,7 +59,7 @@ public interface ModelListener {
      * unsaved changes. If no listener interrupts using the return value <b>true</b> the change will continue.
      * 
      * @param e
-     *            ModelEvent // TODO Was soll hier noch rein?
+     *            ModelEvent
      * @return True to interrupt the change process.
      */
     boolean changeCircuitRequested(ModelEvent e);
