@@ -25,10 +25,11 @@ public class Lamp implements Module {
      */
     private Port inPort;
 
-    /**
-     * Lamp's state.
-     */
-    private boolean state;
+    // RELIKT
+    // /**
+    // * Lamp's state.
+    // */
+    // private boolean state;
 
     /**
      * Rectangle specifying the Lamp's shape.
@@ -44,7 +45,7 @@ public class Lamp implements Module {
      * /** Default constructor.
      */
     public Lamp() {
-        state = false;
+        // state = false;
         rectangle = new Rectangle(EXTENT, EXTENT);
         inPort = new Port(this);
         inPort.setState(false, null);
@@ -107,14 +108,13 @@ public class Lamp implements Module {
      * @return state of the lamp
      */
     public boolean getState() {
-        return state;
+        return inPort.getState();
     }
 
     /**
      * {@inheritDoc}
      */
     public void clockTicked(Clock clock) {
-        this.state = inPort.getState();
     }
 
     /**
