@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -128,6 +129,9 @@ public class View extends JFrame {
      * Translation unit.
      */
     private I18NBundle i18n = I18N.getBundle("view");
+    
+
+    private JLabel cycle = new JLabel();
 
     /**
      * Constructs the view.
@@ -263,6 +267,9 @@ public class View extends JFrame {
         JMenuItem mtoggle = new JMenuItem(i18n.getString("menu.edit.toggle"), KeyEvent.VK_T);
         mtoggle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
         disableElements.add(mtoggle);
+
+        cycle.setText(i18n.getString("cycle.stand"));
+        
         /*
          * check if there are functionalities given for the MenuItems.
          */
@@ -346,6 +353,7 @@ public class View extends JFrame {
         file.add(msave2);
         file.add(mloaddef);
         file.add(mclose);
+        menubar.add(cycle, "RIGHT");
     }
 
     /**
@@ -630,5 +638,10 @@ public class View extends JFrame {
      */
     public Rectangle getViewRect() {
         return viewport.getViewRect();
+    }
+    
+
+    public void setCycleCount(String text) {
+        cycle.setText(text);
     }
 }

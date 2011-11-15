@@ -91,7 +91,7 @@ public class ModelEvent {
      *            new value of checksPassed
      */
     public void setChecksPassed(boolean b) {
-
+        checksPassed = b;
     }
 
     /**
