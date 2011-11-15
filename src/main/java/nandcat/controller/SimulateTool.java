@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
-import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
 import nandcat.I18N;
 import nandcat.I18N.I18NBundle;
 import nandcat.model.Clock;
@@ -73,11 +72,6 @@ public class SimulateTool implements Tool {
      * ModelListener of the Tool on the Model.
      */
     private ModelListener modelListener;
-
-    /**
-     * ItemHanlder of the Tool the the ComboBox in the CheckManager.
-     */
-    private ItemHandler comboboxListener;
 
     /**
      * Reference on this Tool.
@@ -168,7 +162,7 @@ public class SimulateTool implements Tool {
                     controller.requestActivation(simulateTool);
                     simToStart = true;
                     if (checkManager == null) {
-                        checkManager = new CheckManager(model.getChecks(), comboboxListener);
+                        checkManager = new CheckManager(model.getChecks());
                     }
                     checkManager.setVisible(true);
                     model.startChecks();
@@ -185,13 +179,13 @@ public class SimulateTool implements Tool {
                     clock.setSleepTime(clock.getSleepTime() + SPEED_STEPS);
                 } else if (e.getActionCommand().equals("startcheck")) {
                     if (checkManager == null) {
-                        checkManager = new CheckManager(model.getChecks(), comboboxListener);
+                        checkManager = new CheckManager(model.getChecks());
                     }
                     checkManager.setVisible(true);
                     model.startChecks();
                 } else if (e.getActionCommand().equals("editcheck")) {
                     if (checkManager == null) {
-                        checkManager = new CheckManager(model.getChecks(), comboboxListener);
+                        checkManager = new CheckManager(model.getChecks());
                     }
                     checkManager.setVisible(true);
                 }

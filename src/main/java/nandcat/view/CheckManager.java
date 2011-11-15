@@ -12,7 +12,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.plaf.basic.BasicComboBoxUI.ItemHandler;
 import nandcat.model.check.CheckEvent;
 import nandcat.model.check.CheckEvent.State;
 import nandcat.model.check.CheckListener;
@@ -63,11 +62,9 @@ public class CheckManager extends JFrame {
      * 
      * @param set
      *            List with all checks to be performed.
-     * @param boxListener
-     *            ItemHandler, Listener for a CheckBox.
      */
-    public CheckManager(Set<CircuitCheck> set, ItemHandler boxListener) {
-        setupCheckmanager(set, boxListener);
+    public CheckManager(Set<CircuitCheck> set) {
+        setupCheckmanager(set);
         CheckListener checkListener = new CheckListener() {
 
             public void checkStarted() {
@@ -97,14 +94,12 @@ public class CheckManager extends JFrame {
      */
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        
-        if(visible){
+        if (visible) {
             super.setExtendedState(JFrame.NORMAL);
         }
         // When the CheckManager is re-opened all states are set to pending.
         for (Component checkbox : panel.getComponents()) {
             if (checkbox instanceof JCheckBox) {
-
                 // Then get the MenuItem and change its icon.
                 for (Component menuitem : ((JCheckBox) checkbox).getComponents()) {
                     if (menuitem instanceof JCheckBoxMenuItem) {
@@ -120,17 +115,14 @@ public class CheckManager extends JFrame {
      * 
      * @param checks
      *            List with Checks to be listed in the Frame.
-     * @param boxListener
-     *            Listener for the CheckBoxes
      */
-    private void setupCheckmanager(final Set<CircuitCheck> checks, ItemHandler boxListener) {
+    private void setupCheckmanager(final Set<CircuitCheck> checks) {
         setSize(620, 300);
         setLocation(frameLocation);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(Color.white);
-
         // The listener waits for changes on the checkbox.
         ItemListener itemListener = new ItemListener() {
 
@@ -141,15 +133,12 @@ public class CheckManager extends JFrame {
                         check.setActive(!check.isActive());
                     }
                 }
-
             }
-
         };
         JCheckBox checkbox = null;
         JCheckBoxMenuItem checkboxItem = null;
         for (CircuitCheck check : checks) {
             checkbox = new JCheckBox();
-
             // By default all checks will be executed.
             checkboxItem = new JCheckBoxMenuItem(check.toString(), checkPending, true);
             checkboxItem.addItemListener(itemListener);
@@ -166,11 +155,9 @@ public class CheckManager extends JFrame {
      *            ImageIcon the new icon.
      */
     private void changeSymbol(ImageIcon icon, CircuitCheck check) {
-
         // First get the CheckBox from the panel.
         for (Component checkbox : panel.getComponents()) {
             if (checkbox instanceof JCheckBox) {
-
                 // Then get the MenuItem and change its icon.
                 for (Component menuitem : ((JCheckBox) checkbox).getComponents()) {
                     if (menuitem instanceof JCheckBoxMenuItem) {
