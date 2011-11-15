@@ -4,12 +4,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.util.HashSet;
-import java.util.Set;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.LinkedList;
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import nandcat.NandcatTest;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
@@ -27,7 +30,7 @@ public class ElementDrawerViewer extends JFrame {
 
     private StandardElementDrawer elementDrawer;
 
-    private Set<Element> elements = new HashSet<Element>();
+    private Circuit mainCircuit;
 
     /**
      * @param args
@@ -58,38 +61,39 @@ public class ElementDrawerViewer extends JFrame {
     }
 
     private void createElementDrawerElements() {
+        mainCircuit = new Circuit();
         AndGate andGate1 = new AndGate();
         andGate1.setRectangle(new Rectangle(5, 5, 60, 40));
-        elements.add(andGate1);
+        mainCircuit.addModule(andGate1);
         AndGate andGate2 = new AndGate();
         andGate2.getInPorts().get(0).setState(true, null);
         andGate2.setRectangle(new Rectangle(100, 5, 60, 40));
         andGate2.setName("Meine Annotation");
-        elements.add(andGate2);
+        mainCircuit.addModule(andGate2);
         AndGate andGate3 = new AndGate();
         andGate3.getInPorts().get(0).setState(true, null);
         andGate3.getInPorts().get(1).setState(true, null);
         andGate3.getOutPorts().get(0).setState(true, null);
         andGate3.setSelected(true);
         andGate3.setRectangle(new Rectangle(200, 5, 60, 40));
-        elements.add(andGate3);
+        mainCircuit.addModule(andGate3);
         // OR Gates
         OrGate orGate1 = new OrGate();
         orGate1.setRectangle(new Rectangle(5, 80, 60, 40));
         orGate1.setName("Meine Annotation");
-        elements.add(orGate1);
+        mainCircuit.addModule(orGate1);
         OrGate orGate2 = new OrGate();
         orGate2.getInPorts().get(0).setState(true, null);
         orGate2.setRectangle(new Rectangle(100, 80, 60, 40));
         orGate2.setName("Meine Annotation");
-        elements.add(orGate2);
+        mainCircuit.addModule(orGate2);
         OrGate orGate3 = new OrGate();
         orGate3.getInPorts().get(0).setState(true, null);
         orGate3.getInPorts().get(1).setState(true, null);
         orGate3.getOutPorts().get(0).setState(true, null);
         orGate3.setSelected(true);
         orGate3.setRectangle(new Rectangle(200, 80, 60, 40));
-        elements.add(orGate3);
+        mainCircuit.addModule(orGate3);
         // OrGate orGate4 = new OrGate(2, 2);
         // orGate4.getInPorts().get(0).setState(true, null);
         // orGate4.getInPorts().get(1).setState(true, null);
@@ -97,36 +101,34 @@ public class ElementDrawerViewer extends JFrame {
         // orGate4.setRectangle(new Rectangle(300, 80, 60, 40));
         // elements.add(orGate4);
         // Connection between and2 and or3
-        Connection con1 = new Connection(orGate3.getInPorts().get(0), andGate2.getOutPorts().get(0));
-        orGate3.getInPorts().get(0).setConnection(con1);
-        andGate3.getOutPorts().get(0).setConnection(con1);
-        elements.add(con1);
+        // Connection con1 = new Connection(orGate3.getInPorts().get(0), andGate2.getOutPorts().get(0));
+        mainCircuit.addConnection(andGate2.getOutPorts().get(0), orGate3.getInPorts().get(0));
         Lamp lamp1 = new Lamp();
         lamp1.setRectangle(new Rectangle(5, 160, 40, 40));
         lamp1.setName("Eine Lampe");
-        elements.add(lamp1);
+        mainCircuit.addModule(lamp1);
         Lamp lamp2 = new Lamp();
         lamp2.getInPorts().get(0).setState(true, null);
         lamp2.setRectangle(new Rectangle(100, 160, 40, 40));
-        elements.add(lamp2);
+        mainCircuit.addModule(lamp2);
         Lamp lamp3 = new Lamp();
         lamp3.getInPorts().get(0).setState(true, null);
         lamp3.setSelected(true);
         lamp3.setRectangle(new Rectangle(200, 160, 40, 40));
-        elements.add(lamp3);
+        mainCircuit.addModule(lamp3);
         NotGate notGate1 = new NotGate();
         notGate1.setRectangle(new Rectangle(5, 240, 60, 40));
-        elements.add(notGate1);
+        mainCircuit.addModule(notGate1);
         NotGate notGate2 = new NotGate();
         notGate2.getInPorts().get(0).setState(true, null);
         notGate2.setRectangle(new Rectangle(100, 240, 60, 40));
         notGate2.setName("Ein NotGate");
-        elements.add(notGate2);
+        mainCircuit.addModule(notGate2);
         NotGate notGate3 = new NotGate();
         notGate3.getOutPorts().get(0).setState(true, null);
         notGate3.setSelected(true);
         notGate3.setRectangle(new Rectangle(200, 240, 60, 40));
-        elements.add(notGate3);
+        mainCircuit.addModule(notGate3);
         // FlipFlop flipFlop1 = new FlipFlop();
         // flipFlop1.setRectangle(new Rectangle(5, 320, 60, 40));
         // elements.add(flipFlop1);
@@ -141,26 +143,42 @@ public class ElementDrawerViewer extends JFrame {
         ImpulseGenerator ig1 = new ImpulseGenerator(0);
         ig1.setRectangle(new Rectangle(5, 320, 60, 40));
         ig1.setName("Ein Schalter");
-        elements.add(ig1);
+        mainCircuit.addModule(ig1);
         ImpulseGenerator ig2 = new ImpulseGenerator(0);
         ig2.toggleState();
         ig2.getOutPorts().get(0).setState(true, null);
         ig2.setRectangle(new Rectangle(100, 320, 60, 40));
-        elements.add(ig2);
+        mainCircuit.addModule(ig2);
         ImpulseGenerator ig3 = new ImpulseGenerator(200);
         ig3.toggleState();
         ig3.getOutPorts().get(0).setState(true, null);
         ig3.setSelected(true);
         ig3.setRectangle(new Rectangle(200, 320, 60, 40));
-        elements.add(ig3);
+        mainCircuit.addModule(ig3);
         FlipFlop ff1 = new FlipFlop();
         ff1.setRectangle(new Rectangle(200, 400, 60, 40));
-        elements.add(ff1);
+        mainCircuit.addModule(ff1);
+
+        Circuit circuit1 = new Circuit();
+        circuit1.addModule(new AndGate());
+        circuit1.addModule(new OrGate());
+        circuit1.setRectangle(new Rectangle(5, 400, 60, 40));
+        BufferedImage symbol;
+        try {
+            symbol = ImageIO.read(NandcatTest.class.getResourceAsStream("../images/cat.png"));
+            circuit1.setSymbol(symbol);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        mainCircuit.addModule(circuit1);
     }
 
     public void drawElements(Graphics g) {
         elementDrawer.setGraphics(g);
-        for (Element element : elements) {
+        LinkedList<Connection> cons = new LinkedList<Connection>();
+        for (Element element : mainCircuit.getElements()) {
             if (element instanceof AndGate)
                 elementDrawer.draw((AndGate) element);
             if (element instanceof OrGate)
@@ -176,7 +194,11 @@ public class ElementDrawerViewer extends JFrame {
             if (element instanceof ImpulseGenerator)
                 elementDrawer.draw((ImpulseGenerator) element);
             if (element instanceof Connection)
-                elementDrawer.draw((Connection) element);
+                cons.add((Connection) element);
+        }
+
+        for (Connection connection : cons) {
+            elementDrawer.draw(connection);
         }
     }
 

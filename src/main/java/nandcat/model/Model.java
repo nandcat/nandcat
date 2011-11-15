@@ -214,6 +214,7 @@ public class Model implements ClockListener {
     public void loadCustomList() {
         // search PATH for circuits, non-recursive.
         File dir = new File(".");
+        LOG.debug("Load custom circuits: " + dir.getAbsolutePath());
         Importer importer = new SEPAFImporter();
         Map<String, String> formats = importer.getFileFormats();
 
