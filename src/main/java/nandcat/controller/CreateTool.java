@@ -239,9 +239,9 @@ public class CreateTool implements Tool {
                 if (e.getActionCommand().equals("createButton") || e.getActionCommand().equals("selectModule")) {
                     if (!isYetActive) {
                         activateTool();
-                        if (e.getSource() instanceof JComboBox) {
-                            selectedModule = (ViewModule) ((JComboBox) e.getSource()).getSelectedItem();
-                        }
+                    }
+                    if (e.getSource() instanceof JComboBox) {
+                        selectedModule = (ViewModule) ((JComboBox) e.getSource()).getSelectedItem();
                     }
                 } else if (e.getActionCommand().equals("new")) {
                     model.clearCircuit();
