@@ -5,6 +5,15 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import nandcat.model.element.AndGate;
+import nandcat.model.element.Circuit;
+import nandcat.model.element.FlipFlop;
+import nandcat.model.element.IdentityGate;
+import nandcat.model.element.ImpulseGenerator;
+import nandcat.model.element.Lamp;
+import nandcat.model.element.Module;
+import nandcat.model.element.NotGate;
+import nandcat.model.element.OrGate;
 import org.apache.log4j.Logger;
 import org.apache.xerces.impl.dv.util.Base64;
 
@@ -55,6 +64,41 @@ public class SEPAFFormat {
                 + " " + "http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0.xsd" + " "
                 + "http://www.nandcat.de/xmlns/sepaf-extension" + " "
                 + "http://www.nandcat.de/xmlns/sepaf-extension.xsd";
+    }
+
+    public static class GATE_DEFS {
+
+        public static final int DEFAULT_INPORTS_AND = 2;
+
+        public static final int DEFAULT_OUTPORTS_AND = 1;
+
+        public static final int DEFAULT_INPORTS_OR = 2;
+
+        public static final int DEFAULT_OUTPORTS_OR = 1;
+
+        public static final int DEFAULT_INPORTS_NOT = 1;
+
+        public static final int DEFAULT_OUTPORTS_NOT = 1;
+
+        public static final int DEFAULT_INPORTS_LAMP = 1;
+
+        public static final int DEFAULT_OUTPORTS_LAMP = 0;
+
+        public static final int DEFAULT_INPORTS_IDENTITY = 1;
+
+        public static final int DEFAULT_OUTPORTS_IDENTITY = 2;
+
+        public static final int DEFAULT_INPORTS_CLOCK = 0;
+
+        public static final int DEFAULT_OUTPORTS_CLOCK = 1;
+
+        public static final int DEFAULT_INPORTS_SWITCH = 0;
+
+        public static final int DEFAULT_OUTPORTS_SWITCH = 1;
+
+        public static final int DEFAULT_INPORTS_FLIPFLOP = 2;
+
+        public static final int DEFAULT_OUTPORTS_FLOPFLOP = 2;
     }
 
     /**
@@ -146,5 +190,89 @@ public class SEPAFFormat {
             LOG.warn(e.getStackTrace());
             return null;
         }
+    }
+
+    /**
+     * Determines if the amount of in ports is the default and has not to be specified.
+     * 
+     * @param m
+     *            Module to check incoming ports of.
+     * @return True iff amount of incoming ports is a valid default value.
+     */
+    public static boolean hasDefaultAmountOfInPorts(Module m) {
+        int amountOfPorts = m.getInPorts().size();
+        Integer defaultAmountOfPorts = null;
+
+        if (m instanceof AndGate) {
+            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_AND;
+        } else if (m instanceof OrGate) {
+            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_OR;
+        } else if (m instanceof NotGate) {
+            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_NOT;
+        } else if (m instanceof IdentityGate) {
+            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_IDENTITY;
+        } else if (m instanceof ImpulseGenerator) {
+
+            // type in
+            if (((ImpulseGenerator) m).getFrequency() == 0) {
+                defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_SWITCH;
+            } else { // type clock
+                defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_CLOCK;
+            }
+        } else if (m instanceof Lamp) {
+            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_LAMP;
+        } else if (m instanceof FlipFlop) {
+            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_FLIPFLOP;
+        } else if (m instanceof Circuit) {
+            return true;
+        }
+        // No default values for type circuit
+
+        if (defaultAmountOfPorts != null && amountOfPorts == defaultAmountOfPorts) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Determines if the amount of out ports is the default and has not to be specified.
+     * 
+     * @param m
+     *            Module to check outgoing ports of.
+     * @return True iff amount of outgoing ports is a valid default value.
+     */
+    public static boolean hasDefaultAmountOfOutPorts(Module m) {
+        int amountOfPorts = m.getOutPorts().size();
+        Integer defaultAmountOfPorts = null;
+
+        if (m instanceof AndGate) {
+            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_AND;
+        } else if (m instanceof OrGate) {
+            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_OR;
+        } else if (m instanceof NotGate) {
+            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_NOT;
+        } else if (m instanceof IdentityGate) {
+            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_IDENTITY;
+        } else if (m instanceof ImpulseGenerator) {
+
+            // type in
+            if (((ImpulseGenerator) m).getFrequency() == 0) {
+                defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_SWITCH;
+            } else { // type clock
+                defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_CLOCK;
+            }
+        } else if (m instanceof Lamp) {
+            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_LAMP;
+        } else if (m instanceof FlipFlop) {
+            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_FLOPFLOP;
+        } else if (m instanceof Circuit) {
+            return true;
+        }
+        // No default values for type circuit
+
+        if (defaultAmountOfPorts != null && amountOfPorts == defaultAmountOfPorts) {
+            return true;
+        }
+        return false;
     }
 }
