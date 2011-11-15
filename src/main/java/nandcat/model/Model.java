@@ -753,15 +753,23 @@ public class Model implements ClockListener {
      *            File to import top-level Circuit from
      */
     public void importRootFromFile(File file) {
+        ModelEvent e = new ModelEvent();
+
+        // Let listeners interrupt. If interrupted don't create a new circuit.
+        for (ModelListener l : listeners) {
+            if (l.changeCircuitRequested(e)) {
+                return;
+            }
+        }
         this.circuit = importFromFile(file);
 
         // import failed
         if (circuit == null) {
             newCircuit();
         }
-        ModelEvent e = new ModelEvent();
+        ModelEvent e2 = new ModelEvent();
         for (ModelListener l : listeners) {
-            l.elementsChanged(e);
+            l.elementsChanged(e2);
         }
     }
 
