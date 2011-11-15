@@ -193,7 +193,7 @@ public class Model implements ClockListener {
         }
         e.setChecksPassed(allChecksPassed);
         for (ModelListener l : listeners) {
-            l.checksStarted(e);
+            l.checksStopped(e);
         }
     }
 
