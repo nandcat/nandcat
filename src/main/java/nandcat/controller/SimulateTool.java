@@ -103,23 +103,30 @@ public class SimulateTool implements Tool {
             if (modelListener == null) {
                 modelListener = new ModelListenerAdapter() {
 
-                    public void checksStarted(ModelEvent e) {
-                        if (checkManager == null) {
-                            checkManager = new CheckManager(e.getChecks(), comboboxListener);
+                    boolean simulating= false;
+                    
+                    public void elementsChanged(ModelEvent e) {
+                        if (simulating) {
+                            view.setCycleCount("Simulationsdurchlauf: " + model.getCycle());
                         }
-                        checkManager.setVisible(true);
+                    }
+
+                    public void simulationStarted(ModelEvent e) {
+                        simulating = true;
+                        view.disableButtons();
+                    }
+
+                    public void simulationStopped(ModelEvent e) {
+                        simulating = false;
+                        view.enableButtons();
+                        view.setCycleCount("Simulation gestoppt");
                     }
                     
                     public void checksStopped(ModelEvent e) {
-                        model.startSimulation();
-                    }
-
-                    public void simulationStarted(ModelEvent e){
-                        view.disableButtons();
-                    }
-                    
-                    public void simulationStopped(ModelEvent e) {
-                        view.enableButtons();
+                        if(e.allChecksPassed()) {
+                            model.startSimulation();
+                            checkManager.setVisible(false);
+                        }
                     }
                 };
             }
@@ -138,16 +145,19 @@ public class SimulateTool implements Tool {
             public void actionPerformed(ActionEvent e) {
                 if (e.getActionCommand() == "start") {
                     controller.requestActivation(simulateTool);
-                    model.startSimulation();
-                    view.disableButtons();
+                    if (checkManager == null) {
+                        checkManager = new CheckManager(model.getChecks(), comboboxListener);
+                    }
+                    checkManager.setVisible(true);
+                    model.startChecks();
                 } else if (e.getActionCommand() == "stop") {
                     model.stopSimulation();
                 } else if (e.getActionCommand() == "faster") {
                     Clock clock = model.getClock();
-                    clock.setSleepTime(clock.getSleepTime() - 30); // TODO richtige Schritte ausprobieren.
+                    clock.setSleepTime(clock.getSleepTime() - 100);
                 } else if (e.getActionCommand() == "slower") {
                     Clock clock = model.getClock();
-                    clock.setSleepTime(clock.getSleepTime() + 30);
+                    clock.setSleepTime(clock.getSleepTime() + 100);
                 } else if (e.getActionCommand() == "startcheck") {
                     if (checkManager == null) {
                         checkManager = new CheckManager(model.getChecks(), comboboxListener);
