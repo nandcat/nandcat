@@ -141,7 +141,7 @@ public class ExportTool implements Tool {
      * @return True to interrupt the process if possible.
      */
     private boolean actionSaveBeforeLost() {
-        if (model.getCircuit().isDirty()) {
+        if (model.getCircuit() != null && model.getCircuit().isDirty()) {
             int n = showCircuitChangeConfirmDialog();
             switch (n) {
                 case CIRCUIT_CHANGE_CONFIRM_OPTION_YES:

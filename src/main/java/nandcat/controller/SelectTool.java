@@ -13,7 +13,6 @@ import java.util.Set;
 import javax.swing.ImageIcon;
 import nandcat.model.Model;
 import nandcat.model.element.DrawElement;
-import nandcat.view.ElementDrawer;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
@@ -161,7 +160,6 @@ public class SelectTool implements Tool {
         int yCoord = Math.min(rect.y, point.y);
         int width = Math.abs(rect.x - point.x);
         int height = Math.abs(rect.y - point.y);
-        
 
         rect.setBounds(xCoord, yCoord, width, height);
         view.getWorkspace().redraw(rect);
