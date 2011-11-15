@@ -163,13 +163,25 @@ public class Clock {
                         e.printStackTrace();
                     }
                 }
-                // reset States of alle modules to avoid inconsitencies
+                // reset States of EVERYTHING to avoid inconsitencies
                 for (Element e : model.getElements()) {
                     if (e instanceof Module) {
                         Module m = (Module) e;
                         for (Port p : m.getOutPorts()) {
                             p.setState(false, null);
                         }
+                        for (Port p : m.getInPorts()) {
+                            p.setState(false, null);
+                        }
+                    }
+                    if (e instanceof ImpulseGenerator) {
+                        ImpulseGenerator i = (ImpulseGenerator) e;
+                        if (i.getState()) {
+                            i.toggleState();
+                        }
+                    }
+                    if (e instanceof Connection) {
+                        ((Connection) e).setSelected(false);
                     }
                 }
                 cycle = 0;
