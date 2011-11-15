@@ -205,12 +205,15 @@ public class Clock {
     }
 
     /**
-     * Set sleepTime for the simulation thread.
+     * Set sleepTime for the simulation thread. Only positve values accepted !
      * 
      * @param sleepTime
      *            int to set thread's sleepTime to
      */
     public synchronized void setSleepTime(int sleepTime) {
+        if (sleepTime <= 0) {
+            return;
+        }
         this.sleepTime = sleepTime;
     }
 }
