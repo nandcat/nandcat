@@ -273,7 +273,6 @@ public class SEPAFExporterSingleTest {
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
-        System.out.println(content.replace(">", ">\n"));
         assertTrue(content.contains("nandcat:annotation=\"Annotation\""));
         assertTrue(content.contains("posx=\"5\""));
         assertTrue(content.contains("posy=\"10\""));
@@ -306,7 +305,6 @@ public class SEPAFExporterSingleTest {
         exporter.setExternalCircuits(externalCircuits);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
-        System.out.println(content.replace(">", ">\n"));
         assertTrue(content.contains("nandcat:annotation=\"Annotation\""));
         assertTrue(content.contains("posx=\"5\""));
         assertTrue(content.contains("posy=\"10\""));
