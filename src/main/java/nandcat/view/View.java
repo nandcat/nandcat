@@ -130,7 +130,15 @@ public class View extends JFrame {
      */
     private I18NBundle i18n = I18N.getBundle("view");
 
+    /**
+     * JLabel representing the Cycle Counter placed in the MenuBar.
+     */
     private JLabel cycle = new JLabel();
+
+    /**
+     * JComboBox with the Available Modules.
+     */
+    private JComboBox modules;
 
     /**
      * Constructs the view.
@@ -360,6 +368,7 @@ public class View extends JFrame {
      *            ToolBar to be build.
      */
     private void buildToolbar(JToolBar toolBar) {
+        toolBar.removeAll();
         // Create Buttons of the Application. Setting Icons and Descriptions and Size.
         ImageIcon startButtonIcon = new ImageIcon("src/resources/startmiddle.png");
         JButton start = new JButton("", startButtonIcon);
@@ -401,7 +410,6 @@ public class View extends JFrame {
         toggle.setPreferredSize(buttonDim);
         toggle.setToolTipText(i18n.getString("tooltip.state.toggle"));
         disableElements.add(toggle);
-        JComboBox modules = null;
         // Check if there are Functionalities for the Buttons and if yes calling the setup.
         if (toolFunctionalities.containsKey("start")) {
             setupButton(start, "start");
@@ -491,11 +499,13 @@ public class View extends JFrame {
                 // If elem is a Module we must check if it is out of the workspace and if yes extend the workspace.
                 if (((Module) elem).getRectangle().x >= workspace.getWidth()) {
                     workspace.setSize(((Module) elem).getRectangle().x, workspace.getHeight());
-                    workspace.setPreferredSize(new Dimension(((Module) elem).getRectangle().x + 100, workspace.getHeight()));
+                    workspace.setPreferredSize(new Dimension(((Module) elem).getRectangle().x + 100, workspace
+                            .getHeight()));
                 }
                 if (((Module) elem).getRectangle().y >= workspace.getHeight()) {
                     workspace.setSize(workspace.getWidth(), ((Module) elem).getRectangle().y);
-                    workspace.setPreferredSize(new Dimension(workspace.getWidth(), ((Module) elem).getRectangle().y + 100));
+                    workspace.setPreferredSize(new Dimension(workspace.getWidth(),
+                            ((Module) elem).getRectangle().y + 100));
                 }
             }
         }
@@ -637,7 +647,31 @@ public class View extends JFrame {
         return viewport.getViewRect();
     }
 
+    /**
+     * Sets the Text of the JLable cycle, the counter of the Program.
+     * 
+     * @param text
+     *            String new text of the cycle.s
+     */
     public void setCycleCount(String text) {
         cycle.setText(text);
+    }
+
+    /**
+     * If new Modules have been loaded the list of Modules has to be refreshed.
+     */
+    public void refreshBox() {
+        // remove ComboBox from ToolBar
+        toolBar.remove(modules);
+        // Build it new and adds it again at pos 0
+        modules = new JComboBox(viewModules.toArray());
+        modules.setMaximumSize(new Dimension(80, 40));
+        modules.setToolTipText(i18n.getString("tooltip.modules"));
+        if (toolFunctionalities.containsKey("selectModule")) {
+            modules.addActionListener(toolFunctionalities.get("selectModule"));
+            modules.setActionCommand("selectModule");
+            modules.setName("selectModule");
+        }
+        toolBar.add(modules, 0);
     }
 }
