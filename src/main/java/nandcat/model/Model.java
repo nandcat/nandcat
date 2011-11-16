@@ -945,7 +945,7 @@ public class Model implements ClockListener {
      * 
      * @return the Circuit containing the selected Elements
      */
-    Circuit getCircuitFromSelected() {
+    private Circuit getCircuitFromSelected() {
         Circuit result = new Circuit();
 
         for (Module m : circuit.getModules()) {
