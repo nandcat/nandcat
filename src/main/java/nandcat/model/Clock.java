@@ -7,13 +7,19 @@ import nandcat.model.element.Element;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
+import org.apache.log4j.Logger;
 
 /**
  * The Clock class represents a global clock. The Clock's tact is simulated in a separate thread.
  * 
  * @version 2
  */
-public class Clock {
+public class Clock implements Runnable {
+
+    /**
+     * Class logger instance.
+     */
+    private static final Logger LOG = Logger.getLogger(Clock.class);
 
     /**
      * Representing a clock cycle. A new cycle is reached when the sleep time is a multiple of the cycle.
@@ -72,6 +78,11 @@ public class Clock {
         this.model = model;
     }
 
+    /**
+     * Get the _current_ cycle-number.
+     * 
+     * @return the current cycle-number
+     */
     protected int getCycle() {
         return cycle;
     }
@@ -134,48 +145,7 @@ public class Clock {
      * Start the simulation for this clock.
      */
     public void startSimulation() {
-        // starting elements already added.
-        // spawn new thread
         running = true;
-        new Thread() {
-
-            public void run() {
-                while (isRunning()) {
-                    try {
-                        sleep(sleepTime);
-                        synchronized (model) {
-                            cycle();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                // reset States of EVERYTHING to avoid inconsitencies
-                for (Element e : model.getElements()) {
-                    if (e instanceof Module) {
-                        Module m = (Module) e;
-                        for (Port p : m.getOutPorts()) {
-                            p.setState(false, null);
-                        }
-                        for (Port p : m.getInPorts()) {
-                            p.setState(false, null);
-                        }
-                    }
-                    if (e instanceof ImpulseGenerator) {
-                        ImpulseGenerator i = (ImpulseGenerator) e;
-                        if (i.getState()) {
-                            i.toggleState();
-                        }
-                    }
-                    if (e instanceof Connection) {
-                        ((Connection) e).setSelected(false);
-                    }
-                }
-                cycle = 0;
-                listeners.clear();
-                generators.clear();
-            }
-        }.start();
     }
 
     /**
@@ -214,5 +184,61 @@ public class Clock {
             return;
         }
         this.sleepTime = sleepTime;
+    }
+
+    public void run() {
+        // Added debug code !
+        LOG.debug("new Thread started, Cycle = " + cycle);
+        while (isRunning()) {
+            try {
+                Thread.sleep(sleepTime);
+                synchronized (model) {
+                    // Added debug code !
+                    long before = System.nanoTime();
+                    cycle();
+                    // Added debug code !
+                    long after = System.nanoTime();
+                    LOG.debug("Cycle " + cycle + " took " + (after - before) + " ns");
+                    String imps = "";
+                    for (ImpulseGenerator listener : generators) {
+                        if ((cycle == 0) || (listener.getFrequency() == 1)
+                                || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
+                            imps += (listener.toString() + "\n");
+                        }
+                    }
+                    LOG.debug("\nImpulseGenerators:\n" + imps);
+                    // End of debug code !
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        // reset States of EVERYTHING to avoid inconsitencies
+        for (Element e : model.getElements()) {
+            if (e instanceof Module) {
+                Module m = (Module) e;
+                for (Port p : m.getOutPorts()) {
+                    p.setState(false, null);
+                }
+                for (Port p : m.getInPorts()) {
+                    p.setState(false, null);
+                }
+            }
+            if (e instanceof ImpulseGenerator) {
+                ImpulseGenerator i = (ImpulseGenerator) e;
+                if (i.getState()) {
+                    i.toggleState();
+                }
+            }
+            if (e instanceof Connection) {
+                ((Connection) e).setSelected(false);
+            }
+        }
+        cycle = 0;
+        listeners.clear();
+        generators.clear();
+        model.notifyForStoppedSim();
+        // Added debug code !
+        LOG.debug("Thread died, listeners notified!");
     }
 }
