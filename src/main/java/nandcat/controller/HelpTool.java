@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
+import nandcat.view.WorkspaceListenerAdapter;
 
 /**
  * The Help Tool is responsible for the Help Dialogs given to the User while using the Program.
@@ -68,7 +69,7 @@ public class HelpTool implements Tool {
     public void setActive(boolean active) {
         if (active) {
             if (workspaceListener == null) {
-                workspaceListener = new WorkspaceListener() {
+                workspaceListener = new WorkspaceListenerAdapter() {
 
                     public void mouseReleased(WorkspaceEvent e) {
                         // TODO Auto-generated method stub
