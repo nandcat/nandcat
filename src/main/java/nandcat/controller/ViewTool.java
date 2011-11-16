@@ -78,7 +78,7 @@ public class ViewTool implements Tool {
 
             // if size is changed it my happen that former invisible elements come in sight.
             public void stateChanged(ChangeEvent e) {
-//                view.giveViewPortRect();
+                view.giveViewPortRect();
 //                view.getWorkspace().redraw();
             }
         });
