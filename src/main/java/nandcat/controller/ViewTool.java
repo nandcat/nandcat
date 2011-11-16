@@ -65,6 +65,11 @@ public class ViewTool implements Tool {
     private WorkspaceListener workspaceListener;
 
     /**
+     * Number of Pixels scrolled by MouseWheel.
+     */
+    private final static int SCROLL_SPEED = 20;
+
+    /**
      * Constructs the ViewTool.
      * 
      * @param controller
@@ -79,7 +84,17 @@ public class ViewTool implements Tool {
             // if size is changed it my happen that former invisible elements come in sight.
             public void stateChanged(ChangeEvent e) {
                 view.giveViewPortRect();
-//                view.getWorkspace().redraw();
+                // view.getWorkspace().redraw();
+            }
+        });
+        view.getWorkspace().addListener(new WorkspaceListenerAdapter() {
+
+            public void mouseWheelMoved(WorkspaceEvent e) {
+                if (e.isShiftDown()) {
+                    view.setViewportPosition(e.getWheelRotation() * SCROLL_SPEED, 0);
+                } else {
+                    view.setViewportPosition(0, e.getWheelRotation() * SCROLL_SPEED);
+                }
             }
         });
     }
@@ -93,7 +108,9 @@ public class ViewTool implements Tool {
                 workspaceListener = new WorkspaceListenerAdapter() {
 
                     private Point offset;
+
                     private int dx;
+
                     private int dy;
 
                     public void mousePressed(WorkspaceEvent e) {
@@ -102,13 +119,13 @@ public class ViewTool implements Tool {
 
                     public void mouseDragged(WorkspaceEvent e) {
                         // divide by 1.5 so it isn't soo fast
-                        dx = (int) ((e.getLocation().x - offset.x)/1.5);
-                        dy = (int) ((e.getLocation().y - offset.y)/1.5);
-                        view.setViewportPosition(dx,dy);
+                        dx = (int) ((e.getLocation().x - offset.x) / 1.5);
+                        dy = (int) ((e.getLocation().y - offset.y) / 1.5);
+                        view.setViewportPosition(dx, dy);
                         offset = e.getLocation();
                         // redraw new elements in sight
-//                        view.giveViewPortRect();
-//                        view.getWorkspace().redraw();
+                        // view.giveViewPortRect();
+                        // view.getWorkspace().redraw();
                     }
                 };
             }

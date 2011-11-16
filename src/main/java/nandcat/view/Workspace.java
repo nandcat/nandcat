@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Line2D;
@@ -54,6 +56,11 @@ public class Workspace extends JPanel {
      * MouseListener of the Workspace on itself.
      */
     private MouseAdapter mouseListener;
+
+    /**
+     * Listener of the Workspace on itself on Mouse
+     */
+    private MouseWheelListener mouseWheelListener;
 
     /**
      * Rectangle representing the Position and Boundaries of the ViewPort.
@@ -119,8 +126,15 @@ public class Workspace extends JPanel {
                 notifyMouseClicked(e);
             }
         };
+        mouseWheelListener = new MouseWheelListener() {
+
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                notifyMouseWheelMoved(e);
+            }
+        };
         this.addMouseListener(mouseListener);
         this.addMouseMotionListener(mouseListener);
+        this.addMouseWheelListener(mouseWheelListener);
         windowListener = new WindowAdapter() {
 
             public void windowClosing(WindowEvent e) {
@@ -277,6 +291,7 @@ public class Workspace extends JPanel {
         WorkspaceEvent e = new WorkspaceEvent();
         e.setLocation(altE.getPoint());
         e.setButton(altE.getButton());
+        e.setShiftDown(altE.isShiftDown());
         for (WorkspaceListener l : listeners) {
             l.mouseClicked(e);
         }
@@ -291,6 +306,8 @@ public class Workspace extends JPanel {
     private void notifyMousePressed(MouseEvent altE) {
         WorkspaceEvent e = new WorkspaceEvent();
         e.setLocation(altE.getPoint());
+        e.setButton(altE.getButton());
+        e.setShiftDown(altE.isShiftDown());
         for (WorkspaceListener l : listeners) {
             l.mousePressed(e);
         }
@@ -305,6 +322,7 @@ public class Workspace extends JPanel {
     private void notifyMouseReleased(MouseEvent altE) {
         WorkspaceEvent e = new WorkspaceEvent();
         e.setLocation(altE.getPoint());
+        e.setShiftDown(altE.isShiftDown());
         selectRect = null;
         connectLine = null;
         for (WorkspaceListener l : listeners) {
@@ -335,6 +353,8 @@ public class Workspace extends JPanel {
     private void notifyMouseDragged(MouseEvent altE) {
         WorkspaceEvent e = new WorkspaceEvent();
         e.setLocation(altE.getPoint());
+        e.setButton(altE.getButton());
+        e.setShiftDown(altE.isShiftDown());
         for (WorkspaceListener l : listeners) {
             l.mouseDragged(e);
         }
@@ -347,9 +367,17 @@ public class Workspace extends JPanel {
      *            the WindowEvent received from WindowAdapter.
      */
     private void notifyWindowClosing(WindowEvent altE) {
-        WorkspaceEvent e = new WorkspaceEvent();
         for (WorkspaceListener l : listeners) {
             l.windowClosing();
+        }
+    }
+
+    private void notifyMouseWheelMoved(MouseWheelEvent altE) {
+        WorkspaceEvent e = new WorkspaceEvent();
+        e.setWheelRotation(altE.getWheelRotation());
+        e.setShiftDown(altE.isShiftDown());
+        for (WorkspaceListener l : listeners) {
+            l.mouseWheelMoved(e);
         }
     }
 

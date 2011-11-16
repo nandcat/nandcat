@@ -193,6 +193,7 @@ public class View extends JFrame {
         workspace.setBackground(Color.white);
         workspace.setLayout(null); // no layout is required for free move of the components
         scroller = new JScrollPane(workspace);
+        scroller.setWheelScrollingEnabled(false);
         horizontal = scroller.getHorizontalScrollBar();
         vertical = scroller.getVerticalScrollBar();
         viewport = scroller.getViewport();
