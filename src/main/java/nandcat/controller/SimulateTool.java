@@ -131,6 +131,7 @@ public class SimulateTool implements Tool {
                     public void simulationStarted(ModelEvent e) {
                         simulating = true;
                         view.disableButtons();
+                        checkManager.setButton(false);
                     }
 
                     public void simulationStopped(ModelEvent e) {
@@ -138,6 +139,7 @@ public class SimulateTool implements Tool {
                         simulating = false;
                         view.enableButtons();
                         view.setCycleCount(i18n.getString("cycle.stand"));
+                        checkManager.setButton(true);
                     }
 
                     public void checksStopped(ModelEvent e) {
