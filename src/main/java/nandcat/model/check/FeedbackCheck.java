@@ -59,30 +59,32 @@ public class FeedbackCheck implements CircuitCheck {
     public boolean test(Circuit circuit) {
         Set<Element> elements = new LinkedHashSet<Element>();
         informListeners(State.RUNNING, elements);
-        HashSet<Module> hasNeighbour = new HashSet<Module>();
-        Queue<Module> q = new LinkedList<Module>();
-        if (getStartModules(circuit).isEmpty() && !circuit.getModules().isEmpty()) {
-            elements.addAll(circuit.getModules());
-            informListeners(State.FAILED, elements);
-            return false;
-        } else {
-            q.addAll(getStartModules(circuit));
-        }
+        HashSet<Port> visited = new HashSet<Port>();
+        Queue<Port> q = new LinkedList<Port>();
 
-        while (!q.isEmpty()) {
-            Module current = q.poll();
-            if (hasNeighbour.contains(current)) {
+        for (Port port : getStartingPorts(circuit)) {
+            q.add(port);
+            visited.clear();
+            while (!q.isEmpty()) {
+                Port current = q.poll();
+                if (visited.contains(current)) {
 
-                // If the test fails add the Module which caused the fail to the CheckEvent.
-                elements.add(current);
-                informListeners(State.FAILED, elements);
-                return false;
-            }
+                    // If the test fails add the Module which caused the fail to the CheckEvent.
+                    elements.add(current.getModule());
+                    informListeners(State.FAILED, elements);
+                    return false;
+                }
+                visited.add(current);
 
-            for (Port p : current.getOutPorts()) {
-                if (p.getConnection() != null) {
-                    q.add(p.getConnection().getNextModule());
-                    hasNeighbour.add(current);
+                /*
+                 * When the port has a connection the outgoing ports of the following module are added to the queue. If
+                 * there is no further connection an ending module of the circuit is reached. If there are still
+                 * elements in the queue the algorithm starts from the beginning and the visited set has to be reset.
+                 */
+                if (current.getConnection() != null) {
+                    q.addAll(current.getConnection().getOutPort().getModule().getOutPorts());
+                } else {
+                    // visited.clear();
                 }
             }
         }
@@ -106,30 +108,14 @@ public class FeedbackCheck implements CircuitCheck {
     }
 
     /**
-     * Returns the "first" Modules in this Circuit. "First" modules are those which do not have any ingoing connection.
+     * Returns the "first" Ports in this Circuit, meaning the ports from the "first" modules in the circuit.
      * 
      * @return List<Module> containing the starting Modules of this Circuit.
      */
-    private List<Module> getStartModules(Circuit circuit) {
-        List<Module> result = new LinkedList<Module>();
-        for (Element e : circuit.getElements()) {
-            if (e instanceof Module) {
-                boolean isStartModule = false;
-                Module m = (Module) e;
-                if (m instanceof ImpulseGenerator) {
-                    isStartModule = true;
-                } else {
-                    isStartModule = true;
-                    for (Port p : m.getInPorts()) {
-                        if (p.getConnection() != null) {
-                            isStartModule = false;
-                        }
-                    }
-                }
-                if (isStartModule) {
-                    result.add(m);
-                }
-            }
+    private List<Port> getStartingPorts(Circuit circuit) {
+        List<Port> result = new LinkedList<Port>();
+        for (Module m : circuit.getStartingModules()) {
+            result.addAll(m.getOutPorts());
         }
         return result;
     }
