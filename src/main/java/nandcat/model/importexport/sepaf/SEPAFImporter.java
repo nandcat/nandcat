@@ -345,7 +345,9 @@ public class SEPAFImporter implements Importer {
         Module module = null;
         if (aType.getValue().equals("and")) {
             AndGate andGate = null;
-            if (portsIn != null && portsOut != null) {
+            if (portsIn != null || portsOut != null) {
+                portsIn = (portsIn == null) ? SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_AND : portsIn;
+                portsOut = (portsOut == null) ? SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_AND : portsOut;
                 andGate = new AndGate(portsIn, portsOut);
             } else {
                 andGate = new AndGate();
@@ -353,7 +355,9 @@ public class SEPAFImporter implements Importer {
             module = andGate;
         } else if (aType.getValue().equals("or")) {
             OrGate orGate = null;
-            if (portsIn != null && portsOut != null) {
+            if (portsIn != null || portsOut != null) {
+                portsIn = (portsIn == null) ? SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_OR : portsIn;
+                portsOut = (portsOut == null) ? SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_OR : portsOut;
                 orGate = new OrGate(portsIn, portsOut);
             } else {
                 orGate = new OrGate();
@@ -361,15 +365,17 @@ public class SEPAFImporter implements Importer {
             module = orGate;
         } else if (aType.getValue().equals("id")) {
             IdentityGate idGate = null;
-            if (portsIn != null && portsOut != null) {
-                idGate = new IdentityGate(portsIn, portsOut);
+            if (portsIn != null || portsOut != null) {
+                portsOut = (portsOut == null) ? SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_IDENTITY : portsOut;
+                idGate = new IdentityGate(1, portsOut);
             } else {
                 idGate = new IdentityGate();
             }
             module = idGate;
         } else if (aType.getValue().equals("not")) {
             NotGate notGate = null;
-            if (portsIn != null && portsOut != null) {
+            if (portsOut != null) {
+                portsOut = (portsOut == null) ? SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_NOT : portsOut;
                 notGate = new NotGate(portsOut);
             } else {
                 notGate = new NotGate();

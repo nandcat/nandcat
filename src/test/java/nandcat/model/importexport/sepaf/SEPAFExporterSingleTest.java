@@ -75,6 +75,44 @@ public class SEPAFExporterSingleTest {
     }
 
     @Test
+    public void testMultiAndGateDefaultInPorts() throws Exception {
+        AndGate gate = new AndGate(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_AND,
+                SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_AND + 2);
+        gate.setName("Annotation");
+        gate.setRectangle(new Rectangle(5, 10, 80, 90));
+        c.addModule(gate);
+        exporter.setCircuit(c);
+        assertTrue(exporter.exportCircuit());
+        String content = ImportExportUtil.getFileContent(file);
+        assertTrue(content.contains("nandcat:annotation=\"Annotation\""));
+        assertTrue(content.contains("posx=\"5\""));
+        assertTrue(content.contains("posy=\"10\""));
+        assertTrue(content.contains("name=\""));
+        assertTrue(content.contains("type=\"and\""));
+        assertFalse(content.contains("nandcat:ports_in"));
+        assertTrue(content.contains("nandcat:ports_out=\"" + (SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_AND + 2) + "\""));
+    }
+
+    @Test
+    public void testMultiAndGateDefaultOutPorts() throws Exception {
+        AndGate gate = new AndGate(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_AND + 2,
+                SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_AND);
+        gate.setName("Annotation");
+        gate.setRectangle(new Rectangle(5, 10, 80, 90));
+        c.addModule(gate);
+        exporter.setCircuit(c);
+        assertTrue(exporter.exportCircuit());
+        String content = ImportExportUtil.getFileContent(file);
+        assertTrue(content.contains("nandcat:annotation=\"Annotation\""));
+        assertTrue(content.contains("posx=\"5\""));
+        assertTrue(content.contains("posy=\"10\""));
+        assertTrue(content.contains("name=\""));
+        assertTrue(content.contains("type=\"and\""));
+        assertTrue(content.contains("nandcat:ports_in=\"" + (SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_AND + 2) + "\""));
+        assertFalse(content.contains("nandcat:ports_out"));
+    }
+
+    @Test
     public void testDefaultOrGate() throws Exception {
         OrGate gate = new OrGate();
         gate.setName("Annotation");
@@ -108,6 +146,44 @@ public class SEPAFExporterSingleTest {
         assertTrue(content.contains("type=\"or\""));
         assertTrue(content.contains("nandcat:ports_in=\"3\""));
         assertTrue(content.contains("nandcat:ports_out=\"5\""));
+    }
+
+    @Test
+    public void testMultiOrGateDefaultOutPorts() throws Exception {
+        OrGate gate = new OrGate(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_OR + 2,
+                SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_OR);
+        gate.setName("Annotation");
+        gate.setRectangle(new Rectangle(5, 10, 80, 90));
+        c.addModule(gate);
+        exporter.setCircuit(c);
+        assertTrue(exporter.exportCircuit());
+        String content = ImportExportUtil.getFileContent(file);
+        assertTrue(content.contains("nandcat:annotation=\"Annotation\""));
+        assertTrue(content.contains("posx=\"5\""));
+        assertTrue(content.contains("posy=\"10\""));
+        assertTrue(content.contains("name=\""));
+        assertTrue(content.contains("type=\"or\""));
+        assertTrue(content.contains("nandcat:ports_in=\"" + (SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_OR + 2) + "\""));
+        assertFalse(content.contains("nandcat:ports_out"));
+    }
+
+    @Test
+    public void testMultiOrGateDefaultInPorts() throws Exception {
+        OrGate gate = new OrGate(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_OR,
+                SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_OR + 2);
+        gate.setName("Annotation");
+        gate.setRectangle(new Rectangle(5, 10, 80, 90));
+        c.addModule(gate);
+        exporter.setCircuit(c);
+        assertTrue(exporter.exportCircuit());
+        String content = ImportExportUtil.getFileContent(file);
+        assertTrue(content.contains("nandcat:annotation=\"Annotation\""));
+        assertTrue(content.contains("posx=\"5\""));
+        assertTrue(content.contains("posy=\"10\""));
+        assertTrue(content.contains("name=\""));
+        assertTrue(content.contains("type=\"or\""));
+        assertFalse(content.contains("nandcat:ports_in"));
+        assertTrue(content.contains("nandcat:ports_out=\"" + (SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_OR + 2) + "\""));
     }
 
     @Test
@@ -147,6 +223,24 @@ public class SEPAFExporterSingleTest {
     }
 
     @Test
+    public void testMultiNotGateDefaultOutPorts() throws Exception {
+        NotGate gate = new NotGate(SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_NOT);
+        gate.setName("Annotation");
+        gate.setRectangle(new Rectangle(5, 10, 80, 90));
+        c.addModule(gate);
+        exporter.setCircuit(c);
+        assertTrue(exporter.exportCircuit());
+        String content = ImportExportUtil.getFileContent(file);
+        assertTrue(content.contains("nandcat:annotation=\"Annotation\""));
+        assertTrue(content.contains("posx=\"5\""));
+        assertTrue(content.contains("posy=\"10\""));
+        assertTrue(content.contains("name=\""));
+        assertTrue(content.contains("type=\"not\""));
+        assertFalse(content.contains("nandcat:ports_in"));
+        assertFalse(content.contains("nandcat:ports_out"));
+    }
+
+    @Test
     public void testDefaultIdentityGate() throws Exception {
         IdentityGate gate = new IdentityGate();
         gate.setName("Annotation");
@@ -180,6 +274,24 @@ public class SEPAFExporterSingleTest {
         assertTrue(content.contains("type=\"id\""));
         assertFalse(content.contains("nandcat:ports_in"));
         assertTrue(content.contains("nandcat:ports_out=\"5\""));
+    }
+
+    @Test
+    public void testMultiIdentityGateDefaultOutPorts() throws Exception {
+        IdentityGate gate = new IdentityGate(1, SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_IDENTITY);
+        gate.setName("Annotation");
+        gate.setRectangle(new Rectangle(5, 10, 80, 90));
+        c.addModule(gate);
+        exporter.setCircuit(c);
+        assertTrue(exporter.exportCircuit());
+        String content = ImportExportUtil.getFileContent(file);
+        assertTrue(content.contains("nandcat:annotation=\"Annotation\""));
+        assertTrue(content.contains("posx=\"5\""));
+        assertTrue(content.contains("posy=\"10\""));
+        assertTrue(content.contains("name=\""));
+        assertTrue(content.contains("type=\"id\""));
+        assertFalse(content.contains("nandcat:ports_in"));
+        assertFalse(content.contains("nandcat:ports_out"));
     }
 
     @Test
@@ -229,7 +341,6 @@ public class SEPAFExporterSingleTest {
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
-        System.out.println(content.replace(">", ">\n"));
         assertTrue(content.contains("nandcat:annotation=\"Annotation\""));
         assertTrue(content.contains("posx=\"5\""));
         assertTrue(content.contains("posy=\"10\""));

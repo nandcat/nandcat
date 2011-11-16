@@ -62,8 +62,34 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
+    public void testMultiAndGate() {
+        AndGate gate = new AndGate(3, 4);
+        gate.setRectangle(new Rectangle(10, 20, 30, 40));
+        exportC.addModule(gate);
+        exporter.setCircuit(exportC);
+        exporter.exportCircuit();
+        assertTrue(importer.importCircuit());
+        assertTrue(importer.getCircuit() != null);
+        c = importer.getCircuit();
+        deepCompareCircuits(exportC, c);
+    }
+
+    @Test
     public void testDefaultOrGate() {
         OrGate gate = new OrGate();
+        gate.setRectangle(new Rectangle(10, 20, 30, 40));
+        exportC.addModule(gate);
+        exporter.setCircuit(exportC);
+        exporter.exportCircuit();
+        assertTrue(importer.importCircuit());
+        assertTrue(importer.getCircuit() != null);
+        c = importer.getCircuit();
+        deepCompareCircuits(exportC, c);
+    }
+
+    @Test
+    public void testMultiOrGate() {
+        OrGate gate = new OrGate(4, 3);
         gate.setRectangle(new Rectangle(10, 20, 30, 40));
         exportC.addModule(gate);
         exporter.setCircuit(exportC);
@@ -88,8 +114,34 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
+    public void testMultiNotGate() {
+        NotGate gate = new NotGate(10);
+        gate.setRectangle(new Rectangle(10, 20, 30, 40));
+        exportC.addModule(gate);
+        exporter.setCircuit(exportC);
+        exporter.exportCircuit();
+        assertTrue(importer.importCircuit());
+        assertTrue(importer.getCircuit() != null);
+        c = importer.getCircuit();
+        deepCompareCircuits(exportC, c);
+    }
+
+    @Test
     public void testDefaultIdentityGate() {
         IdentityGate gate = new IdentityGate();
+        gate.setRectangle(new Rectangle(10, 20, 30, 40));
+        exportC.addModule(gate);
+        exporter.setCircuit(exportC);
+        exporter.exportCircuit();
+        assertTrue(importer.importCircuit());
+        assertTrue(importer.getCircuit() != null);
+        c = importer.getCircuit();
+        deepCompareCircuits(exportC, c);
+    }
+
+    @Test
+    public void testMultiIdentityGate() {
+        IdentityGate gate = new IdentityGate(1, 10);
         gate.setRectangle(new Rectangle(10, 20, 30, 40));
         exportC.addModule(gate);
         exporter.setCircuit(exportC);
@@ -185,7 +237,9 @@ public class SEPAFImporterSingleTest {
                                 System.out.println("coords not right");
                             }
                         } else if (actualElement instanceof Connection) {
-                            // Test connection
+                            if (deepCompareConnections((Connection) expectedElement, (Connection) actualElement)) {
+                                found = true;
+                            }
                         }
                     }
                 }
@@ -196,14 +250,36 @@ public class SEPAFImporterSingleTest {
         }
     }
 
+    private boolean deepCompareConnections(Connection expected, Connection actual) {
+        if (!deepCompareModules(expected.getNextModule(), actual.getNextModule())) {
+            System.out.println("Next Module not similar");
+            return false;
+        }
+
+        if (!deepCompareModules(expected.getPreviousModule(), actual.getPreviousModule())) {
+            System.out.println("Previous Module not similar");
+            return false;
+        }
+        return true;
+
+    }
+
     private boolean deepCompareModules(Module expected, Module actual) {
+        if (!(((Module) actual).getRectangle().x == ((Module) expected).getRectangle().x && ((Module) actual)
+                .getRectangle().y == ((Module) expected).getRectangle().y)) {
+            System.out.println("Coordinates of modules differ");
+            return false;
+        }
+
         if (expected.getInPorts().size() != actual.getInPorts().size()) {
-            System.out.println("InPorts differs");
+            System.out.println("InPorts differ");
             return false;
         }
 
         if (expected.getOutPorts().size() != actual.getOutPorts().size()) {
-            System.out.println("OutPorts differs");
+            System.out.println("OutPorts differ");
+            System.out.println("Expected: " + expected.getOutPorts().size());
+            System.out.println("Actual: " + actual.getOutPorts().size());
             return false;
         }
         if (expected.getName() == null ^ actual.getName() == null) {
