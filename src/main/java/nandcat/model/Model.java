@@ -633,11 +633,16 @@ public class Model implements ClockListener {
      */
     private boolean moveBy(Module module, Point p) {
         // check if module won't intersect after the move
-        Rectangle r = module.getRectangle();
+        Rectangle r = new Rectangle(module.getRectangle());
+        r.setLocation(r.x - p.x, r.y - p.y);
         for (Element e : circuit.getElements()) {
             if (e instanceof Module && ((Module) e).getRectangle().intersects(r) && e != module) {
                 return false;
             }
+        }
+        // check for negative coords
+        if (r.x <= 5 || r.y <= 5) {
+            return false;
         }
 
         Point pr = module.getRectangle().getLocation();
