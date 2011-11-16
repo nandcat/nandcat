@@ -160,11 +160,4 @@ public class SinkCheck implements CircuitCheck {
     public void removeListener(CheckListener l) {
         listener.remove(l);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String toString() {
-        return "Prüft ob alle Bausteine indirekt mit einer Lampe verbunden sind";
-    }
 }

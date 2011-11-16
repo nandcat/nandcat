@@ -96,11 +96,4 @@ public class MultipleConnectionsCheck implements CircuitCheck {
     public void removeListener(CheckListener l) {
         listener.remove(l);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String toString() {
-        return "Prüfen ob ein Eingang mit mehreren Ausgängen verbunden ist";
-    }
 }

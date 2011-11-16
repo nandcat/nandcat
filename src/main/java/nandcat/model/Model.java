@@ -816,6 +816,9 @@ public class Model implements ClockListener {
                 l.importSucceeded(e2);
             }
         }
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e2);
+        }
     }
 
     /**

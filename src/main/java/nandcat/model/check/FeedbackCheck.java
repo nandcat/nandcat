@@ -136,11 +136,4 @@ public class FeedbackCheck implements CircuitCheck {
     public void removeListener(CheckListener l) {
         listener.remove(l);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String toString() {
-        return "Prüfen ob eine Rückkopplung besteht oder nicht";
-    }
 }
