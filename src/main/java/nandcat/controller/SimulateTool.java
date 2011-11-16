@@ -138,7 +138,7 @@ public class SimulateTool implements Tool {
                     public void checksStopped(ModelEvent e) {
                         // All checks are passed if everyone was successful we can start the simulation.
                         if (e.allChecksPassed() && simToStart) {
-                            checkManager.setVisible(false);
+//                            checkManager.setVisible(false);
                             model.startSimulation();
                         }
                     }
