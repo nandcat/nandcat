@@ -50,6 +50,13 @@ public class FeedbackCheckTest extends TestCase {
         twoThree.setSelected(true);
         twoThree.setRectangle(new Rectangle(50, 50, 50, 50));
 
+        top.addModule(impyOne);
+        top.addModule(impyTwo);
+        top.addModule(impyThree);
+        top.addModule(flipper);
+        top.addModule(scheffel);
+        top.addModule(licht);
+
         // TODO FIX THIS SHIT
         CircuitCheck check = new FeedbackCheck();
         assertFalse(check.test(top));
