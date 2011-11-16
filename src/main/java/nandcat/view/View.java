@@ -1,5 +1,6 @@
 package nandcat.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -11,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -186,6 +186,7 @@ public class View extends JFrame {
         setTitle(FRAME_TITLE);
         setSize(1024, 768);
         setLocation(frameLocation);
+        setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         workspace = new Workspace(model, this);
         workspace.setPreferredSize(workspaceDimension);
@@ -198,11 +199,11 @@ public class View extends JFrame {
         vertical = scroller.getVerticalScrollBar();
         viewport = scroller.getViewport();
         viewport.setViewPosition(viewportLocation);
-        toolBar = new JToolBar();
+        toolBar = new JToolBar(JToolBar.VERTICAL);
         menubar = new JMenuBar();
-        getContentPane().add(scroller, "Center");
-        getContentPane().add(toolBar, "West");
-        getContentPane().add(menubar, "North");
+        getContentPane().add(scroller, BorderLayout.CENTER);
+        getContentPane().add(toolBar, BorderLayout.WEST);
+        getContentPane().add(menubar, BorderLayout.NORTH);
     }
 
     /**
@@ -219,7 +220,7 @@ public class View extends JFrame {
         disableElements.add(file);
         JMenu edit = new JMenu(i18n.getString("menu.edit"));
         edit.setMnemonic(KeyEvent.VK_B);
-        noDisableElements.add(edit);
+        disableElements.add(edit);
         JMenu sim = new JMenu(i18n.getString("menu.simulation"));
         sim.setMnemonic(KeyEvent.VK_T);
         noDisableElements.add(sim);
@@ -275,16 +276,22 @@ public class View extends JFrame {
         JMenuItem mdelete = new JMenuItem(i18n.getString("menu.edit.delete"), KeyEvent.VK_DELETE);
         mdelete.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
         disableElements.add(mdelete);
-        JMenuItem mannotate = new JMenuItem(i18n.getString("menu.edit.annotate"), KeyEvent.VK_N);
-        mannotate.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+        JMenuItem mannotate = new JMenuItem(i18n.getString("menu.edit.annotate"), KeyEvent.VK_O);
+        mannotate.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
         disableElements.add(mannotate);
         JMenuItem mtoggle = new JMenuItem(i18n.getString("menu.edit.toggle"), KeyEvent.VK_T);
         mtoggle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
         disableElements.add(mtoggle);
+        JMenuItem mpause = new JMenuItem(i18n.getString("menu.simulation.pause"), KeyEvent.VK_P);
+        mpause.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0));
+        noDisableElements.add(mselect);
         cycle.setText(i18n.getString("cycle.stand"));
         /*
          * check if there are functionalities given for the MenuItems.
          */
+        if (toolFunctionalities.containsKey("pause")) {
+            setupMenuItem(mpause, "pause");
+        }
         if (toolFunctionalities.containsKey("start")) {
             setupMenuItem(mstart, "start");
         }
@@ -347,8 +354,9 @@ public class View extends JFrame {
         menubar.add(sim);
         menubar.add(help);
         sim.add(mstart);
-        sim.add(mfaster);
+        sim.add(mpause);
         sim.add(mstop);
+        sim.add(mfaster);
         sim.add(mslower);
         sim.addSeparator();
         sim.add(mstartcheck);
@@ -365,7 +373,7 @@ public class View extends JFrame {
         file.add(msave2);
         file.add(mloaddef);
         file.add(mclose);
-        menubar.add(cycle, "RIGHT");
+        menubar.add(cycle);
     }
 
     /**
@@ -418,7 +426,23 @@ public class View extends JFrame {
         toggle.setPreferredSize(buttonDim);
         toggle.setToolTipText(i18n.getString("tooltip.state.toggle"));
         disableElements.add(toggle);
+        ImageIcon annotateButtonIcon = new ImageIcon("src/resources/annotatemiddle.png");
+        JButton annotate = new JButton("", annotateButtonIcon);
+        annotate.setPreferredSize(buttonDim);
+        annotate.setToolTipText(i18n.getString("tooltip.annotate"));
+        disableElements.add(annotate);
+        ImageIcon pauseButtonIcon = new ImageIcon("src/resources/pausemiddle.png");
+        JButton pause = new JButton("", pauseButtonIcon);
+        pause.setPreferredSize(buttonDim);
+        pause.setToolTipText(i18n.getString("tooltip.simulation.pause"));
+        noDisableElements.add(pause);
         // Check if there are Functionalities for the Buttons and if yes calling the setup.
+        if(toolFunctionalities.containsKey("annotate")) {
+            setupButton(annotate, "annotate");
+        }
+        if(toolFunctionalities.containsKey("pause")) {
+            setupButton(pause, "pause");
+        }
         if (toolFunctionalities.containsKey("start")) {
             setupButton(start, "start");
         }
@@ -446,6 +470,7 @@ public class View extends JFrame {
         if (viewModules != null) {
             modules = new JComboBox(viewModules.toArray());
             modules.setMaximumSize(new Dimension(80, 40));
+            modules.setPreferredSize(new Dimension(80, 40));
             modules.setToolTipText(i18n.getString("tooltip.modules"));
         }
         if (toolFunctionalities.containsKey("selectModule")) {
@@ -459,11 +484,13 @@ public class View extends JFrame {
         toolBar.add(toggle);
         toolBar.add(select);
         toolBar.add(move);
+        toolBar.add(annotate);
         toolBar.add(faster);
         toolBar.add(slower);
         toolBar.add(start);
+        toolBar.add(pause);
         toolBar.add(stop);
-        toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.Y_AXIS));
+//        toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.Y_AXIS));
         // Buttons do not have to be Focusable.
         for (Component elem : toolBar.getComponents()) {
             elem.setFocusable(false);
