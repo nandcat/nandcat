@@ -13,14 +13,14 @@ public class FlipFlop extends Circuit {
     /**
      * Create new RS-FlipFlop.
      */
-    public FlipFlop() {
+    protected FlipFlop() {
         super("FlipFlop");
-        AndGate r = new AndGate();
-        AndGate s = new AndGate();
-        NotGate rNot = new NotGate();
-        NotGate sNot = new NotGate();
-        IdentityGate idR = new IdentityGate();
-        IdentityGate idS = new IdentityGate();
+        AndGate r = new AndGate(2, 1);
+        AndGate s = new AndGate(2, 1);
+        NotGate rNot = new NotGate(1);
+        NotGate sNot = new NotGate(1);
+        IdentityGate idR = new IdentityGate(1, 2);
+        IdentityGate idS = new IdentityGate(1, 2);
 
         addModule(r);
         addModule(s);

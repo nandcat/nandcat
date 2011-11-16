@@ -4,20 +4,23 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.awt.Point;
 import java.util.List;
-import org.junit.Ignore;
 import nandcat.model.Clock;
 import nandcat.model.ClockListener;
 import nandcat.model.Model;
+import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.Port;
+import nandcat.model.element.factory.ModuleBuilderFactory;
+import org.junit.Ignore;
 
 /**
  * Tests flipflop functionality.
+ * 
  * @author ben
- *
+ * 
  */
 public class FlipFlopTest {
 
@@ -41,21 +44,28 @@ public class FlipFlopTest {
      */
     private Lamp lampQ1;
 
+    private ModuleBuilderFactory factory;
+
     /**
      * Sets the model and components up.
-     * @throws Exception Any Exception should fail the test.
+     * 
+     * @throws Exception
+     *             Any Exception should fail the test.
      */
-    @Ignore // @Before
+    @Ignore
+    // @Before
     public void setUp() throws Exception {
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
         model = new Model();
-        AndGate andGate1 = new AndGate();
-        AndGate andGate2 = new AndGate();
-        NotGate notGate1 = new NotGate(2);
-        NotGate notGate2 = new NotGate(2);
-        setButton = new ImpulseGenerator(0);
-        resetButton = new ImpulseGenerator(0);
-        lampQ1 = new Lamp();
-        Lamp lampQ2 = new Lamp();
+        AndGate andGate1 = (AndGate) factory.getAndGateBuilder().build();
+        AndGate andGate2 = (AndGate) factory.getAndGateBuilder().build();
+        NotGate notGate1 = (NotGate) factory.getAndGateBuilder().setOutPorts(2).build();
+        NotGate notGate2 = (NotGate) factory.getAndGateBuilder().setOutPorts(2).build();
+        setButton = (ImpulseGenerator) factory.getSwitchBuilder().build();
+        resetButton = (ImpulseGenerator) factory.getSwitchBuilder().build();
+        lampQ1 = (Lamp) factory.getLampBuilder().build();
+        Lamp lampQ2 = (Lamp) factory.getLampBuilder().build();
         // IdentityGate splitterNot1 = new IdentityGate();
         // IdentityGate splitterNot2 = new IdentityGate();
         List<Port> andGate1InPorts = andGate1.getInPorts();
@@ -95,7 +105,8 @@ public class FlipFlopTest {
     /**
      * Tests the flipflop functionality at specific cycles.
      */
-    @Ignore //@Test
+    @Ignore
+    // @Test
     public void test() {
         // Test if both buttons are off
         assertFalse(setButton.getState());

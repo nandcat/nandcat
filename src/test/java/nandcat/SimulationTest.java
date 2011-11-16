@@ -4,16 +4,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.awt.Point;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 import nandcat.model.Clock;
 import nandcat.model.ClockListener;
 import nandcat.model.Model;
+import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
 import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
+import nandcat.model.element.factory.ModuleBuilderFactory;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Simulation Test 1.
@@ -67,6 +69,8 @@ public class SimulationTest {
      */
     private ImpulseGenerator button1;
 
+    private ModuleBuilderFactory factory;
+
     /**
      * Sets the model and components up.
      * 
@@ -76,13 +80,16 @@ public class SimulationTest {
     @Ignore
     @Before
     public void setUp() throws Exception {
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+
         model = new Model();
-        OrGate orGate = new OrGate();
+        OrGate orGate = (OrGate) factory.getOrGateBuilder().build();
         model.addModule(orGate, new Point(1, 1));
-        lamp = new Lamp();
+        lamp = (Lamp) factory.getLampBuilder().build();
         model.addModule(lamp, new Point(1, 2));
-        button1 = new ImpulseGenerator(0);
-        ImpulseGenerator button2 = new ImpulseGenerator(0);
+        button1 = (ImpulseGenerator) factory.getSwitchBuilder().build();
+        ImpulseGenerator button2 = (ImpulseGenerator) factory.getSwitchBuilder().build();
         List<Port> outPortsButton1 = button1.getOutPorts();
         List<Port> outPortsButton2 = button2.getOutPorts();
         List<Port> inPortsOr = orGate.getInPorts();

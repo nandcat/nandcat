@@ -2,22 +2,24 @@ package nandcat.model.importexport.sepaf;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import java.awt.Rectangle;
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import nandcat.model.element.AndGate;
+import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
 import nandcat.model.element.Element;
 import nandcat.model.element.FlipFlop;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Module;
-import nandcat.model.element.OrGate;
+import nandcat.model.element.factory.ModuleBuilder;
+import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.Exporter;
 import nandcat.model.importexport.ExternalCircuitSource;
 import nandcat.model.importexport.Importer;
+import nandcat.view.StandardModuleLayouter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,28 +39,36 @@ public class SEPAFImporterCircuitTest {
 
     private Circuit exportC;
 
+    private ModuleBuilderFactory factory;
+
     @Before
     public void setup() throws IOException {
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+        factory.setLayouter(new StandardModuleLayouter());
         exporter = new SEPAFExporter();
         file = File.createTempFile("export", ".xml");
         exporter.setFile(file);
-        exportC = new Circuit();
+        exportC = (Circuit) factory.getCircuitBuilder().build();
 
         importer = new SEPAFImporter();
         importer.setFile(file);
+
+        importer.setFactory(factory);
     }
 
     @Test
     public void testExternalCircuit() throws IOException {
-        AndGate gate = new AndGate();
-        gate.setRectangle(new Rectangle(10, 20, 30, 40));
-        exportC.addModule(gate);
+        ModuleBuilder andB = factory.getAndGateBuilder();
+        andB.setLocation(new Point(10, 20));
+        exportC.addModule(andB.build());
 
         // Inner circuit
-        final Circuit innercircuit = new Circuit("innercircuit-uuid");
-        OrGate innergate = new OrGate();
-        innergate.setRectangle(new Rectangle(50, 60, 70, 80));
-        innercircuit.addModule(innergate);
+        final Circuit innercircuit = (Circuit) factory.getCircuitBuilder().setUUID("innercircuit-uuid").build();
+
+        ModuleBuilder orB = factory.getOrGateBuilder();
+        orB.setLocation(new Point(50, 60));
+        innercircuit.addModule(orB.build());
 
         exportC.addModule(innercircuit);
 

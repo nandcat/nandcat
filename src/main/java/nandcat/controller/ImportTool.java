@@ -50,6 +50,11 @@ public class ImportTool implements Tool {
     private ActionListener buttonListener;
 
     /**
+     * Last loaded file if exists.
+     */
+    private File lastLoadedFile = null;
+
+    /**
      * Class logger instance.
      */
     private static final Logger LOG = Logger.getLogger(ImportTool.class);
@@ -80,6 +85,9 @@ public class ImportTool implements Tool {
      */
     private void request(String command) {
         LOG.debug("Request command: " + command);
+
+        // Deactivate other tools to stay consistent.
+        controller.requestActivation(this);
         if (command.equals("load")) {
             actionLoad();
         } else if (command.equals("new")) {
@@ -99,6 +107,9 @@ public class ImportTool implements Tool {
      */
     private void actionLoad() {
         JFileChooser fc = new JFileChooser();
+        if (lastLoadedFile != null) {
+            fc.setSelectedFile(lastLoadedFile);
+        }
         ImportExportUtils.addFileFilterToChooser(fc, model.getImportFormats());
         fc.setAcceptAllFileFilterUsed(false);
         int returnVal = fc.showOpenDialog(controller.getView());
@@ -106,6 +117,7 @@ public class ImportTool implements Tool {
             File file = fc.getSelectedFile();
             if (file != null) {
                 LOG.debug("Importing: " + file.getName());
+                this.lastLoadedFile = file;
                 model.importRootFromFile(file);
             } else {
                 LOG.debug("File is null");

@@ -49,7 +49,7 @@ public class Connection implements Element, DrawConnection {
      *            Port (a module's <b>inPort</b>) the connection is attached to. Set to one of the modules's inPorts.
      *            May not be null.
      */
-    public Connection(Port inPort, Port outPort) {
+    protected Connection(Port inPort, Port outPort) {
         if (inPort == null || !inPort.isOutPort() || outPort == null || outPort.isOutPort()) {
             throw new IllegalArgumentException("in or output null or inPort not of type outPort or vice versa");
         }

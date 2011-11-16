@@ -2,22 +2,20 @@ package nandcat.model.importexport.sepaf;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import java.awt.Rectangle;
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
-import nandcat.model.element.AndGate;
+import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
 import nandcat.model.element.Element;
-import nandcat.model.element.FlipFlop;
-import nandcat.model.element.IdentityGate;
 import nandcat.model.element.ImpulseGenerator;
-import nandcat.model.element.Lamp;
 import nandcat.model.element.Module;
-import nandcat.model.element.NotGate;
-import nandcat.model.element.OrGate;
+import nandcat.model.element.factory.ModuleBuilder;
+import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.Exporter;
 import nandcat.model.importexport.Importer;
+import nandcat.view.StandardModuleLayouter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,22 +35,29 @@ public class SEPAFImporterSingleTest {
 
     private Circuit exportC;
 
+    private ModuleBuilderFactory factory;
+
     @Before
     public void setup() throws IOException {
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+        factory.setLayouter(new StandardModuleLayouter());
         exporter = new SEPAFExporter();
         file = File.createTempFile("export", ".xml");
         exporter.setFile(file);
-        exportC = new Circuit();
+        exportC = (Circuit) factory.getCircuitBuilder().build();
 
         importer = new SEPAFImporter();
+
+        importer.setFactory(factory);
         importer.setFile(file);
     }
 
     @Test
     public void testDefaultAndGate() {
-        AndGate gate = new AndGate();
-        gate.setRectangle(new Rectangle(10, 20, 30, 40));
-        exportC.addModule(gate);
+        ModuleBuilder andB = factory.getAndGateBuilder();
+        andB.setLocation(new Point(10, 20));
+        exportC.addModule(andB.build());
         exporter.setCircuit(exportC);
         exporter.exportCircuit();
         assertTrue(importer.importCircuit());
@@ -63,9 +68,12 @@ public class SEPAFImporterSingleTest {
 
     @Test
     public void testMultiAndGate() {
-        AndGate gate = new AndGate(3, 4);
-        gate.setRectangle(new Rectangle(10, 20, 30, 40));
-        exportC.addModule(gate);
+        ModuleBuilder andB = factory.getAndGateBuilder();
+        andB.setInPorts(3);
+        andB.setOutPorts(4);
+        andB.setLocation(new Point(10, 20));
+        exportC.addModule(andB.build());
+
         exporter.setCircuit(exportC);
         exporter.exportCircuit();
         assertTrue(importer.importCircuit());
@@ -76,9 +84,9 @@ public class SEPAFImporterSingleTest {
 
     @Test
     public void testDefaultOrGate() {
-        OrGate gate = new OrGate();
-        gate.setRectangle(new Rectangle(10, 20, 30, 40));
-        exportC.addModule(gate);
+        ModuleBuilder orB = factory.getOrGateBuilder();
+        orB.setLocation(new Point(10, 20));
+        exportC.addModule(orB.build());
         exporter.setCircuit(exportC);
         exporter.exportCircuit();
         assertTrue(importer.importCircuit());
@@ -89,9 +97,11 @@ public class SEPAFImporterSingleTest {
 
     @Test
     public void testMultiOrGate() {
-        OrGate gate = new OrGate(4, 3);
-        gate.setRectangle(new Rectangle(10, 20, 30, 40));
-        exportC.addModule(gate);
+        ModuleBuilder orB = factory.getOrGateBuilder();
+        orB.setInPorts(4);
+        orB.setOutPorts(3);
+        orB.setLocation(new Point(10, 20));
+        exportC.addModule(orB.build());
         exporter.setCircuit(exportC);
         exporter.exportCircuit();
         assertTrue(importer.importCircuit());
@@ -102,9 +112,9 @@ public class SEPAFImporterSingleTest {
 
     @Test
     public void testDefaultNotGate() {
-        NotGate gate = new NotGate();
-        gate.setRectangle(new Rectangle(10, 20, 30, 40));
-        exportC.addModule(gate);
+        ModuleBuilder notB = factory.getNotGateBuilder();
+        notB.setLocation(new Point(10, 20));
+        exportC.addModule(notB.build());
         exporter.setCircuit(exportC);
         exporter.exportCircuit();
         assertTrue(importer.importCircuit());
@@ -115,9 +125,10 @@ public class SEPAFImporterSingleTest {
 
     @Test
     public void testMultiNotGate() {
-        NotGate gate = new NotGate(10);
-        gate.setRectangle(new Rectangle(10, 20, 30, 40));
-        exportC.addModule(gate);
+        ModuleBuilder notB = factory.getNotGateBuilder();
+        notB.setLocation(new Point(10, 20));
+        notB.setOutPorts(10);
+        exportC.addModule(notB.build());
         exporter.setCircuit(exportC);
         exporter.exportCircuit();
         assertTrue(importer.importCircuit());
@@ -128,9 +139,9 @@ public class SEPAFImporterSingleTest {
 
     @Test
     public void testDefaultIdentityGate() {
-        IdentityGate gate = new IdentityGate();
-        gate.setRectangle(new Rectangle(10, 20, 30, 40));
-        exportC.addModule(gate);
+        ModuleBuilder idB = factory.getIdentityGateBuilder();
+        idB.setLocation(new Point(10, 20));
+        exportC.addModule(idB.build());
         exporter.setCircuit(exportC);
         exporter.exportCircuit();
         assertTrue(importer.importCircuit());
@@ -141,9 +152,10 @@ public class SEPAFImporterSingleTest {
 
     @Test
     public void testMultiIdentityGate() {
-        IdentityGate gate = new IdentityGate(1, 10);
-        gate.setRectangle(new Rectangle(10, 20, 30, 40));
-        exportC.addModule(gate);
+        ModuleBuilder idB = factory.getIdentityGateBuilder();
+        idB.setLocation(new Point(10, 20));
+        idB.setOutPorts(10);
+        exportC.addModule(idB.build());
         exporter.setCircuit(exportC);
         exporter.exportCircuit();
         assertTrue(importer.importCircuit());
@@ -154,9 +166,9 @@ public class SEPAFImporterSingleTest {
 
     @Test
     public void testDefaultLamp() {
-        Lamp gate = new Lamp();
-        gate.setRectangle(new Rectangle(10, 20, 30, 40));
-        exportC.addModule(gate);
+        ModuleBuilder builder = factory.getLampBuilder();
+        builder.setLocation(new Point(10, 20));
+        exportC.addModule(builder.build());
         exporter.setCircuit(exportC);
         exporter.exportCircuit();
         assertTrue(importer.importCircuit());
@@ -167,9 +179,9 @@ public class SEPAFImporterSingleTest {
 
     @Test
     public void testDefaultFlipFlop() {
-        FlipFlop gate = new FlipFlop();
-        gate.setRectangle(new Rectangle(10, 20, 30, 40));
-        exportC.addModule(gate);
+        ModuleBuilder builder = factory.getFlipFlopBuilder();
+        builder.setLocation(new Point(10, 20));
+        exportC.addModule(builder.build());
         exporter.setCircuit(exportC);
         exporter.exportCircuit();
         assertTrue(importer.importCircuit());
@@ -180,9 +192,9 @@ public class SEPAFImporterSingleTest {
 
     @Test
     public void testDefaultClock() throws IOException {
-        ImpulseGenerator gate = new ImpulseGenerator(10);
-        gate.setRectangle(new Rectangle(10, 20, 30, 40));
-        exportC.addModule(gate);
+        ModuleBuilder builder = factory.getClockBuilder();
+        builder.setLocation(new Point(10, 20));
+        exportC.addModule(builder.build());
         exporter.setCircuit(exportC);
         exporter.exportCircuit();
         assertTrue(importer.importCircuit());
@@ -193,9 +205,9 @@ public class SEPAFImporterSingleTest {
 
     @Test
     public void testDefaultSwitch() throws IOException {
-        ImpulseGenerator gate = new ImpulseGenerator(0);
-        gate.setRectangle(new Rectangle(10, 20, 30, 40));
-        exportC.addModule(gate);
+        ModuleBuilder builder = factory.getSwitchBuilder();
+        builder.setLocation(new Point(10, 20));
+        exportC.addModule(builder.build());
         exporter.setCircuit(exportC);
         exporter.exportCircuit();
         assertTrue(importer.importCircuit());

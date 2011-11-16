@@ -14,6 +14,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import nandcat.Nandcat;
 import nandcat.NandcatTest;
+import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Element;
@@ -24,9 +25,11 @@ import nandcat.model.element.Lamp;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
+import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.Importer;
 import nandcat.model.importexport.XsdValidation;
-import nandcat.model.importexport.sepaf.SEPAFImporter;
+import nandcat.view.StandardModuleLayouter;
+import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -34,12 +37,27 @@ import org.xml.sax.SAXParseException;
 
 public class SEPAFImporterTest {
 
+    private Importer importer;
+
+    @Before
+    public void setUp() {
+        importer = new SEPAFImporter();
+        ModuleBuilderFactory factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+        factory.setLayouter(new StandardModuleLayouter());
+        importer.setFactory(factory);
+    }
+
     @Test
     public void testLocation() {
         File file = getFile("../formattest/sepaf-example-valid-fewcomponents.xml");
-        Importer importer = new SEPAFImporter();
         importer.setFile(file);
+        ModuleBuilderFactory factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+        factory.setLayouter(new StandardModuleLayouter());
+        importer.setFactory(factory);
         assertTrue(importer.importCircuit());
+
         Circuit circuit = importer.getCircuit();
         assertTrue(circuit != null);
         List<Element> elements = circuit.getElements();
@@ -93,7 +111,7 @@ public class SEPAFImporterTest {
         assertEquals("flipflop", flipFlop.getName());
 
         assertEquals(new Point(7, 7), in.getRectangle().getLocation());
-        assertEquals(true, in.getState());
+        assertEquals(false, in.getState());
         assertEquals("in", in.getName());
 
         assertEquals(new Point(8, 8), ig.getRectangle().getLocation());
@@ -107,7 +125,6 @@ public class SEPAFImporterTest {
     @Test
     public void testConnections() {
         File file = getFile("../formattest/sepaf-example-valid-connectedcomponents.xml");
-        Importer importer = new SEPAFImporter();
         importer.setFile(file);
         assertTrue(importer.importCircuit());
         Circuit circuit = importer.getCircuit();
@@ -160,7 +177,6 @@ public class SEPAFImporterTest {
     @Test
     public void testRecursiveCircuits() {
         File file = getFile("../formattest/sepaf-example-valid-recursivecircuits.xml");
-        Importer importer = new SEPAFImporter();
         importer.setFile(file);
         assertTrue(importer.importCircuit());
         Circuit circuit = importer.getCircuit();
@@ -173,7 +189,6 @@ public class SEPAFImporterTest {
     public void testExportedCircuit() throws FileNotFoundException, SAXException, IOException {
         File file = getFile("../formattest/sepaf-example-valid-fewcomponentsexported.xml");
         testValidOutput(file);
-        Importer importer = new SEPAFImporter();
         importer.setFile(file);
         assertTrue(importer.importCircuit());
         Circuit circuit = importer.getCircuit();
@@ -185,7 +200,6 @@ public class SEPAFImporterTest {
     @Test
     public void testDoubleRefCircuits() {
         File file = getFile("../formattest/sepaf-example-valid-doublerefcircuits.xml");
-        Importer importer = new SEPAFImporter();
         importer.setFile(file);
         assertTrue(importer.importCircuit());
         Circuit circuit = importer.getCircuit();

@@ -9,16 +9,12 @@ import java.util.Map;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import nandcat.Nandcat;
-import nandcat.model.element.AndGate;
+import nandcat.model.FastDeepCopy;
 import nandcat.model.element.Circuit;
-import nandcat.model.element.FlipFlop;
-import nandcat.model.element.IdentityGate;
-import nandcat.model.element.ImpulseGenerator;
-import nandcat.model.element.Lamp;
 import nandcat.model.element.Module;
-import nandcat.model.element.NotGate;
-import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
+import nandcat.model.element.factory.ModuleBuilder;
+import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.ExternalCircuitSource;
 import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
@@ -109,6 +105,8 @@ public class SEPAFImporter implements Importer {
 
     private ExternalCircuitSource externalCircuitSource;
 
+    private ModuleBuilderFactory factory;
+
     /**
      * Sets the instance up.
      */
@@ -150,6 +148,13 @@ public class SEPAFImporter implements Importer {
      * {@inheritDoc}
      */
     public boolean importCircuit() {
+        if (file == null) {
+            throw new IllegalArgumentException("File not set");
+        }
+        if (factory == null) {
+            throw new IllegalArgumentException("Factory not set");
+        }
+
         try {
             if (validateXML()) {
                 Document doc = getDocument(file);
@@ -225,7 +230,7 @@ public class SEPAFImporter implements Importer {
             if (mainComponents == null || mainComponents.isEmpty()) {
                 throw new FormatException("Circuit has no components: '" + name + "'");
             }
-            circuit = new Circuit(name);
+            circuit = (Circuit) factory.getCircuitBuilder().setUUID(name).build();
 
             // Index of imported modules used for connections
             Map<String, Module> moduleIndex = new HashMap<String, Module>();
@@ -274,6 +279,7 @@ public class SEPAFImporter implements Importer {
             // Add constructed circuit to cache index
             circuitIndex.put(name, circuit);
         }
+        factory.getLayouter().layout((Circuit) circuit);
         return circuit;
     }
 
@@ -344,86 +350,56 @@ public class SEPAFImporter implements Importer {
         // Instantiate specified module.
         Module module = null;
         if (aType.getValue().equals("and")) {
-            AndGate andGate = null;
-            if (portsIn != null || portsOut != null) {
-                portsIn = (portsIn == null) ? SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_AND : portsIn;
-                portsOut = (portsOut == null) ? SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_AND : portsOut;
-                andGate = new AndGate(portsIn, portsOut);
-            } else {
-                andGate = new AndGate();
+            ModuleBuilder b = factory.getAndGateBuilder();
+            if (portsIn != null) {
+                b.setInPorts(portsIn);
             }
-            module = andGate;
-        } else if (aType.getValue().equals("or")) {
-            OrGate orGate = null;
-            if (portsIn != null || portsOut != null) {
-                portsIn = (portsIn == null) ? SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_OR : portsIn;
-                portsOut = (portsOut == null) ? SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_OR : portsOut;
-                orGate = new OrGate(portsIn, portsOut);
-            } else {
-                orGate = new OrGate();
-            }
-            module = orGate;
-        } else if (aType.getValue().equals("id")) {
-            IdentityGate idGate = null;
-            if (portsIn != null || portsOut != null) {
-                portsOut = (portsOut == null) ? SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_IDENTITY : portsOut;
-                idGate = new IdentityGate(1, portsOut);
-            } else {
-                idGate = new IdentityGate();
-            }
-            module = idGate;
-        } else if (aType.getValue().equals("not")) {
-            NotGate notGate = null;
+
             if (portsOut != null) {
-                portsOut = (portsOut == null) ? SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_NOT : portsOut;
-                notGate = new NotGate(portsOut);
-            } else {
-                notGate = new NotGate();
+                b.setOutPorts(portsOut);
             }
-            module = notGate;
+            b.setLocation(location);
+            module = b.build();
+        } else if (aType.getValue().equals("or")) {
+            ModuleBuilder b = factory.getOrGateBuilder();
+            if (portsIn != null) {
+                b.setInPorts(portsIn);
+            }
+
+            if (portsOut != null) {
+                b.setOutPorts(portsOut);
+            }
+            b.setLocation(location);
+            module = b.build();
+        } else if (aType.getValue().equals("id")) {
+            ModuleBuilder b = factory.getIdentityGateBuilder();
+            if (portsOut != null) {
+                b.setOutPorts(portsOut);
+            }
+            b.setLocation(location);
+            module = b.build();
+        } else if (aType.getValue().equals("not")) {
+            ModuleBuilder b = factory.getNotGateBuilder();
+            if (portsOut != null) {
+                b.setOutPorts(portsOut);
+            }
+            b.setLocation(location);
+            module = b.build();
         } else if (aType.getValue().equals("out")) {
-            Lamp lamp = null;
-
-            if (portsIn != null && portsOut != null) {
-                LOG.debug("Component 'out' does not support 'ports_in' or 'ports_out'");
-            }
-            lamp = new Lamp();
-            module = lamp;
+            ModuleBuilder b = factory.getLampBuilder();
+            b.setLocation(location);
+            module = b.build();
         } else if (aType.getValue().equals("flipflop")) {
-            FlipFlop ff = null;
-
-            if (portsIn != null && portsOut != null) {
-                LOG.debug("Component 'flipflop' does not support 'ports_in' or 'ports_out'");
-            }
-            ff = new FlipFlop();
-            module = ff;
+            ModuleBuilder b = factory.getFlipFlopBuilder();
+            b.setLocation(location);
+            module = b.build();
         } else if (aType.getValue().equals("in")) {
-            ImpulseGenerator ig = null;
-
-            if (portsIn != null && portsOut != null) {
-                LOG.debug("Component 'in' does not support 'ports_in' or 'ports_out'");
-            }
-            ig = new ImpulseGenerator(0);
-            if (inState != null) {
-                Boolean state = null;
-                try {
-                    state = inState.getBooleanValue();
-                } catch (DataConversionException e) {
-                    throw new FormatException("'in_state' not boolean", e);
-                }
-                if (state != null && state) {
-                    ig.toggleState();
-                }
-            } else {
-                LOG.debug("Component 'in' does not has 'in_state', use default");
-            }
-            module = ig;
+            ModuleBuilder b = factory.getSwitchBuilder();
+            b.setLocation(location);
+            module = b.build();
         } else if (aType.getValue().equals("clock")) {
-            ImpulseGenerator ig = null;
-
-            if (portsIn != null && portsOut != null) {
-                LOG.debug("Component 'clock' does not support 'ports_in' or 'ports_out'");
-            }
+            ModuleBuilder b = factory.getClockBuilder();
+            b.setLocation(location);
             if (inTiming != null) {
                 Integer timing = null;
                 try {
@@ -432,30 +408,15 @@ public class SEPAFImporter implements Importer {
                     throw new FormatException("'in_timinig' not integer", e);
                 }
                 if (timing != null) {
-                    ig = new ImpulseGenerator(timing);
+                    b.setFrequency(timing);
                 }
-            } else {
-                LOG.debug("Component 'clock' does not has 'in_timing', use default");
-                // FIXME Default constructor benötigt für ImpulseGenerator.
-                ig = new ImpulseGenerator(50);
             }
 
-            if (inState != null) {
-                Boolean state = null;
-                try {
-                    state = inState.getBooleanValue();
-                } catch (DataConversionException e) {
-                    throw new FormatException("'in_state' not boolean", e);
-                }
-                if (state != null && state) {
-                    ig.toggleState();
-                }
-            } else {
-                LOG.debug("Component 'clock' does not has a state, use default");
-            }
-            module = ig;
+            module = b.build();
         } else if (aType.getValue().equals("circuit")) {
             module = buildCircuit(el.getAttributeValue("type2"), doc);
+            module.getRectangle().setLocation(location);
+            factory.getLayouter().layout((Circuit) module);
         } else if (aType.getValue().equals("missing-circuit")) {
             String externalIdentifier = el.getAttributeValue("type2");
             if (externalCircuitSource != null) {
@@ -469,11 +430,12 @@ public class SEPAFImporter implements Importer {
                 throw new FormatException("External circuit source is not available but circuit is missing: "
                         + externalIdentifier);
             }
+            module.getRectangle().setLocation(location);
+            factory.getLayouter().layout((Circuit) module);
         } else {
             throw new FormatException("Not a supported component type: '" + aType.getValue() + "'");
         }
 
-        module.getRectangle().setLocation(location);
         if (aAnnotation != null) {
             String annotation = aAnnotation.getValue();
             module.setName(annotation);
@@ -673,5 +635,13 @@ public class SEPAFImporter implements Importer {
      */
     public void setExternalCircuitSource(ExternalCircuitSource source) {
         this.externalCircuitSource = source;
+    }
+
+    public void setFactory(ModuleBuilderFactory factory) {
+        if (factory == null) {
+            throw new IllegalArgumentException();
+        }
+        this.factory = factory;
+
     }
 }

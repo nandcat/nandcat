@@ -1,4 +1,4 @@
-package nandcat.model.importexport.sepaf;
+package nandcat.model;
 
 import java.io.IOException;
 import java.io.InputStream;

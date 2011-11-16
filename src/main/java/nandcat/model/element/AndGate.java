@@ -15,13 +15,6 @@ public class AndGate extends Gate {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Default constructor. Creates new AND Gate with 2 incoming and 1 outgoing Ports.
-     */
-    public AndGate() {
-        super(2, 1);
-    }
-
-    /**
      * Advanced constructor. Creates new AND with inPorts incoming and outPorts outgoing Ports.
      * 
      * @param inPorts
@@ -30,7 +23,7 @@ public class AndGate extends Gate {
      *            int number of outPorts to append
      * 
      */
-    public AndGate(int inPorts, int outPorts) {
+    protected AndGate(int inPorts, int outPorts) {
         super(inPorts, outPorts);
     }
 

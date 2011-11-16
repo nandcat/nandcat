@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Content;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 /**
@@ -117,8 +118,7 @@ public class SEPAFExporter implements Exporter {
         try {
             root.setAttribute("main", circuit.getUuid());
             root.addContent(buildCircuit(circuit, true));
-            XMLOutputter outputter = new XMLOutputter();
-
+            XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
             outputter.output(doc, new FileOutputStream(file));
             return true;
         } catch (FileNotFoundException e) {

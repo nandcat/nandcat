@@ -37,6 +37,7 @@ import nandcat.model.ModelListenerAdapter;
 import nandcat.model.ViewModule;
 import nandcat.model.element.DrawElement;
 import nandcat.model.element.Module;
+import nandcat.model.element.factory.ModuleLayouter;
 
 /**
  * View.
@@ -140,6 +141,11 @@ public class View extends JFrame {
      */
     private JComboBox modules;
 
+    /**
+     * Layouter used to layout modules.
+     */
+    private ModuleLayouter layouter = new StandardModuleLayouter();
+
     private JScrollBar horizontal;
 
     private JScrollBar vertical;
@@ -152,6 +158,7 @@ public class View extends JFrame {
      */
     public View(Model model) {
         this.model = model;
+        model.setLayouter(layouter);
         try {
             for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -183,6 +190,7 @@ public class View extends JFrame {
                 allModulesInSight();
             }
         });
+
         setTitle(FRAME_TITLE);
         setSize(1024, 768);
         setLocation(frameLocation);
@@ -437,10 +445,10 @@ public class View extends JFrame {
         pause.setToolTipText(i18n.getString("tooltip.simulation.pause"));
         noDisableElements.add(pause);
         // Check if there are Functionalities for the Buttons and if yes calling the setup.
-        if(toolFunctionalities.containsKey("annotate")) {
+        if (toolFunctionalities.containsKey("annotate")) {
             setupButton(annotate, "annotate");
         }
-        if(toolFunctionalities.containsKey("pause")) {
+        if (toolFunctionalities.containsKey("pause")) {
             setupButton(pause, "pause");
         }
         if (toolFunctionalities.containsKey("start")) {
@@ -490,7 +498,7 @@ public class View extends JFrame {
         toolBar.add(start);
         toolBar.add(pause);
         toolBar.add(stop);
-//        toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.Y_AXIS));
+        // toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.Y_AXIS));
         // Buttons do not have to be Focusable.
         for (Component elem : toolBar.getComponents()) {
             elem.setFocusable(false);

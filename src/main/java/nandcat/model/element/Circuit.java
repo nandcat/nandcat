@@ -1,6 +1,5 @@
 package nandcat.model.element;
 
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
@@ -70,24 +69,21 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      * Usual constructor for circuits. The UUID will be extracted from the Importer.
      * 
      * @param uuid
-     *            String containing the uuid of this circuit
+     *            String containing the uuid of this circuit, null to generate new random uuid.
      */
-    public Circuit(String uuid) {
-        this.uuid = uuid;
+    protected Circuit(String uuid) {
+        if (uuid == null) {
+            this.uuid = UUID.randomUUID().toString();
+        } else {
+            this.uuid = uuid;
+        }
         name = "";
         elements = new LinkedList<Element>();
         inPorts = new LinkedList<Port>();
         outPorts = new LinkedList<Port>();
-        rectangle = new Rectangle(Module.EXTENT, Module.EXTENT);
+        rectangle = new Rectangle();
         symbol = null;
         selected = false;
-    }
-
-    /**
-     * Constructs the circuit with a new random uuid.
-     */
-    public Circuit() {
-        this(UUID.randomUUID().toString());
     }
 
     /**
@@ -389,19 +385,6 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      * 
      * @param m
      *            Module to add
-     * @param p
-     *            Point specifying the location of the Module
-     */
-    public void addModule(Module m, Point p) {
-        addModule(m);
-        m.getRectangle().setLocation(p);
-    }
-
-    /**
-     * Adds a Module to the Circuit.
-     * 
-     * @param m
-     *            Module to add
      */
     public void addModule(Module m) {
         if (m instanceof Circuit) {
@@ -412,12 +395,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
                 }
             }
         }
-        for (Port in : m.getInPorts()) {
-            in.locateOnStandardPosition(this);
-        }
-        for (Port out : m.getOutPorts()) {
-            out.locateOnStandardPosition(this);
-        }
+
         // one module may not appear more than once in elements (guaranteed by Set<>)
         elements.add(m);
         // scan for new potential in/outPorts

@@ -11,21 +11,11 @@ import org.junit.Before;
  */
 public abstract class AbstractElementDrawerTest {
 
-    int PORT_MARGIN_LEFT;
-
-    int PORT_MARGIN_RIGHT;
-
-    int PORT_MARGIN_TOP;
-
-    int PORT_DIAMETER = 2;
-
     StandardElementDrawer drawer;
 
     Color PORT_COLOR_ACTIVE;
 
     Color PORT_COLOR_DEFAULT;
-
-    int PORT_MARGIN_BOTTOM;
 
     Color CONNECTION_COLOR_DEFAULT;
 
@@ -34,6 +24,8 @@ public abstract class AbstractElementDrawerTest {
     Color GATE_COLOR;
 
     String LABEL_ANDGATE;
+
+    protected int PORT_DIAMETER = 4;
 
     String LABEL_ORGATE;
 
@@ -55,20 +47,17 @@ public abstract class AbstractElementDrawerTest {
 
     Color LAMP_COLOR_DEFAULT;
 
+    Color PORT_COLOR_SELECTED;
+
+    Color LABEL_COLOR_SELECTED;
+
     void applyFields() throws Exception {
         PORT_COLOR_ACTIVE = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
                 "PORT_COLOR_ACTIVE");
         PORT_COLOR_DEFAULT = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
                 "PORT_COLOR_DEFAULT");
-        PORT_MARGIN_BOTTOM = (Integer) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
-                "PORT_MARGIN_BOTTOM");
-        PORT_MARGIN_TOP = (Integer) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
-                "PORT_MARGIN_TOP");
-        PORT_MARGIN_LEFT = (Integer) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
-                "PORT_MARGIN_LEFT");
-        PORT_MARGIN_RIGHT = (Integer) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
-                "PORT_MARGIN_RIGHT");
-        PORT_DIAMETER = (Integer) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer, "PORT_DIAMETER");
+        PORT_COLOR_SELECTED = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
+                "PORT_COLOR_SELECTED");
         CONNECTION_COLOR_DEFAULT = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
                 "CONNECTION_COLOR_DEFAULT");
         CONNECTION_COLOR_ACTIVE = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
@@ -80,6 +69,8 @@ public abstract class AbstractElementDrawerTest {
         LABEL_IDENTITYGATE = (String) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
                 "LABEL_IDENTITYGATE");
         LABEL_COLOR = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer, "LABEL_COLOR");
+        LABEL_COLOR_SELECTED = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
+                "LABEL_COLOR_SELECTED");
         ANNOTATION_COLOR = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,
                 "ANNOTATION_COLOR");
         IG_COLOR_DEFAULT = (Color) ReflectionUtil.getPrivateField(StandardElementDrawer.class, drawer,

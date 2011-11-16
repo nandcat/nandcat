@@ -17,19 +17,15 @@ import nandcat.model.check.IllegalConnectionCheck;
 import nandcat.model.check.OrphanCheck;
 import nandcat.model.check.SinkCheck;
 import nandcat.model.check.SourceCheck;
-import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
 import nandcat.model.element.DrawElement;
 import nandcat.model.element.Element;
-import nandcat.model.element.FlipFlop;
-import nandcat.model.element.IdentityGate;
 import nandcat.model.element.ImpulseGenerator;
-import nandcat.model.element.Lamp;
 import nandcat.model.element.Module;
-import nandcat.model.element.NotGate;
-import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
+import nandcat.model.element.factory.ModuleBuilderFactory;
+import nandcat.model.element.factory.ModuleLayouter;
 import nandcat.model.importexport.Exporter;
 import nandcat.model.importexport.Importer;
 import nandcat.model.importexport.sepaf.SEPAFExporter;
@@ -92,6 +88,8 @@ public class Model implements ClockListener {
      */
     private boolean dirty;
 
+    private ModuleBuilderFactory factory;
+
     /**
      * Simulation is running.
      */
@@ -106,15 +104,17 @@ public class Model implements ClockListener {
      * The constructor for the model class.
      */
     public Model() {
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
         checks = new LinkedHashSet<CircuitCheck>();
         listeners = new LinkedHashSet<ModelListener>();
         importFormats = new HashMap<String, String>();
         exportFormats = new HashMap<String, String>();
         importers = new HashMap<String, Importer>();
         exporters = new HashMap<String, Exporter>();
-        circuit = new Circuit();
+        // TODO: factory has no layouter at this moment!
+        circuit = (Circuit) factory.getCircuitBuilder().build();
         clock = new Clock(0, this);
-        initView2Module();
         dirty = false;
         simIsRunning = false;
         initExporters();
@@ -128,6 +128,13 @@ public class Model implements ClockListener {
         // circuit.addModule(impy, new Point(250, 450));
         // circuit.addModule(lamp, new Point(400, 450));
         // circuit.addConnection(impy.getOutPorts().get(0), lamp.getInPorts().get(0));
+    }
+
+    public void setLayouter(ModuleLayouter layouter) {
+        if (layouter == null) {
+            throw new IllegalArgumentException();
+        }
+        factory.setLayouter(layouter);
     }
 
     /**
@@ -165,16 +172,17 @@ public class Model implements ClockListener {
      */
     public void initView2Module() {
         viewModules = new LinkedList<ViewModule>();
-        viewModules.add(new ViewModule("AND", new AndGate(), "", null));
-        viewModules.add(new ViewModule("OR", new OrGate(), "", null));
-        viewModules.add(new ViewModule("FlipFlop", new FlipFlop(), "", null));
-        viewModules.add(new ViewModule("ID", new IdentityGate(), "", null));
-        viewModules.add(new ViewModule("Lampe", new Lamp(), "", null));
-        viewModules.add(new ViewModule("NOT", new NotGate(), "", null));
-        viewModules.add(new ViewModule("ImpulseGenerator", new ImpulseGenerator(), "", null));
-        viewModules.add(new ViewModule("AND-3", new AndGate(2 + 1, 1), "", null));
-        viewModules.add(new ViewModule("OR-3", new OrGate(2 + 1, 1), "", null));
-        viewModules.add(new ViewModule("ID-3", new IdentityGate(1, 2 + 1), "", null));
+        // FIXME Keine instanzen sondern jetzt werden builder uebergeben!
+        viewModules.add(new ViewModule("AND", factory.getAndGateBuilder().build(), "", null));
+        viewModules.add(new ViewModule("OR", factory.getOrGateBuilder().build(), "", null));
+        viewModules.add(new ViewModule("FlipFlop", factory.getFlipFlopBuilder().build(), "", null));
+        viewModules.add(new ViewModule("ID", factory.getIdentityGateBuilder().build(), "", null));
+        viewModules.add(new ViewModule("Lampe", factory.getLampBuilder().build(), "", null));
+        viewModules.add(new ViewModule("NOT", factory.getNotGateBuilder().build(), "", null));
+        viewModules.add(new ViewModule("ImpulseGenerator", factory.getClockBuilder().build(), "", null));
+        viewModules.add(new ViewModule("AND-3", factory.getAndGateBuilder().setInPorts(3).build(), "", null));
+        viewModules.add(new ViewModule("OR-3", factory.getOrGateBuilder().setInPorts(3).build(), "", null));
+        viewModules.add(new ViewModule("ID-3", factory.getIdentityGateBuilder().setOutPorts(3).build(), "", null));
         loadCustomList();
     }
 
@@ -232,6 +240,9 @@ public class Model implements ClockListener {
      * @return List of ViewModules
      */
     public List<ViewModule> getViewModules() {
+        if (viewModules == null) {
+            initView2Module();
+        }
         return viewModules;
     }
 
@@ -253,6 +264,7 @@ public class Model implements ClockListener {
         File dir = new File(".");
         LOG.debug("Load custom circuits: " + dir.getAbsolutePath());
         Importer importer = new SEPAFImporter();
+        importer.setFactory(factory);
         Map<String, String> formats = importer.getFileFormats();
 
         for (File f : dir.listFiles()) {
@@ -539,7 +551,8 @@ public class Model implements ClockListener {
      *            Point Location of the Module
      */
     public void addModule(Module m, Point p) {
-        circuit.addModule(m, p);
+        moveBy(m, new Point(m.getRectangle().x - p.x, m.getRectangle().y - p.y));
+        circuit.addModule(m);
         notifyForChangedElems();
         dirty = true;
     }
@@ -562,10 +575,8 @@ public class Model implements ClockListener {
         }
 
         if (module != null) {
-            circuit.addModule(module, p);
+            addModule(module, p);
         }
-        notifyForChangedElems();
-        dirty = true;
     }
 
     /**
@@ -607,6 +618,7 @@ public class Model implements ClockListener {
      * @return boolean specifying if moveoperation was successful
      */
     private boolean moveBy(Module module, Point p) {
+
         // check if module won't intersect after the move
         Rectangle r = new Rectangle(module.getRectangle());
         r.setLocation(r.x - p.x, r.y - p.y);
@@ -622,13 +634,19 @@ public class Model implements ClockListener {
 
         Point pr = module.getRectangle().getLocation();
         module.getRectangle().setLocation(pr.x - p.x, pr.y - p.y);
-        // wenn Module ein Circuit ist - werden die ports mitverschoben. interessiert niemand ob unsichtbare module ihre
-        // ports woanders haben
-        for (Port pörtli : module.getInPorts()) {
-            pörtli.getRectangle().setLocation(pr.x - p.x, pr.y - p.y);
+
+        module.setRectangle(r);
+        ModelEvent e = new ModelEvent(module);
+        // ports auch bewegen
+        // TODO was ist, wenn Module ein Circuit ist?
+        for (Port port : module.getInPorts()) {
+            port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
+                    port.getRectangle().getLocation().y - p.y);
+
         }
-        for (Port pörtli : module.getOutPorts()) {
-            pörtli.getRectangle().setLocation(pr.x - p.x, pr.y - p.y);
+        for (Port port : module.getOutPorts()) {
+            port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
+                    port.getRectangle().getLocation().y - p.y);
         }
 
         notifyForChangedElems();
@@ -700,6 +718,7 @@ public class Model implements ClockListener {
         importers.clear();
         importFormats.clear();
         Importer sepafImporter = new SEPAFImporter();
+        sepafImporter.setFactory(factory);
         Map<String, String> sepafFormats = sepafImporter.getFileFormats();
         for (Map.Entry<String, String> format : sepafFormats.entrySet()) {
             importers.put(format.getKey(), sepafImporter);
@@ -884,7 +903,7 @@ public class Model implements ClockListener {
                 return;
             }
         }
-        this.circuit = new Circuit();
+        this.circuit = (Circuit) factory.getCircuitBuilder().build();
         notifyForChangedElems();
     }
 
@@ -908,7 +927,7 @@ public class Model implements ClockListener {
      * @return the Circuit containing the selected Elements
      */
     public Circuit getCircuitFromSelected() {
-        Circuit result = new Circuit();
+        Circuit result = (Circuit) factory.getCircuitBuilder().build();
 
         for (Module m : circuit.getModules()) {
             if (m.isSelected()) {

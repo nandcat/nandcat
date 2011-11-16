@@ -1,20 +1,34 @@
 package nandcat.model.check;
 
+import static org.junit.Assert.assertFalse;
 import java.awt.Rectangle;
-import junit.framework.TestCase;
+import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
-import nandcat.model.element.FlipFlop;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
+import nandcat.model.element.factory.ModuleBuilderFactory;
+import nandcat.view.StandardModuleLayouter;
+import org.junit.Before;
+import org.junit.Test;
 
-public class FeedbackCheckTest extends TestCase {
+public class FeedbackCheckTest {
+
+    private ModuleBuilderFactory factory;
+
+    @Before
+    public void setUp() {
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+        factory.setLayouter(new StandardModuleLayouter());
+    }
 
     /**
      * Flipflop is TOPLEVELCIRCUIT
      */
+    @Test
     public void testFlipFlop() {
-        Circuit c = new FlipFlop();
+        Circuit c = (Circuit) factory.getFlipFlopBuilder().build();
         CircuitCheck check = new FeedbackCheck();
 
         // expected: false - Flipflop haz feedback and cheezeburgerz
@@ -24,17 +38,18 @@ public class FeedbackCheckTest extends TestCase {
     /**
      * FlipFlop will be 2ndLevel
      */
+    @Test
     public void test2ndLevelFlop() {
-        Circuit top = new Circuit();
-        ImpulseGenerator impyOne = new ImpulseGenerator();
-        ImpulseGenerator impyTwo = new ImpulseGenerator();
-        ImpulseGenerator impyThree = new ImpulseGenerator();
-        AndGate twoThree = new AndGate();
+        Circuit top = (Circuit) factory.getCircuitBuilder().build();
+        ImpulseGenerator impyOne = (ImpulseGenerator) factory.getClockBuilder().setFrequency(1).build();
+        ImpulseGenerator impyTwo = (ImpulseGenerator) factory.getClockBuilder().setFrequency(1).build();
+        ImpulseGenerator impyThree = (ImpulseGenerator) factory.getClockBuilder().setFrequency(1).build();
+        AndGate twoThree = (AndGate) factory.getAndGateBuilder().build();
 
-        Circuit flipper = new FlipFlop();
+        Circuit flipper = (Circuit) factory.getFlipFlopBuilder().build();
 
-        Lamp scheffel = new Lamp();
-        Lamp licht = new Lamp();
+        Lamp scheffel = (Lamp) factory.getLampBuilder().build();
+        Lamp licht = (Lamp) factory.getLampBuilder().build();
 
         top.addModule(impyOne);
         top.addModule(impyTwo);
