@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
+import nandcat.model.element.FlipFlop;
 import nandcat.model.element.OrGate;
 import nandcat.model.importexport.Exporter;
 import org.junit.After;
@@ -43,7 +44,6 @@ public class SEPAFExporterConnectionTest {
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
-        System.out.println(content.replace(">", ">\n"));
         assertTrue(content.contains("targetPort=\"a\""));
         assertTrue(content.contains("sourcePort=\"o\""));
         assertTrue(content.contains("source=\"" + SEPAFFormat.getObjectAsUniqueString(gate1) + "\""));
@@ -68,11 +68,34 @@ public class SEPAFExporterConnectionTest {
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
-        System.out.println(content.replace(">", ">\n"));
         assertTrue(content.contains("targetPort=\"a\""));
         assertTrue(content.contains("sourcePort=\"o\""));
         assertTrue(content.contains("source=\"" + SEPAFFormat.getObjectAsUniqueString(gate1) + "\""));
         assertTrue(content.contains("target=\"" + SEPAFFormat.getObjectAsUniqueString(gate2) + "\""));
+    }
+
+    /**
+     * Connection to circuits (e.g. flipflops) point to gates inside the circuit not outside.
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void testDeepConnectionProblem() throws IOException {
+        AndGate gate1 = new AndGate();
+        gate1.setRectangle(new Rectangle(10, 20, 30, 40));
+        FlipFlop ff = new FlipFlop();
+        gate1.setRectangle(new Rectangle(10, 20, 30, 40));
+        c.addModule(gate1);
+        c.addModule(ff);
+        c.addConnection(gate1.getOutPorts().get(0), ff.getInPorts().get(0));
+        exporter.setCircuit(c);
+        assertTrue(exporter.exportCircuit());
+        String content = ImportExportUtil.getFileContent(file);
+        System.out.println(content.replace(">", ">\n"));
+        assertTrue(content.contains("targetPort=\"a\""));
+        assertTrue(content.contains("sourcePort=\"o\""));
+        assertTrue(content.contains("source=\"" + SEPAFFormat.getObjectAsUniqueString(gate1) + "\""));
+        assertTrue(content.contains("target=\"" + SEPAFFormat.getObjectAsUniqueString(ff) + "\""));
     }
 
     @After

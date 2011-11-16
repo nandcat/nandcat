@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -148,15 +149,17 @@ public class SEPAFExporter implements Exporter {
 
         // Connections have to be after all components.
         List<Connection> cachedConnections = new LinkedList<Connection>();
+        Set<Module> cachedModules = new HashSet<Module>();
         for (nandcat.model.element.Element circuitE : c.getElements()) {
             if (circuitE instanceof Connection) {
                 cachedConnections.add((Connection) circuitE);
             } else {
-                e.addContent(buildElement(circuitE));
+                e.addContent(buildModule(circuitE));
+                cachedModules.add((Module) circuitE);
             }
         }
         for (Connection connection : cachedConnections) {
-            e.addContent(buildElement(connection));
+            e.addContent(buildConnection(connection, cachedModules));
         }
         if (mainCircuit && c.getSymbol() != null) {
             org.jdom.Element symbol = new Element("symbol", SEPAFFormat.NAMESPACE.NANDCAT);
@@ -181,7 +184,7 @@ public class SEPAFExporter implements Exporter {
      * @throws FormatException
      *             If generation of sub elements went wrong.
      */
-    private Content buildElement(nandcat.model.element.Element e) throws FormatException {
+    private Content buildModule(nandcat.model.element.Element e) throws FormatException {
         Content c = null;
         if (e instanceof Circuit && !(e instanceof FlipFlop)) {
             c = buildComponent((Module) e);
@@ -196,7 +199,8 @@ public class SEPAFExporter implements Exporter {
         if (e instanceof Module) {
             c = buildComponent((Module) e);
         } else if (e instanceof Connection) {
-            c = buildConnection((Connection) e);
+            LOG.error("Should not happen");
+            throw new IllegalStateException();
         }
         return c;
     }
@@ -223,6 +227,14 @@ public class SEPAFExporter implements Exporter {
         return e;
     }
 
+    /**
+     * Sets the amount of in and out ports if necessary.
+     * 
+     * @param e
+     *            Element to add content to.
+     * @param m
+     *            Module to get amount of ports from.
+     */
     private void setComponentPorts(Element e, Module m) {
         if (!SEPAFFormat.hasDefaultAmountOfInPorts(m)) {
             e.setAttribute("ports_in", Integer.toString(m.getInPorts().size()), SEPAFFormat.NAMESPACE.NANDCAT);
@@ -322,18 +334,79 @@ public class SEPAFExporter implements Exporter {
      * 
      * @param c
      *            Connection to build element of.
+     * @param modules
+     *            Available set of modules in this circuit layer.
      * @return Build element.
      */
-    private Content buildConnection(Connection c) {
+    private Content buildConnection(Connection c, Set<Module> modules) {
         Element e = new Element("connection", SEPAFFormat.NAMESPACE.SEPAF);
-        e.setAttribute("source", SEPAFFormat.getObjectAsUniqueString(c.getPreviousModule()));
-        e.setAttribute("target", SEPAFFormat.getObjectAsUniqueString(c.getNextModule()));
+
+        // Connection may point to element inside a circuit. Search module in this layer.
+        Module sourceModule = getSourceModule(c, modules);
+
+        if (sourceModule == null) {
+            LOG.error("Connection has no source Module");
+        }
+        e.setAttribute("source", SEPAFFormat.getObjectAsUniqueString(sourceModule));
+        e.setAttribute("sourcePort",
+                SEPAFFormat.getPortAsString(true, sourceModule.getOutPorts().indexOf(c.getInPort())));
+
+        // Connection may point to element inside a circuit. Search module in this layer.
+        Module targetModule = getTargetModule(c, modules);
+
+        if (targetModule == null) {
+            LOG.error("Connection has no target Module");
+        }
+        e.setAttribute("target", SEPAFFormat.getObjectAsUniqueString(targetModule));
 
         e.setAttribute("targetPort",
-                SEPAFFormat.getPortAsString(false, c.getNextModule().getInPorts().indexOf(c.getOutPort())));
-        e.setAttribute("sourcePort",
-                SEPAFFormat.getPortAsString(true, c.getPreviousModule().getOutPorts().indexOf(c.getInPort())));
+                SEPAFFormat.getPortAsString(false, targetModule.getInPorts().indexOf(c.getOutPort())));
+
         return e;
+    }
+
+    /**
+     * Connections source module may lead inside another circuit. This method finds the module inside the given set of
+     * modules.
+     * 
+     * @param c
+     *            Connection to get source module for.
+     * @param modules
+     *            Set of modules to search in.
+     * @return Source module, otherwise null.
+     */
+    private Module getSourceModule(Connection c, Set<Module> modules) {
+        if (modules.contains(c.getPreviousModule())) {
+            return c.getPreviousModule();
+        }
+        for (Module module : modules) {
+            if (module.getOutPorts().contains(c.getInPort())) {
+                return module;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Connections target module may lead inside another circuit. This method finds the module inside the given set of
+     * modules.
+     * 
+     * @param c
+     *            Connection to get target module for.
+     * @param modules
+     *            Set of modules to search in.
+     * @return Source module, otherwise null.
+     */
+    private Module getTargetModule(Connection c, Set<Module> modules) {
+        if (modules.contains(c.getNextModule())) {
+            return c.getNextModule();
+        }
+        for (Module module : modules) {
+            if (module.getInPorts().contains(c.getOutPort())) {
+                return module;
+            }
+        }
+        return null;
     }
 
     /**
