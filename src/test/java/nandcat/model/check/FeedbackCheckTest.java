@@ -36,6 +36,13 @@ public class FeedbackCheckTest extends TestCase {
         Lamp scheffel = new Lamp();
         Lamp licht = new Lamp();
 
+        top.addModule(impyOne);
+        top.addModule(impyTwo);
+        top.addModule(impyThree);
+        top.addModule(flipper);
+        top.addModule(scheffel);
+        top.addModule(licht);
+
         top.addConnection(impyOne.getOutPorts().get(0), flipper.getInPorts().get(0));
 
         top.addConnection(impyTwo.getOutPorts().get(0), twoThree.getInPorts().get(0));
@@ -50,15 +57,8 @@ public class FeedbackCheckTest extends TestCase {
         twoThree.setSelected(true);
         twoThree.setRectangle(new Rectangle(50, 50, 50, 50));
 
-        top.addModule(impyOne);
-        top.addModule(impyTwo);
-        top.addModule(impyThree);
-        top.addModule(flipper);
-        top.addModule(scheffel);
-        top.addModule(licht);
-
-        // TODO FIX THIS SHIT
         CircuitCheck check = new FeedbackCheck();
+        // expected flase - ff hat fb
         assertFalse(check.test(top));
     }
 

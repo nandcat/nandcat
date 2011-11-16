@@ -9,7 +9,6 @@ import java.util.Set;
 import nandcat.model.check.CheckEvent.State;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Element;
-import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 
