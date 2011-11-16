@@ -3,8 +3,9 @@ package nandcat.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -34,7 +35,7 @@ import nandcat.model.check.SourceCheck;
 /**
  * CheckManager is responsible for selecting and deselecting Checks and showing their states.
  */
-public class CheckManager extends JDialog implements ActionListener {
+public class CheckManager extends JDialog {
 
     /**
      * Default serial version uid.
@@ -64,7 +65,7 @@ public class CheckManager extends JDialog implements ActionListener {
     /**
      * Location of upper left corner of the frame on the screen.
      */
-    private Point frameLocation = new Point(300, 250);
+    private Point frameLocation = new Point(800, 10);
 
     /**
      * JPanel on which the CheckBoxes with its CheckBoxMenuItem are placed.
@@ -77,12 +78,23 @@ public class CheckManager extends JDialog implements ActionListener {
     private I18NBundle i18n = I18N.getBundle("model");
 
     /**
+     * Listener on the Buttons.
+     */
+    private ActionListener buttonListener;
+
+    /**
+     * Dimension of the Buttons.
+     */
+    private Dimension buttonDim = new Dimension(300, 30);
+
+    /**
      * Constructs the CheckManager.
      * 
      * @param set
      *            List with all checks to be performed.
      */
-    public CheckManager(Set<CircuitCheck> set) {
+    public CheckManager(Set<CircuitCheck> set, ActionListener buttonListener) {
+        this.buttonListener = buttonListener;
         setupCheckmanager(set);
         CheckListener checkListener = new CheckListener() {
 
@@ -143,16 +155,6 @@ public class CheckManager extends JDialog implements ActionListener {
         super.setVisible(visible);
         panel.setVisible(visible);
         // When the CheckManager is re-opened all states are set to pending.
-//        for (Component checkbox : panel.getComponents()) {
-//            if (checkbox instanceof JCheckBox) {
-//                // Then get the MenuItem and change its icon.
-//                for (Component menuitem : ((JCheckBox) checkbox).getComponents()) {
-//                    if (menuitem instanceof JCheckBoxMenuItem) {
-//                        ((JCheckBoxMenuItem) menuitem).setIcon(checkPending);
-//                    }
-//                }
-//            }
-//        }
     }
 
     /**
@@ -169,6 +171,7 @@ public class CheckManager extends JDialog implements ActionListener {
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(Color.white);
+        panel.setFocusable(false);
         // The listener waits for changes on the checkbox.
         ItemListener itemListener = new ItemListener() {
 
@@ -183,16 +186,31 @@ public class CheckManager extends JDialog implements ActionListener {
         JCheckBoxMenuItem checkboxItem = null;
         for (CircuitCheck check : checks) {
             checkbox = new JCheckBox();
+            checkbox.setFocusable(false);
             // By default all checks will be executed.
             checkboxItem = setMenuItem(check, checkboxItem);
+            checkboxItem.setFocusable(false);
             checkboxItem.addItemListener(itemListener);
             checkbox.add(checkboxItem);
             panel.add(checkbox);
         }
         JButton okayButton = new JButton(i18n.getString("check.dialog.ok"));
-        okayButton.addActionListener(this);
+        okayButton.setActionCommand(i18n.getString("check.button.okay"));
+        okayButton.setPreferredSize(buttonDim);
+        okayButton.setFocusable(false);
+        JButton calc = new JButton(i18n.getString("check.dialog.refresh"));
+        calc.setActionCommand(i18n.getString("check.button.refresh"));
+        calc.setPreferredSize(buttonDim);
+        calc.setFocusable(false);
+        okayButton.addActionListener(buttonListener);
+        calc.addActionListener(buttonListener);
+        JPanel toolbar = new JPanel();
+        toolbar.setLayout(new FlowLayout());
+        toolbar.setBackground(Color.white);
+        toolbar.add(okayButton);
+        toolbar.add(calc);
         this.add(panel, BorderLayout.CENTER);
-        this.add(okayButton, BorderLayout.PAGE_END);
+        this.add(toolbar, BorderLayout.PAGE_END);
     }
 
     /**
@@ -206,20 +224,27 @@ public class CheckManager extends JDialog implements ActionListener {
     private void setCheckActive(CircuitCheck check, String match) {
         if ((check instanceof CountCheck) && match.equals(i18n.getString("check.count.description"))) {
             check.setActive(!check.isActive());
+            changeSymbol(checkPending, i18n.getString("check.count.description"));
         } else if ((check instanceof IllegalConnectionCheck)
                 && match.equals(i18n.getString("check.illegalconnection.description"))) {
             check.setActive(!check.isActive());
+            changeSymbol(checkPending, i18n.getString("check.illegalconnection.description"));
         } else if ((check instanceof MultipleConnectionsCheck)
                 && match.equals(i18n.getString("check.multipleconnections.description"))) {
             check.setActive(!check.isActive());
+            changeSymbol(checkPending, i18n.getString("check.multipleconnections.description"));
         } else if ((check instanceof OrphanCheck) && match.equals(i18n.getString("check.orphan.description"))) {
             check.setActive(!check.isActive());
+            changeSymbol(checkPending, i18n.getString("check.orphan.description"));
         } else if ((check instanceof SinkCheck) && match.equals(i18n.getString("check.sink.description"))) {
             check.setActive(!check.isActive());
+            changeSymbol(checkPending, i18n.getString("check.sink.description"));
         } else if ((check instanceof SourceCheck) && match.equals(i18n.getString("check.source.description"))) {
             check.setActive(!check.isActive());
+            changeSymbol(checkPending, i18n.getString("check.source.description"));
         } else if ((check instanceof FeedbackCheck) && match.equals(i18n.getString("check.feedback.description"))) {
             check.setActive(!check.isActive());
+            changeSymbol(checkPending, i18n.getString("check.feedback.description"));
         }
     }
 
@@ -258,6 +283,8 @@ public class CheckManager extends JDialog implements ActionListener {
      * 
      * @param icon
      *            ImageIcon the new icon.
+     * @param check
+     *            String Name of the Check which icon will be changed.
      */
     private void changeSymbol(ImageIcon icon, String check) {
         // First get the CheckBox from the panel.
@@ -276,9 +303,19 @@ public class CheckManager extends JDialog implements ActionListener {
         }
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() instanceof JButton) {
-            setVisible(false);
+    /**
+     * Resets the Icons in the CheckManger sets all Icons on Pending.
+     */
+    public void resetList() {
+        for (Component checkbox : panel.getComponents()) {
+            if (checkbox instanceof JCheckBox) {
+                // Then get the MenuItem and change its icon.
+                for (Component menuitem : ((JCheckBox) checkbox).getComponents()) {
+                    if (menuitem instanceof JCheckBoxMenuItem) {
+                        ((JCheckBoxMenuItem) menuitem).setIcon(checkPending);
+                    }
+                }
+            }
         }
     }
 }
