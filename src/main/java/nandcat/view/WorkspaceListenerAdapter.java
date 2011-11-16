@@ -34,4 +34,10 @@ public abstract class WorkspaceListenerAdapter implements WorkspaceListener {
      */
     public void mouseMoved(WorkspaceEvent e) {
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void windowClosing(WorkspaceEvent e) {
+    }
 }

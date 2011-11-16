@@ -2,9 +2,6 @@ package nandcat.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +17,8 @@ import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListener;
 import nandcat.model.ModelListenerAdapter;
+import nandcat.view.WorkspaceEvent;
+import nandcat.view.WorkspaceListenerAdapter;
 import org.apache.log4j.Logger;
 
 /**
@@ -76,7 +75,6 @@ public class ExportTool implements Tool {
          * Default serial verion uid.
          */
         private static final long serialVersionUID = 1L;
-
         {
             add("save");
             add("saveAs");
@@ -103,7 +101,7 @@ public class ExportTool implements Tool {
         this.controller = controller;
         this.model = controller.getModel();
         this.model.addListener(getModelListener());
-        this.controller.getView().addWindowListener(getWindowListener());
+        this.controller.getView().getWorkspace().addListener(getWindowListener());
     }
 
     /**
@@ -122,15 +120,17 @@ public class ExportTool implements Tool {
     }
 
     /**
-     * Gets the window listener used to interrupt if window is closing.
+     * Gets the Workspace listener used to interrupt if window is closing.
      * 
-     * @return The Windowlistener.
+     * @return The WorkspaceListenerAdapter with the windowClosing Event.
      */
-    private WindowListener getWindowListener() {
-        return new WindowAdapter() {
+    private WorkspaceListenerAdapter getWindowListener() {
+        return new WorkspaceListenerAdapter() {
 
-            public void windowClosing(WindowEvent e) {
-                actionSaveBeforeLost();
+            public void windowClosing(WorkspaceEvent e) {
+                if (!actionSaveBeforeLost()) {
+                    System.exit(0);
+                }
             }
         };
     }
@@ -222,7 +222,6 @@ public class ExportTool implements Tool {
         ImportExportUtils.addFileFilterToChooser(fc, model.getExportFormats());
         fc.setAcceptAllFileFilterUsed(false);
         int returnVal = fc.showSaveDialog(controller.getView());
-
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             if (file != null) {
@@ -232,7 +231,6 @@ public class ExportTool implements Tool {
                     String ext = eFileFilter.getExtension();
                     file = new File(file.getAbsolutePath() + "." + ext);
                 }
-
                 // Overwrite Dialog
                 if (file.exists()) {
                     int response = JOptionPane.showConfirmDialog(null, "Overwrite existing file?", "Confirm Overwrite",
@@ -242,7 +240,6 @@ public class ExportTool implements Tool {
                         return;
                     }
                 }
-
                 // Add Image to circuit
                 Object[] options = { "Yes", "No", "Delete existing Image" };
                 int n = JOptionPane.showOptionDialog(controller.getView(),
@@ -253,7 +250,6 @@ public class ExportTool implements Tool {
                 } else if (n == 2) {
                     model.getCircuit().setSymbol(null);
                 }
-
                 LOG.debug("Exporting: " + file.getName());
                 saveLastFile = file;
                 saveLastUUID = model.getCircuit().getUuid();
@@ -273,7 +269,6 @@ public class ExportTool implements Tool {
         JFileChooser fc = new JFileChooser();
         fc.setAcceptAllFileFilterUsed(false);
         int returnVal = fc.showOpenDialog(controller.getView());
-
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             if (file != null) {
@@ -295,7 +290,6 @@ public class ExportTool implements Tool {
                             "Export error", JOptionPane.ERROR_MESSAGE);
                     showImageLoadFileChooser();
                 }
-
             } else {
                 LOG.debug("File is null");
             }

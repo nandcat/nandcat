@@ -50,8 +50,8 @@ public class Connection implements Element, DrawConnection {
      *            May not be null.
      */
     public Connection(Port inPort, Port outPort) {
-        if (inPort == null || outPort == null) {
-            throw new IllegalArgumentException("neither in nor outport of a connection may be null");
+        if (inPort == null || !inPort.isOutPort() || outPort == null || outPort.isOutPort()) {
+            throw new IllegalArgumentException("in or output null or inPort not of type outPort or vice versa");
         }
         this.inPort = inPort;
         this.outPort = outPort;

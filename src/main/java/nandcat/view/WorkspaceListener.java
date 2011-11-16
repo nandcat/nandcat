@@ -44,4 +44,12 @@ public interface WorkspaceListener {
      *            WorkspaceEvent containing informations about the Location.
      */
     void mouseMoved(WorkspaceEvent e);
+
+    /**
+     * Invoked when Close Button has been pressed.
+     * 
+     * @param e
+     *            WorkspaceEvent.
+     */
+    void windowClosing(WorkspaceEvent e);
 }

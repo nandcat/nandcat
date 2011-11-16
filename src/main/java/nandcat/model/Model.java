@@ -159,7 +159,7 @@ public class Model implements ClockListener {
     /**
      * Fill viewModule2Module data structure with default Gates and custom circuits.
      */
-    private void initView2Module() {
+    public void initView2Module() {
         viewModules = new LinkedList<ViewModule>();
         viewModules.add(new ViewModule("AND", new AndGate(), "", null));
         viewModules.add(new ViewModule("OR", new OrGate(), "", null));
@@ -193,7 +193,7 @@ public class Model implements ClockListener {
         }
         e.setChecksPassed(allChecksPassed);
         for (ModelListener l : listeners) {
-            l.checksStarted(e);
+            l.checksStopped(e);
         }
     }
 
@@ -243,7 +243,7 @@ public class Model implements ClockListener {
     /**
      * Loads or reloads the List containing the custom-circuits.
      */
-    public void loadCustomList() {
+    private void loadCustomList() {
         // search PATH for circuits, non-recursive.
         File dir = new File(".");
         LOG.debug("Load custom circuits: " + dir.getAbsolutePath());
@@ -804,13 +804,17 @@ public class Model implements ClockListener {
         }
         this.circuit = importFromFile(file);
 
+        ModelEvent e2 = new ModelEvent();
         // import failed
         if (circuit == null) {
             newCircuit();
-        }
-        ModelEvent e2 = new ModelEvent();
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e2);
+            for (ModelListener l : listeners) {
+                l.importFailed(e2);
+            }
+        } else {
+            for (ModelListener l : listeners) {
+                l.importSucceeded(e2);
+            }
         }
     }
 
@@ -942,7 +946,7 @@ public class Model implements ClockListener {
         }
         for (Connection c : circuit.getConnections()) {
             if (c.isSelected()) {
-                if (result.getModules().contains(c.getOutPort().getModule())) {
+                if (result.getModules().contains(c.getNextModule())) {
                     result.addConnection(c.getInPort(), c.getInPort());
                 }
             }

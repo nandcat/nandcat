@@ -113,6 +113,7 @@ public class CreateTool implements Tool {
         represent = new LinkedList<String>();
         represent.add("createButton");
         represent.add("selectModule");
+        represent.add("loaddef");
     }
 
     /**
@@ -156,26 +157,22 @@ public class CreateTool implements Tool {
      *            Point where the Element will be created.
      */
     private void createElement(Point point) {
-
         // Offset for avoiding intersecting modules.
         Point offset = new Point();
         offset.x = point.x - (GATE_TOLERANCE.width) / 2;
         offset.y = point.y - (GATE_TOLERANCE.height) / 2;
         Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(offset, GATE_TOLERANCE));
-
         // First check if the user clicked on an empty space on the workspace. This means they want to create a new
         // module.
         if (elementsAt.isEmpty()) {
             offset.x = point.x - (GATE_SIZE.width) / 2;
             offset.y = point.y - (GATE_SIZE.height) / 2;
             if (sourcePort != null) {
-
                 // If the user clicked on an empty space on the workspace but a sourcePort is selected, the sourcePort
                 // will be set to null. The connection preview is reseted and a new gate can be created.
                 sourcePort = null;
                 view.getWorkspace().redraw();
             } else if (selectedModule == null) {
-
                 // Sets a default Module.
                 selectedModule = model.getViewModules().get(0);
                 model.addModule(selectedModule, offset);
@@ -216,14 +213,11 @@ public class CreateTool implements Tool {
      */
     private void moveCursor(Point point) {
         if (sourcePort != null) {
-
             // Draw a preview of the connection
             connectionPreview.setLine(sourcePort.getCenter(), point);
             view.getWorkspace().redraw(connectionPreview);
-
             point.x -= MOUSE_TOLERANCE.height / 2;
             point.y -= MOUSE_TOLERANCE.width / 2;
-
             // Inform the user if the underlying port cannot be connected to the chosen port.
             Set<DrawElement> elements = model.getDrawElementsAt(new Rectangle(point, MOUSE_TOLERANCE));
             Port portAt = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
@@ -263,6 +257,12 @@ public class CreateTool implements Tool {
                     }
                 } else if (e.getActionCommand().equals("new")) {
                     model.clearCircuit();
+                } else if (e.getActionCommand().equals("loaddef")) {
+                    System.out.println("loaddef");
+                    model.initView2Module();
+                    view.setViewModules(model.getViewModules());
+                    view.refreshBox();
+                    selectedModule = null;
                 }
             }
         };
