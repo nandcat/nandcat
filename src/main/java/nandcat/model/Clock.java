@@ -118,27 +118,10 @@ public class Clock {
             listener.clockTicked(this);
         }
         for (ImpulseGenerator listener : generators) {
-            // // ALTERNATIVE
-            // if (listener.getFrequency() == 0) {
-            // if (cycle == 0) {
-            // listener.clockTicked(this);
-            // }
-            // continue;
-            // } else if (cycle % listener.getFrequency() == 0) {
-            // listener.clockTicked(this);
-            // }
             if ((cycle == 0) || (listener.getFrequency() == 1)
                     || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
                 listener.clockTicked(this);
             }
-            // // ALTERNATIVE 2
-            // if (cycle == 0) {
-            // listener.clockTicked(this);
-            // } else {
-            // if (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0) {
-            // listener.clockTicked(this);
-            // }
-            // }
         }
         for (ClockListener listener : connections) {
             listener.clockTicked(this);
