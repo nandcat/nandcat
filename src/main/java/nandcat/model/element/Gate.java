@@ -203,7 +203,12 @@ public abstract class Gate implements Module {
      * {@inheritDoc}
      */
     public String toString() {
-        String x = this.getClass().getSimpleName() + "(" + getRectangle().x + "/" + getRectangle().y + ") ";
+        String x;
+        if (name == null || name.equals("")) {
+            x = this.getClass().getSimpleName() + "(" + getRectangle().x + "/" + getRectangle().y + ") ";
+        } else {
+            x = name;
+        }
         x += "(In) ";
         for (Port in : inPorts) {
             x += in + ", ";
@@ -212,6 +217,7 @@ public abstract class Gate implements Module {
         for (Port out : outPorts) {
             x += out + ", ";
         }
+
         return x;
     }
 }

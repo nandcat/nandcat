@@ -190,7 +190,12 @@ public class ImpulseGenerator implements Module {
      * {@inheritDoc}
      */
     public String toString() {
-        String x = this.getClass().getSimpleName() + "(" + getRectangle().x + "/" + getRectangle().y + ") ";
+        String x;
+        if (name == null || name.equals("")) {
+            x = this.getClass().getSimpleName() + "(" + getRectangle().x + "/" + getRectangle().y + ") ";
+        } else {
+            x = name;
+        }
         x += "(out) ";
         if (outPort.getRectangle() != null) {
             x += outPort.getRectangle().x + "/" + outPort.getRectangle().y + ", ";

@@ -149,7 +149,12 @@ public class Lamp implements Module {
      * {@inheritDoc}
      */
     public String toString() {
-        String x = this.getClass().getSimpleName() + "(" + getRectangle().x + "/" + getRectangle().y + ") ";
+        String x;
+        if (name == null || name.equals("")) {
+            x = this.getClass().getSimpleName() + "(" + getRectangle().x + "/" + getRectangle().y + ") ";
+        } else {
+            x = name;
+        }
         x += "(In) ";
         if (inPort.getRectangle() != null) {
             x += inPort.getRectangle().x + "/" + inPort.getRectangle().y + ", ";
