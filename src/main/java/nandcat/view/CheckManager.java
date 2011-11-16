@@ -88,6 +88,11 @@ public class CheckManager extends JDialog {
     private Dimension buttonDim = new Dimension(300, 30);
 
     /**
+     * Button to start the checks.
+     */
+    private JButton calc;
+
+    /**
      * Constructs the CheckManager.
      * 
      * @param set
@@ -168,6 +173,7 @@ public class CheckManager extends JDialog {
         setLocation(frameLocation);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLayout(new BorderLayout());
+        setFocusable(false);
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(Color.white);
@@ -198,7 +204,7 @@ public class CheckManager extends JDialog {
         okayButton.setActionCommand(i18n.getString("check.button.okay"));
         okayButton.setPreferredSize(buttonDim);
         okayButton.setFocusable(false);
-        JButton calc = new JButton(i18n.getString("check.dialog.refresh"));
+        calc = new JButton(i18n.getString("check.dialog.refresh"));
         calc.setActionCommand(i18n.getString("check.button.refresh"));
         calc.setPreferredSize(buttonDim);
         calc.setFocusable(false);
@@ -317,5 +323,15 @@ public class CheckManager extends JDialog {
                 }
             }
         }
+    }
+
+    /**
+     * Enables or Disables the calc Button.
+     * 
+     * @param state
+     *            boolean the value to be set.
+     */
+    public void setButton(boolean state) {
+        calc.setEnabled(state);
     }
 }

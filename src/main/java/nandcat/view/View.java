@@ -529,6 +529,7 @@ public class View extends JFrame {
         for (JComponent enable : disableElements) {
             enable.setEnabled(true);
         }
+        modules.setEnabled(true);
     }
 
     /**
@@ -539,6 +540,7 @@ public class View extends JFrame {
         for (JComponent enable : disableElements) {
             enable.setEnabled(false);
         }
+        modules.setEnabled(false);
     }
 
     /**
