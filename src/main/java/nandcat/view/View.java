@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -22,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JViewport;
@@ -140,6 +140,10 @@ public class View extends JFrame {
      */
     private JComboBox modules;
 
+    private JScrollBar horizontal;
+
+    private JScrollBar vertical;
+
     /**
      * Constructs the view.
      * 
@@ -171,6 +175,7 @@ public class View extends JFrame {
         model.addListener(new ModelListenerAdapter() {
 
             public void elementsChanged(ModelEvent e) {
+                allModulesInSight();
                 redraw(e);
             }
 
@@ -188,6 +193,8 @@ public class View extends JFrame {
         workspace.setBackground(Color.white);
         workspace.setLayout(null); // no layout is required for free move of the components
         scroller = new JScrollPane(workspace);
+        horizontal = scroller.getHorizontalScrollBar();
+        vertical = scroller.getVerticalScrollBar();
         viewport = scroller.getViewport();
         viewport.setViewPosition(viewportLocation);
         toolBar = new JToolBar();
@@ -577,8 +584,9 @@ public class View extends JFrame {
      * @param rect
      *            Rectangle which will be scrolled to Visible.
      */
-    public void setViewportPosition(Rectangle rect) {
-        workspace.scrollRectToVisible(rect);
+    public void setViewportPosition(int dx, int dy) {
+        horizontal.setValue(horizontal.getValue() + dx);
+        vertical.setValue(vertical.getValue() + dy);
     }
 
     /**
@@ -638,15 +646,6 @@ public class View extends JFrame {
      */
     public void giveViewPortRect() {
         workspace.setViewPortRect(viewport.getViewRect());
-    }
-
-    /**
-     * Getter for the ViewPort Rectangle.
-     * 
-     * @return Rectangle representing the visible part of the Workspace.
-     */
-    public Rectangle getViewRect() {
-        return viewport.getViewRect();
     }
 
     /**
