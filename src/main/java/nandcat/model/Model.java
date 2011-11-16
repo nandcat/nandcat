@@ -183,12 +183,13 @@ public class Model implements ClockListener {
             l.checksStarted(e);
         }
         boolean allChecksPassed = true;
+        boolean currentCheckPassed = true;
         for (CircuitCheck check : checks) {
             if (check.isActive()) {
-                allChecksPassed = check.test(circuit);
+                currentCheckPassed = check.test(circuit);
             }
-            if (!allChecksPassed) {
-                break;
+            if (!currentCheckPassed) {
+                allChecksPassed = false;
             }
         }
         e.setChecksPassed(allChecksPassed);

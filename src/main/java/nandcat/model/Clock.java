@@ -64,7 +64,7 @@ public class Clock {
         }
 
         this.cycle = cycle;
-        sleepTime = 100;
+        sleepTime = 1000;
         running = false;
         listeners = new HashSet<ClockListener>();
         generators = new HashSet<ImpulseGenerator>();
