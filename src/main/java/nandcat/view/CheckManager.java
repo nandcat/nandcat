@@ -1,15 +1,20 @@
 package nandcat.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Set;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import nandcat.I18N;
@@ -29,7 +34,7 @@ import nandcat.model.check.SourceCheck;
 /**
  * CheckManager is responsible for selecting and deselecting Checks and showing their states.
  */
-public class CheckManager extends JFrame {
+public class CheckManager extends JDialog implements ActionListener {
 
     /**
      * Default serial version uid.
@@ -136,8 +141,9 @@ public class CheckManager extends JFrame {
      */
     public void setVisible(boolean visible) {
         super.setVisible(visible);
+        panel.setVisible(visible);
         if (visible) {
-            super.setExtendedState(JFrame.NORMAL);
+            //super.setExtendedState(JFrame.NORMAL);
             // When the CheckManager is re-opened all states are set to pending.
             for (Component checkbox : panel.getComponents()) {
                 if (checkbox instanceof JCheckBox) {
@@ -162,6 +168,7 @@ public class CheckManager extends JFrame {
         setSize(620, 300);
         setLocation(frameLocation);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setLayout(new BorderLayout());
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(Color.white);
@@ -185,7 +192,10 @@ public class CheckManager extends JFrame {
             checkbox.add(checkboxItem);
             panel.add(checkbox);
         }
-        this.add(panel);
+        JButton okayButton = new JButton("OK");
+        okayButton.addActionListener(this);
+        this.add(panel, BorderLayout.CENTER);
+        this.add(okayButton, BorderLayout.PAGE_END);
     }
 
     /**
@@ -266,6 +276,12 @@ public class CheckManager extends JFrame {
                     }
                 }
             }
+        }
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() instanceof JButton) {
+            setVisible(false);
         }
     }
 }
