@@ -142,20 +142,17 @@ public class CheckManager extends JDialog implements ActionListener {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         panel.setVisible(visible);
-        if (visible) {
-            //super.setExtendedState(JFrame.NORMAL);
-            // When the CheckManager is re-opened all states are set to pending.
-            for (Component checkbox : panel.getComponents()) {
-                if (checkbox instanceof JCheckBox) {
-                    // Then get the MenuItem and change its icon.
-                    for (Component menuitem : ((JCheckBox) checkbox).getComponents()) {
-                        if (menuitem instanceof JCheckBoxMenuItem) {
-                            ((JCheckBoxMenuItem) menuitem).setIcon(checkPending);
-                        }
-                    }
-                }
-            }
-        }
+        // When the CheckManager is re-opened all states are set to pending.
+//        for (Component checkbox : panel.getComponents()) {
+//            if (checkbox instanceof JCheckBox) {
+//                // Then get the MenuItem and change its icon.
+//                for (Component menuitem : ((JCheckBox) checkbox).getComponents()) {
+//                    if (menuitem instanceof JCheckBoxMenuItem) {
+//                        ((JCheckBoxMenuItem) menuitem).setIcon(checkPending);
+//                    }
+//                }
+//            }
+//        }
     }
 
     /**
@@ -192,7 +189,7 @@ public class CheckManager extends JDialog implements ActionListener {
             checkbox.add(checkboxItem);
             panel.add(checkbox);
         }
-        JButton okayButton = new JButton("OK");
+        JButton okayButton = new JButton(i18n.getString("check.dialog.ok"));
         okayButton.addActionListener(this);
         this.add(panel, BorderLayout.CENTER);
         this.add(okayButton, BorderLayout.PAGE_END);
