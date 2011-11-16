@@ -53,45 +53,56 @@ public class FeedbackCheck implements CircuitCheck {
     }
 
     /**
-     * {@inheritDoc} <br>
-     * This Check will fail if it is not possible to run through a Queue of this circuit, where the first Module adds
-     * the next modules, and visit every module only once
+     * {@inheritDoc} This Check will fail if it is not possible to run through a Queue of this circuit, where the first
+     * Module adds the next modules, and visit every module only once
      */
     public boolean test(Circuit circuit) {
         Set<Element> elements = new LinkedHashSet<Element>();
-        CheckEvent e = new CheckEvent(State.RUNNING, elements, this);
-        for (CheckListener l : listener) {
-            l.checkChanged(e);
-        }
-        HashSet<Module> visited = new HashSet<Module>();
+        informListeners(State.RUNNING, elements);
+        HashSet<Module> hasNeighbour = new HashSet<Module>();
         Queue<Module> q = new LinkedList<Module>();
-        q.addAll(getStartModules(circuit));
+        if (getStartModules(circuit).isEmpty() && !circuit.getModules().isEmpty()) {
+            elements.addAll(circuit.getModules());
+            informListeners(State.FAILED, elements);
+            return false;
+        } else {
+            q.addAll(getStartModules(circuit));
+        }
+
         while (!q.isEmpty()) {
             Module current = q.poll();
-            if (visited.contains(current)) {
+            if (hasNeighbour.contains(current)) {
 
                 // If the test fails add the Module which caused the fail to the CheckEvent.
                 elements.add(current);
-                e = new CheckEvent(State.FAILED, elements, this);
-                for (CheckListener l : listener) {
-                    l.checkChanged(e);
-                }
+                informListeners(State.FAILED, elements);
                 return false;
             }
-            visited.add(current);
+
             for (Port p : current.getOutPorts()) {
                 if (p.getConnection() != null) {
                     q.add(p.getConnection().getNextModule());
-
+                    hasNeighbour.add(current);
                 }
             }
         }
+        informListeners(State.SUCCEEDED, elements);
+        return true;
+    }
 
-        e = new CheckEvent(State.SUCCEEDED, elements, this);
+    /**
+     * Notifies the Classes implementing the CheckListener interface about a change in this Check.
+     * 
+     * @param state
+     *            State of the check.
+     * @param elements
+     *            Elements causing a fail in the check. Empty if the check started or succeeded.
+     */
+    private void informListeners(State state, Set<Element> elements) {
+        CheckEvent e = new CheckEvent(state, elements, this);
         for (CheckListener l : listener) {
             l.checkChanged(e);
         }
-        return true;
     }
 
     /**
@@ -99,7 +110,7 @@ public class FeedbackCheck implements CircuitCheck {
      * 
      * @return List<Module> containing the starting Modules of this Circuit.
      */
-    public List<Module> getStartModules(Circuit circuit) {
+    private List<Module> getStartModules(Circuit circuit) {
         List<Module> result = new LinkedList<Module>();
         for (Element e : circuit.getElements()) {
             if (e instanceof Module) {
