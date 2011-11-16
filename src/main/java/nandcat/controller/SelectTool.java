@@ -115,8 +115,8 @@ public class SelectTool implements Tool {
                     if (elements.isEmpty()) {
                         rect = new Rectangle(e.getLocation());
                         isSelect = true;
-                    } else {
-                        if (notEmpty) {
+                    } else { // Mouse over a Module.
+                        if (notEmpty) {  // Some Modules selected yet
                             boolean oneSelected = false;
                             for (DrawElement element : elements) {
                                 if (element.isSelected()) {
@@ -126,12 +126,18 @@ public class SelectTool implements Tool {
                             if (oneSelected) {
                                 isSelect = false;
                             } else {
-                                rect = new Rectangle(e.getLocation());
-                                isSelect = true;
+//                                rect = new Rectangle(e.getLocation());
+//                                isSelect = true;
+                                model.deselectAll();
+                                notEmpty = model.selectElements(new Rectangle(e.getLocation(), MOUSE_TOLERANCE));
+                                isSelect = false;
                             }
                         } else {
-                            rect = new Rectangle(e.getLocation());
-                            isSelect = true;
+//                            rect = new Rectangle(e.getLocation());
+//                            isSelect = true;
+                          model.deselectAll();
+                          notEmpty = model.selectElements(new Rectangle(e.getLocation(), MOUSE_TOLERANCE));
+                          isSelect = false;
                         }
                     }
                 }
