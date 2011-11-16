@@ -964,4 +964,34 @@ public class Model implements ClockListener {
 
         return result;
     }
+
+    /**
+     * Export the the selected Elements to a file.
+     * 
+     * @param file
+     *            File to export top-level Circuit from
+     */
+    public void exportSelectedToFile(File file) {
+        if (file == null) {
+            throw new IllegalArgumentException();
+        }
+        String ext = getFileExtension(file);
+        if (exporters.containsKey(ext)) {
+            Exporter ex = exporters.get(ext);
+            ex.setFile(file);
+
+            //
+            Circuit selected = getCircuitFromSelected();
+            //
+
+            ex.setCircuit(selected);
+            if (ex.exportCircuit()) {
+                LOG.debug("File exported successfully");
+                dirty = false;
+            } else {
+                LOG.warn("Export to " + file.getAbsolutePath() + " failed: " + ex.getErrorMessage());
+                // TODO Fehlermeldung an View?
+            }
+        }
+    }
 }
