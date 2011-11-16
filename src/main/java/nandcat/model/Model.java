@@ -949,8 +949,9 @@ public class Model implements ClockListener {
         }
         for (Connection c : circuit.getConnections()) {
             if (c.isSelected()) {
-                if (result.getModules().contains(c.getNextModule())) {
-                    result.addConnection(c.getInPort(), c.getInPort());
+                if (result.getModules().contains(c.getNextModule())
+                        && result.getModules().contains(c.getPreviousModule())) {
+                    result.addConnection(c.getInPort(), c.getOutPort());
                 }
             }
         }
