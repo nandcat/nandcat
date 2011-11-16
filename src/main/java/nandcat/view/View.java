@@ -181,7 +181,7 @@ public class View extends JFrame {
         setTitle(FRAME_TITLE);
         setSize(600, 650);
         setLocation(frameLocation);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         workspace = new Workspace(model, this);
         workspace.setPreferredSize(workspaceDimension);
         workspace.setSize(workspaceDimension);

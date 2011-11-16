@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.geom.Line2D;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -79,6 +81,11 @@ public class Workspace extends JPanel {
     private View view;
 
     /**
+     * WindowAdapter listening on Window Events of the view.
+     */
+    private WindowAdapter windowListener;
+
+    /**
      * Constructs the workspace.
      * 
      * @param model
@@ -114,6 +121,13 @@ public class Workspace extends JPanel {
         };
         this.addMouseListener(mouseListener);
         this.addMouseMotionListener(mouseListener);
+        windowListener = new WindowAdapter() {
+
+            public void windowClosing(WindowEvent e) {
+                notifyWindowClosing(e);
+            }
+        };
+        view.addWindowListener(windowListener);
     }
 
     /**
@@ -218,27 +232,27 @@ public class Workspace extends JPanel {
         List<DrawElement> elementsToDraw = model.getDrawElements();
         List<Connection> cachedConnections = new LinkedList<Connection>();
         for (DrawElement elem : elementsToDraw) {
-//            if (isInView(elem)) {
-                if (elem instanceof Connection) {
-                    cachedConnections.add((Connection) elem);
-                } else if (elem instanceof AndGate) {
-                    elementDrawer.draw((AndGate) elem);
-                } else if (elem instanceof FlipFlop) {
-                    elementDrawer.draw((FlipFlop) elem);
-                } else if (elem instanceof Circuit) {
-                    elementDrawer.draw((Circuit) elem);
-                } else if (elem instanceof ImpulseGenerator) {
-                    elementDrawer.draw((ImpulseGenerator) elem);
-                } else if (elem instanceof IdentityGate) {
-                    elementDrawer.draw((IdentityGate) elem);
-                } else if (elem instanceof NotGate) {
-                    elementDrawer.draw((NotGate) elem);
-                } else if (elem instanceof OrGate) {
-                    elementDrawer.draw((OrGate) elem);
-                } else if (elem instanceof Lamp) {
-                    elementDrawer.draw((Lamp) elem);
-                }
-//            }
+            // if (isInView(elem)) {
+            if (elem instanceof Connection) {
+                cachedConnections.add((Connection) elem);
+            } else if (elem instanceof AndGate) {
+                elementDrawer.draw((AndGate) elem);
+            } else if (elem instanceof FlipFlop) {
+                elementDrawer.draw((FlipFlop) elem);
+            } else if (elem instanceof Circuit) {
+                elementDrawer.draw((Circuit) elem);
+            } else if (elem instanceof ImpulseGenerator) {
+                elementDrawer.draw((ImpulseGenerator) elem);
+            } else if (elem instanceof IdentityGate) {
+                elementDrawer.draw((IdentityGate) elem);
+            } else if (elem instanceof NotGate) {
+                elementDrawer.draw((NotGate) elem);
+            } else if (elem instanceof OrGate) {
+                elementDrawer.draw((OrGate) elem);
+            } else if (elem instanceof Lamp) {
+                elementDrawer.draw((Lamp) elem);
+            }
+            // }
         }
         for (Connection connection : cachedConnections) {
             elementDrawer.draw(connection);
@@ -323,6 +337,19 @@ public class Workspace extends JPanel {
         e.setLocation(altE.getPoint());
         for (WorkspaceListener l : listeners) {
             l.mouseDragged(e);
+        }
+    }
+
+    /**
+     * Notifies listeners when the Window-Close Button was pushed.
+     * 
+     * @param altE
+     *            the WindowEvent received from WindowAdapter.
+     */
+    private void notifyWindowClosing(WindowEvent altE) {
+        WorkspaceEvent e = new WorkspaceEvent();
+        for (WorkspaceListener l : listeners) {
+            l.windowClosing(e);
         }
     }
 
