@@ -30,18 +30,19 @@ public class ImportTool implements Tool {
     /**
      * Icon representation of the Tool.
      */
-    private ImageIcon icon; // TODO icon setzen
+    private ImageIcon icon;
 
     /**
      * String representation of the Tool.
      */
+    @SuppressWarnings("serial")
     private List<String> represent = new LinkedList<String>() {
 
         {
             add("new");
             add("load");
         }
-    }; // TODO beschreibung schreiben
+    };
 
     /**
      * ActionListerner of the Tool on the Buttons.
@@ -101,7 +102,6 @@ public class ImportTool implements Tool {
         ImportExportUtils.addFileFilterToChooser(fc, model.getImportFormats());
         fc.setAcceptAllFileFilterUsed(false);
         int returnVal = fc.showOpenDialog(controller.getView());
-
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             if (file != null) {
