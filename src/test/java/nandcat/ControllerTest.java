@@ -21,8 +21,8 @@ public class ControllerTest {
 
     @Test
     public void testConstructor() {
-        View view = mock(View.class);
         Model model = mock(Model.class);
+        View view = new View(model);
         Controller contr = new Controller(view, model);
         assertEquals(view, contr.getView());
         assertEquals(model, contr.getModel());
@@ -30,9 +30,9 @@ public class ControllerTest {
 
     @Test
     public void testRequestActivation() {
-        View viewMock = mock(View.class);
-        Model modelMock = mock(Model.class);
-        Controller c = new Controller(viewMock, modelMock);
+        Model model = mock(Model.class);
+        View view = new View(model);
+        Controller c = new Controller(view, model);
         Tool toolOne = mock(Tool.class);
         Tool toolTwo = mock(Tool.class);
 
@@ -47,8 +47,8 @@ public class ControllerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testRequestActivationNull() {
-        View view = mock(View.class);
         Model model = mock(Model.class);
+        View view = new View(model);
         Controller c = new Controller(view, model);
 
         // Verify exception if tool = null
