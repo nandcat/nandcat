@@ -88,7 +88,7 @@ public class View extends JFrame {
     /**
      * Dimension of the panel we work in.
      */
-    private Dimension workspaceDimension = new Dimension(1000, 1000);
+    private Dimension workspaceDimension = new Dimension(2000, 2000);
 
     /**
      * Menu of the application.
@@ -184,7 +184,7 @@ public class View extends JFrame {
             }
         });
         setTitle(FRAME_TITLE);
-        setSize(600, 650);
+        setSize(1024, 768);
         setLocation(frameLocation);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         workspace = new Workspace(model, this);
@@ -219,7 +219,7 @@ public class View extends JFrame {
         disableElements.add(file);
         JMenu edit = new JMenu(i18n.getString("menu.edit"));
         edit.setMnemonic(KeyEvent.VK_B);
-        disableElements.add(edit);
+        noDisableElements.add(edit);
         JMenu sim = new JMenu(i18n.getString("menu.simulation"));
         sim.setMnemonic(KeyEvent.VK_T);
         noDisableElements.add(sim);
@@ -241,10 +241,10 @@ public class View extends JFrame {
         noDisableElements.add(mfaster);
         JMenuItem mcreate = new JMenuItem(i18n.getString("menu.edit.create"), KeyEvent.VK_E);
         mcreate.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
-        noDisableElements.add(mcreate);
+        disableElements.add(mcreate);
         JMenuItem mmove = new JMenuItem(i18n.getString("menu.edit.move"), KeyEvent.VK_B);
         mmove.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.CTRL_MASK));
-        noDisableElements.add(mmove);
+        disableElements.add(mmove);
         JMenuItem mselect = new JMenuItem(i18n.getString("menu.edit.select"), KeyEvent.VK_W);
         mselect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
         noDisableElements.add(mselect);
@@ -256,25 +256,25 @@ public class View extends JFrame {
         disableElements.add(meditcheck);
         JMenuItem mnew = new JMenuItem(i18n.getString("menu.file.new"), KeyEvent.VK_N);
         mnew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
-        noDisableElements.add(mnew);
+        disableElements.add(mnew);
         JMenuItem mload = new JMenuItem(i18n.getString("menu.file.load"), KeyEvent.VK_L);
         mload.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
-        noDisableElements.add(mload);
+        disableElements.add(mload);
         JMenuItem msave = new JMenuItem(i18n.getString("menu.file.save"), KeyEvent.VK_S);
         msave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
-        noDisableElements.add(msave);
+        disableElements.add(msave);
         JMenuItem msave2 = new JMenuItem(i18n.getString("menu.file.saveas"), KeyEvent.VK_A);
         msave2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
-        noDisableElements.add(msave2);
+        disableElements.add(msave2);
         JMenuItem mloaddef = new JMenuItem(i18n.getString("menu.file.defload"), KeyEvent.VK_F5);
         mloaddef.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
-        noDisableElements.add(mloaddef);
+        disableElements.add(mloaddef);
         JMenuItem mclose = new JMenuItem(i18n.getString("menu.file.close"));
         mclose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, ActionEvent.ALT_MASK));
         noDisableElements.add(mclose);
         JMenuItem mdelete = new JMenuItem(i18n.getString("menu.edit.delete"), KeyEvent.VK_DELETE);
         mdelete.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
-        noDisableElements.add(mdelete);
+        disableElements.add(mdelete);
         JMenuItem mannotate = new JMenuItem(i18n.getString("menu.edit.annotate"), KeyEvent.VK_N);
         mannotate.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
         disableElements.add(mannotate);
