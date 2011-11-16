@@ -85,13 +85,6 @@ public class CountCheck implements CircuitCheck {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public String toString() {
-        return "Prüfen ob Anzahl der Gatter eine Grenzwert überschreitet";
-    }
-
-    /**
      * Counts all Elements (and thanks to recursion also all sub-elements) in this circuit.
      * 
      * @param c

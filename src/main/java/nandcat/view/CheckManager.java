@@ -12,10 +12,19 @@ import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import nandcat.I18N;
+import nandcat.I18N.I18NBundle;
 import nandcat.model.check.CheckEvent;
 import nandcat.model.check.CheckEvent.State;
 import nandcat.model.check.CheckListener;
 import nandcat.model.check.CircuitCheck;
+import nandcat.model.check.CountCheck;
+import nandcat.model.check.FeedbackCheck;
+import nandcat.model.check.IllegalConnectionCheck;
+import nandcat.model.check.MultipleConnectionsCheck;
+import nandcat.model.check.OrphanCheck;
+import nandcat.model.check.SinkCheck;
+import nandcat.model.check.SourceCheck;
 
 /**
  * CheckManager is responsible for selecting and deselecting Checks and showing their states.
@@ -58,6 +67,11 @@ public class CheckManager extends JFrame {
     private JPanel panel;
 
     /**
+     * Translation unit.
+     */
+    private I18NBundle i18n = I18N.getBundle("model");
+
+    /**
      * Constructs the CheckManager.
      * 
      * @param set
@@ -72,18 +86,46 @@ public class CheckManager extends JFrame {
             }
 
             public void checkChanged(CheckEvent e) {
+                String checkName = getNameForCheck(e.getSource());
                 if (e.getState().equals(State.RUNNING)) {
-                    changeSymbol(checkStarted, e.getSource());
+                    changeSymbol(checkStarted, checkName);
                 } else if (e.getState().equals(State.SUCCEEDED)) {
-                    changeSymbol(checkSuccessful, e.getSource());
+                    changeSymbol(checkSuccessful, checkName);
                 } else if (e.getState().equals(State.FAILED)) {
-                    changeSymbol(checkFailed, e.getSource());
+                    changeSymbol(checkFailed, checkName);
                 }
             }
         };
         for (CircuitCheck c : set) {
             c.addListener(checkListener);
         }
+    }
+
+    /**
+     * Sets the String representation for a check.
+     * 
+     * @param check
+     *            CircuitCheck getting a String.
+     * @return String representation for the check, indicating its functionality.
+     */
+    private String getNameForCheck(CircuitCheck check) {
+        String name = null;
+        if (check instanceof CountCheck) {
+            name = i18n.getString("check.count.description");
+        } else if (check instanceof IllegalConnectionCheck) {
+            name = i18n.getString("check.illegalconnection.description");
+        } else if (check instanceof MultipleConnectionsCheck) {
+            name = i18n.getString("check.multipleconnections.description");
+        } else if (check instanceof OrphanCheck) {
+            name = i18n.getString("check.orphan.description");
+        } else if (check instanceof SinkCheck) {
+            name = i18n.getString("check.sink.description");
+        } else if (check instanceof SourceCheck) {
+            name = i18n.getString("check.source.description");
+        } else if (check instanceof FeedbackCheck) {
+            name = i18n.getString("check.feedback.description");
+        }
+        return name;
     }
 
     /**
@@ -96,14 +138,14 @@ public class CheckManager extends JFrame {
         super.setVisible(visible);
         if (visible) {
             super.setExtendedState(JFrame.NORMAL);
-        }
-        // When the CheckManager is re-opened all states are set to pending.
-        for (Component checkbox : panel.getComponents()) {
-            if (checkbox instanceof JCheckBox) {
-                // Then get the MenuItem and change its icon.
-                for (Component menuitem : ((JCheckBox) checkbox).getComponents()) {
-                    if (menuitem instanceof JCheckBoxMenuItem) {
-                        ((JCheckBoxMenuItem) menuitem).setIcon(checkPending);
+            // When the CheckManager is re-opened all states are set to pending.
+            for (Component checkbox : panel.getComponents()) {
+                if (checkbox instanceof JCheckBox) {
+                    // Then get the MenuItem and change its icon.
+                    for (Component menuitem : ((JCheckBox) checkbox).getComponents()) {
+                        if (menuitem instanceof JCheckBoxMenuItem) {
+                            ((JCheckBoxMenuItem) menuitem).setIcon(checkPending);
+                        }
                     }
                 }
             }
@@ -129,9 +171,7 @@ public class CheckManager extends JFrame {
             public void itemStateChanged(ItemEvent e) {
                 JCheckBoxMenuItem box = (JCheckBoxMenuItem) e.getSource();
                 for (CircuitCheck check : checks) {
-                    if (box.getActionCommand().equals(check.toString())) {
-                        check.setActive(!check.isActive());
-                    }
+                    setCheckActive(check, box.getActionCommand());
                 }
             }
         };
@@ -140,7 +180,7 @@ public class CheckManager extends JFrame {
         for (CircuitCheck check : checks) {
             checkbox = new JCheckBox();
             // By default all checks will be executed.
-            checkboxItem = new JCheckBoxMenuItem(check.toString(), checkPending, true);
+            checkboxItem = setMenuItem(check, checkboxItem);
             checkboxItem.addItemListener(itemListener);
             checkbox.add(checkboxItem);
             panel.add(checkbox);
@@ -149,19 +189,77 @@ public class CheckManager extends JFrame {
     }
 
     /**
+     * Sets the check active if the String representation of the check equals the input String.
+     * 
+     * @param check
+     *            CircuitCheck to be set to active.
+     * @param match
+     *            String matched against the String representation of the check.
+     */
+    private void setCheckActive(CircuitCheck check, String match) {
+        if ((check instanceof CountCheck) && match.equals(i18n.getString("check.count.description"))) {
+            check.setActive(!check.isActive());
+        } else if ((check instanceof IllegalConnectionCheck)
+                && match.equals(i18n.getString("check.illegalconnection.description"))) {
+            check.setActive(!check.isActive());
+        } else if ((check instanceof MultipleConnectionsCheck)
+                && match.equals(i18n.getString("check.multipleconnections.description"))) {
+            check.setActive(!check.isActive());
+        } else if ((check instanceof OrphanCheck) && match.equals(i18n.getString("check.orphan.description"))) {
+            check.setActive(!check.isActive());
+        } else if ((check instanceof SinkCheck) && match.equals(i18n.getString("check.sink.description"))) {
+            check.setActive(!check.isActive());
+        } else if ((check instanceof SourceCheck) && match.equals(i18n.getString("check.source.description"))) {
+            check.setActive(!check.isActive());
+        } else if ((check instanceof FeedbackCheck) && match.equals(i18n.getString("check.feedback.description"))) {
+            check.setActive(!check.isActive());
+        }
+    }
+
+    /**
+     * Set the MenuItem with a String representation of the check.
+     * 
+     * @param check
+     *            CircuitCheck which will be represented in the checkbox menu
+     * @param checkboxItem
+     *            JCheckBoxMenuItem to be set.
+     * @return JCheckMenuItem containing the String representation and an icon displaying the state of the check.
+     */
+    private JCheckBoxMenuItem setMenuItem(CircuitCheck check, JCheckBoxMenuItem checkboxItem) {
+        if (check instanceof CountCheck) {
+            checkboxItem = new JCheckBoxMenuItem(i18n.getString("check.count.description"), checkPending, true);
+        } else if (check instanceof IllegalConnectionCheck) {
+            checkboxItem = new JCheckBoxMenuItem(i18n.getString("check.illegalconnection.description"), checkPending,
+                    true);
+        } else if (check instanceof MultipleConnectionsCheck) {
+            checkboxItem = new JCheckBoxMenuItem(i18n.getString("check.multipleconnections.description"), checkPending,
+                    true);
+        } else if (check instanceof OrphanCheck) {
+            checkboxItem = new JCheckBoxMenuItem(i18n.getString("check.orphan.description"), checkPending, true);
+        } else if (check instanceof SinkCheck) {
+            checkboxItem = new JCheckBoxMenuItem(i18n.getString("check.sink.description"), checkPending, true);
+        } else if (check instanceof SourceCheck) {
+            checkboxItem = new JCheckBoxMenuItem(i18n.getString("check.source.description"), checkPending, true);
+        } else if (check instanceof FeedbackCheck) {
+            checkboxItem = new JCheckBoxMenuItem(i18n.getString("check.feedback.description"), checkPending, true);
+        }
+        return checkboxItem;
+    }
+
+    /**
      * Changes the symbol representing the state of the Check.
      * 
      * @param icon
      *            ImageIcon the new icon.
      */
-    private void changeSymbol(ImageIcon icon, CircuitCheck check) {
+    private void changeSymbol(ImageIcon icon, String check) {
         // First get the CheckBox from the panel.
         for (Component checkbox : panel.getComponents()) {
             if (checkbox instanceof JCheckBox) {
                 // Then get the MenuItem and change its icon.
                 for (Component menuitem : ((JCheckBox) checkbox).getComponents()) {
                     if (menuitem instanceof JCheckBoxMenuItem) {
-                        if (((JCheckBoxMenuItem) menuitem).getActionCommand().equals(check.toString())) {
+                        if (((JCheckBoxMenuItem) menuitem).getActionCommand().equals(check)) {
                             ((JCheckBoxMenuItem) menuitem).setIcon(icon);
                             super.repaint();
                         }

@@ -112,11 +112,4 @@ public class IllegalConnectionCheck implements CircuitCheck {
     public void removeListener(CheckListener l) {
         listener.remove(l);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String toString() {
-        return "Prüft ob ausgehende Ports nur mit eingehenden Ports verbunden sind und umgekehrt";
-    }
 }

@@ -107,11 +107,4 @@ public class OrphanCheck implements CircuitCheck {
     public void removeListener(CheckListener l) {
         listener.remove(l);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String toString() {
-        return "Test auf Verwaisung";
-    }
 }

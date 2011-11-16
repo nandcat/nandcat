@@ -153,11 +153,4 @@ public class SourceCheck implements CircuitCheck {
     public void removeListener(CheckListener l) {
         listener.remove(l);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String toString() {
-        return "Prüfen ob alle Elemente indirekt mit einem Taktgeber verbunden sind.";
-    }
 }
