@@ -124,6 +124,11 @@ public class Clock implements Runnable {
      * Makes the clock notify the listeners.
      */
     public void cycle() {
+
+        // Added debug code !
+        EXTRACT_THE_DEBUGINFO();
+        long before = System.nanoTime();
+
         // never ever refactor name listener
         for (ClockListener listener : listeners) {
             listener.clockTicked(this);
@@ -138,6 +143,11 @@ public class Clock implements Runnable {
             listener.clockTicked(this);
         }
         model.clockTicked(this);
+
+        // Added debug code !
+        long after = System.nanoTime();
+        LOG.debug("Cycle " + cycle + " took " + (after - before) + " ns");
+
         cycle++;
     }
 
@@ -193,27 +203,42 @@ public class Clock implements Runnable {
             try {
                 Thread.sleep(sleepTime);
                 synchronized (model) {
-                    // Added debug code !
-                    long before = System.nanoTime();
                     cycle();
-                    // Added debug code !
-                    long after = System.nanoTime();
-                    LOG.debug("Cycle " + cycle + " took " + (after - before) + " ns");
-                    String imps = "";
-                    for (ImpulseGenerator listener : generators) {
-                        if ((cycle == 0) || (listener.getFrequency() == 1)
-                                || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
-                            imps += (listener.toString() + "\n");
-                        }
-                    }
-                    LOG.debug("\nImpulseGenerators:\n" + imps);
-                    // End of debug code !
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         // reset States of EVERYTHING to avoid inconsitencies
+        reset();
+        model.notifyForStoppedSim();
+        // Added debug code !
+        LOG.debug("Thread died, listeners notified!");
+    }
+
+    private void EXTRACT_THE_DEBUGINFO() {
+        String imps = "\nactive impulseGenerators:\n";
+        for (ImpulseGenerator listener : generators) {
+            if ((cycle == 0) || (listener.getFrequency() == 1)
+                    || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
+                imps += (listener.toString() + "\n");
+            }
+        }
+        imps += "modules in queue:\n";
+        for (ClockListener l : listeners) {
+            imps += l.toString() + "\n";
+        }
+        imps += "connections in queue:\n";
+        for (ClockListener c : connections) {
+            imps += c.toString() + "\n";
+        }
+        LOG.debug(imps);
+    }
+
+    /**
+     * Reset all listeners, clears the lists and resets the cycle.
+     */
+    private void reset() {
         for (Element e : model.getElements()) {
             if (e instanceof Module) {
                 Module m = (Module) e;
@@ -231,14 +256,12 @@ public class Clock implements Runnable {
                 }
             }
             if (e instanceof Connection) {
-                ((Connection) e).setSelected(false);
+                ((Connection) e).setState(false, null);
             }
         }
         cycle = 0;
         listeners.clear();
         generators.clear();
-        model.notifyForStoppedSim();
-        // Added debug code !
-        LOG.debug("Thread died, listeners notified!");
+        connections.clear();
     }
 }

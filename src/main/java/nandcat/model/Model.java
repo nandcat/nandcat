@@ -93,6 +93,11 @@ public class Model implements ClockListener {
     private boolean dirty;
 
     /**
+     * Simulation is running.
+     */
+    private boolean simIsRunning;
+
+    /**
      * Class logger instance.
      */
     private static final Logger LOG = Logger.getLogger(Model.class);
@@ -111,6 +116,7 @@ public class Model implements ClockListener {
         clock = new Clock(0, this);
         initView2Module();
         dirty = false;
+        simIsRunning = false;
         initExporters();
         initImporters();
         initChecks();
@@ -465,6 +471,10 @@ public class Model implements ClockListener {
      * output.
      */
     public void startSimulation() {
+        if (simIsRunning) {
+            throw new IllegalStateException("End running Simulation first!");
+        }
+        simIsRunning = true;
         for (ModelListener l : listeners) {
             l.simulationStarted(new ModelEvent());
         }
@@ -566,7 +576,6 @@ public class Model implements ClockListener {
      */
     public void removeElement(Element e) {
         circuit.removeElement(e);
-        ModelEvent event = new ModelEvent();
         notifyForChangedElems();
         dirty = true;
     }
@@ -613,9 +622,8 @@ public class Model implements ClockListener {
 
         Point pr = module.getRectangle().getLocation();
         module.getRectangle().setLocation(pr.x - p.x, pr.y - p.y);
-        ModelEvent e = new ModelEvent(module);
-        // ports auch bewegen
-        // TODO was ist, wenn Module ein Circuit ist?
+        // wenn Module ein Circuit ist - werden die ports mitverschoben. interessiert niemand ob unsichtbare module ihre
+        // ports woanders haben
         for (Port pörtli : module.getInPorts()) {
             pörtli.getRectangle().setLocation(pr.x - p.x, pr.y - p.y);
         }
@@ -954,6 +962,7 @@ public class Model implements ClockListener {
      */
     protected void notifyForStoppedSim() {
         ModelEvent e = new ModelEvent();
+        simIsRunning = false;
         for (ModelListener l : listeners) {
             l.simulationStopped(e);
         }
