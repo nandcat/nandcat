@@ -51,5 +51,5 @@ public interface WorkspaceListener {
      * @param e
      *            WorkspaceEvent.
      */
-    void windowClosing(WorkspaceEvent e);
+    void windowClosing();
 }

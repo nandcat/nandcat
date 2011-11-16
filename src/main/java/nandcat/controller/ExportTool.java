@@ -19,7 +19,6 @@ import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListener;
 import nandcat.model.ModelListenerAdapter;
-import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListenerAdapter;
 import org.apache.log4j.Logger;
 
@@ -85,6 +84,7 @@ public class ExportTool implements Tool {
         {
             add("save");
             add("saveAs");
+            add("close");
         }
     };
 
@@ -134,7 +134,7 @@ public class ExportTool implements Tool {
     private WorkspaceListenerAdapter getWindowListener() {
         return new WorkspaceListenerAdapter() {
 
-            public void windowClosing(WorkspaceEvent e) {
+            public void windowClosing() {
                 if (!actionSaveBeforeLost()) {
                     System.exit(0);
                 }
@@ -196,6 +196,8 @@ public class ExportTool implements Tool {
             actionSaveAs();
         } else if (command.equals("save")) {
             actionSave();
+        } else if (command.equals("close")) {
+            getWindowListener().windowClosing();
         } else {
             LOG.debug("Command '" + command + "' not supported.");
         }

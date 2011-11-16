@@ -349,7 +349,7 @@ public class Workspace extends JPanel {
     private void notifyWindowClosing(WindowEvent altE) {
         WorkspaceEvent e = new WorkspaceEvent();
         for (WorkspaceListener l : listeners) {
-            l.windowClosing(e);
+            l.windowClosing();
         }
     }
 
