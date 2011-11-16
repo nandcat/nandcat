@@ -122,11 +122,17 @@ public class ModelTest extends TestCase {
         System.out.println("selectit contains unselektiert : " + selectit.contains(unselektiert));
         System.out.println("circuit contains unselektiert : " + neu.getElements().contains(unselektiert) + "\n");
 
-        System.out.println("selectit contains c1 : " + selectit.contains(c1));
-        System.out.println("circuit contains c1 : " + neu.getElements().contains(c1) + "\n");
+        assertFalse(neu.getElements().contains(unselektiert));
+        assertFalse(neu.getElements().contains(c2));
 
-        System.out.println("selectit contains c2 : " + selectit.contains(c2));
-        System.out.println("circuit contains c2 : " + neu.getElements().contains(c2) + "\n");
+        Connection con = neu.getConnections().iterator().next();
+        // connection is included
+        assertEquals(con.getInPort(), c1.getInPort());
+        assertEquals(con.getOutPort(), c1.getOutPort());
+        assertTrue(neu.getElements().contains(drinSelektiert));
+        assertTrue(neu.getElements().contains(drinSelektiert2));
 
+        assertEquals(1, neu.getConnections().size());
+        assertEquals(3, neu.getElements().size());
     }
 }
