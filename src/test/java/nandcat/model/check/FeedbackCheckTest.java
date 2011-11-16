@@ -1,5 +1,6 @@
 package nandcat.model.check;
 
+import java.awt.Rectangle;
 import junit.framework.TestCase;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
@@ -17,7 +18,7 @@ public class FeedbackCheckTest extends TestCase {
         CircuitCheck check = new FeedbackCheck();
 
         // expected: false - Flipflop haz feedback and cheezeburgerz
-        assertTrue(check.test(c));
+        assertFalse(check.test(c));
     }
 
     /**
@@ -45,7 +46,11 @@ public class FeedbackCheckTest extends TestCase {
         top.addConnection(flipper.getOutPorts().get(0), scheffel.getInPorts().get(0));
         top.addConnection(flipper.getOutPorts().get(1), licht.getInPorts().get(0));
 
-        // Magic ?
+        // zwecks entkäferer.
+        twoThree.setSelected(true);
+        twoThree.setRectangle(new Rectangle(50, 50, 50, 50));
+
+        // TODO FIX THIS SHIT
         CircuitCheck check = new FeedbackCheck();
         assertFalse(check.test(top));
     }
