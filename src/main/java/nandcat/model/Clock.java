@@ -146,7 +146,7 @@ public class Clock implements Runnable {
 
         // Added debug code !
         long after = System.nanoTime();
-        LOG.debug("Cycle " + cycle + " took " + (after - before) + " ns");
+        // LOG.debug("Cycle " + cycle + " took " + (after - before) + " ns");
 
         cycle++;
     }
@@ -248,7 +248,7 @@ public class Clock implements Runnable {
 
     // TODO - entfernen wenn richtigkeit sichergestellt !
     private void EXTRACT_THE_DEBUGINFO() {
-        String imps = "\nactive impulseGenerators:\n";
+        String imps = "\n\nCycle " + cycle + "\nactive impulseGenerators:\n";
         for (ImpulseGenerator listener : generators) {
             if ((cycle == 0) || (listener.getFrequency() == 1)
                     || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
