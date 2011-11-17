@@ -53,7 +53,7 @@ public class ImpulseGenerator implements Module {
      * @param frequency
      *            frequency of the generator
      */
-    public ImpulseGenerator(int frequency) {
+    protected ImpulseGenerator(int frequency) {
         state = false;
         if (frequency < 0) {
             new IllegalArgumentException("invalid frequency for impulsegenerator");
@@ -67,7 +67,7 @@ public class ImpulseGenerator implements Module {
     /**
      * Default constructor. The frequency will be 1.
      */
-    public ImpulseGenerator() {
+    protected ImpulseGenerator() {
         this(1);
     }
 
