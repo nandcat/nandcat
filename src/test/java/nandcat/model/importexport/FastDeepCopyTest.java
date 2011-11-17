@@ -39,15 +39,11 @@ public class FastDeepCopyTest {
 
     private Circuit createCircuit() {
         Circuit c = (Circuit) factory.getCircuitBuilder().build();
-        AndGate andGate = (AndGate) factory.getAndGateBuilder().build();
-        andGate.setName("andgate");
-        OrGate orGate = new OrGate();
-        orGate.setName("orgate");
-
+        AndGate andGate = (AndGate) factory.getAndGateBuilder().setAnnotation("andgate").build();
+        OrGate orGate = (OrGate) factory.getOrGateBuilder().setAnnotation("orgate").build();
         c.addModule(andGate);
         c.addModule(orGate);
         c.addConnection(andGate.getOutPorts().get(0), orGate.getInPorts().get(0));
-
         return c;
     }
 
