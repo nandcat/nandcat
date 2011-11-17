@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import nandcat.NandcatTest;
+import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
@@ -22,7 +23,9 @@ import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
+import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.view.StandardElementDrawer;
+import org.junit.Before;
 
 public class ElementDrawerViewer extends JFrame {
 
@@ -31,6 +34,14 @@ public class ElementDrawerViewer extends JFrame {
     private StandardElementDrawer elementDrawer;
 
     private Circuit mainCircuit;
+
+    private ModuleBuilderFactory factory;
+
+    @Before
+    public void setup() throws IOException {
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+    }
 
     /**
      * @param args
@@ -61,7 +72,7 @@ public class ElementDrawerViewer extends JFrame {
     }
 
     private void createElementDrawerElements() {
-        mainCircuit = new Circuit();
+        mainCircuit = (Circuit) factory.getCircuitBuilder().getModule();
         AndGate andGate1 = new AndGate();
         andGate1.setRectangle(new Rectangle(5, 5, 60, 40));
         mainCircuit.addModule(andGate1);
@@ -159,7 +170,7 @@ public class ElementDrawerViewer extends JFrame {
         ff1.setRectangle(new Rectangle(200, 400, 60, 40));
         mainCircuit.addModule(ff1);
 
-        Circuit circuit1 = new Circuit();
+        Circuit circuit1 = (Circuit) factory.getCircuitBuilder().getModule();
         circuit1.addModule(new AndGate());
         circuit1.addModule(new OrGate());
         circuit1.setRectangle(new Rectangle(5, 400, 60, 40));

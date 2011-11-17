@@ -2,6 +2,7 @@ package nandcat.model.importexport;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
@@ -12,14 +13,24 @@ import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
+import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.sepaf.FastDeepCopy;
+import org.junit.Before;
 import org.junit.Test;
 
 public class FastDeepCopyTest {
 
+    private ModuleBuilderFactory factory;
+
+    @Before
+    public void setUp() {
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+    }
+
     @Test
     public void testSimple() {
-        Circuit obj = new Circuit();
+        Circuit obj = (Circuit) factory.getCircuitBuilder().getModule();
         obj.setName("name");
         Circuit copy = (Circuit) FastDeepCopy.copy(obj);
         assertTrue(obj.getName() != null);
@@ -27,7 +38,7 @@ public class FastDeepCopyTest {
     }
 
     private Circuit createCircuit() {
-        Circuit c = new Circuit();
+        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
         AndGate andGate = new AndGate();
         andGate.setName("andgate");
         OrGate orGate = new OrGate();

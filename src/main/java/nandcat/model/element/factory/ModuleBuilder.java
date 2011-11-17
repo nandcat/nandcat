@@ -19,6 +19,8 @@ public abstract class ModuleBuilder {
 
     private Integer frequency = null;
 
+    private String uuid = null;
+
     public ModuleBuilder() {
 
     }
@@ -50,6 +52,11 @@ public abstract class ModuleBuilder {
 
     public ModuleBuilder setLocation(Point location) {
         this.location = location;
+        return this;
+    }
+
+    public ModuleBuilder setUUID(String uuid) {
+        this.uuid = uuid;
         return this;
     }
 
@@ -86,6 +93,13 @@ public abstract class ModuleBuilder {
 
     protected int getFrequency() {
         return frequency;
+    }
+
+    /**
+     * @return the uuid
+     */
+    protected String getUUID() {
+        return uuid;
     }
 
 }

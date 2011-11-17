@@ -37,6 +37,7 @@ import nandcat.model.ModelListenerAdapter;
 import nandcat.model.ViewModule;
 import nandcat.model.element.DrawElement;
 import nandcat.model.element.Module;
+import nandcat.model.element.factory.ModuleLayouter;
 
 /**
  * View.
@@ -140,6 +141,8 @@ public class View extends JFrame {
      */
     private JComboBox modules;
 
+    private ModuleLayouter layouter = new StandardModuleLayouter();
+
     /**
      * Constructs the view.
      * 
@@ -178,6 +181,10 @@ public class View extends JFrame {
                 allModulesInSight();
             }
         });
+
+        // vll zugriff ueber controller changeLayouter?
+        model.setLayouter(layouter);
+
         setTitle(FRAME_TITLE);
         setSize(600, 650);
         setLocation(frameLocation);

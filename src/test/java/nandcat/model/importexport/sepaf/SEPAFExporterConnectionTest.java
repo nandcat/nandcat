@@ -5,10 +5,12 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.FlipFlop;
 import nandcat.model.element.OrGate;
+import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.Exporter;
 import org.junit.After;
 import org.junit.Before;
@@ -24,12 +26,16 @@ public class SEPAFExporterConnectionTest {
 
     private Circuit c;
 
+    private ModuleBuilderFactory factory;
+
     @Before
     public void setup() throws IOException {
         exporter = new SEPAFExporter();
         file = File.createTempFile("export", ".xml");
         exporter.setFile(file);
-        c = new Circuit();
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+        c = (Circuit) factory.getCircuitBuilder().getModule();
     }
 
     @Test

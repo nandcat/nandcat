@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
@@ -15,9 +16,11 @@ import nandcat.model.element.FlipFlop;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Module;
 import nandcat.model.element.OrGate;
+import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.Exporter;
 import nandcat.model.importexport.ExternalCircuitSource;
 import nandcat.model.importexport.Importer;
+import nandcat.view.StandardModuleLayouter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,15 +40,22 @@ public class SEPAFImporterCircuitTest {
 
     private Circuit exportC;
 
+    private ModuleBuilderFactory factory;
+
     @Before
     public void setup() throws IOException {
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+        factory.setLayouter(new StandardModuleLayouter());
         exporter = new SEPAFExporter();
         file = File.createTempFile("export", ".xml");
         exporter.setFile(file);
-        exportC = new Circuit();
+        exportC = (Circuit) factory.getCircuitBuilder().getModule();
 
         importer = new SEPAFImporter();
         importer.setFile(file);
+
+        importer.setFactory(factory);
     }
 
     @Test
@@ -55,7 +65,7 @@ public class SEPAFImporterCircuitTest {
         exportC.addModule(gate);
 
         // Inner circuit
-        final Circuit innercircuit = new Circuit("innercircuit-uuid");
+        final Circuit innercircuit = (Circuit) factory.getCircuitBuilder().setUUID("innercircuit-uuid").getModule();
         OrGate innergate = new OrGate();
         innergate.setRectangle(new Rectangle(50, 60, 70, 80));
         innercircuit.addModule(innergate);

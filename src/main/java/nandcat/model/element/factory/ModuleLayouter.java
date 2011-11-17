@@ -11,7 +11,7 @@ import nandcat.model.element.OrGate;
 
 public abstract class ModuleLayouter {
 
-    public void layout(AndGate gate) {
+    public void layout(AndGate m) {
 
     }
 
@@ -39,7 +39,7 @@ public abstract class ModuleLayouter {
 
     }
 
-    public void layout(Circuit c) {
+    public void layout(Circuit m) {
 
     }
 }

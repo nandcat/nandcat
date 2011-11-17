@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.FlipFlop;
@@ -16,6 +17,7 @@ import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
+import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.Exporter;
 import org.junit.After;
 import org.junit.Before;
@@ -30,12 +32,16 @@ public class SEPAFExporterSingleTest {
 
     private Circuit c;
 
+    private ModuleBuilderFactory factory;
+
     @Before
     public void setup() throws IOException {
         exporter = new SEPAFExporter();
         file = File.createTempFile("export", ".xml");
         exporter.setFile(file);
-        c = new Circuit();
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+        c = (Circuit) factory.getCircuitBuilder().getModule();
     }
 
     @Test
@@ -374,7 +380,7 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testDefaultCircuit() throws Exception {
-        Circuit circuit = new Circuit();
+        Circuit circuit = (Circuit) factory.getCircuitBuilder().getModule();
         AndGate gate = new AndGate();
         gate.setRectangle(new Rectangle(10, 20, 30, 40));
         circuit.addModule(gate);
@@ -403,7 +409,7 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testMissingCircuit() throws Exception {
-        Circuit circuit = new Circuit();
+        Circuit circuit = (Circuit) factory.getCircuitBuilder().getModule();
         AndGate gate = new AndGate();
         gate.setRectangle(new Rectangle(10, 20, 30, 40));
         circuit.addModule(gate);

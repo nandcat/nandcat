@@ -1,14 +1,12 @@
-package nandcat.model.element.factory.builder;
+package nandcat.model.element;
 
-import nandcat.model.element.FlipFlop;
-import nandcat.model.element.Module;
 import nandcat.model.element.factory.ElementDefaults;
 import nandcat.model.element.factory.ModuleBuilder;
 import nandcat.model.element.factory.ModuleLayouter;
 
-public class FlipFlopBuilder extends ModuleBuilder {
+public class AndGateBuilder extends ModuleBuilder {
 
-    public FlipFlopBuilder(ElementDefaults defaults, ModuleLayouter layouter) {
+    public AndGateBuilder(ElementDefaults defaults, ModuleLayouter layouter) {
         this.setDefaults(defaults);
         if (defaults != null) {
             defaults.setDefaults(this);
@@ -18,15 +16,14 @@ public class FlipFlopBuilder extends ModuleBuilder {
 
     @Override
     public Module getModule() {
-        FlipFlop m = new FlipFlop();
+        AndGate m = new AndGate(getInPorts(), getOutPorts());
         m.setName(getAnnotation());
         if (getLayouter() != null) {
             getLayouter().layout(m);
-        }
-        if (getLocation() != null) {
-            m.getRectangle().setLocation(getLocation());
+            if (getLocation() != null) {
+                m.getRectangle().setLocation(getLocation());
+            }
         }
         return m;
     }
-
 }

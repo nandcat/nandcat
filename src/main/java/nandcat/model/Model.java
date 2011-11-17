@@ -25,11 +25,12 @@ import nandcat.model.element.Element;
 import nandcat.model.element.FlipFlop;
 import nandcat.model.element.IdentityGate;
 import nandcat.model.element.ImpulseGenerator;
-import nandcat.model.element.Lamp;
 import nandcat.model.element.Module;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
+import nandcat.model.element.factory.ModuleBuilderFactory;
+import nandcat.model.element.factory.ModuleLayouter;
 import nandcat.model.importexport.Exporter;
 import nandcat.model.importexport.Importer;
 import nandcat.model.importexport.sepaf.SEPAFExporter;
@@ -92,6 +93,8 @@ public class Model implements ClockListener {
      */
     private boolean dirty;
 
+    private ModuleBuilderFactory factory;
+
     /**
      * Class logger instance.
      */
@@ -101,13 +104,17 @@ public class Model implements ClockListener {
      * The constructor for the model class.
      */
     public Model() {
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+
         checks = new LinkedHashSet<CircuitCheck>();
         listeners = new LinkedHashSet<ModelListener>();
         importFormats = new HashMap<String, String>();
         exportFormats = new HashMap<String, String>();
         importers = new HashMap<String, Importer>();
         exporters = new HashMap<String, Exporter>();
-        circuit = new Circuit();
+        // TODO: factory has no layouter at this moment!
+        circuit = (Circuit) factory.getCircuitBuilder().getModule();
         clock = new Clock(0, this);
         initView2Module();
         dirty = false;
@@ -122,6 +129,13 @@ public class Model implements ClockListener {
         // circuit.addModule(impy, new Point(250, 450));
         // circuit.addModule(lamp, new Point(400, 450));
         // circuit.addConnection(impy.getOutPorts().get(0), lamp.getInPorts().get(0));
+    }
+
+    public void setLayouter(ModuleLayouter layouter) {
+        if (layouter == null) {
+            throw new IllegalArgumentException();
+        }
+        factory.setLayouter(layouter);
     }
 
     /**
@@ -165,7 +179,7 @@ public class Model implements ClockListener {
         viewModules.add(new ViewModule("OR", new OrGate(), "", null));
         viewModules.add(new ViewModule("FlipFlop", new FlipFlop(), "", null));
         viewModules.add(new ViewModule("ID", new IdentityGate(), "", null));
-        viewModules.add(new ViewModule("Lampe", new Lamp(), "", null));
+        viewModules.add(new ViewModule("Lampe", factory.getLampBuilder().getModule(), "", null));
         viewModules.add(new ViewModule("NOT", new NotGate(), "", null));
         viewModules.add(new ViewModule("ImpulseGenerator", new ImpulseGenerator(), "", null));
         viewModules.add(new ViewModule("AND-3", new AndGate(2 + 1, 1), "", null));
@@ -248,6 +262,7 @@ public class Model implements ClockListener {
         File dir = new File(".");
         LOG.debug("Load custom circuits: " + dir.getAbsolutePath());
         Importer importer = new SEPAFImporter();
+        importer.setFactory(factory);
         Map<String, String> formats = importer.getFileFormats();
 
         for (File f : dir.listFiles()) {
@@ -728,6 +743,7 @@ public class Model implements ClockListener {
         importers.clear();
         importFormats.clear();
         Importer sepafImporter = new SEPAFImporter();
+        sepafImporter.setFactory(factory);
         Map<String, String> sepafFormats = sepafImporter.getFileFormats();
         for (Map.Entry<String, String> format : sepafFormats.entrySet()) {
             importers.put(format.getKey(), sepafImporter);
@@ -914,7 +930,7 @@ public class Model implements ClockListener {
                 return;
             }
         }
-        this.circuit = new Circuit();
+        this.circuit = (Circuit) factory.getCircuitBuilder().getModule();
         for (ModelListener l : listeners) {
             l.elementsChanged(e);
         }
@@ -940,7 +956,7 @@ public class Model implements ClockListener {
      * @return the Circuit containing the selected Elements
      */
     Circuit getCircuitFromSelected() {
-        Circuit result = new Circuit();
+        Circuit result = (Circuit) factory.getCircuitBuilder().getModule();
 
         for (Module m : circuit.getModules()) {
             if (m.isSelected()) {

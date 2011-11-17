@@ -1,14 +1,12 @@
-package nandcat.model.element.factory.builder;
+package nandcat.model.element;
 
-import nandcat.model.element.Circuit;
-import nandcat.model.element.Module;
 import nandcat.model.element.factory.ElementDefaults;
 import nandcat.model.element.factory.ModuleBuilder;
 import nandcat.model.element.factory.ModuleLayouter;
 
-public class CircuitBuilder extends ModuleBuilder {
+public class FlipFlopBuilder extends ModuleBuilder {
 
-    public CircuitBuilder(ElementDefaults defaults, ModuleLayouter layouter) {
+    public FlipFlopBuilder(ElementDefaults defaults, ModuleLayouter layouter) {
         this.setDefaults(defaults);
         if (defaults != null) {
             defaults.setDefaults(this);
@@ -18,7 +16,7 @@ public class CircuitBuilder extends ModuleBuilder {
 
     @Override
     public Module getModule() {
-        Circuit m = new Circuit();
+        FlipFlop m = new FlipFlop();
         m.setName(getAnnotation());
         if (getLayouter() != null) {
             getLayouter().layout(m);

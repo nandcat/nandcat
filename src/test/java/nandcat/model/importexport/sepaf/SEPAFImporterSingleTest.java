@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
+import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
@@ -16,8 +17,10 @@ import nandcat.model.element.Lamp;
 import nandcat.model.element.Module;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
+import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.Exporter;
 import nandcat.model.importexport.Importer;
+import nandcat.view.StandardModuleLayouter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,12 +42,17 @@ public class SEPAFImporterSingleTest {
 
     @Before
     public void setup() throws IOException {
+        ModuleBuilderFactory factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+        factory.setLayouter(new StandardModuleLayouter());
         exporter = new SEPAFExporter();
         file = File.createTempFile("export", ".xml");
         exporter.setFile(file);
-        exportC = new Circuit();
+        exportC = (Circuit) factory.getCircuitBuilder().getModule();
 
         importer = new SEPAFImporter();
+
+        importer.setFactory(factory);
         importer.setFile(file);
     }
 

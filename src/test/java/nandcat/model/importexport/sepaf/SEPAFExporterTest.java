@@ -5,21 +5,32 @@ import static org.junit.Assert.assertTrue;
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
+import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
+import nandcat.model.element.factory.ModuleBuilderFactory;
+import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
 public class SEPAFExporterTest {
+
+    private ModuleBuilderFactory factory;
+
+    @Before
+    public void setUp() {
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+    }
 
     @Test
     public void testStandardGatter() throws IOException, SAXException {
         SEPAFExporter export = new SEPAFExporter();
         File file = File.createTempFile("export", ".xml");
         export.setFile(file);
-        Circuit c = new Circuit();
+        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
         AndGate andGate = new AndGate();
         andGate.getRectangle().setLocation(new Point(1, 1));
         andGate.setName("AndGate");
@@ -53,9 +64,9 @@ public class SEPAFExporterTest {
     private Circuit buildSimpleCircuit(String uuid, String prefix, Point p) {
         Circuit c = null;
         if (uuid == null) {
-            c = new Circuit();
+            c = (Circuit) factory.getCircuitBuilder().getModule();
         } else {
-            c = new Circuit(uuid);
+            c = (Circuit) factory.getCircuitBuilder().setUUID(uuid).getModule();
         }
         c.getRectangle().setLocation(p);
 
@@ -73,7 +84,7 @@ public class SEPAFExporterTest {
         SEPAFExporter export = new SEPAFExporter();
         File file = File.createTempFile("export", ".xml");
         export.setFile(file);
-        Circuit c = new Circuit();
+        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
 
         Circuit c1 = buildSimpleCircuit(null, "c1", new Point(1, 1));
         Circuit c2 = buildSimpleCircuit(null, "c2", new Point(1, 1));

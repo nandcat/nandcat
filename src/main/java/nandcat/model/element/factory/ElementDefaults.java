@@ -1,14 +1,14 @@
 package nandcat.model.element.factory;
 
-import nandcat.model.element.factory.builder.AndGateBuilder;
-import nandcat.model.element.factory.builder.CircuitBuilder;
-import nandcat.model.element.factory.builder.ClockBuilder;
-import nandcat.model.element.factory.builder.FlipFlopBuilder;
-import nandcat.model.element.factory.builder.IdentityGateBuilder;
-import nandcat.model.element.factory.builder.LampBuilder;
-import nandcat.model.element.factory.builder.NotGateBuilder;
-import nandcat.model.element.factory.builder.OrGateBuilder;
-import nandcat.model.element.factory.builder.SwitchBuilder;
+import nandcat.model.element.AndGateBuilder;
+import nandcat.model.element.CircuitBuilder;
+import nandcat.model.element.ClockBuilder;
+import nandcat.model.element.FlipFlopBuilder;
+import nandcat.model.element.IdentityGateBuilder;
+import nandcat.model.element.LampBuilder;
+import nandcat.model.element.NotGateBuilder;
+import nandcat.model.element.OrGateBuilder;
+import nandcat.model.element.SwitchBuilder;
 
 public abstract class ElementDefaults {
 

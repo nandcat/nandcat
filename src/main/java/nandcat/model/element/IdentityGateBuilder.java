@@ -1,14 +1,12 @@
-package nandcat.model.element.factory.builder;
+package nandcat.model.element;
 
-import nandcat.model.element.Module;
-import nandcat.model.element.NotGate;
 import nandcat.model.element.factory.ElementDefaults;
 import nandcat.model.element.factory.ModuleBuilder;
 import nandcat.model.element.factory.ModuleLayouter;
 
-public class NotGateBuilder extends ModuleBuilder {
+public class IdentityGateBuilder extends ModuleBuilder {
 
-    public NotGateBuilder(ElementDefaults defaults, ModuleLayouter layouter) {
+    public IdentityGateBuilder(ElementDefaults defaults, ModuleLayouter layouter) {
         this.setDefaults(defaults);
         if (defaults != null) {
             defaults.setDefaults(this);
@@ -18,7 +16,7 @@ public class NotGateBuilder extends ModuleBuilder {
 
     @Override
     public Module getModule() {
-        NotGate m = new NotGate(getOutPorts());
+        IdentityGate m = new IdentityGate(1, getOutPorts());
         m.setName(getAnnotation());
         if (getLayouter() != null) {
             getLayouter().layout(m);

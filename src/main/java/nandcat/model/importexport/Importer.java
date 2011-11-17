@@ -3,6 +3,7 @@ package nandcat.model.importexport;
 import java.io.File;
 import java.util.Map;
 import nandcat.model.element.Circuit;
+import nandcat.model.element.factory.ModuleBuilderFactory;
 
 /**
  * Importer.
@@ -54,4 +55,6 @@ public interface Importer {
      * @return String Error message if import failed, null if no error occurred.
      */
     String getErrorMessage();
+
+    void setFactory(ModuleBuilderFactory factory);
 }

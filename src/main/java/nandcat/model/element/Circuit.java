@@ -70,10 +70,14 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      * Usual constructor for circuits. The UUID will be extracted from the Importer.
      * 
      * @param uuid
-     *            String containing the uuid of this circuit
+     *            String containing the uuid of this circuit, null to generate new random uuid.
      */
-    public Circuit(String uuid) {
-        this.uuid = uuid;
+    protected Circuit(String uuid) {
+        if (uuid == null) {
+            this.uuid = UUID.randomUUID().toString();
+        } else {
+            this.uuid = uuid;
+        }
         name = "";
         elements = new LinkedList<Element>();
         inPorts = new LinkedList<Port>();
@@ -81,13 +85,6 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         rectangle = new Rectangle(Module.EXTENT, Module.EXTENT);
         symbol = null;
         selected = false;
-    }
-
-    /**
-     * Constructs the circuit with a new random uuid.
-     */
-    public Circuit() {
-        this(UUID.randomUUID().toString());
     }
 
     /**

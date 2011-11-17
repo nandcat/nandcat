@@ -1,14 +1,12 @@
-package nandcat.model.element.factory.builder;
+package nandcat.model.element;
 
-import nandcat.model.element.ImpulseGenerator;
-import nandcat.model.element.Module;
 import nandcat.model.element.factory.ElementDefaults;
 import nandcat.model.element.factory.ModuleBuilder;
 import nandcat.model.element.factory.ModuleLayouter;
 
-public class ClockBuilder extends ModuleBuilder {
+public class NotGateBuilder extends ModuleBuilder {
 
-    public ClockBuilder(ElementDefaults defaults, ModuleLayouter layouter) {
+    public NotGateBuilder(ElementDefaults defaults, ModuleLayouter layouter) {
         this.setDefaults(defaults);
         if (defaults != null) {
             defaults.setDefaults(this);
@@ -18,7 +16,7 @@ public class ClockBuilder extends ModuleBuilder {
 
     @Override
     public Module getModule() {
-        ImpulseGenerator m = new ImpulseGenerator(getFrequency());
+        NotGate m = new NotGate(getOutPorts());
         m.setName(getAnnotation());
         if (getLayouter() != null) {
             getLayouter().layout(m);

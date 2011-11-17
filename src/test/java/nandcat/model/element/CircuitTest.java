@@ -1,45 +1,41 @@
 package nandcat.model.element;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import java.awt.Point;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import nandcat.model.ModelElementDefaults;
+import nandcat.model.element.factory.ModuleBuilderFactory;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Unit test for simple App.
  */
-public class CircuitTest extends TestCase {
+public class CircuitTest {
 
     /**
      * Default location for elements.
      */
     private Point p;
 
-    /**
-     * Create the test case.
-     * 
-     * @param testName
-     *            name of the test case
-     */
-    public CircuitTest(String testName) {
-        super(testName);
-        p = new Point(0, 0);
-    }
+    private ModuleBuilderFactory factory;
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(CircuitTest.class);
+    @Before
+    public void setUp() {
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+        p = new Point(0, 0);
     }
 
     /**
      * AND, ImpulseGen.
      */
+    @Test
     public void testAddModule() {
         AndGate and0 = new AndGate(2, 1);
         ImpulseGenerator impy = new ImpulseGenerator(0);
-        Circuit c = new Circuit();
+        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
         c.addModule(and0, p);
         c.addModule(impy, p);
         assertTrue(c.getElements().contains(and0));
@@ -49,12 +45,13 @@ public class CircuitTest extends TestCase {
     /**
      * Test: Switch, AND0-->AND1, Switch-->AND2, AND1-->AND2.
      */
+    @Test
     public void testStartingModules() {
         AndGate and0 = new AndGate(2, 1);
         AndGate and1 = new AndGate(2, 1);
         AndGate and2 = new AndGate(2, 1);
         ImpulseGenerator impy = new ImpulseGenerator(0);
-        Circuit c = new Circuit();
+        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
         // NOTE will fail ???
         // Importer impo = new SEPAFImporter();
         // impo.setFile(new File("/tmp/fuck.xml"));
@@ -80,10 +77,11 @@ public class CircuitTest extends TestCase {
     /**
      * Remove element (AND1) AND0 --> AND1.
      */
+    @Test
     public void testRemoveElement() {
         AndGate and0 = new AndGate(2, 1);
         AndGate and1 = new AndGate(2, 1);
-        Circuit c = new Circuit();
+        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
         c.addModule(and0, p);
         c.addModule(and1, p);
         Connection conn = c.addConnection(and0.getOutPorts().get(0), and1.getInPorts().get(0));
@@ -105,8 +103,9 @@ public class CircuitTest extends TestCase {
     /**
      * Test selecting a single module. (AND)
      */
+    @Test
     public void testSetModuleActive() {
-        Circuit c = new Circuit();
+        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
         AndGate and0 = new AndGate(2, 1);
         c.addModule(and0, p);
         assertFalse(and0.isSelected());
@@ -119,8 +118,9 @@ public class CircuitTest extends TestCase {
     /**
      * Test connecting to Modules (ImpulseGen --> Lamp).
      */
+    @Test
     public void testAddConnection() {
-        Circuit c = new Circuit();
+        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
         ImpulseGenerator impy = new ImpulseGenerator(0);
         Lamp lamp = new Lamp();
         c.addModule(impy, p);
@@ -135,8 +135,9 @@ public class CircuitTest extends TestCase {
     /**
      * Test circuit containing a circuit (dawg).
      */
+    @Test
     public void testDawg() {
-        Circuit c = new Circuit();
+        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
         Circuit innerCircuit = new FlipFlop();
         c.addModule(innerCircuit, p);
     }
