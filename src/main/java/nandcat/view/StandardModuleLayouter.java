@@ -11,7 +11,10 @@ import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 import nandcat.model.element.factory.ModuleLayouter;
 
-public class StandardModuleLayouter extends ModuleLayouter {
+/**
+ * Standard ModuleLayouter used to layout all Modules.
+ */
+public class StandardModuleLayouter implements ModuleLayouter {
 
     /**
      * Default gate dimension.
@@ -23,43 +26,59 @@ public class StandardModuleLayouter extends ModuleLayouter {
      */
     private static final Dimension LAMP_DIMENSION = new Dimension(40, 40);
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public void layout(AndGate m) {
         m.getRectangle().setSize(GATE_DIMENSION);
     }
 
-    @Override
-    public void layout(Circuit m) {
-        m.getRectangle().setSize(GATE_DIMENSION);
-    }
-
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public void layout(FlipFlop m) {
         m.getRectangle().setSize(GATE_DIMENSION);
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public void layout(IdentityGate m) {
         m.getRectangle().setSize(GATE_DIMENSION);
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public void layout(ImpulseGenerator m) {
         m.getRectangle().setSize(GATE_DIMENSION);
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public void layout(Lamp m) {
         m.getRectangle().setSize(LAMP_DIMENSION);
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public void layout(NotGate m) {
         m.getRectangle().setSize(GATE_DIMENSION);
     }
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
     public void layout(OrGate m) {
+        m.getRectangle().setSize(GATE_DIMENSION);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void layout(Circuit m) {
         m.getRectangle().setSize(GATE_DIMENSION);
     }
 
