@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import nandcat.Nandcat;
+import nandcat.model.FastDeepCopy;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;

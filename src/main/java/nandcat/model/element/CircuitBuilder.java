@@ -18,11 +18,11 @@ public class CircuitBuilder extends ModuleBuilder {
     public Module build() {
         Circuit m = new Circuit(getUUID());
         m.setName(getAnnotation());
-        if (getLayouter() != null) {
-            getLayouter().layout(m);
-        }
         if (getLocation() != null) {
             m.getRectangle().setLocation(getLocation());
+        }
+        if (getLayouter() != null) {
+            getLayouter().layout(m);
         }
         return m;
     }

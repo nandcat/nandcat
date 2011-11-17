@@ -18,11 +18,11 @@ public class NotGateBuilder extends ModuleBuilder {
     public Module build() {
         NotGate m = new NotGate(getOutPorts());
         m.setName(getAnnotation());
-        if (getLayouter() != null) {
-            getLayouter().layout(m);
-        }
         if (getLocation() != null) {
             m.getRectangle().setLocation(getLocation());
+        }
+        if (getLayouter() != null) {
+            getLayouter().layout(m);
         }
         return m;
     }

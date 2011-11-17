@@ -18,11 +18,11 @@ public class ClockBuilder extends ModuleBuilder {
     public Module build() {
         ImpulseGenerator m = new ImpulseGenerator(getFrequency());
         m.setName(getAnnotation());
-        if (getLayouter() != null) {
-            getLayouter().layout(m);
-        }
         if (getLocation() != null) {
             m.getRectangle().setLocation(getLocation());
+        }
+        if (getLayouter() != null) {
+            getLayouter().layout(m);
         }
         return m;
     }

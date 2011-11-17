@@ -18,11 +18,11 @@ public class IdentityGateBuilder extends ModuleBuilder {
     public Module build() {
         IdentityGate m = new IdentityGate(1, getOutPorts());
         m.setName(getAnnotation());
-        if (getLayouter() != null) {
-            getLayouter().layout(m);
-        }
         if (getLocation() != null) {
             m.getRectangle().setLocation(getLocation());
+        }
+        if (getLayouter() != null) {
+            getLayouter().layout(m);
         }
         return m;
     }

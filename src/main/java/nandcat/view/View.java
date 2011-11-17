@@ -151,6 +151,7 @@ public class View extends JFrame {
      */
     public View(Model model) {
         this.model = model;
+        model.setLayouter(layouter);
         try {
             for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -181,9 +182,6 @@ public class View extends JFrame {
                 allModulesInSight();
             }
         });
-
-        // vll zugriff ueber controller changeLayouter?
-        model.setLayouter(layouter);
 
         setTitle(FRAME_TITLE);
         setSize(600, 650);

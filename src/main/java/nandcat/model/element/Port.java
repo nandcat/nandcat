@@ -25,7 +25,7 @@ public class Port implements Serializable {
      * Representing the bounds of the Port. The Rectangle's coordinates are <b>not relative</b> to the Module this Port
      * is attached to, but absolute. This Rectangle should have a default value, so
      */
-    private Rectangle bounds;
+    private Rectangle bounds = new Rectangle();
 
     /**
      * Returns the Rectangle representing the bounds of the Port. The Rectangle's coordinates are <b>not relative</b> to

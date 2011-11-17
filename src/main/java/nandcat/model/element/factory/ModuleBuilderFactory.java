@@ -9,6 +9,7 @@ import nandcat.model.element.LampBuilder;
 import nandcat.model.element.NotGateBuilder;
 import nandcat.model.element.OrGateBuilder;
 import nandcat.model.element.SwitchBuilder;
+import org.apache.log4j.Logger;
 
 /**
  * A Factory used to create Builder Objects for creating Circuit elements. To create a circuit element, this factory is
@@ -31,6 +32,11 @@ public class ModuleBuilderFactory {
     private ElementDefaults defaults;
 
     /**
+     * Class logger instance.
+     */
+    private static final Logger LOG = Logger.getLogger(ModuleBuilderFactory.class);
+
+    /**
      * Sets the ModuleLayouter used to set the Layout of Elements build by the specific Builder instance. All Builders
      * created in this factory are using the same ModuleLayouter, which makes it easy to replace all ModuleLayouter at
      * once.
@@ -39,6 +45,10 @@ public class ModuleBuilderFactory {
      *            ModuleLayouter to set for all created Builders.
      */
     public void setLayouter(ModuleLayouter layouter) {
+        if (layouter == null) {
+            throw new IllegalArgumentException();
+        }
+        LOG.trace("Layouter set");
         this.layouter = layouter;
     }
 
@@ -50,6 +60,10 @@ public class ModuleBuilderFactory {
      *            ElementDefaults to set for all created Builders.
      */
     public void setDefaults(ElementDefaults defaults) {
+        if (defaults == null) {
+            throw new IllegalArgumentException();
+        }
+        LOG.trace("Defaults set");
         this.defaults = defaults;
     }
 
@@ -72,6 +86,7 @@ public class ModuleBuilderFactory {
      * @return Builder for creating AndGates.
      */
     public ModuleBuilder getAndGateBuilder(ElementDefaults defaults) {
+        LOG.trace("Get AndGateBuilder");
         return new AndGateBuilder(defaults, this.layouter);
     }
 
@@ -94,6 +109,7 @@ public class ModuleBuilderFactory {
      * @return Builder for creating OrGates.
      */
     public ModuleBuilder getOrGateBuilder(ElementDefaults defaults) {
+        LOG.trace("Get OrGateBuilder");
         return new OrGateBuilder(defaults, this.layouter);
     }
 
@@ -116,6 +132,7 @@ public class ModuleBuilderFactory {
      * @return Builder for creating NotGates.
      */
     public ModuleBuilder getNotGateBuilder(ElementDefaults defaults) {
+        LOG.trace("Get NotGateBuilder");
         return new NotGateBuilder(defaults, this.layouter);
     }
 
@@ -138,6 +155,7 @@ public class ModuleBuilderFactory {
      * @return Builder for creating Lamps.
      */
     public ModuleBuilder getLampBuilder(ElementDefaults defaults) {
+        LOG.trace("Get LampBuilder");
         return new LampBuilder(defaults, this.layouter);
     }
 
@@ -160,6 +178,7 @@ public class ModuleBuilderFactory {
      * @return Builder for creating IdentityGates.
      */
     public ModuleBuilder getIdentityGateBuilder(ElementDefaults defaults) {
+        LOG.trace("Get IdentityGateBuilder");
         return new IdentityGateBuilder(defaults, this.layouter);
     }
 
@@ -182,6 +201,7 @@ public class ModuleBuilderFactory {
      * @return Builder for creating FlipFlops.
      */
     public ModuleBuilder getFlipFlopBuilder(ElementDefaults defaults) {
+        LOG.trace("Get FlipFlopBuilder");
         return new FlipFlopBuilder(defaults, this.layouter);
     }
 
@@ -204,6 +224,7 @@ public class ModuleBuilderFactory {
      * @return Builder for creating Clocks.
      */
     public ModuleBuilder getClockBuilder(ElementDefaults defaults) {
+        LOG.trace("Get ClockBuilder");
         return new ClockBuilder(defaults, this.layouter);
     }
 
@@ -226,6 +247,7 @@ public class ModuleBuilderFactory {
      * @return Builder for creating Switches.
      */
     public ModuleBuilder getSwitchBuilder(ElementDefaults defaults) {
+        LOG.trace("Get SwitchBuilder");
         return new SwitchBuilder(defaults, this.layouter);
     }
 
@@ -248,6 +270,7 @@ public class ModuleBuilderFactory {
      * @return Builder for creating Circuits.
      */
     public ModuleBuilder getCircuitBuilder(ElementDefaults defaults) {
+        LOG.trace("Get CircuitBuilder");
         return new CircuitBuilder(defaults, this.layouter);
     }
 

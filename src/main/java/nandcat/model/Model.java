@@ -30,6 +30,7 @@ import nandcat.model.importexport.Exporter;
 import nandcat.model.importexport.Importer;
 import nandcat.model.importexport.sepaf.SEPAFExporter;
 import nandcat.model.importexport.sepaf.SEPAFImporter;
+import nandcat.view.StandardModuleLayouter;
 import org.apache.log4j.Logger;
 
 /**
@@ -101,7 +102,7 @@ public class Model implements ClockListener {
     public Model() {
         factory = new ModuleBuilderFactory();
         factory.setDefaults(new ModelElementDefaults());
-
+        factory.setLayouter(new StandardModuleLayouter());
         checks = new LinkedHashSet<CircuitCheck>();
         listeners = new LinkedHashSet<ModelListener>();
         importFormats = new HashMap<String, String>();
@@ -562,6 +563,7 @@ public class Model implements ClockListener {
      *            Point Location of the Module
      */
     public void addModule(Module m, Point p) {
+        moveBy(m, new Point(m.getRectangle().x - p.x, m.getRectangle().y - p.y));
         circuit.addModule(m, p);
         ModelEvent e = new ModelEvent(m);
         for (ModelListener l : listeners) {
@@ -588,13 +590,8 @@ public class Model implements ClockListener {
         }
 
         if (module != null) {
-            circuit.addModule(module, p);
+            addModule(module, p);
         }
-        ModelEvent e = new ModelEvent(module);
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e);
-        }
-        dirty = true;
     }
 
     /**
@@ -642,6 +639,7 @@ public class Model implements ClockListener {
      * @return boolean specifying if moveoperation was successful
      */
     private boolean moveBy(Module module, Point p) {
+
         // check if module won't intersect after the move
         Rectangle r = module.getRectangle();
         for (Element e : circuit.getElements()) {
@@ -655,11 +653,13 @@ public class Model implements ClockListener {
         ModelEvent e = new ModelEvent(module);
         // ports auch bewegen
         // TODO was ist, wenn Module ein Circuit ist?
-        for (Port pörtli : module.getInPorts()) {
-            pörtli.getRectangle().setLocation(pr.x - p.x, pr.y - p.y);
+        for (Port port : module.getInPorts()) {
+            port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
+                    port.getRectangle().getLocation().y - p.y);
         }
-        for (Port pörtli : module.getOutPorts()) {
-            pörtli.getRectangle().setLocation(pr.x - p.x, pr.y - p.y);
+        for (Port port : module.getOutPorts()) {
+            port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
+                    port.getRectangle().getLocation().y - p.y);
         }
 
         for (ModelListener l : listeners) {

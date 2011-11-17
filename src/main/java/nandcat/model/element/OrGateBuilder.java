@@ -18,11 +18,11 @@ public class OrGateBuilder extends ModuleBuilder {
     public Module build() {
         OrGate m = new OrGate(getInPorts(), getOutPorts());
         m.setName(getAnnotation());
-        if (getLayouter() != null) {
-            getLayouter().layout(m);
-        }
         if (getLocation() != null) {
             m.getRectangle().setLocation(getLocation());
+        }
+        if (getLayouter() != null) {
+            getLayouter().layout(m);
         }
         return m;
     }

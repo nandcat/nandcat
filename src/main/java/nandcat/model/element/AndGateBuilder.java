@@ -18,11 +18,11 @@ public class AndGateBuilder extends ModuleBuilder {
     public Module build() {
         AndGate m = new AndGate(getInPorts(), getOutPorts());
         m.setName(getAnnotation());
-        if (getLayouter() != null) {
-            getLayouter().layout(m);
-        }
         if (getLocation() != null) {
             m.getRectangle().setLocation(getLocation());
+        }
+        if (getLayouter() != null) {
+            getLayouter().layout(m);
         }
         return m;
     }

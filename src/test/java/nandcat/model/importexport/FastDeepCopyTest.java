@@ -2,6 +2,7 @@ package nandcat.model.importexport;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import nandcat.model.FastDeepCopy;
 import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
@@ -14,7 +15,6 @@ import nandcat.model.element.Lamp;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 import nandcat.model.element.factory.ModuleBuilderFactory;
-import nandcat.model.importexport.sepaf.FastDeepCopy;
 import org.junit.Before;
 import org.junit.Test;
 

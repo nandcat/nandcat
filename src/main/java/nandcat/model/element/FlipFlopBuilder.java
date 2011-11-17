@@ -18,11 +18,11 @@ public class FlipFlopBuilder extends ModuleBuilder {
     public Module build() {
         FlipFlop m = new FlipFlop();
         m.setName(getAnnotation());
-        if (getLayouter() != null) {
-            getLayouter().layout(m);
-        }
         if (getLocation() != null) {
             m.getRectangle().setLocation(getLocation());
+        }
+        if (getLayouter() != null) {
+            getLayouter().layout(m);
         }
         return m;
     }
