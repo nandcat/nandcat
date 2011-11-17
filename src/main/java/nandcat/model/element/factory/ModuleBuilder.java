@@ -65,7 +65,7 @@ public abstract class ModuleBuilder {
         return this;
     }
 
-    public abstract Module getModule();
+    public abstract Module build();
 
     protected Integer getOutPorts() {
         return outPorts;

@@ -3,6 +3,7 @@ package nandcat.view.elementdrawer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -72,38 +73,34 @@ public class ElementDrawerViewer extends JFrame {
     }
 
     private void createElementDrawerElements() {
-        mainCircuit = (Circuit) factory.getCircuitBuilder().getModule();
-        AndGate andGate1 = new AndGate();
-        andGate1.setRectangle(new Rectangle(5, 5, 60, 40));
-        mainCircuit.addModule(andGate1);
-        AndGate andGate2 = new AndGate();
-        andGate2.getInPorts().get(0).setState(true, null);
-        andGate2.setRectangle(new Rectangle(100, 5, 60, 40));
-        andGate2.setName("Meine Annotation");
-        mainCircuit.addModule(andGate2);
-        AndGate andGate3 = new AndGate();
+        mainCircuit = (Circuit) factory.getCircuitBuilder().build();
+        // FIXME Brauche Layouter
+        mainCircuit.addModule(factory.getAndGateBuilder().setLocation(new Point(5, 5)).build());
+        mainCircuit.addModule(factory.getAndGateBuilder().setLocation(new Point(100, 5))
+                .setAnnotation("Meine Annotation").build());
+        AndGate andGate3 = (AndGate) factory.getAndGateBuilder().setLocation(new Point(200, 5))
+                .setAnnotation("Meine Annotation").build();
         andGate3.getInPorts().get(0).setState(true, null);
         andGate3.getInPorts().get(1).setState(true, null);
         andGate3.getOutPorts().get(0).setState(true, null);
         andGate3.setSelected(true);
-        andGate3.setRectangle(new Rectangle(200, 5, 60, 40));
         mainCircuit.addModule(andGate3);
+
         // OR Gates
-        OrGate orGate1 = new OrGate();
-        orGate1.setRectangle(new Rectangle(5, 80, 60, 40));
-        orGate1.setName("Meine Annotation");
-        mainCircuit.addModule(orGate1);
-        OrGate orGate2 = new OrGate();
+        mainCircuit.addModule(factory.getOrGateBuilder().setLocation(new Point(5, 80))
+                .setAnnotation("Meine Annotation").build());
+
+        OrGate orGate2 = (OrGate) factory.getOrGateBuilder().setLocation(new Point(100, 80))
+                .setAnnotation("Meine Annotation").build();
         orGate2.getInPorts().get(0).setState(true, null);
-        orGate2.setRectangle(new Rectangle(100, 80, 60, 40));
-        orGate2.setName("Meine Annotation");
         mainCircuit.addModule(orGate2);
-        OrGate orGate3 = new OrGate();
+
+        OrGate orGate3 = (OrGate) factory.getOrGateBuilder().setLocation(new Point(200, 80))
+                .setAnnotation("Meine Annotation").build();
         orGate3.getInPorts().get(0).setState(true, null);
         orGate3.getInPorts().get(1).setState(true, null);
         orGate3.getOutPorts().get(0).setState(true, null);
         orGate3.setSelected(true);
-        orGate3.setRectangle(new Rectangle(200, 80, 60, 40));
         mainCircuit.addModule(orGate3);
         // OrGate orGate4 = new OrGate(2, 2);
         // orGate4.getInPorts().get(0).setState(true, null);
@@ -113,32 +110,35 @@ public class ElementDrawerViewer extends JFrame {
         // elements.add(orGate4);
         // Connection between and2 and or3
         // Connection con1 = new Connection(orGate3.getInPorts().get(0), andGate2.getOutPorts().get(0));
-        mainCircuit.addConnection(andGate2.getOutPorts().get(0), orGate3.getInPorts().get(0));
-        Lamp lamp1 = new Lamp();
-        lamp1.setRectangle(new Rectangle(5, 160, 40, 40));
-        lamp1.setName("Eine Lampe");
-        mainCircuit.addModule(lamp1);
-        Lamp lamp2 = new Lamp();
+        mainCircuit.addConnection(orGate2.getOutPorts().get(0), orGate3.getInPorts().get(0));
+
+        mainCircuit.addModule(factory.getLampBuilder().setLocation(new Point(5, 160)).setAnnotation("Eine Lampe")
+                .build());
+
+        Lamp lamp2 = (Lamp) factory.getLampBuilder().setLocation(new Point(100, 160)).setAnnotation("Eine Lampe")
+                .build();
         lamp2.getInPorts().get(0).setState(true, null);
-        lamp2.setRectangle(new Rectangle(100, 160, 40, 40));
         mainCircuit.addModule(lamp2);
-        Lamp lamp3 = new Lamp();
+
+        Lamp lamp3 = (Lamp) factory.getLampBuilder().setLocation(new Point(200, 160)).setAnnotation("Eine Lampe")
+                .build();
         lamp3.getInPorts().get(0).setState(true, null);
         lamp3.setSelected(true);
-        lamp3.setRectangle(new Rectangle(200, 160, 40, 40));
         mainCircuit.addModule(lamp3);
-        NotGate notGate1 = new NotGate();
-        notGate1.setRectangle(new Rectangle(5, 240, 60, 40));
+
+        NotGate notGate1 = (NotGate) factory.getNotGateBuilder().setLocation(new Point(5, 240))
+                .setAnnotation("Ein Not").build();
         mainCircuit.addModule(notGate1);
-        NotGate notGate2 = new NotGate();
+
+        NotGate notGate2 = (NotGate) factory.getNotGateBuilder().setLocation(new Point(100, 240))
+                .setAnnotation("Ein Not").build();
         notGate2.getInPorts().get(0).setState(true, null);
-        notGate2.setRectangle(new Rectangle(100, 240, 60, 40));
-        notGate2.setName("Ein NotGate");
         mainCircuit.addModule(notGate2);
-        NotGate notGate3 = new NotGate();
+
+        NotGate notGate3 = (NotGate) factory.getNotGateBuilder().setLocation(new Point(200, 240))
+                .setAnnotation("Ein Not").build();
         notGate3.getOutPorts().get(0).setState(true, null);
         notGate3.setSelected(true);
-        notGate3.setRectangle(new Rectangle(200, 240, 60, 40));
         mainCircuit.addModule(notGate3);
         // FlipFlop flipFlop1 = new FlipFlop();
         // flipFlop1.setRectangle(new Rectangle(5, 320, 60, 40));
@@ -151,28 +151,30 @@ public class ElementDrawerViewer extends JFrame {
         // IdentityGate identityGate1 = new IdentityGate();
         // identityGate1.setRectangle(new Rectangle(5, 480, 60, 40));
         // elements.add(identityGate1);
-        ImpulseGenerator ig1 = new ImpulseGenerator(0);
-        ig1.setRectangle(new Rectangle(5, 320, 60, 40));
-        ig1.setName("Ein Schalter");
+        ImpulseGenerator ig1 = (ImpulseGenerator) factory.getSwitchBuilder().setLocation(new Point(5, 320))
+                .setAnnotation("Ein Schalter").build();
         mainCircuit.addModule(ig1);
-        ImpulseGenerator ig2 = new ImpulseGenerator(0);
+
+        ImpulseGenerator ig2 = (ImpulseGenerator) factory.getSwitchBuilder().setLocation(new Point(100, 320))
+                .setAnnotation("Ein Schalter").build();
         ig2.toggleState();
         ig2.getOutPorts().get(0).setState(true, null);
-        ig2.setRectangle(new Rectangle(100, 320, 60, 40));
         mainCircuit.addModule(ig2);
-        ImpulseGenerator ig3 = new ImpulseGenerator(200);
+
+        ImpulseGenerator ig3 = (ImpulseGenerator) factory.getClockBuilder().setLocation(new Point(200, 320))
+                .setAnnotation("Eine Clock").build();
         ig3.toggleState();
         ig3.getOutPorts().get(0).setState(true, null);
         ig3.setSelected(true);
-        ig3.setRectangle(new Rectangle(200, 320, 60, 40));
         mainCircuit.addModule(ig3);
-        FlipFlop ff1 = new FlipFlop();
-        ff1.setRectangle(new Rectangle(200, 400, 60, 40));
+
+        FlipFlop ff1 = (FlipFlop) factory.getFlipFlopBuilder().setLocation(new Point(200, 400)).setAnnotation("Ein FF")
+                .build();
         mainCircuit.addModule(ff1);
 
-        Circuit circuit1 = (Circuit) factory.getCircuitBuilder().getModule();
-        circuit1.addModule(new AndGate());
-        circuit1.addModule(new OrGate());
+        Circuit circuit1 = (Circuit) factory.getCircuitBuilder().build();
+        circuit1.addModule(factory.getAndGateBuilder().build());
+        circuit1.addModule(factory.getOrGateBuilder().build());
         circuit1.setRectangle(new Rectangle(5, 400, 60, 40));
         BufferedImage symbol;
         try {

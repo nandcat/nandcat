@@ -35,13 +35,13 @@ public class SEPAFExporterConnectionTest {
         exporter.setFile(file);
         factory = new ModuleBuilderFactory();
         factory.setDefaults(new ModelElementDefaults());
-        c = (Circuit) factory.getCircuitBuilder().getModule();
+        c = (Circuit) factory.getCircuitBuilder().build();
     }
 
     @Test
     public void testOneConnection() throws Exception {
-        AndGate gate1 = new AndGate();
-        OrGate gate2 = new OrGate();
+        AndGate gate1 = (AndGate) factory.getAndGateBuilder().build();
+        OrGate gate2 = (OrGate) factory.getOrGateBuilder().build();
         gate1.setRectangle(new Rectangle(10, 20, 30, 40));
         gate2.setRectangle(new Rectangle(50, 60, 70, 80));
         c.addModule(gate1);
@@ -64,8 +64,8 @@ public class SEPAFExporterConnectionTest {
     @Ignore
     @Test
     public void testOneReverseConnection() throws Exception {
-        AndGate gate1 = new AndGate();
-        OrGate gate2 = new OrGate();
+        AndGate gate1 = (AndGate) factory.getAndGateBuilder().build();
+        OrGate gate2 = (OrGate) factory.getOrGateBuilder().build();
         gate1.setRectangle(new Rectangle(10, 20, 30, 40));
         gate2.setRectangle(new Rectangle(50, 60, 70, 80));
         c.addModule(gate1);
@@ -87,7 +87,7 @@ public class SEPAFExporterConnectionTest {
      */
     @Test
     public void testDeepConnectionProblem() throws IOException {
-        AndGate gate1 = new AndGate();
+        AndGate gate1 = (AndGate) factory.getAndGateBuilder().build();
         gate1.setRectangle(new Rectangle(10, 20, 30, 40));
         FlipFlop ff = new FlipFlop();
         gate1.setRectangle(new Rectangle(10, 20, 30, 40));

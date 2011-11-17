@@ -44,7 +44,7 @@ public class Lamp implements Module {
     /**
      * /** Default constructor.
      */
-    public Lamp() {
+    protected Lamp() {
         // state = false;
         rectangle = new Rectangle(EXTENT, EXTENT);
         inPort = new Port(this);

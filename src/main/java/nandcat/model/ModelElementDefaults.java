@@ -25,7 +25,7 @@ public class ModelElementDefaults extends ElementDefaults {
 
     @Override
     public void setDefaults(ClockBuilder b) {
-        b.setFrequency(50);
+        b.setFrequency(1);
         b.setInPorts(0);
         b.setOutPorts(1);
     }

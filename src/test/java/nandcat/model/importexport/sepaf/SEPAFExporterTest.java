@@ -10,6 +10,7 @@ import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
+import nandcat.model.element.factory.ModuleBuilder;
 import nandcat.model.element.factory.ModuleBuilderFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,20 +31,24 @@ public class SEPAFExporterTest {
         SEPAFExporter export = new SEPAFExporter();
         File file = File.createTempFile("export", ".xml");
         export.setFile(file);
-        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
-        AndGate andGate = new AndGate();
-        andGate.getRectangle().setLocation(new Point(1, 1));
-        andGate.setName("AndGate");
+        Circuit c = (Circuit) factory.getCircuitBuilder().build();
+
+        ModuleBuilder andB = factory.getAndGateBuilder();
+        andB.setLocation(new Point(1, 1));
+        andB.setAnnotation("AndGate");
+        AndGate andGate = (AndGate) andB.build();
         c.addModule(andGate);
 
-        OrGate orGate = new OrGate();
-        orGate.getRectangle().setLocation(new Point(2, 2));
-        orGate.setName("OrGate");
+        ModuleBuilder orB = factory.getOrGateBuilder();
+        orB.setLocation(new Point(2, 2));
+        orB.setAnnotation("OrGate");
+        OrGate orGate = (OrGate) orB.build();
         c.addModule(orGate);
 
-        NotGate notGate = new NotGate();
-        notGate.getRectangle().setLocation(new Point(3, 3));
-        notGate.setName("NotGate");
+        ModuleBuilder notB = factory.getNotGateBuilder();
+        notB.setLocation(new Point(3, 3));
+        notB.setAnnotation("NotGate");
+        NotGate notGate = (NotGate) notB.build();
         c.addModule(notGate);
 
         c.addConnection(andGate.getOutPorts().get(0), orGate.getInPorts().get(0));
@@ -64,17 +69,17 @@ public class SEPAFExporterTest {
     private Circuit buildSimpleCircuit(String uuid, String prefix, Point p) {
         Circuit c = null;
         if (uuid == null) {
-            c = (Circuit) factory.getCircuitBuilder().getModule();
+            c = (Circuit) factory.getCircuitBuilder().build();
         } else {
-            c = (Circuit) factory.getCircuitBuilder().setUUID(uuid).getModule();
+            c = (Circuit) factory.getCircuitBuilder().setUUID(uuid).build();
         }
         c.getRectangle().setLocation(p);
 
         // And gate
-        AndGate andGate = new AndGate();
-        andGate.getRectangle().setLocation(new Point(0, 0));
-        andGate.setName(prefix + ":AndGate");
-        c.addModule(andGate);
+        ModuleBuilder andB = factory.getAndGateBuilder();
+        andB.setLocation(new Point(0, 0));
+        andB.setAnnotation(prefix + ":AndGate");
+        c.addModule(andB.build());
 
         return c;
     }
@@ -84,7 +89,7 @@ public class SEPAFExporterTest {
         SEPAFExporter export = new SEPAFExporter();
         File file = File.createTempFile("export", ".xml");
         export.setFile(file);
-        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
+        Circuit c = (Circuit) factory.getCircuitBuilder().build();
 
         Circuit c1 = buildSimpleCircuit(null, "c1", new Point(1, 1));
         Circuit c2 = buildSimpleCircuit(null, "c2", new Point(1, 1));

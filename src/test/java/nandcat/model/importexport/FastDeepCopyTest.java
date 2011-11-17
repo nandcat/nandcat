@@ -30,7 +30,7 @@ public class FastDeepCopyTest {
 
     @Test
     public void testSimple() {
-        Circuit obj = (Circuit) factory.getCircuitBuilder().getModule();
+        Circuit obj = (Circuit) factory.getCircuitBuilder().build();
         obj.setName("name");
         Circuit copy = (Circuit) FastDeepCopy.copy(obj);
         assertTrue(obj.getName() != null);
@@ -38,8 +38,8 @@ public class FastDeepCopyTest {
     }
 
     private Circuit createCircuit() {
-        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
-        AndGate andGate = new AndGate();
+        Circuit c = (Circuit) factory.getCircuitBuilder().build();
+        AndGate andGate = (AndGate) factory.getAndGateBuilder().build();
         andGate.setName("andgate");
         OrGate orGate = new OrGate();
         orGate.setName("orgate");
@@ -125,15 +125,16 @@ public class FastDeepCopyTest {
 
     @Test
     public void testAllElements() {
-        FastDeepCopy.copy(new AndGate());
-        FastDeepCopy.copy(new OrGate());
-        FastDeepCopy.copy(new FlipFlop());
-        FastDeepCopy.copy(new IdentityGate());
-        FastDeepCopy.copy(new ImpulseGenerator(0));
-        FastDeepCopy.copy(new Lamp());
-        FastDeepCopy.copy(new NotGate());
-        AndGate gate = new AndGate();
-        OrGate gate2 = new OrGate();
+        FastDeepCopy.copy((AndGate) factory.getAndGateBuilder().build());
+        FastDeepCopy.copy((OrGate) factory.getOrGateBuilder().build());
+        FastDeepCopy.copy((FlipFlop) factory.getFlipFlopBuilder().build());
+        FastDeepCopy.copy((IdentityGate) factory.getIdentityGateBuilder().build());
+        FastDeepCopy.copy((ImpulseGenerator) factory.getClockBuilder().setFrequency(10).build());
+        FastDeepCopy.copy((ImpulseGenerator) factory.getSwitchBuilder().build());
+        FastDeepCopy.copy((Lamp) factory.getLampBuilder().build());
+        FastDeepCopy.copy((NotGate) factory.getNotGateBuilder().build());
+        AndGate gate = (AndGate) factory.getAndGateBuilder().build();
+        OrGate gate2 = (OrGate) factory.getOrGateBuilder().build();
         FastDeepCopy.copy(gate.getInPorts().get(0));
         FastDeepCopy.copy(new Connection(gate.getOutPorts().get(0), gate2.getInPorts().get(0)));
         // FastDeepCopy.copy(new Connection(null, null));

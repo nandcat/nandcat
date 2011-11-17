@@ -15,7 +15,7 @@ public class CircuitBuilder extends ModuleBuilder {
     }
 
     @Override
-    public Module getModule() {
+    public Module build() {
         Circuit m = new Circuit(getUUID());
         m.setName(getAnnotation());
         if (getLayouter() != null) {

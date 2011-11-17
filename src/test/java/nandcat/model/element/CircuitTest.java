@@ -35,7 +35,7 @@ public class CircuitTest {
     public void testAddModule() {
         AndGate and0 = new AndGate(2, 1);
         ImpulseGenerator impy = new ImpulseGenerator(0);
-        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
+        Circuit c = (Circuit) factory.getCircuitBuilder().build();
         c.addModule(and0, p);
         c.addModule(impy, p);
         assertTrue(c.getElements().contains(and0));
@@ -51,7 +51,7 @@ public class CircuitTest {
         AndGate and1 = new AndGate(2, 1);
         AndGate and2 = new AndGate(2, 1);
         ImpulseGenerator impy = new ImpulseGenerator(0);
-        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
+        Circuit c = (Circuit) factory.getCircuitBuilder().build();
         // NOTE will fail ???
         // Importer impo = new SEPAFImporter();
         // impo.setFile(new File("/tmp/fuck.xml"));
@@ -81,7 +81,7 @@ public class CircuitTest {
     public void testRemoveElement() {
         AndGate and0 = new AndGate(2, 1);
         AndGate and1 = new AndGate(2, 1);
-        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
+        Circuit c = (Circuit) factory.getCircuitBuilder().build();
         c.addModule(and0, p);
         c.addModule(and1, p);
         Connection conn = c.addConnection(and0.getOutPorts().get(0), and1.getInPorts().get(0));
@@ -105,7 +105,7 @@ public class CircuitTest {
      */
     @Test
     public void testSetModuleActive() {
-        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
+        Circuit c = (Circuit) factory.getCircuitBuilder().build();
         AndGate and0 = new AndGate(2, 1);
         c.addModule(and0, p);
         assertFalse(and0.isSelected());
@@ -120,7 +120,7 @@ public class CircuitTest {
      */
     @Test
     public void testAddConnection() {
-        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
+        Circuit c = (Circuit) factory.getCircuitBuilder().build();
         ImpulseGenerator impy = new ImpulseGenerator(0);
         Lamp lamp = new Lamp();
         c.addModule(impy, p);
@@ -137,7 +137,7 @@ public class CircuitTest {
      */
     @Test
     public void testDawg() {
-        Circuit c = (Circuit) factory.getCircuitBuilder().getModule();
+        Circuit c = (Circuit) factory.getCircuitBuilder().build();
         Circuit innerCircuit = new FlipFlop();
         c.addModule(innerCircuit, p);
     }

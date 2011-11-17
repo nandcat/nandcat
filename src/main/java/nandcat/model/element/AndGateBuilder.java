@@ -15,14 +15,14 @@ public class AndGateBuilder extends ModuleBuilder {
     }
 
     @Override
-    public Module getModule() {
+    public Module build() {
         AndGate m = new AndGate(getInPorts(), getOutPorts());
         m.setName(getAnnotation());
         if (getLayouter() != null) {
             getLayouter().layout(m);
-            if (getLocation() != null) {
-                m.getRectangle().setLocation(getLocation());
-            }
+        }
+        if (getLocation() != null) {
+            m.getRectangle().setLocation(getLocation());
         }
         return m;
     }

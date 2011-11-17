@@ -25,7 +25,7 @@ public class SEPAFExporterBasicTest {
         file = File.createTempFile("export", ".xml");
         factory = new ModuleBuilderFactory();
         factory.setDefaults(new ModelElementDefaults());
-        c = (Circuit) factory.getCircuitBuilder().getModule();
+        c = (Circuit) factory.getCircuitBuilder().build();
         exporter = new SEPAFExporter();
     }
 
@@ -36,7 +36,7 @@ public class SEPAFExporterBasicTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testExportWithoutFile() {
-        exporter.setCircuit((Circuit) factory.getCircuitBuilder().getModule());
+        exporter.setCircuit((Circuit) factory.getCircuitBuilder().build());
         exporter.exportCircuit();
     }
 

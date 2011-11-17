@@ -15,7 +15,7 @@ public class FlipFlopBuilder extends ModuleBuilder {
     }
 
     @Override
-    public Module getModule() {
+    public Module build() {
         FlipFlop m = new FlipFlop();
         m.setName(getAnnotation());
         if (getLayouter() != null) {

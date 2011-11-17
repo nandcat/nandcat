@@ -17,7 +17,7 @@ public class AndGate extends Gate {
     /**
      * Default constructor. Creates new AND Gate with 2 incoming and 1 outgoing Ports.
      */
-    public AndGate() {
+    protected AndGate() {
         super(2, 1);
     }
 
@@ -30,7 +30,7 @@ public class AndGate extends Gate {
      *            int number of outPorts to append
      * 
      */
-    public AndGate(int inPorts, int outPorts) {
+    protected AndGate(int inPorts, int outPorts) {
         super(inPorts, outPorts);
     }
 

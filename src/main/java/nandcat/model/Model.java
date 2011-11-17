@@ -17,17 +17,12 @@ import nandcat.model.check.IllegalConnectionCheck;
 import nandcat.model.check.OrphanCheck;
 import nandcat.model.check.SinkCheck;
 import nandcat.model.check.SourceCheck;
-import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
 import nandcat.model.element.DrawElement;
 import nandcat.model.element.Element;
-import nandcat.model.element.FlipFlop;
-import nandcat.model.element.IdentityGate;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Module;
-import nandcat.model.element.NotGate;
-import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
 import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.element.factory.ModuleLayouter;
@@ -114,7 +109,7 @@ public class Model implements ClockListener {
         importers = new HashMap<String, Importer>();
         exporters = new HashMap<String, Exporter>();
         // TODO: factory has no layouter at this moment!
-        circuit = (Circuit) factory.getCircuitBuilder().getModule();
+        circuit = (Circuit) factory.getCircuitBuilder().build();
         clock = new Clock(0, this);
         initView2Module();
         dirty = false;
@@ -175,16 +170,17 @@ public class Model implements ClockListener {
      */
     public void initView2Module() {
         viewModules = new LinkedList<ViewModule>();
-        viewModules.add(new ViewModule("AND", new AndGate(), "", null));
-        viewModules.add(new ViewModule("OR", new OrGate(), "", null));
-        viewModules.add(new ViewModule("FlipFlop", new FlipFlop(), "", null));
-        viewModules.add(new ViewModule("ID", new IdentityGate(), "", null));
-        viewModules.add(new ViewModule("Lampe", factory.getLampBuilder().getModule(), "", null));
-        viewModules.add(new ViewModule("NOT", new NotGate(), "", null));
-        viewModules.add(new ViewModule("ImpulseGenerator", new ImpulseGenerator(), "", null));
-        viewModules.add(new ViewModule("AND-3", new AndGate(2 + 1, 1), "", null));
-        viewModules.add(new ViewModule("OR-3", new OrGate(2 + 1, 1), "", null));
-        viewModules.add(new ViewModule("ID-3", new IdentityGate(1, 2 + 1), "", null));
+        // FIXME Keine instanzen sondern jetzt werden builder uebergeben!
+        viewModules.add(new ViewModule("AND", factory.getAndGateBuilder().build(), "", null));
+        viewModules.add(new ViewModule("OR", factory.getOrGateBuilder().build(), "", null));
+        viewModules.add(new ViewModule("FlipFlop", factory.getFlipFlopBuilder().build(), "", null));
+        viewModules.add(new ViewModule("ID", factory.getIdentityGateBuilder().build(), "", null));
+        viewModules.add(new ViewModule("Lampe", factory.getLampBuilder().build(), "", null));
+        viewModules.add(new ViewModule("NOT", factory.getNotGateBuilder().build(), "", null));
+        viewModules.add(new ViewModule("ImpulseGenerator", factory.getClockBuilder().build(), "", null));
+        viewModules.add(new ViewModule("AND-3", factory.getAndGateBuilder().setInPorts(3).build(), "", null));
+        viewModules.add(new ViewModule("OR-3", factory.getOrGateBuilder().setInPorts(3).build(), "", null));
+        viewModules.add(new ViewModule("ID-3", factory.getIdentityGateBuilder().setOutPorts(3).build(), "", null));
         loadCustomList();
     }
 
@@ -930,7 +926,7 @@ public class Model implements ClockListener {
                 return;
             }
         }
-        this.circuit = (Circuit) factory.getCircuitBuilder().getModule();
+        this.circuit = (Circuit) factory.getCircuitBuilder().build();
         for (ModelListener l : listeners) {
             l.elementsChanged(e);
         }
@@ -956,7 +952,7 @@ public class Model implements ClockListener {
      * @return the Circuit containing the selected Elements
      */
     Circuit getCircuitFromSelected() {
-        Circuit result = (Circuit) factory.getCircuitBuilder().getModule();
+        Circuit result = (Circuit) factory.getCircuitBuilder().build();
 
         for (Module m : circuit.getModules()) {
             if (m.isSelected()) {

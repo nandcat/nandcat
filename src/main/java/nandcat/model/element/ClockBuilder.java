@@ -15,7 +15,7 @@ public class ClockBuilder extends ModuleBuilder {
     }
 
     @Override
-    public Module getModule() {
+    public Module build() {
         ImpulseGenerator m = new ImpulseGenerator(getFrequency());
         m.setName(getAnnotation());
         if (getLayouter() != null) {

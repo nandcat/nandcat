@@ -2,21 +2,15 @@ package nandcat.model.importexport.sepaf;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import java.awt.Rectangle;
+import java.awt.Point;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import nandcat.model.ModelElementDefaults;
-import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
-import nandcat.model.element.FlipFlop;
-import nandcat.model.element.IdentityGate;
-import nandcat.model.element.ImpulseGenerator;
-import nandcat.model.element.Lamp;
-import nandcat.model.element.NotGate;
-import nandcat.model.element.OrGate;
+import nandcat.model.element.factory.ModuleBuilder;
 import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.Exporter;
 import org.junit.After;
@@ -40,16 +34,17 @@ public class SEPAFExporterSingleTest {
         file = File.createTempFile("export", ".xml");
         exporter.setFile(file);
         factory = new ModuleBuilderFactory();
+        // FIXME Defaults sollten die SEPAFDefaults sein
         factory.setDefaults(new ModelElementDefaults());
-        c = (Circuit) factory.getCircuitBuilder().getModule();
+        c = (Circuit) factory.getCircuitBuilder().build();
     }
 
     @Test
     public void testDefaultAndGate() throws Exception {
-        AndGate gate = new AndGate();
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getAndGateBuilder();
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -64,10 +59,12 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testMultiAndGate() throws Exception {
-        AndGate gate = new AndGate(3, 5);
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getAndGateBuilder();
+        b.setInPorts(3);
+        b.setOutPorts(5);
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -82,11 +79,12 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testMultiAndGateDefaultInPorts() throws Exception {
-        AndGate gate = new AndGate(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_AND,
-                SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_AND + 2);
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getAndGateBuilder();
+        b.setInPorts(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_AND);
+        b.setOutPorts(SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_AND + 2);
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -101,11 +99,12 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testMultiAndGateDefaultOutPorts() throws Exception {
-        AndGate gate = new AndGate(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_AND + 2,
-                SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_AND);
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getAndGateBuilder();
+        b.setInPorts(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_AND + 2);
+        b.setOutPorts(SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_AND);
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -120,10 +119,10 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testDefaultOrGate() throws Exception {
-        OrGate gate = new OrGate();
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getOrGateBuilder();
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -138,10 +137,12 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testMultiOrGate() throws Exception {
-        OrGate gate = new OrGate(3, 5);
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getOrGateBuilder();
+        b.setInPorts(3);
+        b.setOutPorts(5);
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -156,11 +157,12 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testMultiOrGateDefaultOutPorts() throws Exception {
-        OrGate gate = new OrGate(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_OR + 2,
-                SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_OR);
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getOrGateBuilder();
+        b.setInPorts(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_OR + 2);
+        b.setOutPorts(SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_OR);
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -175,11 +177,12 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testMultiOrGateDefaultInPorts() throws Exception {
-        OrGate gate = new OrGate(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_OR,
-                SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_OR + 2);
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getOrGateBuilder();
+        b.setInPorts(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_OR);
+        b.setOutPorts(SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_OR + 2);
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -194,10 +197,10 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testDefaultNotGate() throws Exception {
-        NotGate gate = new NotGate();
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getNotGateBuilder();
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -212,10 +215,11 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testMultiNotGate() throws Exception {
-        NotGate gate = new NotGate(5);
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getNotGateBuilder();
+        b.setOutPorts(5);
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -230,10 +234,11 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testMultiNotGateDefaultOutPorts() throws Exception {
-        NotGate gate = new NotGate(SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_NOT);
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getNotGateBuilder();
+        b.setOutPorts(SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_NOT);
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -248,10 +253,10 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testDefaultIdentityGate() throws Exception {
-        IdentityGate gate = new IdentityGate();
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getIdentityGateBuilder();
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -266,10 +271,11 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testMultiIdentityGate() throws Exception {
-        IdentityGate gate = new IdentityGate(1, 5);
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getIdentityGateBuilder();
+        b.setOutPorts(5);
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -284,10 +290,11 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testMultiIdentityGateDefaultOutPorts() throws Exception {
-        IdentityGate gate = new IdentityGate(1, SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_IDENTITY);
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getIdentityGateBuilder();
+        b.setOutPorts(SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_IDENTITY);
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -302,10 +309,10 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testDefaultLamp() throws Exception {
-        Lamp gate = new Lamp();
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getLampBuilder();
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -321,10 +328,10 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testDefaultFlipFlop() throws Exception {
-        FlipFlop gate = new FlipFlop();
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getFlipFlopBuilder();
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -340,10 +347,11 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testDefaultClock() throws Exception {
-        ImpulseGenerator gate = new ImpulseGenerator(10);
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getClockBuilder();
+        b.setFrequency(10);
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -360,10 +368,10 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testDefaultSwitch() throws Exception {
-        ImpulseGenerator gate = new ImpulseGenerator(0);
-        gate.setName("Annotation");
-        gate.setRectangle(new Rectangle(5, 10, 80, 90));
-        c.addModule(gate);
+        ModuleBuilder b = factory.getSwitchBuilder();
+        b.setAnnotation("Annotation");
+        b.setLocation(new Point(5, 10));
+        c.addModule(b.build());
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
@@ -380,12 +388,16 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testDefaultCircuit() throws Exception {
-        Circuit circuit = (Circuit) factory.getCircuitBuilder().getModule();
-        AndGate gate = new AndGate();
-        gate.setRectangle(new Rectangle(10, 20, 30, 40));
-        circuit.addModule(gate);
-        circuit.setName("Annotation");
-        circuit.setRectangle(new Rectangle(5, 10, 80, 90));
+        ModuleBuilder CircuitB = factory.getCircuitBuilder();
+        CircuitB.setAnnotation("Annotation");
+        CircuitB.setLocation(new Point(5, 10));
+
+        ModuleBuilder AndB = factory.getAndGateBuilder();
+        AndB.setAnnotation("Annotation");
+        AndB.setLocation(new Point(10, 20));
+
+        Circuit circuit = (Circuit) CircuitB.build();
+        circuit.addModule(AndB.build());
         c.addModule(circuit);
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
@@ -409,12 +421,16 @@ public class SEPAFExporterSingleTest {
 
     @Test
     public void testMissingCircuit() throws Exception {
-        Circuit circuit = (Circuit) factory.getCircuitBuilder().getModule();
-        AndGate gate = new AndGate();
-        gate.setRectangle(new Rectangle(10, 20, 30, 40));
-        circuit.addModule(gate);
-        circuit.setName("Annotation");
-        circuit.setRectangle(new Rectangle(5, 10, 80, 90));
+        ModuleBuilder CircuitB = factory.getCircuitBuilder();
+        CircuitB.setAnnotation("Annotation");
+        CircuitB.setLocation(new Point(5, 10));
+
+        ModuleBuilder AndB = factory.getAndGateBuilder();
+        AndB.setAnnotation("Annotation");
+        AndB.setLocation(new Point(10, 20));
+
+        Circuit circuit = (Circuit) CircuitB.build();
+        circuit.addModule(AndB.build());
         c.addModule(circuit);
         exporter.setCircuit(c);
         Map<String, String> externalCircuits = new HashMap<String, String>();

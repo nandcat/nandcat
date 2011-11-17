@@ -15,7 +15,7 @@ public class NotGateBuilder extends ModuleBuilder {
     }
 
     @Override
-    public Module getModule() {
+    public Module build() {
         NotGate m = new NotGate(getOutPorts());
         m.setName(getAnnotation());
         if (getLayouter() != null) {

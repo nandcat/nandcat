@@ -15,7 +15,7 @@ public class LampBuilder extends ModuleBuilder {
     }
 
     @Override
-    public Module getModule() {
+    public Module build() {
         Lamp m = new Lamp();
         m.setName(getAnnotation());
         if (getLayouter() != null) {

@@ -15,7 +15,7 @@ public class OrGateBuilder extends ModuleBuilder {
     }
 
     @Override
-    public Module getModule() {
+    public Module build() {
         OrGate m = new OrGate(getInPorts(), getOutPorts());
         m.setName(getAnnotation());
         if (getLayouter() != null) {

@@ -229,7 +229,7 @@ public class SEPAFImporter implements Importer {
             if (mainComponents == null || mainComponents.isEmpty()) {
                 throw new FormatException("Circuit has no components: '" + name + "'");
             }
-            circuit = (Circuit) factory.getCircuitBuilder().setUUID(name).getModule();
+            circuit = (Circuit) factory.getCircuitBuilder().setUUID(name).build();
 
             // Index of imported modules used for connections
             Map<String, Module> moduleIndex = new HashMap<String, Module>();
@@ -356,7 +356,7 @@ public class SEPAFImporter implements Importer {
             if (portsOut != null) {
                 b.setOutPorts(portsOut);
             }
-            module = b.getModule();
+            module = b.build();
         } else if (aType.getValue().equals("or")) {
             ModuleBuilder b = factory.getOrGateBuilder();
             if (portsIn != null) {
@@ -366,28 +366,28 @@ public class SEPAFImporter implements Importer {
             if (portsOut != null) {
                 b.setOutPorts(portsOut);
             }
-            module = b.getModule();
+            module = b.build();
         } else if (aType.getValue().equals("id")) {
             ModuleBuilder b = factory.getIdentityGateBuilder();
             if (portsOut != null) {
                 b.setOutPorts(portsOut);
             }
-            module = b.getModule();
+            module = b.build();
         } else if (aType.getValue().equals("not")) {
             ModuleBuilder b = factory.getNotGateBuilder();
             if (portsOut != null) {
                 b.setOutPorts(portsOut);
             }
-            module = b.getModule();
+            module = b.build();
         } else if (aType.getValue().equals("out")) {
             ModuleBuilder b = factory.getLampBuilder();
-            module = b.getModule();
+            module = b.build();
         } else if (aType.getValue().equals("flipflop")) {
             ModuleBuilder b = factory.getFlipFlopBuilder();
-            module = b.getModule();
+            module = b.build();
         } else if (aType.getValue().equals("in")) {
             ModuleBuilder b = factory.getSwitchBuilder();
-            module = b.getModule();
+            module = b.build();
         } else if (aType.getValue().equals("clock")) {
             ModuleBuilder b = factory.getClockBuilder();
             if (inTiming != null) {
@@ -402,7 +402,7 @@ public class SEPAFImporter implements Importer {
                 }
             }
 
-            module = b.getModule();
+            module = b.build();
         } else if (aType.getValue().equals("circuit")) {
             module = buildCircuit(el.getAttributeValue("type2"), doc);
         } else if (aType.getValue().equals("missing-circuit")) {

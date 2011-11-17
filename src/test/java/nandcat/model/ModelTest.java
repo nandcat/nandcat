@@ -1,31 +1,45 @@
 package nandcat.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.HashSet;
 import java.util.Set;
-import junit.framework.TestCase;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
 import nandcat.model.element.Element;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
+import nandcat.model.element.factory.ModuleBuilderFactory;
+import org.junit.Before;
+import org.junit.Test;
 
-public class ModelTest extends TestCase {
+public class ModelTest {
 
+    private ModuleBuilderFactory factory;
+
+    @Before
+    public void setUp() {
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+    }
+
+    @Test
     public void testCycle() {
         Model model = new Model();
         Point p = new Point(0, 0);
-        ImpulseGenerator one = new ImpulseGenerator(1);
-        ImpulseGenerator two = new ImpulseGenerator(0);
+        ImpulseGenerator one = (ImpulseGenerator) factory.getClockBuilder().setFrequency(1).build();
+        ImpulseGenerator two = (ImpulseGenerator) factory.getClockBuilder().setFrequency(0).build();
         model.addModule(one, p);
         model.addModule(two, p);
-        AndGate and = new AndGate();
+        AndGate and = (AndGate) factory.getAndGateBuilder().build();
         model.addModule(and, p);
         model.addConnection(one.getOutPorts().get(0), and.getInPorts().get(0));
         model.addConnection(two.getOutPorts().get(0), and.getInPorts().get(1));
-        Lamp lamp = new Lamp();
+        Lamp lamp = (Lamp) factory.getLampBuilder().build();
         model.addModule(lamp, p);
         model.addConnection(and.getOutPorts().get(0), lamp.getInPorts().get(0));
 
@@ -74,28 +88,30 @@ public class ModelTest extends TestCase {
         assertFalse(lamp.getState());
     }
 
+    @Test
     public void testGetFrequency() {
         Model model = new Model();
         model.clearCircuit();
-        ImpulseGenerator impy = new ImpulseGenerator(500);
+        ImpulseGenerator impy = (ImpulseGenerator) factory.getClockBuilder().setFrequency(500).build();
         model.addModule(impy, new Point(0, 0));
         model.setFrequency(impy, 100);
         assertEquals(100, impy.getFrequency());
         model.startChecks();
     }
 
+    @Test
     public void testGetCircuitFromSelected() {
         Model m = new Model();
         Circuit c = m.getCircuit();
         Set<Element> selectit = new HashSet<Element>();
 
-        AndGate drinSelektiert = new AndGate();
+        AndGate drinSelektiert = (AndGate) factory.getAndGateBuilder().build();
         c.addModule(drinSelektiert);
         drinSelektiert.setRectangle(new Rectangle(new Point(1, 1)));
-        AndGate drinSelektiert2 = new AndGate();
+        AndGate drinSelektiert2 = (AndGate) factory.getAndGateBuilder().build();
         c.addModule(drinSelektiert2);
         drinSelektiert2.setRectangle(new Rectangle(new Point(2, 2)));
-        AndGate unselektiert = new AndGate();
+        AndGate unselektiert = (AndGate) factory.getAndGateBuilder().build();
         c.addModule(unselektiert);
         unselektiert.setRectangle(new Rectangle(new Point(3, 3)));
 
