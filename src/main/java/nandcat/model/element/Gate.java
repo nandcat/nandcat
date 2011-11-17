@@ -48,7 +48,7 @@ public abstract class Gate implements Module {
      * @param outPorts
      *            int <b>positive</b> number of outPorts to append
      */
-    public Gate(int inPorts, int outPorts) {
+    protected Gate(int inPorts, int outPorts) {
         if (!isValidInBoundary(inPorts) || !isValidOutBoundary(outPorts)) {
             throw new IllegalArgumentException("Illegal amount of in or out ports.");
         }
