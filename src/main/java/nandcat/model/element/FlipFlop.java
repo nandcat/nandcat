@@ -15,7 +15,7 @@ public class FlipFlop extends Circuit {
     /**
      * Create new RS-FlipFlop.
      */
-    public FlipFlop() {
+    protected FlipFlop() {
         super("FlipFlop");
         AndGate r = new AndGate(2, 2);
         AndGate s = new AndGate(2, 2);

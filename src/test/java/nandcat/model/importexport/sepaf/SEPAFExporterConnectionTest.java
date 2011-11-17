@@ -1,6 +1,7 @@
 package nandcat.model.importexport.sepaf;
 
 import static org.junit.Assert.assertTrue;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -87,10 +88,8 @@ public class SEPAFExporterConnectionTest {
      */
     @Test
     public void testDeepConnectionProblem() throws IOException {
-        AndGate gate1 = (AndGate) factory.getAndGateBuilder().build();
-        gate1.setRectangle(new Rectangle(10, 20, 30, 40));
-        FlipFlop ff = new FlipFlop();
-        gate1.setRectangle(new Rectangle(10, 20, 30, 40));
+        AndGate gate1 = (AndGate) factory.getAndGateBuilder().setLocation(new Point(10, 20)).build();
+        FlipFlop ff = (FlipFlop) factory.getFlipFlopBuilder().setLocation(new Point(30, 40)).build();
         c.addModule(gate1);
         c.addModule(ff);
         c.addConnection(gate1.getOutPorts().get(0), ff.getInPorts().get(0));
