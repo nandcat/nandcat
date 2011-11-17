@@ -82,8 +82,6 @@ public class FeedbackCheck implements CircuitCheck {
                  */
                 if (current.getConnection() != null) {
                     q.addAll(current.getConnection().getOutPort().getModule().getOutPorts());
-                } else {
-                    // visited.clear();
                 }
             }
         }
