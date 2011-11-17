@@ -19,8 +19,8 @@ public class FlipFlop extends Circuit {
         super("FlipFlop");
         AndGate r = new AndGate(2, 2);
         AndGate s = new AndGate(2, 2);
-        NotGate rNot = new NotGate();
-        NotGate sNot = new NotGate();
+        NotGate rNot = new NotGate(1);
+        NotGate sNot = new NotGate(1);
         addModule(r, new Point());
         addModule(s, new Point(1, 0));
         addModule(rNot, new Point(0, 1));

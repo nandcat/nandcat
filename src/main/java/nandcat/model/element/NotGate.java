@@ -13,13 +13,6 @@ public class NotGate extends Gate {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Default constructor. Create new not gate with 1 incoming and 1 outgoing ports.
-     */
-    protected NotGate() {
-        super(1, 1);
-    }
-
-    /**
      * Advanced constructor. Creates new Not with 1 incoming and outPorts outgoing Ports. outPorts has to be a positive
      * integer
      * 
