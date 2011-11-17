@@ -46,7 +46,7 @@ public class Lamp implements Module {
      */
     protected Lamp() {
         // state = false;
-        rectangle = new Rectangle(EXTENT, EXTENT);
+        rectangle = new Rectangle();
         inPort = new Port(this);
         inPort.setState(false, null);
     }

@@ -134,41 +134,6 @@ public class Port implements Serializable {
     }
 
     /**
-     * Calculates the standard position on this port. <br/>
-     * <br/>
-     * <b>Note:</b> This method only makes sense iff called after <b>all</b> in- or out-ports have been added to the
-     * containing Module!<br/>
-     * <br/>
-     * Not called in constructor! Note that this can lead to immense and horrific errors and unexpected behaviour if the
-     * Module is smaller than the size of the according list of ports.
-     * 
-     * @param parent
-     *            Module to use as parent-element reference
-     * @return Rectangle specifying the standard Location of this Port
-     */
-    public Rectangle locateOnStandardPosition(Module parent) {
-
-        // rectangle containing the standard size, but not position of the port
-        Rectangle result = new Rectangle(-1, -1, 1, 1);
-
-        // index starts at 0, so +1. first port is number 1. derp.
-        int numberOfPort = isOutPort() ? parent.getOutPorts().indexOf(this) + 1 : parent.getInPorts().indexOf(this) + 1;
-
-        // amount of ports on this side
-        int amountOfPorts = isOutPort() ? parent.getOutPorts().size() : parent.getInPorts().size();
-
-        /*
-         * one port: position at half the height two ports: position at one third, etcpp +1
-         */
-        int yOffset = parent.getRectangle().height / (amountOfPorts + 1);
-
-        result.y = parent.getRectangle().y + (yOffset * numberOfPort);
-        result.x = parent.getRectangle().x + (isOutPort() ? 0 : parent.getRectangle().width - result.width);
-
-        return result;
-    }
-
-    /**
      * Return center of Port.
      * 
      * @return Point of the center

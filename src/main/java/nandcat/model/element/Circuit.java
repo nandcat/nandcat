@@ -82,7 +82,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         elements = new LinkedList<Element>();
         inPorts = new LinkedList<Port>();
         outPorts = new LinkedList<Port>();
-        rectangle = new Rectangle(Module.EXTENT, Module.EXTENT);
+        rectangle = new Rectangle();
         symbol = null;
         selected = false;
     }
@@ -409,12 +409,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
                 }
             }
         }
-        for (Port in : m.getInPorts()) {
-            in.locateOnStandardPosition(this);
-        }
-        for (Port out : m.getOutPorts()) {
-            out.locateOnStandardPosition(this);
-        }
+
         // one module may not appear more than once in elements (guaranteed by Set<>)
         elements.add(m);
         // scan for new potential in/outPorts
