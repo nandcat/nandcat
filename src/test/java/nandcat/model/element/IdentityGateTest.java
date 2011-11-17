@@ -30,7 +30,7 @@ public class IdentityGateTest extends TestCase {
      * Test default constructor.
      */
     public void testDefaultGate() {
-        IdentityGate iGate = new IdentityGate();
+        IdentityGate iGate = new IdentityGate(1, 2);
         assertFalse(iGate.isValidInBoundary(0));
         assertTrue(iGate.isValidInBoundary(1));
         assertFalse(iGate.isValidOutBoundary(0));

@@ -13,13 +13,6 @@ public class IdentityGate extends Gate {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Default constructor. Create new identity gate with 1 incoming and 2 outcoming ports.
-     */
-    protected IdentityGate() {
-        super(1, 2);
-    }
-
-    /**
      * Advanced constructor. Creates new Identity gate with inPorts incoming and outPorts outgoing Ports.
      * 
      * @param inPorts
