@@ -15,7 +15,7 @@ public class NotGate extends Gate {
     /**
      * Default constructor. Create new not gate with 1 incoming and 1 outgoing ports.
      */
-    public NotGate() {
+    protected NotGate() {
         super(1, 1);
     }
 
@@ -26,7 +26,7 @@ public class NotGate extends Gate {
      * @param outPorts
      *            int number of outPorts to append
      */
-    public NotGate(int outPorts) {
+    protected NotGate(int outPorts) {
         super(1, outPorts);
     }
 

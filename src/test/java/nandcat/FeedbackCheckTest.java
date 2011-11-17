@@ -4,12 +4,14 @@ import static org.junit.Assert.fail;
 import java.awt.Point;
 import java.util.List;
 import nandcat.model.Model;
+import nandcat.model.ModelElementDefaults;
 import nandcat.model.check.CheckEvent;
 import nandcat.model.check.CheckListener;
 import nandcat.model.check.CircuitCheck;
 import nandcat.model.check.FeedbackCheck;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.Port;
+import nandcat.model.element.factory.ModuleBuilderFactory;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -36,7 +38,9 @@ public class FeedbackCheckTest {
     @Before
     public void setUp() throws Exception {
         model = new Model();
-        NotGate notgate = new NotGate(1);
+        ModuleBuilderFactory factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+        NotGate notgate = (NotGate) factory.getNotGateBuilder().setOutPorts(1).build();
         List<Port> inPorts = notgate.getInPorts();
         List<Port> outPorts = notgate.getOutPorts();
         model.addConnection(inPorts.get(0), outPorts.get(0));
