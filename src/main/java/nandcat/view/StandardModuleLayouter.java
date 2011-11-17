@@ -161,7 +161,6 @@ public class StandardModuleLayouter implements ModuleLayouter {
      * @return Rectangle representing position and dimension of the port.
      */
     private Rectangle getPortBounds(Rectangle bounds, boolean outPort, int i, int numberOfPorts) {
-        assert bounds != null;
         int avHeight = bounds.height - PORT_MARGIN_TOP - PORT_MARGIN_BOTTOM;
         float partY = avHeight / (numberOfPorts + 1);
         float positionY = partY * (i + 1) - PORT_DIAMETER;

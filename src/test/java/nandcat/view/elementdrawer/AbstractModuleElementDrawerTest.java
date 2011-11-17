@@ -37,7 +37,7 @@ public class AbstractModuleElementDrawerTest extends AbstractElementDrawerTest {
     protected Port stubPort(boolean state) {
         Port p = mock(Port.class);
         when(p.getState()).thenReturn(state);
-        when(p.getRectangle()).thenReturn(new Rectangle(4, 4, 4, 4));
+        when(p.getRectangle()).thenReturn(new Rectangle(4, 4, PORT_DIAMETER, PORT_DIAMETER));
         return p;
     }
 
