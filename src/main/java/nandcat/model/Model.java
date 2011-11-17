@@ -113,7 +113,7 @@ public class Model implements ClockListener {
         importers = new HashMap<String, Importer>();
         exporters = new HashMap<String, Exporter>();
         circuit = new Circuit();
-        clock = new Clock(1, this);
+        clock = new Clock(0, this);
         initView2Module();
         dirty = false;
         simIsRunning = false;

@@ -228,7 +228,7 @@ public class Clock implements Runnable {
                 ((Connection) e).setState(false, null);
             }
         }
-        cycle = 1;
+        cycle = 0;
         listeners.clear();
         generators.clear();
         connections.clear();
