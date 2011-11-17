@@ -65,13 +65,6 @@ public class ImpulseGenerator implements Module {
     }
 
     /**
-     * Default constructor. The frequency will be 1.
-     */
-    protected ImpulseGenerator() {
-        this(1);
-    }
-
-    /**
      * Set impulsegenerator's name.
      * 
      * @param name
