@@ -194,20 +194,24 @@ public class Clock implements Runnable {
                 Thread.sleep(sleepTime);
                 synchronized (model) {
                     // Added debug code !
-                    long before = System.nanoTime();
-                    cycle();
-                    // Added debug code !
-                    long after = System.nanoTime();
-                    LOG.debug("Cycle " + cycle + " took " + (after - before) + " ns");
-                    String imps = "";
+                    String imps = "\nImpulseGenerators:\n";
                     for (ImpulseGenerator listener : generators) {
                         if ((cycle == 0) || (listener.getFrequency() == 1)
                                 || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
                             imps += (listener.toString() + "\n");
                         }
                     }
-                    LOG.debug("\nImpulseGenerators:\n" + imps);
+                    imps += "modules in queue:\n";
+                    for (ClockListener l : listeners) {
+                        imps += l.toString() + "\n";
+                    }
+                    LOG.debug(imps);
                     // End of debug code !
+                    long before = System.nanoTime();
+                    cycle();
+                    // Added debug code !
+                    long after = System.nanoTime();
+                    LOG.debug("Cycle " + cycle + " took " + (after - before) + " ns");
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
