@@ -132,7 +132,11 @@ public class FastDeepCopyTest {
         AndGate gate = (AndGate) factory.getAndGateBuilder().build();
         OrGate gate2 = (OrGate) factory.getOrGateBuilder().build();
         FastDeepCopy.copy(gate.getInPorts().get(0));
-        FastDeepCopy.copy(new Connection(gate.getOutPorts().get(0), gate2.getInPorts().get(0)));
+        Circuit c = (Circuit) factory.getCircuitBuilder().build();
+        c.addModule(gate);
+        c.addModule(gate2);
+        Connection con = c.addConnection(gate.getOutPorts().get(0), gate2.getInPorts().get(0));
+        FastDeepCopy.copy(con);
         // FastDeepCopy.copy(new Connection(null, null));
     }
 }
