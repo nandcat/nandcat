@@ -185,6 +185,6 @@ public class Port implements Serializable {
             return getModule().getClass().getSimpleName() + "(" + this.getState() + ")";
         }
         // beware of getState
-        return bounds.x + "/" + bounds.y + "[" + this.getState() + "]";
+        return "[" + this.getState() + "]";
     }
 }
