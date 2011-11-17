@@ -190,8 +190,8 @@ public class CreateTool implements Tool {
                     view.getWorkspace().redraw(connectionPreview);
                 }
             } else {
-                if (model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE)) != null) {
-                    Port targetPort = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
+                Port targetPort = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
+                if ((targetPort != null) && !(targetPort.getModule().equals(sourcePort.getModule()))) {
                     if (!sourcePort.isOutPort() && targetPort.isOutPort()) {
                         model.addConnection(targetPort, sourcePort);
                         sourcePort = null;
@@ -222,7 +222,8 @@ public class CreateTool implements Tool {
             Set<DrawElement> elements = model.getDrawElementsAt(new Rectangle(point, MOUSE_TOLERANCE));
             Port portAt = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
             if (!elements.isEmpty() && portAt != null) {
-                if ((sourcePort.isOutPort() && portAt.isOutPort()) || (!sourcePort.isOutPort() && !portAt.isOutPort())) {
+                if ((sourcePort.isOutPort() && portAt.isOutPort()) || (!sourcePort.isOutPort() && !portAt.isOutPort())
+                        || (sourcePort.getModule().equals(portAt.getModule()))) {
                     view.setCursor(new Cursor(Cursor.WAIT_CURSOR));
                 }
             } else {
