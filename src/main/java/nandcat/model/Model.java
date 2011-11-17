@@ -30,7 +30,6 @@ import nandcat.model.importexport.Exporter;
 import nandcat.model.importexport.Importer;
 import nandcat.model.importexport.sepaf.SEPAFExporter;
 import nandcat.model.importexport.sepaf.SEPAFImporter;
-import nandcat.view.StandardModuleLayouter;
 import org.apache.log4j.Logger;
 
 /**
@@ -102,7 +101,6 @@ public class Model implements ClockListener {
     public Model() {
         factory = new ModuleBuilderFactory();
         factory.setDefaults(new ModelElementDefaults());
-        factory.setLayouter(new StandardModuleLayouter());
         checks = new LinkedHashSet<CircuitCheck>();
         listeners = new LinkedHashSet<ModelListener>();
         importFormats = new HashMap<String, String>();
@@ -112,7 +110,6 @@ public class Model implements ClockListener {
         // TODO: factory has no layouter at this moment!
         circuit = (Circuit) factory.getCircuitBuilder().build();
         clock = new Clock(0, this);
-        initView2Module();
         dirty = false;
         initExporters();
         initImporters();
@@ -238,6 +235,9 @@ public class Model implements ClockListener {
      * @return List of ViewModules
      */
     public List<ViewModule> getViewModules() {
+        if (viewModules == null) {
+            initView2Module();
+        }
         return viewModules;
     }
 
