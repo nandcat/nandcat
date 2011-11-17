@@ -117,7 +117,6 @@ public class ViewModule {
      */
     public Module getModule() {
         try {
-            System.out.println("anzahl Ports " + module.getInPorts().size());
             return (Module) FastDeepCopy.copy(module);
         } catch (Exception e) {
         }
