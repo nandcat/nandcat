@@ -216,25 +216,6 @@ public class Clock implements Runnable {
         LOG.debug("Thread died, listeners notified!");
     }
 
-    private void EXTRACT_THE_DEBUGINFO() {
-        String imps = "\nactive impulseGenerators:\n";
-        for (ImpulseGenerator listener : generators) {
-            if ((cycle == 0) || (listener.getFrequency() == 1)
-                    || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
-                imps += (listener.toString() + "\n");
-            }
-        }
-        imps += "modules in queue:\n";
-        for (ClockListener l : listeners) {
-            imps += l.toString() + "\n";
-        }
-        imps += "connections in queue:\n";
-        for (ClockListener c : connections) {
-            imps += c.toString() + "\n";
-        }
-        LOG.debug(imps);
-    }
-
     /**
      * Reset all listeners, clears the lists and resets the cycle.
      */
@@ -263,5 +244,25 @@ public class Clock implements Runnable {
         listeners.clear();
         generators.clear();
         connections.clear();
+    }
+
+    // TODO - entfernen wenn richtigkeit sichergestellt !
+    private void EXTRACT_THE_DEBUGINFO() {
+        String imps = "\nactive impulseGenerators:\n";
+        for (ImpulseGenerator listener : generators) {
+            if ((cycle == 0) || (listener.getFrequency() == 1)
+                    || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
+                imps += (listener.toString() + "\n");
+            }
+        }
+        imps += "modules in queue:\n";
+        for (ClockListener l : listeners) {
+            imps += l.toString() + "\n";
+        }
+        imps += "connections in queue:\n";
+        for (ClockListener c : connections) {
+            imps += c.toString() + "\n";
+        }
+        LOG.debug(imps);
     }
 }
