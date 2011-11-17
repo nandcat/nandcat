@@ -195,6 +195,7 @@ public class ImpulseGenerator implements Module {
         if (outPort.getRectangle() != null) {
             x += outPort.getRectangle().x + "/" + outPort.getRectangle().y + ", ";
         }
+        x += ("Frequency: (" + getFrequency() + ")");
         return x;
     }
 
