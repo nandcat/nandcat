@@ -966,7 +966,6 @@ public class Model implements ClockListener {
         for (ModelListener l : listeners) {
             l.simulationStopped(e);
         }
-        notifyForChangedElems();
     }
 
     /**

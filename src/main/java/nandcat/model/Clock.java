@@ -125,9 +125,6 @@ public class Clock implements Runnable {
      */
     public void cycle() {
         // never ever refactor name listener
-        // TODO remove debug code
-        debug();
-        long before = System.nanoTime();
         for (ClockListener listener : listeners) {
             listener.clockTicked(this);
         }
@@ -141,9 +138,6 @@ public class Clock implements Runnable {
             listener.clockTicked(this);
         }
         model.clockTicked(this);
-        // TODO REMOVE DEBUG CODE !
-        long after = System.nanoTime();
-        LOG.debug("Cycle " + (cycle) + " took " + (after - before) + " ns\n");
         cycle++;
     }
 
@@ -197,11 +191,27 @@ public class Clock implements Runnable {
         LOG.debug("new Thread started, Cycle = " + cycle);
         while (isRunning()) {
             try {
+                Thread.sleep(sleepTime);
                 synchronized (model) {
+                    // Added debug code !
+                    String imps = "\nImpulseGenerators:\n";
+                    for (ImpulseGenerator listener : generators) {
+                        if ((cycle == 0) || (listener.getFrequency() == 1)
+                                || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
+                            imps += (listener.toString() + "\n");
+                        }
+                    }
+                    imps += "modules in queue:\n";
+                    for (ClockListener l : listeners) {
+                        imps += l.toString() + "\n";
+                    }
+                    LOG.debug(imps);
+                    // End of debug code !
+                    long before = System.nanoTime();
                     cycle();
-                }
-                if (isRunning()) {
-                    Thread.sleep(sleepTime);
+                    // Added debug code !
+                    long after = System.nanoTime();
+                    LOG.debug("Cycle " + cycle + " took " + (after - before) + " ns");
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -225,37 +235,14 @@ public class Clock implements Runnable {
                 }
             }
             if (e instanceof Connection) {
-                ((Connection) e).setState(false, null);
+                ((Connection) e).setSelected(false);
             }
         }
         cycle = 0;
         listeners.clear();
         generators.clear();
-        connections.clear();
         model.notifyForStoppedSim();
         // Added debug code !
         LOG.debug("Thread died, listeners notified!");
-    }
-
-    // TODO REMOVE
-    private void debug() {
-        // Added debug code !
-        String imps = "\nCycle " + cycle + "\nactive impulseGenerators:\n";
-        for (ImpulseGenerator listener : generators) {
-            if ((cycle == 0) || (listener.getFrequency() == 1)
-                    || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
-                imps += (listener.toString() + "\n");
-            }
-        }
-        imps += "modules in queue:\n";
-        for (ClockListener l : listeners) {
-            imps += l.toString() + "\n";
-        }
-        imps += "cons in queue:\n";
-        for (ClockListener l : connections) {
-            imps += l.toString() + "\n";
-        }
-        LOG.debug(imps);
-        // End of debug code !
     }
 }
