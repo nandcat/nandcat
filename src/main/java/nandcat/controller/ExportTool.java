@@ -219,6 +219,9 @@ public class ExportTool implements Tool {
      */
     private void actionSaveAs() {
         JFileChooser fc = new JFileChooser();
+        if (saveLastFile != null) {
+            fc.setSelectedFile(saveLastFile);
+        }
         ImportExportUtils.addFileFilterToChooser(fc, model.getExportFormats());
         fc.setAcceptAllFileFilterUsed(false);
         int returnVal = fc.showSaveDialog(controller.getView());
