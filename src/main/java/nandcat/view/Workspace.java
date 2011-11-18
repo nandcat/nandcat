@@ -1,5 +1,6 @@
 package nandcat.view;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
@@ -91,6 +92,10 @@ public class Workspace extends JPanel {
      * WindowAdapter listening on Window Events of the view.
      */
     private WindowAdapter windowListener;
+    
+    private boolean grid = false;
+    
+    private int gridSize;
 
     /**
      * Constructs the workspace.
@@ -238,10 +243,33 @@ public class Workspace extends JPanel {
             view.setWorkspaceHeight((int) rect.getHeight());
         }
     }
+    
+    public void setGridEnable(boolean grid, int gridSize) {
+        this.grid = grid;
+        this.gridSize = gridSize;
+        repaint();
+    }
+    
+    public boolean getGridEnable() {
+        return grid;
+    }
+    
+    public int getGridSize() {
+        return gridSize;
+    }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        if (grid) {
+            g.setColor(Color.lightGray);
+            for (int i = gridSize; i < this.getWidth(); i += gridSize) {
+                g.drawLine(i, 0, i, this.getHeight());
+            }
+            for (int i = gridSize; i < this.getWidth(); i += gridSize) {
+                g.drawLine(0, i, this.getWidth(), i);
+            }
+        }
         elementDrawer.setGraphics(g);
         List<DrawElement> elementsToDraw = model.getDrawElements();
         List<Connection> cachedConnections = new LinkedList<Connection>();

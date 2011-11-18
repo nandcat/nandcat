@@ -110,86 +110,87 @@ public class SimulateTool implements Tool {
         model = controller.getModel();
         view = controller.getView();
         simulateTool = this;
-//        modelListener = new ModelListenerAdapter() {
-//
-//            private boolean simulating = false;
-//
-//            public void elementsChanged(ModelEvent e) {
-//                if (simulating) {
-//                    // set the cycle count on the current cycle.
-//                    view.setCycleCount(i18n.getString("cycle.count") + model.getCycle());
-//                }
-//            }
-//
-//            public void simulationStarted(ModelEvent e) {
-//                simulating = true;
-//                view.disableButtons();
-//                checkManager.setButton(false);
-//            }
-//
-//            public void simulationStopped(ModelEvent e) {
-//                // Stopping the simulation needs to enable the buttons and set the "Counter".
-//                simulating = false;
-//                view.enableButtons();
-//                view.setCycleCount(i18n.getString("cycle.stand"));
-//                checkManager.setButton(true);
-//            }
-//
-//            public void checksStopped(ModelEvent e) {
-//                // All checks are passed if everyone was successful we can start the simulation.
-//                if (e.allChecksPassed() && simToStart) {
-//                    // checkManager.setVisible(false);
-//                    model.startSimulation();
-//                }
-//            }
-//        };
-//        model.addListener(modelListener);
+        modelListener = new ModelListenerAdapter() {
+
+            private boolean simulating = false;
+
+            public void elementsChanged(ModelEvent e) {
+                if (simulating) {
+                    // set the cycle count on the current cycle.
+                    view.setCycleCount(i18n.getString("cycle.count") + model.getCycle());
+                }
+            }
+
+            public void simulationStarted(ModelEvent e) {
+                simulating = true;
+                view.disableButtons();
+                checkManager.setButton(false);
+            }
+
+            public void simulationStopped(ModelEvent e) {
+                // Stopping the simulation needs to enable the buttons and set the "Counter".
+                System.out.println("stopped");
+                simulating = false;
+                view.enableButtons();
+                view.setCycleCount(i18n.getString("cycle.stand"));
+                checkManager.setButton(true);
+            }
+
+            public void checksStopped(ModelEvent e) {
+                // All checks are passed if everyone was successful we can start the simulation.
+                if (e.allChecksPassed() && simToStart) {
+                    // checkManager.setVisible(false);
+                    model.startSimulation();
+                }
+            }
+        };
+        model.addListener(modelListener);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setActive(boolean active) {
-        if (active) {
-            if (modelListener == null) {
-                modelListener = new ModelListenerAdapter() {
-
-                    private boolean simulating = false;
-
-                    public void elementsChanged(ModelEvent e) {
-                        if (simulating) {
-                            // set the cycle count on the current cycle.
-                            view.setCycleCount(i18n.getString("cycle.count") + model.getCycle());
-                        }
-                    }
-
-                    public void simulationStarted(ModelEvent e) {
-                        simulating = true;
-                        view.disableButtons();
-                        checkManager.setButton(false);
-                    }
-
-                    public void simulationStopped(ModelEvent e) {
-                        // Stopping the simulation needs to enable the buttons and set the "Counter".
-                        simulating = false;
-                        view.enableButtons();
-                        view.setCycleCount(i18n.getString("cycle.stand"));
-                        checkManager.setButton(true);
-                    }
-
-                    public void checksStopped(ModelEvent e) {
-                        // All checks are passed if everyone was successful we can start the simulation.
-                        if (e.allChecksPassed() && simToStart) {
-                            // checkManager.setVisible(false);
-                            model.startSimulation();
-                        }
-                    }
-                };
-            }
-            model.addListener(modelListener);
-        } else {
-            model.removeListener(modelListener);
-        }
+//        if (active) {
+//            if (modelListener == null) {
+//                modelListener = new ModelListenerAdapter() {
+//
+//                    private boolean simulating = false;
+//
+//                    public void elementsChanged(ModelEvent e) {
+//                        if (simulating) {
+//                            // set the cycle count on the current cycle.
+//                            view.setCycleCount(i18n.getString("cycle.count") + model.getCycle());
+//                        }
+//                    }
+//
+//                    public void simulationStarted(ModelEvent e) {
+//                        simulating = true;
+//                        view.disableButtons();
+//                        checkManager.setButton(false);
+//                    }
+//
+//                    public void simulationStopped(ModelEvent e) {
+//                        // Stopping the simulation needs to enable the buttons and set the "Counter".
+//                        simulating = false;
+//                        view.enableButtons();
+//                        view.setCycleCount(i18n.getString("cycle.stand"));
+//                        checkManager.setButton(true);
+//                    }
+//
+//                    public void checksStopped(ModelEvent e) {
+//                        // All checks are passed if everyone was successful we can start the simulation.
+//                        if (e.allChecksPassed() && simToStart) {
+//                            // checkManager.setVisible(false);
+//                            model.startSimulation();
+//                        }
+//                    }
+//                };
+//            }
+//            model.addListener(modelListener);
+//        } else {
+//            model.removeListener(modelListener);
+//        }
     }
 
     /**

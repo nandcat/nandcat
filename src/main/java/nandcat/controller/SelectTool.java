@@ -68,6 +68,10 @@ public class SelectTool implements Tool {
      */
     private static final Dimension MOUSE_TOLERANCE = new Dimension(1, 1);
 
+    private static final int GRID_SIZE = 20;
+
+    private boolean gridActive = false;
+
     private Point startPoint;
 
     boolean notEmpty = false;
@@ -86,6 +90,7 @@ public class SelectTool implements Tool {
         this.model = controller.getModel();
         represent = new LinkedList<String>();
         represent.add("select");
+        represent.add("grid");
     }
 
     /**
@@ -116,7 +121,7 @@ public class SelectTool implements Tool {
                         rect = new Rectangle(e.getLocation());
                         isSelect = true;
                     } else { // Mouse over a Module.
-                        if (notEmpty) {  // Some Modules selected yet
+                        if (notEmpty) { // Some Modules selected yet
                             boolean oneSelected = false;
                             for (DrawElement element : elements) {
                                 if (element.isSelected()) {
@@ -126,24 +131,23 @@ public class SelectTool implements Tool {
                             if (oneSelected) {
                                 isSelect = false;
                             } else {
-//                                rect = new Rectangle(e.getLocation());
-//                                isSelect = true;
                                 model.deselectAll();
                                 notEmpty = model.selectElements(new Rectangle(e.getLocation(), MOUSE_TOLERANCE));
                                 isSelect = false;
                             }
                         } else {
-//                            rect = new Rectangle(e.getLocation());
-//                            isSelect = true;
-                          model.deselectAll();
-                          notEmpty = model.selectElements(new Rectangle(e.getLocation(), MOUSE_TOLERANCE));
-                          isSelect = false;
+                            model.deselectAll();
+                            notEmpty = model.selectElements(new Rectangle(e.getLocation(), MOUSE_TOLERANCE));
+                            isSelect = false;
                         }
                     }
                 }
 
                 @Override
                 public void mouseReleased(WorkspaceEvent e) {
+                    if (gridActive) {
+                        model.adaptToGrid(GRID_SIZE);
+                    }
                     view.getWorkspace().redraw();
                 }
 
@@ -207,6 +211,14 @@ public class SelectTool implements Tool {
             public void actionPerformed(ActionEvent e) {
                 if (e.getActionCommand().equals("select")) {
                     activateTool();
+                } else if (e.getActionCommand().equals("grid")) {
+                    boolean b = gridActive;
+                    gridActive = !b;
+                    activateTool();
+                    view.getWorkspace().setGridEnable(gridActive, GRID_SIZE);
+                    if (gridActive) {
+                        model.adaptAllToGrid(GRID_SIZE);
+                    }
                 }
             }
         };
@@ -215,7 +227,6 @@ public class SelectTool implements Tool {
             map.put(functionality, buttonListener);
         }
         return map;
-
     }
 
     private void activateTool() {

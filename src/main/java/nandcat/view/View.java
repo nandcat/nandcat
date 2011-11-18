@@ -228,7 +228,7 @@ public class View extends JFrame {
         disableElements.add(file);
         JMenu edit = new JMenu(i18n.getString("menu.edit"));
         edit.setMnemonic(KeyEvent.VK_B);
-        disableElements.add(edit);
+        noDisableElements.add(edit);
         JMenu sim = new JMenu(i18n.getString("menu.simulation"));
         sim.setMnemonic(KeyEvent.VK_T);
         noDisableElements.add(sim);
@@ -290,6 +290,9 @@ public class View extends JFrame {
         JMenuItem mtoggle = new JMenuItem(i18n.getString("menu.edit.toggle"), KeyEvent.VK_T);
         mtoggle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
         disableElements.add(mtoggle);
+        JMenuItem mgrid = new JMenuItem(i18n.getString("menu.edit.grid"), KeyEvent.VK_G);
+        mgrid.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
+        disableElements.add(mgrid);
         JMenuItem mpause = new JMenuItem(i18n.getString("menu.simulation.pause"), KeyEvent.VK_P);
         mpause.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0));
         noDisableElements.add(mselect);
@@ -297,6 +300,9 @@ public class View extends JFrame {
         /*
          * check if there are functionalities given for the MenuItems.
          */
+        if (toolFunctionalities.containsKey("grid")) {
+            setupMenuItem(mgrid, "grid");
+        }
         if (toolFunctionalities.containsKey("pause")) {
             setupMenuItem(mpause, "pause");
         }
@@ -375,6 +381,7 @@ public class View extends JFrame {
         edit.add(mdelete);
         edit.add(mannotate);
         edit.add(mtoggle);
+        edit.add(mgrid);
         file.add(mnew);
         file.add(mload);
         file.add(msave);
@@ -498,7 +505,6 @@ public class View extends JFrame {
         toolBar.add(start);
         toolBar.add(pause);
         toolBar.add(stop);
-        // toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.Y_AXIS));
         // Buttons do not have to be Focusable.
         for (Component elem : toolBar.getComponents()) {
             elem.setFocusable(false);
@@ -703,6 +709,7 @@ public class View extends JFrame {
         // Build it new and adds it again at pos 0
         modules = new JComboBox(viewModules.toArray());
         modules.setMaximumSize(new Dimension(80, 40));
+        modules.setPreferredSize(new Dimension(80, 40));
         modules.setToolTipText(i18n.getString("tooltip.modules"));
         if (toolFunctionalities.containsKey("selectModule")) {
             modules.addActionListener(toolFunctionalities.get("selectModule"));
