@@ -570,6 +570,7 @@ public class Model implements ClockListener {
         // spawn new circuit / element _object_
         if (m.getFileName() != "") {
             module = importFromFile(new File(m.getFileName()));
+            factory.getLayouter().layout((Circuit) module);
         } else {
             module = m.getModule();
         }
