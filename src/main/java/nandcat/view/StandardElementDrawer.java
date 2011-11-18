@@ -83,7 +83,7 @@ public class StandardElementDrawer implements ElementDrawer {
     /**
      * Color of a port with active state.
      */
-    private static final Color PORT_COLOR_ACTIVE = Color.YELLOW;
+    private static final Color PORT_COLOR_ACTIVE = Color.ORANGE;
 
     /**
      * Color of an inactive connection.
@@ -93,7 +93,7 @@ public class StandardElementDrawer implements ElementDrawer {
     /**
      * Color of an active connection.
      */
-    private static final Color CONNECTION_COLOR_ACTIVE = Color.YELLOW;
+    private static final Color CONNECTION_COLOR_ACTIVE = Color.ORANGE;
 
     /**
      * Color of an selected connection.
