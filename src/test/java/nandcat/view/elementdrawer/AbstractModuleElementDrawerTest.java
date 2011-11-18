@@ -54,6 +54,8 @@ public class AbstractModuleElementDrawerTest extends AbstractElementDrawerTest {
     protected void verifyDrawPort(Port p, InOrder inOrder) {
         if (p.getState()) {
             inOrder.verify(graphicMock).setColor(PORT_COLOR_ACTIVE);
+        } else if (gateMock.isSelected()) {
+            inOrder.verify(graphicMock).setColor(PORT_COLOR_SELECTED);
         } else {
             inOrder.verify(graphicMock).setColor(PORT_COLOR_DEFAULT);
         }
@@ -63,7 +65,11 @@ public class AbstractModuleElementDrawerTest extends AbstractElementDrawerTest {
 
     protected void verifyDrawLabel(String label) {
         InOrder inOrder = inOrder(graphicMock);
-        inOrder.verify(graphicMock).setColor(LABEL_COLOR);
+        if (gateMock.isSelected()) {
+            inOrder.verify(graphicMock).setColor(LABEL_COLOR_SELECTED);
+        } else {
+            inOrder.verify(graphicMock).setColor(LABEL_COLOR);
+        }
         inOrder.verify(graphicMock).drawString(eq(label), Mockito.anyInt(), Mockito.anyInt());
     }
 
