@@ -357,6 +357,7 @@ public class SEPAFImporter implements Importer {
             if (portsOut != null) {
                 b.setOutPorts(portsOut);
             }
+            b.setLocation(location);
             module = b.build();
         } else if (aType.getValue().equals("or")) {
             ModuleBuilder b = factory.getOrGateBuilder();
@@ -367,30 +368,37 @@ public class SEPAFImporter implements Importer {
             if (portsOut != null) {
                 b.setOutPorts(portsOut);
             }
+            b.setLocation(location);
             module = b.build();
         } else if (aType.getValue().equals("id")) {
             ModuleBuilder b = factory.getIdentityGateBuilder();
             if (portsOut != null) {
                 b.setOutPorts(portsOut);
             }
+            b.setLocation(location);
             module = b.build();
         } else if (aType.getValue().equals("not")) {
             ModuleBuilder b = factory.getNotGateBuilder();
             if (portsOut != null) {
                 b.setOutPorts(portsOut);
             }
+            b.setLocation(location);
             module = b.build();
         } else if (aType.getValue().equals("out")) {
             ModuleBuilder b = factory.getLampBuilder();
+            b.setLocation(location);
             module = b.build();
         } else if (aType.getValue().equals("flipflop")) {
             ModuleBuilder b = factory.getFlipFlopBuilder();
+            b.setLocation(location);
             module = b.build();
         } else if (aType.getValue().equals("in")) {
             ModuleBuilder b = factory.getSwitchBuilder();
+            b.setLocation(location);
             module = b.build();
         } else if (aType.getValue().equals("clock")) {
             ModuleBuilder b = factory.getClockBuilder();
+            b.setLocation(location);
             if (inTiming != null) {
                 Integer timing = null;
                 try {
@@ -406,6 +414,8 @@ public class SEPAFImporter implements Importer {
             module = b.build();
         } else if (aType.getValue().equals("circuit")) {
             module = buildCircuit(el.getAttributeValue("type2"), doc);
+            module.getRectangle().setLocation(location);
+            factory.getLayouter().layout((Circuit) module);
         } else if (aType.getValue().equals("missing-circuit")) {
             String externalIdentifier = el.getAttributeValue("type2");
             if (externalCircuitSource != null) {
@@ -419,11 +429,12 @@ public class SEPAFImporter implements Importer {
                 throw new FormatException("External circuit source is not available but circuit is missing: "
                         + externalIdentifier);
             }
+            module.getRectangle().setLocation(location);
+            factory.getLayouter().layout((Circuit) module);
         } else {
             throw new FormatException("Not a supported component type: '" + aType.getValue() + "'");
         }
 
-        module.getRectangle().setLocation(location);
         if (aAnnotation != null) {
             String annotation = aAnnotation.getValue();
             module.setName(annotation);

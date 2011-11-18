@@ -274,4 +274,13 @@ public class ModuleBuilderFactory {
         return new CircuitBuilder(defaults, this.layouter);
     }
 
+    /**
+     * Gets the ModuleLayouter set for the factory.
+     * 
+     * @return ModuleLayouter used to layout all built modules.
+     */
+    public ModuleLayouter getLayouter() {
+        return layouter;
+    }
+
 }
