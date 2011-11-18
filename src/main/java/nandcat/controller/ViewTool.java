@@ -1,7 +1,6 @@
 package nandcat.controller;
 
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -66,9 +65,9 @@ public class ViewTool implements Tool {
     private WorkspaceListener workspaceListener;
 
     /**
-     * Rectangle representing the visible Part of the Workspace.
+     * Number of Pixels scrolled by MouseWheel.
      */
-    private Rectangle viewportRect;
+    private final static int SCROLL_SPEED = 20;
 
     /**
      * Constructs the ViewTool.
@@ -85,8 +84,17 @@ public class ViewTool implements Tool {
             // if size is changed it my happen that former invisible elements come in sight.
             public void stateChanged(ChangeEvent e) {
                 view.giveViewPortRect();
-                view.getWorkspace().redraw();
-                viewportRect = view.getViewRect();
+                // view.getWorkspace().redraw();
+            }
+        });
+        view.getWorkspace().addListener(new WorkspaceListenerAdapter() {
+
+            public void mouseWheelMoved(WorkspaceEvent e) {
+                if (e.isShiftDown()) {
+                    view.setViewportPosition(e.getWheelRotation() * SCROLL_SPEED, 0);
+                } else {
+                    view.setViewportPosition(0, e.getWheelRotation() * SCROLL_SPEED);
+                }
             }
         });
     }
@@ -101,22 +109,27 @@ public class ViewTool implements Tool {
 
                     private Point offset;
 
+                    private int dx;
+
+                    private int dy;
+
                     public void mousePressed(WorkspaceEvent e) {
                         offset = e.getLocation();
                     }
 
                     public void mouseDragged(WorkspaceEvent e) {
-                        viewportRect.translate(e.getLocation().x - offset.x, e.getLocation().y - offset.y);
-                        view.setViewportPosition(viewportRect);
+                        // divide by 1.5 so it isn't soo fast
+                        dx = (int) ((e.getLocation().x - offset.x) / 1.5);
+                        dy = (int) ((e.getLocation().y - offset.y) / 1.5);
+                        view.setViewportPosition(dx, dy);
                         offset = e.getLocation();
                         // redraw new elements in sight
-                        view.giveViewPortRect();
-                        view.getWorkspace().redraw();
+                        // view.giveViewPortRect();
+                        // view.getWorkspace().redraw();
                     }
                 };
             }
             view.getWorkspace().addListener(workspaceListener);
-            viewportRect = view.getViewRect();
         } else {
             view.getWorkspace().removeListener(workspaceListener);
         }

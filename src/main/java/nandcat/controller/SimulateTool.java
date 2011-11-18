@@ -48,6 +48,11 @@ public class SimulateTool implements Tool {
     private I18NBundle i18n = I18N.getBundle("toolsimulate");
 
     /**
+     * ActionListenr for the CheckManager.
+     */
+    private ActionListener checkManagerListener;
+
+    /**
      * String representation of the Tool.
      */
     @SuppressWarnings("serial")
@@ -56,6 +61,7 @@ public class SimulateTool implements Tool {
         {
             add("start");
             add("stop");
+            add("pause");
             add("faster");
             add("slower");
             add("startcheck");
@@ -104,6 +110,40 @@ public class SimulateTool implements Tool {
         model = controller.getModel();
         view = controller.getView();
         simulateTool = this;
+//        modelListener = new ModelListenerAdapter() {
+//
+//            private boolean simulating = false;
+//
+//            public void elementsChanged(ModelEvent e) {
+//                if (simulating) {
+//                    // set the cycle count on the current cycle.
+//                    view.setCycleCount(i18n.getString("cycle.count") + model.getCycle());
+//                }
+//            }
+//
+//            public void simulationStarted(ModelEvent e) {
+//                simulating = true;
+//                view.disableButtons();
+//                checkManager.setButton(false);
+//            }
+//
+//            public void simulationStopped(ModelEvent e) {
+//                // Stopping the simulation needs to enable the buttons and set the "Counter".
+//                simulating = false;
+//                view.enableButtons();
+//                view.setCycleCount(i18n.getString("cycle.stand"));
+//                checkManager.setButton(true);
+//            }
+//
+//            public void checksStopped(ModelEvent e) {
+//                // All checks are passed if everyone was successful we can start the simulation.
+//                if (e.allChecksPassed() && simToStart) {
+//                    // checkManager.setVisible(false);
+//                    model.startSimulation();
+//                }
+//            }
+//        };
+//        model.addListener(modelListener);
     }
 
     /**
@@ -126,6 +166,7 @@ public class SimulateTool implements Tool {
                     public void simulationStarted(ModelEvent e) {
                         simulating = true;
                         view.disableButtons();
+                        checkManager.setButton(false);
                     }
 
                     public void simulationStopped(ModelEvent e) {
@@ -133,12 +174,13 @@ public class SimulateTool implements Tool {
                         simulating = false;
                         view.enableButtons();
                         view.setCycleCount(i18n.getString("cycle.stand"));
+                        checkManager.setButton(true);
                     }
 
                     public void checksStopped(ModelEvent e) {
                         // All checks are passed if everyone was successful we can start the simulation.
                         if (e.allChecksPassed() && simToStart) {
-                            checkManager.setVisible(false);
+                            // checkManager.setVisible(false);
                             model.startSimulation();
                         }
                     }
@@ -162,7 +204,24 @@ public class SimulateTool implements Tool {
                     controller.requestActivation(simulateTool);
                     simToStart = true;
                     if (checkManager == null) {
-                        checkManager = new CheckManager(model.getChecks());
+                        if (checkManagerListener == null) {
+                            checkManager = new CheckManager(model.getChecks(),
+                                    checkManagerListener = new ActionListener() {
+
+                                        public void actionPerformed(ActionEvent e) {
+                                            if (e.getActionCommand().equals("okay")) {
+                                                checkManager.setVisible(false);
+                                            } else if (e.getActionCommand().equals("check")) {
+                                                if(model.isDirty()){
+                                                    checkManager.resetList();
+                                                }
+                                                model.startChecks();
+                                            }
+                                        }
+                                    });
+                        } else {
+                            checkManager = new CheckManager(model.getChecks(), checkManagerListener);
+                        }
                     }
                     checkManager.setVisible(true);
                     model.startChecks();
@@ -179,15 +238,51 @@ public class SimulateTool implements Tool {
                     clock.setSleepTime(clock.getSleepTime() + SPEED_STEPS);
                 } else if (e.getActionCommand().equals("startcheck")) {
                     if (checkManager == null) {
-                        checkManager = new CheckManager(model.getChecks());
+                        if (checkManagerListener == null) {
+                            checkManager = new CheckManager(model.getChecks(),
+                                    checkManagerListener = new ActionListener() {
+
+                                        public void actionPerformed(ActionEvent e) {
+                                            if (e.getActionCommand().equals("okay")) {
+                                                checkManager.setVisible(false);
+                                            } else if (e.getActionCommand().equals("check")) {
+                                                if(model.isDirty()){
+                                                    checkManager.resetList();
+                                                }
+                                                model.startChecks();
+                                            }
+                                        }
+                                    });
+                        } else {
+                            checkManager = new CheckManager(model.getChecks(), checkManagerListener);
+                        }
                     }
                     checkManager.setVisible(true);
                     model.startChecks();
                 } else if (e.getActionCommand().equals("editcheck")) {
                     if (checkManager == null) {
-                        checkManager = new CheckManager(model.getChecks());
+                        if (checkManagerListener == null) {
+                            checkManager = new CheckManager(model.getChecks(),
+                                    checkManagerListener = new ActionListener() {
+
+                                        public void actionPerformed(ActionEvent e) {
+                                            if (e.getActionCommand().equals("okay")) {
+                                                checkManager.setVisible(false);
+                                            } else if (e.getActionCommand().equals("check")) {
+                                                if(model.isDirty()){
+                                                    checkManager.resetList();
+                                                }
+                                                model.startChecks();
+                                            }
+                                        }
+                                    });
+                        } else {
+                            checkManager = new CheckManager(model.getChecks(), checkManagerListener);
+                        }
                     }
                     checkManager.setVisible(true);
+                } else if (e.getActionCommand().equals("pause")) {
+                    //model.pauseSimulation();
                 }
             }
         };

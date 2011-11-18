@@ -123,7 +123,7 @@ public class SinkCheck implements CircuitCheck {
      * 
      * @return List<Module> containing the starting Modules of this Circuit.
      */
-    public List<Module> getStartModules(Circuit circuit) {
+    private List<Module> getStartModules(Circuit circuit) {
         List<Module> result = new LinkedList<Module>();
         for (Element e : circuit.getElements()) {
             if (e instanceof Module) {

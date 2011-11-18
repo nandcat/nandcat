@@ -1,10 +1,10 @@
 package nandcat.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -22,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JViewport;
@@ -89,7 +89,7 @@ public class View extends JFrame {
     /**
      * Dimension of the panel we work in.
      */
-    private Dimension workspaceDimension = new Dimension(1000, 1000);
+    private Dimension workspaceDimension = new Dimension(2000, 2000);
 
     /**
      * Menu of the application.
@@ -141,7 +141,14 @@ public class View extends JFrame {
      */
     private JComboBox modules;
 
+    /**
+     * Layouter used to layout modules.
+     */
     private ModuleLayouter layouter = new StandardModuleLayouter();
+
+    private JScrollBar horizontal;
+
+    private JScrollBar vertical;
 
     /**
      * Constructs the view.
@@ -175,6 +182,7 @@ public class View extends JFrame {
         model.addListener(new ModelListenerAdapter() {
 
             public void elementsChanged(ModelEvent e) {
+                allModulesInSight();
                 redraw(e);
             }
 
@@ -184,8 +192,9 @@ public class View extends JFrame {
         });
 
         setTitle(FRAME_TITLE);
-        setSize(600, 650);
+        setSize(1024, 768);
         setLocation(frameLocation);
+        setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         workspace = new Workspace(model, this);
         workspace.setPreferredSize(workspaceDimension);
@@ -193,13 +202,16 @@ public class View extends JFrame {
         workspace.setBackground(Color.white);
         workspace.setLayout(null); // no layout is required for free move of the components
         scroller = new JScrollPane(workspace);
+        scroller.setWheelScrollingEnabled(false);
+        horizontal = scroller.getHorizontalScrollBar();
+        vertical = scroller.getVerticalScrollBar();
         viewport = scroller.getViewport();
         viewport.setViewPosition(viewportLocation);
-        toolBar = new JToolBar();
+        toolBar = new JToolBar(JToolBar.VERTICAL);
         menubar = new JMenuBar();
-        getContentPane().add(scroller, "Center");
-        getContentPane().add(toolBar, "West");
-        getContentPane().add(menubar, "North");
+        getContentPane().add(scroller, BorderLayout.CENTER);
+        getContentPane().add(toolBar, BorderLayout.WEST);
+        getContentPane().add(menubar, BorderLayout.NORTH);
     }
 
     /**
@@ -238,10 +250,10 @@ public class View extends JFrame {
         noDisableElements.add(mfaster);
         JMenuItem mcreate = new JMenuItem(i18n.getString("menu.edit.create"), KeyEvent.VK_E);
         mcreate.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
-        noDisableElements.add(mcreate);
+        disableElements.add(mcreate);
         JMenuItem mmove = new JMenuItem(i18n.getString("menu.edit.move"), KeyEvent.VK_B);
         mmove.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.CTRL_MASK));
-        noDisableElements.add(mmove);
+        disableElements.add(mmove);
         JMenuItem mselect = new JMenuItem(i18n.getString("menu.edit.select"), KeyEvent.VK_W);
         mselect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
         noDisableElements.add(mselect);
@@ -253,35 +265,41 @@ public class View extends JFrame {
         disableElements.add(meditcheck);
         JMenuItem mnew = new JMenuItem(i18n.getString("menu.file.new"), KeyEvent.VK_N);
         mnew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
-        noDisableElements.add(mnew);
+        disableElements.add(mnew);
         JMenuItem mload = new JMenuItem(i18n.getString("menu.file.load"), KeyEvent.VK_L);
         mload.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
-        noDisableElements.add(mload);
+        disableElements.add(mload);
         JMenuItem msave = new JMenuItem(i18n.getString("menu.file.save"), KeyEvent.VK_S);
         msave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
-        noDisableElements.add(msave);
+        disableElements.add(msave);
         JMenuItem msave2 = new JMenuItem(i18n.getString("menu.file.saveas"), KeyEvent.VK_A);
         msave2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
-        noDisableElements.add(msave2);
+        disableElements.add(msave2);
         JMenuItem mloaddef = new JMenuItem(i18n.getString("menu.file.defload"), KeyEvent.VK_F5);
         mloaddef.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
-        noDisableElements.add(mloaddef);
+        disableElements.add(mloaddef);
         JMenuItem mclose = new JMenuItem(i18n.getString("menu.file.close"));
         mclose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, ActionEvent.ALT_MASK));
         noDisableElements.add(mclose);
         JMenuItem mdelete = new JMenuItem(i18n.getString("menu.edit.delete"), KeyEvent.VK_DELETE);
         mdelete.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
-        noDisableElements.add(mdelete);
-        JMenuItem mannotate = new JMenuItem(i18n.getString("menu.edit.annotate"), KeyEvent.VK_N);
-        mannotate.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+        disableElements.add(mdelete);
+        JMenuItem mannotate = new JMenuItem(i18n.getString("menu.edit.annotate"), KeyEvent.VK_O);
+        mannotate.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
         disableElements.add(mannotate);
         JMenuItem mtoggle = new JMenuItem(i18n.getString("menu.edit.toggle"), KeyEvent.VK_T);
         mtoggle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
         disableElements.add(mtoggle);
+        JMenuItem mpause = new JMenuItem(i18n.getString("menu.simulation.pause"), KeyEvent.VK_P);
+        mpause.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0));
+        noDisableElements.add(mselect);
         cycle.setText(i18n.getString("cycle.stand"));
         /*
          * check if there are functionalities given for the MenuItems.
          */
+        if (toolFunctionalities.containsKey("pause")) {
+            setupMenuItem(mpause, "pause");
+        }
         if (toolFunctionalities.containsKey("start")) {
             setupMenuItem(mstart, "start");
         }
@@ -344,8 +362,9 @@ public class View extends JFrame {
         menubar.add(sim);
         menubar.add(help);
         sim.add(mstart);
-        sim.add(mfaster);
+        sim.add(mpause);
         sim.add(mstop);
+        sim.add(mfaster);
         sim.add(mslower);
         sim.addSeparator();
         sim.add(mstartcheck);
@@ -362,7 +381,7 @@ public class View extends JFrame {
         file.add(msave2);
         file.add(mloaddef);
         file.add(mclose);
-        menubar.add(cycle, "RIGHT");
+        menubar.add(cycle);
     }
 
     /**
@@ -415,7 +434,23 @@ public class View extends JFrame {
         toggle.setPreferredSize(buttonDim);
         toggle.setToolTipText(i18n.getString("tooltip.state.toggle"));
         disableElements.add(toggle);
+        ImageIcon annotateButtonIcon = new ImageIcon("src/resources/annotatemiddle.png");
+        JButton annotate = new JButton("", annotateButtonIcon);
+        annotate.setPreferredSize(buttonDim);
+        annotate.setToolTipText(i18n.getString("tooltip.annotate"));
+        disableElements.add(annotate);
+        ImageIcon pauseButtonIcon = new ImageIcon("src/resources/pausemiddle.png");
+        JButton pause = new JButton("", pauseButtonIcon);
+        pause.setPreferredSize(buttonDim);
+        pause.setToolTipText(i18n.getString("tooltip.simulation.pause"));
+        noDisableElements.add(pause);
         // Check if there are Functionalities for the Buttons and if yes calling the setup.
+        if (toolFunctionalities.containsKey("annotate")) {
+            setupButton(annotate, "annotate");
+        }
+        if (toolFunctionalities.containsKey("pause")) {
+            setupButton(pause, "pause");
+        }
         if (toolFunctionalities.containsKey("start")) {
             setupButton(start, "start");
         }
@@ -443,6 +478,7 @@ public class View extends JFrame {
         if (viewModules != null) {
             modules = new JComboBox(viewModules.toArray());
             modules.setMaximumSize(new Dimension(80, 40));
+            modules.setPreferredSize(new Dimension(80, 40));
             modules.setToolTipText(i18n.getString("tooltip.modules"));
         }
         if (toolFunctionalities.containsKey("selectModule")) {
@@ -456,11 +492,13 @@ public class View extends JFrame {
         toolBar.add(toggle);
         toolBar.add(select);
         toolBar.add(move);
+        toolBar.add(annotate);
         toolBar.add(faster);
         toolBar.add(slower);
         toolBar.add(start);
+        toolBar.add(pause);
         toolBar.add(stop);
-        toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.Y_AXIS));
+        // toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.Y_AXIS));
         // Buttons do not have to be Focusable.
         for (Component elem : toolBar.getComponents()) {
             elem.setFocusable(false);
@@ -534,6 +572,7 @@ public class View extends JFrame {
         for (JComponent enable : disableElements) {
             enable.setEnabled(true);
         }
+        modules.setEnabled(true);
     }
 
     /**
@@ -544,6 +583,7 @@ public class View extends JFrame {
         for (JComponent enable : disableElements) {
             enable.setEnabled(false);
         }
+        modules.setEnabled(false);
     }
 
     /**
@@ -580,8 +620,9 @@ public class View extends JFrame {
      * @param rect
      *            Rectangle which will be scrolled to Visible.
      */
-    public void setViewportPosition(Rectangle rect) {
-        workspace.scrollRectToVisible(rect);
+    public void setViewportPosition(int dx, int dy) {
+        horizontal.setValue(horizontal.getValue() + dx);
+        vertical.setValue(vertical.getValue() + dy);
     }
 
     /**
@@ -641,15 +682,6 @@ public class View extends JFrame {
      */
     public void giveViewPortRect() {
         workspace.setViewPortRect(viewport.getViewRect());
-    }
-
-    /**
-     * Getter for the ViewPort Rectangle.
-     * 
-     * @return Rectangle representing the visible part of the Workspace.
-     */
-    public Rectangle getViewRect() {
-        return viewport.getViewRect();
     }
 
     /**

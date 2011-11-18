@@ -91,6 +91,11 @@ public class Model implements ClockListener {
     private ModuleBuilderFactory factory;
 
     /**
+     * Simulation is running.
+     */
+    private boolean simIsRunning;
+
+    /**
      * Class logger instance.
      */
     private static final Logger LOG = Logger.getLogger(Model.class);
@@ -111,6 +116,7 @@ public class Model implements ClockListener {
         circuit = (Circuit) factory.getCircuitBuilder().build();
         clock = new Clock(0, this);
         dirty = false;
+        simIsRunning = false;
         initExporters();
         initImporters();
         initChecks();
@@ -143,9 +149,7 @@ public class Model implements ClockListener {
     public boolean setFrequency(Module m, int i) {
         if (m instanceof ImpulseGenerator && i >= 0) {
             ((ImpulseGenerator) m).setFrequency(i);
-            for (ModelListener l : listeners) {
-                l.elementsChanged(new ModelEvent());
-            }
+            notifyForChangedElems();
             return true;
         }
         return false;
@@ -191,12 +195,13 @@ public class Model implements ClockListener {
             l.checksStarted(e);
         }
         boolean allChecksPassed = true;
+        boolean currentCheckPassed = true;
         for (CircuitCheck check : checks) {
             if (check.isActive()) {
-                allChecksPassed = check.test(circuit);
+                currentCheckPassed = check.test(circuit);
             }
-            if (!allChecksPassed) {
-                break;
+            if (!currentCheckPassed) {
+                allChecksPassed = false;
             }
         }
         e.setChecksPassed(allChecksPassed);
@@ -303,10 +308,7 @@ public class Model implements ClockListener {
      */
     public void setElementSelected(Element m, boolean b) {
         m.setSelected(b);
-        ModelEvent e = new ModelEvent(m);
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e);
-        }
+        notifyForChangedElems();
     }
 
     /**
@@ -402,11 +404,7 @@ public class Model implements ClockListener {
             result = true;
         }
         // TODO jaja Codeduplikation checken wir spaeter
-        ModelEvent e = new ModelEvent();
-        e.setElements(drawElements);
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e);
-        }
+        notifyForChangedElems();
         return result;
     }
 
@@ -431,11 +429,7 @@ public class Model implements ClockListener {
             e.setSelected(false);
             elements.add(e);
         }
-        ModelEvent e = new ModelEvent();
-        e.setElements(elements);
-        for (ModelListener l : listeners) {
-            l.simulationStopped(e);
-        }
+        notifyForChangedElems();
 
     }
 
@@ -489,14 +483,18 @@ public class Model implements ClockListener {
      * output.
      */
     public void startSimulation() {
+        if (simIsRunning) {
+            throw new IllegalStateException("End running Simulation first!");
+        }
+        simIsRunning = true;
+        for (ModelListener l : listeners) {
+            l.simulationStarted(new ModelEvent());
+        }
         for (Module m : circuit.getStartingModules()) {
             clock.addListener(m);
         }
         clock.startSimulation();
-        ModelEvent e = new ModelEvent();
-        for (ModelListener l : listeners) {
-            l.simulationStarted(e);
-        }
+        new Thread(clock).start();
     }
 
     /**
@@ -504,10 +502,6 @@ public class Model implements ClockListener {
      */
     public void stopSimulation() {
         clock.stopSimulation();
-        ModelEvent e = new ModelEvent();
-        for (ModelListener l : listeners) {
-            l.simulationStopped(e);
-        }
     }
 
     /**
@@ -515,10 +509,7 @@ public class Model implements ClockListener {
      */
     public void clearCircuit() {
         circuit.getElements().clear();
-        ModelEvent e = new ModelEvent();
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e);
-        }
+        notifyForChangedElems();
 
     }
 
@@ -546,10 +537,7 @@ public class Model implements ClockListener {
         Connection connection = circuit.addConnection(inPort, outPort);
         inPort.setConnection(connection);
         outPort.setConnection(connection);
-        ModelEvent e = new ModelEvent(connection);
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e);
-        }
+        notifyForChangedElems();
         dirty = true;
         // System.out.println(circuit);
     }
@@ -565,10 +553,7 @@ public class Model implements ClockListener {
     public void addModule(Module m, Point p) {
         moveBy(m, new Point(m.getRectangle().x - p.x, m.getRectangle().y - p.y));
         circuit.addModule(m);
-        ModelEvent e = new ModelEvent(m);
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e);
-        }
+        notifyForChangedElems();
         dirty = true;
     }
 
@@ -602,10 +587,7 @@ public class Model implements ClockListener {
      */
     public void removeElement(Element e) {
         circuit.removeElement(e);
-        ModelEvent event = new ModelEvent();
-        for (ModelListener l : listeners) {
-            l.elementsChanged(event);
-        }
+        notifyForChangedElems();
         dirty = true;
     }
 
@@ -613,10 +595,7 @@ public class Model implements ClockListener {
      * {@inheritDoc}
      */
     public void clockTicked(Clock clock) {
-        for (ModelListener l : listeners) {
-            ModelEvent e = new ModelEvent();
-            l.elementsChanged(e);
-        }
+        notifyForChangedElems();
     }
 
     /**
@@ -648,8 +627,14 @@ public class Model implements ClockListener {
                 return false;
             }
         }
+        // check for negative coords
+        if (r.x <= 5 || r.y <= 5) {
+            return false;
+        }
 
         Point pr = module.getRectangle().getLocation();
+        module.getRectangle().setLocation(pr.x - p.x, pr.y - p.y);
+
         module.setRectangle(r);
         ModelEvent e = new ModelEvent(module);
         // ports auch bewegen
@@ -657,15 +642,14 @@ public class Model implements ClockListener {
         for (Port port : module.getInPorts()) {
             port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
                     port.getRectangle().getLocation().y - p.y);
+
         }
         for (Port port : module.getOutPorts()) {
             port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
                     port.getRectangle().getLocation().y - p.y);
         }
 
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e);
-        }
+        notifyForChangedElems();
         dirty = true;
         return true;
     }
@@ -687,10 +671,7 @@ public class Model implements ClockListener {
                 result = false;
             }
         }
-        ModelEvent e = new ModelEvent();
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e);
-        }
+        notifyForChangedElems();
         if (result) {
             dirty = true;
         }
@@ -726,10 +707,7 @@ public class Model implements ClockListener {
         if (m instanceof ImpulseGenerator) {
             ((ImpulseGenerator) m).toggleState();
         }
-        ModelEvent e = new ModelEvent(m);
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e);
-        }
+        notifyForChangedElems();
     }
 
     /**
@@ -829,9 +807,7 @@ public class Model implements ClockListener {
                 l.importSucceeded(e2);
             }
         }
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e2);
-        }
+        notifyForChangedElems();
     }
 
     /**
@@ -928,9 +904,7 @@ public class Model implements ClockListener {
             }
         }
         this.circuit = (Circuit) factory.getCircuitBuilder().build();
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e);
-        }
+        notifyForChangedElems();
     }
 
     /**
@@ -952,7 +926,7 @@ public class Model implements ClockListener {
      * 
      * @return the Circuit containing the selected Elements
      */
-    Circuit getCircuitFromSelected() {
+    public Circuit getCircuitFromSelected() {
         Circuit result = (Circuit) factory.getCircuitBuilder().build();
 
         for (Module m : circuit.getModules()) {
@@ -970,5 +944,59 @@ public class Model implements ClockListener {
         }
 
         return result;
+    }
+
+    /**
+     * Export the the selected Elements to a file.
+     * 
+     * @param file
+     *            File to export top-level Circuit from
+     */
+    public void exportSelectedToFile(File file) {
+        if (file == null) {
+            throw new IllegalArgumentException();
+        }
+        String ext = getFileExtension(file);
+        if (exporters.containsKey(ext)) {
+            Exporter ex = exporters.get(ext);
+            ex.setFile(file);
+
+            //
+            Circuit selected = getCircuitFromSelected();
+            //
+
+            ex.setCircuit(selected);
+            if (ex.exportCircuit()) {
+                LOG.debug("File exported successfully");
+                dirty = false;
+            } else {
+                LOG.warn("Export to " + file.getAbsolutePath() + " failed: " + ex.getErrorMessage());
+                // TODO Fehlermeldung an View?
+            }
+        }
+    }
+
+    /**
+     * Notifies ModelListeners about the stopped simulation.
+     */
+    protected void notifyForStoppedSim() {
+        ModelEvent e = new ModelEvent();
+        simIsRunning = false;
+        for (ModelListener l : listeners) {
+            l.simulationStopped(e);
+        }
+    }
+
+    /**
+     * Notifies ModelListeners about changed Elements.
+     * 
+     * @param set
+     *            Set containing specific DrawElements
+     */
+    private void notifyForChangedElems() {
+        ModelEvent e = new ModelEvent();
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
+        }
     }
 }

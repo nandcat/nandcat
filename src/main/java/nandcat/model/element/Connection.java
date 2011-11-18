@@ -190,7 +190,7 @@ public class Connection implements Element, DrawConnection {
      */
     public String toString() {
         String x;
-        x = getPreviousModule() + " --> " + getNextModule();
+        x = getPreviousModule() + " -[" + getState() + "]-> " + getNextModule();
         return x;
     }
 }
