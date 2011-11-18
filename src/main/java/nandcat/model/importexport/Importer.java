@@ -56,5 +56,11 @@ public interface Importer {
      */
     String getErrorMessage();
 
+    /**
+     * Sets the factory used to create modules.
+     * 
+     * @param factory
+     *            Factory to build modules.
+     */
     void setFactory(ModuleBuilderFactory factory);
 }
