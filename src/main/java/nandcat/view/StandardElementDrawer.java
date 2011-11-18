@@ -207,12 +207,10 @@ public class StandardElementDrawer implements ElementDrawer {
 
         if (connection.getState()) {
             g.setColor(CONNECTION_COLOR_ACTIVE);
+        } else if (connection.isSelected()) {
+            g.setColor(CONNECTION_COLOR_SELECTED);
         } else {
             g.setColor(CONNECTION_COLOR_DEFAULT);
-        }
-
-        if (connection.isSelected()) {
-            g.setColor(CONNECTION_COLOR_SELECTED);
         }
         LOG.trace("Draw line: " + outPoint.x + ", " + outPoint.y + ", " + inPoint.x + ", " + inPoint.y);
         g.drawLine(outPoint.x, outPoint.y, inPoint.x, inPoint.y);
