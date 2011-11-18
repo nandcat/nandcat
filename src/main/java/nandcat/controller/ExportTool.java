@@ -236,6 +236,10 @@ public class ExportTool implements Tool {
         fc.setAcceptAllFileFilterUsed(false);
         int returnVal = fc.showSaveDialog(controller.getView());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
+            if (fc.getFileFilter() == null) {
+                actionSaveAs();
+                return;
+            }
             File file = fc.getSelectedFile();
             if (file != null) {
                 String extension = ImportExportUtils.getExtension(file);
