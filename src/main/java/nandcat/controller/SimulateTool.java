@@ -88,7 +88,10 @@ public class SimulateTool implements Tool {
      * View instance.
      */
     private View view;
-    
+
+    /**
+     * Boolean representing if the simulation has been paused or not.
+     */
     private boolean paused = false;
 
     /**
@@ -153,46 +156,46 @@ public class SimulateTool implements Tool {
      * {@inheritDoc}
      */
     public void setActive(boolean active) {
-//        if (active) {
-//            if (modelListener == null) {
-//                modelListener = new ModelListenerAdapter() {
-//
-//                    private boolean simulating = false;
-//
-//                    public void elementsChanged(ModelEvent e) {
-//                        if (simulating) {
-//                            // set the cycle count on the current cycle.
-//                            view.setCycleCount(i18n.getString("cycle.count") + model.getCycle());
-//                        }
-//                    }
-//
-//                    public void simulationStarted(ModelEvent e) {
-//                        simulating = true;
-//                        view.disableButtons();
-//                        checkManager.setButton(false);
-//                    }
-//
-//                    public void simulationStopped(ModelEvent e) {
-//                        // Stopping the simulation needs to enable the buttons and set the "Counter".
-//                        simulating = false;
-//                        view.enableButtons();
-//                        view.setCycleCount(i18n.getString("cycle.stand"));
-//                        checkManager.setButton(true);
-//                    }
-//
-//                    public void checksStopped(ModelEvent e) {
-//                        // All checks are passed if everyone was successful we can start the simulation.
-//                        if (e.allChecksPassed() && simToStart) {
-//                            // checkManager.setVisible(false);
-//                            model.startSimulation();
-//                        }
-//                    }
-//                };
-//            }
-//            model.addListener(modelListener);
-//        } else {
-//            model.removeListener(modelListener);
-//        }
+        // if (active) {
+        // if (modelListener == null) {
+        // modelListener = new ModelListenerAdapter() {
+        //
+        // private boolean simulating = false;
+        //
+        // public void elementsChanged(ModelEvent e) {
+        // if (simulating) {
+        // // set the cycle count on the current cycle.
+        // view.setCycleCount(i18n.getString("cycle.count") + model.getCycle());
+        // }
+        // }
+        //
+        // public void simulationStarted(ModelEvent e) {
+        // simulating = true;
+        // view.disableButtons();
+        // checkManager.setButton(false);
+        // }
+        //
+        // public void simulationStopped(ModelEvent e) {
+        // // Stopping the simulation needs to enable the buttons and set the "Counter".
+        // simulating = false;
+        // view.enableButtons();
+        // view.setCycleCount(i18n.getString("cycle.stand"));
+        // checkManager.setButton(true);
+        // }
+        //
+        // public void checksStopped(ModelEvent e) {
+        // // All checks are passed if everyone was successful we can start the simulation.
+        // if (e.allChecksPassed() && simToStart) {
+        // // checkManager.setVisible(false);
+        // model.startSimulation();
+        // }
+        // }
+        // };
+        // }
+        // model.addListener(modelListener);
+        // } else {
+        // model.removeListener(modelListener);
+        // }
     }
 
     /**
@@ -215,7 +218,7 @@ public class SimulateTool implements Tool {
                                             if (e.getActionCommand().equals("okay")) {
                                                 checkManager.setVisible(false);
                                             } else if (e.getActionCommand().equals("check")) {
-                                                if(model.isDirty()){
+                                                if (model.isDirty()) {
                                                     checkManager.resetList();
                                                 }
                                                 model.startChecks();
@@ -249,7 +252,7 @@ public class SimulateTool implements Tool {
                                             if (e.getActionCommand().equals("okay")) {
                                                 checkManager.setVisible(false);
                                             } else if (e.getActionCommand().equals("check")) {
-                                                if(model.isDirty()){
+                                                if (model.isDirty()) {
                                                     checkManager.resetList();
                                                 }
                                                 model.startChecks();
@@ -272,7 +275,7 @@ public class SimulateTool implements Tool {
                                             if (e.getActionCommand().equals("okay")) {
                                                 checkManager.setVisible(false);
                                             } else if (e.getActionCommand().equals("check")) {
-                                                if(model.isDirty()){
+                                                if (model.isDirty()) {
                                                     checkManager.resetList();
                                                 }
                                                 model.startChecks();
@@ -285,14 +288,14 @@ public class SimulateTool implements Tool {
                     }
                     checkManager.setVisible(true);
                 } else if (e.getActionCommand().equals("pause")) {
-                    if(paused){
+                    if (paused) {
                         model.unpause();
                         boolean b = paused;
                         paused = !b;
-                    }else {
-                      model.pause();
-                      boolean b = paused;
-                      paused = !b;
+                    } else {
+                        model.pause();
+                        boolean b = paused;
+                        paused = !b;
                     }
                 }
             }

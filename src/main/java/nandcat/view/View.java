@@ -146,8 +146,14 @@ public class View extends JFrame {
      */
     private ModuleLayouter layouter = new StandardModuleLayouter();
 
+    /**
+     * JScrollBar, the Horizontal ScrollBar of the ScrollPane.
+     */
     private JScrollBar horizontal;
 
+    /**
+     * JScrollBar, the Vertical ScrollBar of the ScrollPane.
+     */
     private JScrollBar vertical;
 
     /**
@@ -622,10 +628,12 @@ public class View extends JFrame {
     }
 
     /**
-     * Change ViewPort Position on the workspace.
+     * Change ViewPort Position on the workspace by manipulating the ScrollBars.
      * 
-     * @param rect
-     *            Rectangle which will be scrolled to Visible.
+     * @param dx
+     *            the x-value by which the ScrollBsar should be moved.
+     * @param dy
+     *            the y-value by which the ScrollBar should be moved.
      */
     public void setViewportPosition(int dx, int dy) {
         horizontal.setValue(horizontal.getValue() + dx);
@@ -730,15 +738,31 @@ public class View extends JFrame {
          */
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Default Constructor.
+         */
         public WideComboBox() {
+            super();
         }
 
+        /**
+         * Constructor for the WideComboBox with an array of Objects.
+         * 
+         * @param items
+         *            array of Objects to be placed in the ComboBox.
+         */
         public WideComboBox(final Object items[]) {
             super(items);
         }
 
+        /**
+         * Boolean representing if it was layed out.
+         */
         private boolean layingOut = false;
 
+        /**
+         * Does the Layout.
+         */
         public void doLayout() {
             try {
                 layingOut = true;
@@ -748,10 +772,14 @@ public class View extends JFrame {
             }
         }
 
+        /**
+         * Getter for the Dimension of the Popupmenu.
+         */
         public Dimension getSize() {
             Dimension dim = super.getSize();
-            if (!layingOut)
+            if (!layingOut) {
                 dim.width = Math.max(160, getPreferredSize().width);
+            }
             return dim;
         }
     }

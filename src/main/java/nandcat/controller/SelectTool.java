@@ -68,15 +68,30 @@ public class SelectTool implements Tool {
      */
     private static final Dimension MOUSE_TOLERANCE = new Dimension(1, 1);
 
+    /**
+     * Size of one Grid-Cell height and width.
+     */
     private static final int GRID_SIZE = 20;
 
+    /**
+     * Boolean representing if grid is shown or not.
+     */
     private boolean gridActive = false;
 
+    /**
+     * Point representing where we started to drag with the Mouse.
+     */
     private Point startPoint;
 
-    boolean notEmpty = false;
+    /**
+     * Boolean representing if at least one Element has been selected yet.
+     */
+    private boolean notEmpty = false;
 
-    boolean isSelect = false;
+    /**
+     * Boolean representing if we want to select or to drag.
+     */
+    private boolean isSelect = false;
 
     /**
      * Constructs the SelectTool.
@@ -148,13 +163,14 @@ public class SelectTool implements Tool {
                     if (gridActive) {
                         model.adaptToGrid(GRID_SIZE);
                     }
-                    view.getWorkspace().redraw();
+                    rect = null;
+                    view.getWorkspace().redraw(rect);
                 }
 
                 @Override
                 public void mouseDragged(WorkspaceEvent e) {
                     if (isSelect) {
-                        selectElements(rect, e.getLocation());
+                        selectElements(e.getLocation());
                     } else {
                         moveElements(e.getLocation());
                     }
@@ -180,8 +196,11 @@ public class SelectTool implements Tool {
 
     /**
      * Set the Elements within the rectangle as selected and paints the selection rectangle on the workspace.
+     * 
+     * @param point
+     *            Point representing a edge of the Rectangle.
      */
-    private void selectElements(Rectangle rect, Point point) {
+    private void selectElements(Point point) {
         model.deselectAll();
         rect.setFrameFromDiagonal(point, this.startPoint);
         view.getWorkspace().redraw(rect);
@@ -229,6 +248,9 @@ public class SelectTool implements Tool {
         return map;
     }
 
+    /**
+     * This method requests activation at the Controller.
+     */
     private void activateTool() {
         controller.requestActivation(this);
     }

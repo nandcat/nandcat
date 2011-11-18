@@ -24,7 +24,6 @@ import nandcat.model.element.FlipFlop;
 import nandcat.model.element.IdentityGate;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
-import nandcat.model.element.Module;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 
@@ -59,7 +58,7 @@ public class Workspace extends JPanel {
     private MouseAdapter mouseListener;
 
     /**
-     * Listener of the Workspace on itself on Mouse
+     * Listener of the Workspace on itself on Mouse.
      */
     private MouseWheelListener mouseWheelListener;
 
@@ -92,9 +91,15 @@ public class Workspace extends JPanel {
      * WindowAdapter listening on Window Events of the view.
      */
     private WindowAdapter windowListener;
-    
+
+    /**
+     * Boolean representing if grid is active or not.
+     */
     private boolean grid = false;
-    
+
+    /**
+     * Integer representing the Size of a Grid Cell.
+     */
     private int gridSize;
 
     /**
@@ -236,24 +241,42 @@ public class Workspace extends JPanel {
     public void setViewPortRect(Rectangle rect) {
         this.viewPortRect = rect;
         // if size of visible part is bigger than the workspace by itself it must be extended
-        if (rect.getWidth() >= this.getWidth()) {
-            view.setWorkspaceWidth((int) rect.getWidth());
+        if (viewPortRect.getWidth() >= this.getWidth()) {
+            view.setWorkspaceWidth((int) viewPortRect.getWidth());
         }
-        if (rect.getHeight() >= this.getHeight()) {
-            view.setWorkspaceHeight((int) rect.getHeight());
+        if (viewPortRect.getHeight() >= this.getHeight()) {
+            view.setWorkspaceHeight((int) viewPortRect.getHeight());
         }
     }
-    
+
+    /**
+     * Setter for the Grid.
+     * 
+     * @param grid
+     *            Boolean if grid is enabeld or disabled.
+     * @param gridSize
+     *            integer the size of one Grid Cell
+     */
     public void setGridEnable(boolean grid, int gridSize) {
         this.grid = grid;
         this.gridSize = gridSize;
         repaint();
     }
-    
+
+    /**
+     * Getter if grid is enabled or not.
+     * 
+     * @return boolean true if grid is active false else.
+     */
     public boolean getGridEnable() {
         return grid;
     }
-    
+
+    /**
+     * Getter for the Size of the Grid.
+     * 
+     * @return Int the Size of one Grid-Cell.
+     */
     public int getGridSize() {
         return gridSize;
     }
@@ -301,11 +324,9 @@ public class Workspace extends JPanel {
         }
         if (selectRect != null) {
             elementDrawer.draw(selectRect);
-            selectRect = null;
         }
         if (connectLine != null) {
             elementDrawer.draw(connectLine);
-            connectLine = null;
         }
     }
 
@@ -400,6 +421,12 @@ public class Workspace extends JPanel {
         }
     }
 
+    /**
+     * Notifies Listeners when the MouseWheel was moved.
+     * 
+     * @param altE
+     *            MouseWheelEvent from the MouseWheelListener.
+     */
     private void notifyMouseWheelMoved(MouseWheelEvent altE) {
         WorkspaceEvent e = new WorkspaceEvent();
         e.setWheelRotation(altE.getWheelRotation());
@@ -408,37 +435,39 @@ public class Workspace extends JPanel {
             l.mouseWheelMoved(e);
         }
     }
-
-    /**
-     * Checks if an Element is inside or intersects the ViewPort. Helps to decide whether or not to draw the Elements.
-     * Elements out of sight must no be painted.
-     * 
-     * @param elem
-     *            the Element to be checked
-     * @return True or False. Whether the element is in sight or not.
+    /*
+     * Not needed at the Moment but maybe later useful.
      */
-    private boolean isInView(DrawElement elem) {
-        boolean isInView = false;
-        if (elem instanceof Connection) {
-            // Connections must be painted if one of the Modules it connects is in sight.
-            if (viewPortRect.intersects(((Connection) elem).getNextModule().getRectangle())) {
-                isInView = true;
-            } else if (viewPortRect.intersects(((Connection) elem).getPreviousModule().getRectangle())) {
-                isInView = true;
-            } else if (viewPortRect.contains(((Connection) elem).getPreviousModule().getRectangle())) {
-                isInView = true;
-            } else if (viewPortRect.contains(((Connection) elem).getNextModule().getRectangle())) {
-                isInView = true;
-            }
-        }
-        if (elem instanceof Module) {
-            // Modules must be painted if they are (partly) inside.
-            if (viewPortRect.intersects(((Module) elem).getRectangle())) {
-                isInView = true;
-            } else if (viewPortRect.contains(((Module) elem).getRectangle())) {
-                isInView = true;
-            }
-        }
-        return isInView;
-    }
+    // /**
+    // * Checks if an Element is inside or intersects the ViewPort. Helps to decide whether or not to draw the Elements.
+    // * Elements out of sight must no be painted.
+    // *
+    // * @param elem
+    // * the Element to be checked
+    // * @return True or False. Whether the element is in sight or not.
+    // */
+    // private boolean isInView(DrawElement elem) {
+    // boolean isInView = false;
+    // if (elem instanceof Connection) {
+    // // Connections must be painted if one of the Modules it connects is in sight.
+    // if (viewPortRect.intersects(((Connection) elem).getNextModule().getRectangle())) {
+    // isInView = true;
+    // } else if (viewPortRect.intersects(((Connection) elem).getPreviousModule().getRectangle())) {
+    // isInView = true;
+    // } else if (viewPortRect.contains(((Connection) elem).getPreviousModule().getRectangle())) {
+    // isInView = true;
+    // } else if (viewPortRect.contains(((Connection) elem).getNextModule().getRectangle())) {
+    // isInView = true;
+    // }
+    // }
+    // if (elem instanceof Module) {
+    // // Modules must be painted if they are (partly) inside.
+    // if (viewPortRect.intersects(((Module) elem).getRectangle())) {
+    // isInView = true;
+    // } else if (viewPortRect.contains(((Module) elem).getRectangle())) {
+    // isInView = true;
+    // }
+    // }
+    // return isInView;
+    // }
 }
