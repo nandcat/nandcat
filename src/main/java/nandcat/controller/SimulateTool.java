@@ -88,6 +88,8 @@ public class SimulateTool implements Tool {
      * View instance.
      */
     private View view;
+    
+    private boolean paused = false;
 
     /**
      * Represents if the user wants to start a simulation.
@@ -283,7 +285,15 @@ public class SimulateTool implements Tool {
                     }
                     checkManager.setVisible(true);
                 } else if (e.getActionCommand().equals("pause")) {
-                    //model.pauseSimulation();
+                    if(paused){
+                        model.unpause();
+                        boolean b = paused;
+                        paused = !b;
+                    }else {
+                      model.pause();
+                      boolean b = paused;
+                      paused = !b;
+                    }
                 }
             }
         };
