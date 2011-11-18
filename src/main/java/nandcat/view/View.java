@@ -190,7 +190,6 @@ public class View extends JFrame {
                 allModulesInSight();
             }
         });
-
         setTitle(FRAME_TITLE);
         setSize(1024, 768);
         setLocation(frameLocation);
@@ -483,8 +482,7 @@ public class View extends JFrame {
             setupButton(move, "move");
         }
         if (viewModules != null) {
-            modules = new JComboBox(viewModules.toArray());
-            modules.setMaximumSize(new Dimension(80, 40));
+            modules = new WideComboBox(viewModules.toArray());
             modules.setPreferredSize(new Dimension(80, 40));
             modules.setToolTipText(i18n.getString("tooltip.modules"));
         }
@@ -710,8 +708,7 @@ public class View extends JFrame {
         // remove ComboBox from ToolBar
         toolBar.remove(modules);
         // Build it new and adds it again at pos 0
-        modules = new JComboBox(viewModules.toArray());
-        modules.setMaximumSize(new Dimension(80, 40));
+        modules = new WideComboBox(viewModules.toArray());
         modules.setPreferredSize(new Dimension(80, 40));
         modules.setToolTipText(i18n.getString("tooltip.modules"));
         if (toolFunctionalities.containsKey("selectModule")) {
@@ -720,5 +717,42 @@ public class View extends JFrame {
             modules.setName("selectModule");
         }
         toolBar.add(modules, 0);
+    }
+
+    /**
+     * Extension of JComboBox to ensure the PopupMenu of the ComoBox is wide enough to Display the full names of the
+     * Elements.
+     */
+    public class WideComboBox extends JComboBox {
+
+        /**
+         * Default serial uid.
+         */
+        private static final long serialVersionUID = 1L;
+
+        public WideComboBox() {
+        }
+
+        public WideComboBox(final Object items[]) {
+            super(items);
+        }
+
+        private boolean layingOut = false;
+
+        public void doLayout() {
+            try {
+                layingOut = true;
+                super.doLayout();
+            } finally {
+                layingOut = false;
+            }
+        }
+
+        public Dimension getSize() {
+            Dimension dim = super.getSize();
+            if (!layingOut)
+                dim.width = Math.max(160, getPreferredSize().width);
+            return dim;
+        }
     }
 }
