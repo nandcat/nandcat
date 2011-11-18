@@ -131,383 +131,27 @@ public class Model implements ClockListener {
         // circuit.addConnection(impy.getOutPorts().get(0), lamp.getInPorts().get(0));
     }
 
-    public void setLayouter(ModuleLayouter layouter) {
-        if (layouter == null) {
-            throw new IllegalArgumentException();
-        }
-        factory.setLayouter(layouter);
-    }
-
     /**
-     * Changes the frequency of the Module to the given value.
+     * Adapts the selected Elements of the Circuit to a Grid with given Size.
      * 
-     * @param m
-     *            the Module to be modified
-     * @param i
-     *            the new value of m's frequency
-     * @return true iff (m instanceof ImpulseGenerator returns true && i >= 0)
+     * @param gridSize
+     *            int the Size of a Grid-Cell.
      */
-    public boolean setFrequency(Module m, int i) {
-        if (m instanceof ImpulseGenerator && i >= 0) {
-            ((ImpulseGenerator) m).setFrequency(i);
-            notifyForChangedElems();
-            return true;
-        }
-        return false;
+    public void adaptToGrid(int gridSize) {
+        Set<Element> elementsToAdapt = getSelectedElements();
+        adaptToGrid(gridSize, elementsToAdapt);
     }
 
     /**
-     * Initialize list of available checks.
-     */
-    private void initChecks() {
-        checks.add(new CountCheck());
-        checks.add(new FeedbackCheck());
-        checks.add(new IllegalConnectionCheck());
-        checks.add(new OrphanCheck());
-        checks.add(new SinkCheck());
-        checks.add(new SourceCheck());
-    }
-
-    /**
-     * Fill viewModule2Module data structure with default Gates and custom circuits.
-     */
-    public void initView2Module() {
-        viewModules = new LinkedList<ViewModule>();
-        // FIXME Keine instanzen sondern jetzt werden builder uebergeben!
-        viewModules.add(new ViewModule("AND", factory.getAndGateBuilder().build(), "", null));
-        viewModules.add(new ViewModule("OR", factory.getOrGateBuilder().build(), "", null));
-        viewModules.add(new ViewModule("FlipFlop", factory.getFlipFlopBuilder().build(), "", null));
-        viewModules.add(new ViewModule("ID", factory.getIdentityGateBuilder().build(), "", null));
-        viewModules.add(new ViewModule("Lampe", factory.getLampBuilder().build(), "", null));
-        viewModules.add(new ViewModule("NOT", factory.getNotGateBuilder().build(), "", null));
-        viewModules.add(new ViewModule("ImpulseGenerator", factory.getClockBuilder().build(), "", null));
-        viewModules.add(new ViewModule("AND-3", factory.getAndGateBuilder().setInPorts(3).build(), "", null));
-        viewModules.add(new ViewModule("OR-3", factory.getOrGateBuilder().setInPorts(3).build(), "", null));
-        viewModules.add(new ViewModule("ID-3", factory.getIdentityGateBuilder().setOutPorts(3).build(), "", null));
-        loadCustomList();
-    }
-
-    /**
-     * Start the selected checks on the current circuit.
-     */
-    public void startChecks() {
-        ModelEvent e = new ModelEvent();
-        for (ModelListener l : listeners) {
-            l.checksStarted(e);
-        }
-        boolean allChecksPassed = true;
-        boolean currentCheckPassed = true;
-        for (CircuitCheck check : checks) {
-            if (check.isActive()) {
-                currentCheckPassed = check.test(circuit);
-            }
-            if (!currentCheckPassed) {
-                allChecksPassed = false;
-            }
-        }
-        e.setChecksPassed(allChecksPassed);
-        for (ModelListener l : listeners) {
-            l.checksStopped(e);
-        }
-    }
-
-    /**
-     * Returns the Port at the Position. If multiple Ports are intersecting the Rectangle, no specific behaviour can be
-     * assured.
+     * Adapts the all Elements of the Circuit to a Grid with given Size.
      * 
-     * @param rect
-     *            Rectangle containing the x- and y-coordinate
-     * @return the Port at this position, null if no Port is there
+     * @param gridSize
+     *            int the Size of a Grid-Cell.
      */
-    public Port getPortAt(Rectangle rect) {
-        for (Module m : getModsAt(rect)) {
-            for (Port p : m.getInPorts()) {
-                if (p.getRectangle() != null && p.getRectangle().intersects(rect)) {
-                    return p;
-                }
-            }
-            for (Port p : m.getOutPorts()) {
-                if (p.getRectangle() != null && p.getRectangle().intersects(rect)) {
-                    return p;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns the list of ViewModules that are necessary for the view.
-     * 
-     * @return List of ViewModules
-     */
-    public List<ViewModule> getViewModules() {
-        if (viewModules == null) {
-            initView2Module();
-        }
-        return viewModules;
-    }
-
-    /**
-     * Adds a listener to the set of listeners, which will be notified using events.
-     * 
-     * @param l
-     *            Modellistener
-     */
-    public void addListener(ModelListener l) {
-        listeners.add(l);
-    }
-
-    /**
-     * Loads or reloads the List containing the custom-circuits.
-     */
-    private void loadCustomList() {
-        // search PATH for circuits, non-recursive.
-        File dir = new File(".");
-        LOG.debug("Load custom circuits: " + dir.getAbsolutePath());
-        Importer importer = new SEPAFImporter();
-        importer.setFactory(factory);
-        Map<String, String> formats = importer.getFileFormats();
-        for (File f : dir.listFiles()) {
-            if (f.isFile() && f.canRead() && getFileExtension(f) != null) {
-                if (formats.containsKey(getFileExtension(f))) {
-                    importer.setFile(f);
-                    // TODO fertigimplementierung von getName oder sonstwas im Importer abwarten, damit hier nicht der
-                    // ganze Circuit eingelesen werden muss. Dafuer muss aber auch der Rueckgabewert von importCircuit()
-                    // zuverlaessig sein. Siehe importFromFile (null check nach if(import.importCircuit()) noetig).
-                    if (importer.importCircuit()) {
-                        viewModules.add(new ViewModule(f.getName(), null, f.getName(), null));
-                    } else {
-                        ModelEvent e = new ModelEvent();
-                        e.setMessage("import failed: " + importer.getErrorMessage());
-                        // for (ModelListener l : listeners) {
-                        // l.importFailed(e);
-                        // }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Removes a listener from the set of listeners.
-     * 
-     * @param l
-     *            Modellistener
-     */
-    public void removeListener(ModelListener l) {
-        listeners.remove(l);
-    }
-
-    /**
-     * Selects or deselects an Element.
-     * 
-     * @param m
-     *            Element that will be selected
-     * @param b
-     *            true if selected, false if not selected
-     */
-    public void setElementSelected(Element m, boolean b) {
-        m.setSelected(b);
-        notifyForChangedElems();
-    }
-
-    /**
-     * Get a set of elements within a specific rectangle.
-     * 
-     * @param rect
-     *            Rectangle containing the x- and y-coordinate.
-     * @return Set of Elements at the given location.
-     */
-    private Set<Element> getElementsAt(Rectangle rect) {
-        Set<Element> elementsAt = new HashSet<Element>();
-        elementsAt.addAll(getConnsAt(rect));
-        elementsAt.addAll(getModsAt(rect));
-        return elementsAt;
-    }
-
-    /**
-     * Get all connections intersecting a rectangle.
-     * 
-     * @param rect
-     *            Rectangle containing the x- and y-coordinate
-     * @return Set of Connections intersecting the given location
-     */
-    private Set<Connection> getConnsAt(Rectangle rect) {
-        Set<Connection> connsAt = new HashSet<Connection>();
-        for (Connection c : circuit.getConnections()) {
-            if (c.getLine().intersects(rect)) {
-                connsAt.add(c);
-            }
-        }
-        return connsAt;
-    }
-
-    /**
-     * Get all modules intersecting a rectangle.
-     * 
-     * @param rect
-     *            Rectangle containing the x- and y-coordinate
-     * @return Set of Modules intersecting the given location
-     */
-    private Set<Module> getModsAt(Rectangle rect) {
-        Set<Module> connsAt = new HashSet<Module>();
-        for (Module m : circuit.getModules()) {
-            if (m.getRectangle().intersects(rect)) {
-                connsAt.add(m);
-            }
-        }
-        return connsAt;
-    }
-
-    /**
-     * Get a set of elements within a specific rectangle.
-     * 
-     * @param rect
-     *            Rectangle containing the x- and y-coordinate.
-     * @return Set of Elements at the given location.
-     */
-    public Set<DrawElement> getDrawElementsAt(Rectangle rect) {
-        Set<DrawElement> elementsAt = new HashSet<DrawElement>();
-        for (Module m : getModsAt(rect)) {
-            elementsAt.add((DrawElement) m);
-        }
-        for (Connection c : getConnsAt(rect)) {
-            elementsAt.add((DrawElement) c);
-        }
-        return elementsAt;
-    }
-
-    /**
-     * Gets the current clock.
-     * 
-     * @return Clock used for simulation.
-     */
-    public Clock getClock() {
-        return clock;
-    }
-
-    /**
-     * Select elements from the circuit. An element is selected when it lies within a given rectangle. Note that does
-     * not deselect previously selected elements! Use this for multiple selections, e.g. via SHIFT.
-     * 
-     * @param rect
-     *            The Rectangle defining the zone where elements are selected
-     * @return true iff at least one element has been selected
-     */
-    public boolean selectElements(Rectangle rect) {
-        boolean result = false;
-        Set<DrawElement> drawElements = new HashSet<DrawElement>();
-        for (Element e : getElementsAt(rect)) {
-            e.setSelected(true);
-            drawElements.add((DrawElement) e);
-            result = true;
-        }
-        // TODO jaja Codeduplikation checken wir spaeter
-        notifyForChangedElems();
-        return result;
-    }
-
-    /**
-     * Select elements from the circuit. An element is selected when it lies within a given rectangle. Warning - this
-     * will deselect all previously selected elements!
-     * 
-     * @param rect
-     *            The Rectangle defining the zone where elements are selected
-     */
-    public void exclusiveSelectElements(Rectangle rect) {
-        deselectAll();
-        selectElements(rect);
-    }
-
-    /**
-     * Deselects all Elements on the top level circuit.
-     */
-    public void deselectAll() {
-        Set<DrawElement> elements = new HashSet<DrawElement>();
-        for (Element e : getElements()) {
-            e.setSelected(false);
-            elements.add(e);
-        }
-        notifyForChangedElems();
-    }
-
-    /**
-     * Get the number of the current cycle.
-     * 
-     * @return the number of the current cycle
-     */
-    public int getCycle() {
-        return clock.getCycle();
-    }
-
-    /**
-     * Get all elements from the current circuit.
-     * 
-     * @return A Set of all elements.
-     */
-    protected List<Element> getElements() {
-        return circuit.getElements();
-    }
-
-    /**
-     * Get all selected elements from the main circuit.
-     * 
-     * @return Set<Element> containing, oh the magic, all selected elements
-     */
-    private Set<Element> getSelectedElements() {
-        Set<Element> selectitt = new HashSet<Element>();
-        for (Element e : getElements()) {
-            if (e.isSelected())
-                selectitt.add(e);
-        }
-        return selectitt;
-    }
-
-    /**
-     * Get all elements from the current circuit.
-     * 
-     * @return A Set of all elements.
-     */
-    public List<DrawElement> getDrawElements() {
-        List<DrawElement> drawElements = new LinkedList<DrawElement>();
-        for (Element element : circuit.getElements()) {
-            drawElements.add((DrawElement) element);
-        }
-        return drawElements;
-    }
-
-    /**
-     * Start the simulation on the current circuit. The starting elements are registered at the clock and compute their
-     * output.
-     */
-    public void startSimulation() {
-        if (simIsRunning) {
-            throw new IllegalStateException("End running Simulation first!");
-        }
-        simIsRunning = true;
-        for (ModelListener l : listeners) {
-            l.simulationStarted(new ModelEvent());
-        }
-        for (Module m : circuit.getStartingModules()) {
-            clock.addListener(m);
-        }
-        clock.startSimulation();
-        new Thread(clock).start();
-    }
-
-    /**
-     * Stops the simulation on the current circuit.
-     */
-    public void stopSimulation() {
-        clock.stopSimulation();
-    }
-
-    /**
-     * Remove all objects from the current circuit.
-     */
-    public void clearCircuit() {
-        circuit.getElements().clear();
-        notifyForChangedElems();
+    public void adaptAllToGrid(int gridSize) {
+        List<Element> elements = getElements();
+        Set<Element> elementsToAdapt = new HashSet<Element>(elements);
+        adaptToGrid(gridSize, elementsToAdapt);
     }
 
     /**
@@ -576,6 +220,436 @@ public class Model implements ClockListener {
     }
 
     /**
+     * Adds a listener to the set of listeners, which will be notified using events.
+     * 
+     * @param l
+     *            Modellistener
+     */
+    public void addListener(ModelListener l) {
+        listeners.add(l);
+    }
+
+    /**
+     * Remove all objects from the current circuit.
+     */
+    public void clearCircuit() {
+        circuit.getElements().clear();
+        notifyForChangedElems();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clockTicked(Clock clock) {
+        notifyForChangedElems();
+    }
+
+    /**
+     * Deselects all Elements on the top level circuit.
+     */
+    public void deselectAll() {
+        Set<DrawElement> elements = new HashSet<DrawElement>();
+        for (Element e : getElements()) {
+            e.setSelected(false);
+            elements.add(e);
+        }
+        notifyForChangedElems();
+    }
+
+    /**
+     * Export the the selected Elements to a file.
+     * 
+     * @param file
+     *            File to export top-level Circuit from
+     */
+    public void exportSelectedToFile(File file) {
+        if (file == null) {
+            throw new IllegalArgumentException();
+        }
+        String ext = getFileExtension(file);
+        if (exporters.containsKey(ext)) {
+            Exporter ex = exporters.get(ext);
+            ex.setFile(file);
+            //
+            Circuit selected = getCircuitFromSelected();
+            //
+            ex.setCircuit(selected);
+            if (ex.exportCircuit()) {
+                LOG.debug("File exported successfully");
+                dirty = false;
+            } else {
+                LOG.warn("Export to " + file.getAbsolutePath() + " failed: " + ex.getErrorMessage());
+                // TODO Fehlermeldung an View?
+            }
+        }
+    }
+
+    /**
+     * Export the top-level Circuit and all its elements to a file.
+     * 
+     * @param file
+     *            File to export top-level Circuit from
+     */
+    public void exportToFile(File file, ElementDrawer drawer) {
+        if (file == null) {
+            throw new IllegalArgumentException();
+        }
+        String ext = getFileExtension(file);
+        if (exporters.containsKey(ext)) {
+            Exporter ex = exporters.get(ext);
+            ex.setFile(file);
+            ex.setCircuit(circuit);
+            if (ex instanceof DrawExporter) {
+                ((DrawExporter) ex).setElementDrawer(drawer);
+            }
+
+            if (ex.exportCircuit()) {
+                LOG.debug("File exported successfully");
+                dirty = false;
+            } else {
+                LOG.warn("Export to " + file.getAbsolutePath() + " failed: " + ex.getErrorMessage());
+                // TODO Fehlermeldung an View?
+            }
+        }
+    }
+
+    /**
+     * Select elements from the circuit. An element is selected when it lies within a given rectangle. Warning - this
+     * will deselect all previously selected elements!
+     * 
+     * @param rect
+     *            The Rectangle defining the zone where elements are selected
+     */
+    public void exclusiveSelectElements(Rectangle rect) {
+        deselectAll();
+        selectElements(rect);
+    }
+
+    /**
+     * Gets available checks.
+     * 
+     * @return Available CircuitChecks.
+     */
+    public Set<CircuitCheck> getChecks() {
+        return checks;
+    }
+
+    // /**
+    // * Move the specific port according to the x + y values stored in the point. Throws an Exception if one parameter
+    // is
+    // * null.
+    // *
+    // * @param distance
+    // * Point containing the x and y
+    // * @param port
+    // * Port that will be moved
+    // */
+    // public void movePortBy(Point distance, Port port) {
+    // if (port == null || distance == null) {
+    // throw (new IllegalArgumentException("port and distancepoint must not be null!"));
+    // }
+    // Rectangle old = port.getRectangle();
+    // port.setRectangle(new Rectangle(old.x + distance.x, old.y + distance.y, old.width, old.height));
+    // }
+    /**
+     * Gets the current circuit.
+     * 
+     * @return Circuit, <code>NULL</code> if there is no circuit
+     */
+    public Circuit getCircuit() {
+        return circuit;
+    }
+
+    /**
+     * Creates a new Circuit containing selected Elements only. Connections leading to a Module outside the new Circuit
+     * won't be accepted.
+     * 
+     * @return the Circuit containing the selected Elements
+     */
+    public Circuit getCircuitFromSelected() {
+        Circuit result = (Circuit) factory.getCircuitBuilder().build();
+        for (Module m : circuit.getModules()) {
+            if (m.isSelected()) {
+                result.addModule(m);
+            }
+        }
+        for (Connection c : circuit.getConnections()) {
+            if (c.isSelected()) {
+                if (result.getModules().contains(c.getNextModule())
+                        && result.getModules().contains(c.getPreviousModule())) {
+                    result.addConnection(c.getInPort(), c.getOutPort());
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Gets the current clock.
+     * 
+     * @return Clock used for simulation.
+     */
+    public Clock getClock() {
+        return clock;
+    }
+
+    /**
+     * Get the number of the current cycle.
+     * 
+     * @return the number of the current cycle
+     */
+    public int getCycle() {
+        return clock.getCycle();
+    }
+
+    /**
+     * Get all elements from the current circuit.
+     * 
+     * @return A Set of all elements.
+     */
+    public List<DrawElement> getDrawElements() {
+        List<DrawElement> drawElements = new LinkedList<DrawElement>();
+        for (Element element : circuit.getElements()) {
+            drawElements.add((DrawElement) element);
+        }
+        return drawElements;
+    }
+
+    /**
+     * Get a set of elements within a specific rectangle.
+     * 
+     * @param rect
+     *            Rectangle containing the x- and y-coordinate.
+     * @return Set of Elements at the given location.
+     */
+    public Set<DrawElement> getDrawElementsAt(Rectangle rect) {
+        Set<DrawElement> elementsAt = new HashSet<DrawElement>();
+        for (Module m : getModsAt(rect)) {
+            elementsAt.add((DrawElement) m);
+        }
+        for (Connection c : getConnsAt(rect)) {
+            elementsAt.add((DrawElement) c);
+        }
+        return elementsAt;
+    }
+
+    /**
+     * Get all elements from the current circuit.
+     * 
+     * @return A Set of all elements.
+     */
+    protected List<Element> getElements() {
+        return circuit.getElements();
+    }
+
+    /**
+     * Return map containing valid file extensions and description for export.
+     * 
+     * @return Map with <b>key:</b> file extension and <b>value:</b> description
+     */
+    public Map<String, String> getExportFormats() {
+        return exportFormats;
+    }
+
+    /**
+     * Return map containing valid file extensions and description for import.
+     * 
+     * @return Map with <b>key:</b> file extension and <b>value:</b> description
+     */
+    public Map<String, String> getImportFormats() {
+        return importFormats;
+    }
+
+    /**
+     * Returns the Port at the Position. If multiple Ports are intersecting the Rectangle, no specific behaviour can be
+     * assured.
+     * 
+     * @param rect
+     *            Rectangle containing the x- and y-coordinate
+     * @return the Port at this position, null if no Port is there
+     */
+    public Port getPortAt(Rectangle rect) {
+        for (Module m : getModsAt(rect)) {
+            for (Port p : m.getInPorts()) {
+                if (p.getRectangle() != null && p.getRectangle().intersects(rect)) {
+                    return p;
+                }
+            }
+            for (Port p : m.getOutPorts()) {
+                if (p.getRectangle() != null && p.getRectangle().intersects(rect)) {
+                    return p;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the list of ViewModules that are necessary for the view.
+     * 
+     * @return List of ViewModules
+     */
+    public List<ViewModule> getViewModules() {
+        if (viewModules == null) {
+            initView2Module();
+        }
+        return viewModules;
+    }
+
+    /**
+     * Import a Circuit as the new top-level Circuit and all its elements from a file.
+     * 
+     * @param file
+     *            File to import top-level Circuit from
+     */
+    public void importRootFromFile(File file) {
+        ModelEvent e = new ModelEvent();
+        // Let listeners interrupt. If interrupted don't create a new circuit.
+        for (ModelListener l : listeners) {
+            if (l.changeCircuitRequested(e)) {
+                return;
+            }
+        }
+        this.circuit = importFromFile(file);
+        ModelEvent e2 = new ModelEvent();
+        // import failed
+        if (circuit == null) {
+            newCircuit();
+            for (ModelListener l : listeners) {
+                l.importFailed(e2);
+            }
+        } else {
+            for (ModelListener l : listeners) {
+                l.importSucceeded(e2);
+            }
+        }
+        notifyForChangedElems();
+    }
+
+    /**
+     * Fill viewModule2Module data structure with default Gates and custom circuits.
+     */
+    public void initView2Module() {
+        viewModules = new LinkedList<ViewModule>();
+        // FIXME Keine instanzen sondern jetzt werden builder uebergeben!
+        viewModules.add(new ViewModule("AND", factory.getAndGateBuilder().build(), "", null));
+        viewModules.add(new ViewModule("OR", factory.getOrGateBuilder().build(), "", null));
+        viewModules.add(new ViewModule("FlipFlop", factory.getFlipFlopBuilder().build(), "", null));
+        viewModules.add(new ViewModule("ID", factory.getIdentityGateBuilder().build(), "", null));
+        viewModules.add(new ViewModule("Lampe", factory.getLampBuilder().build(), "", null));
+        viewModules.add(new ViewModule("NOT", factory.getNotGateBuilder().build(), "", null));
+        viewModules.add(new ViewModule("ImpulseGenerator", factory.getClockBuilder().build(), "", null));
+        viewModules.add(new ViewModule("AND-3", factory.getAndGateBuilder().setInPorts(3).build(), "", null));
+        viewModules.add(new ViewModule("OR-3", factory.getOrGateBuilder().setInPorts(3).build(), "", null));
+        viewModules.add(new ViewModule("ID-3", factory.getIdentityGateBuilder().setOutPorts(3).build(), "", null));
+        loadCustomList();
+    }
+
+    /**
+     * Checks if circuit has unsaved changes.
+     * 
+     * @return True if circuit has unsaved changes.
+     */
+    public boolean isDirty() {
+        // we won't ask if the user wants to save empty an empty circuit
+        if (circuit == null || circuit.getElements().size() == 0) {
+            return false;
+        }
+        return dirty;
+    }
+
+    /**
+     * Instruct model to move selected modules' positions by point p.
+     * 
+     * @param p
+     *            Point specifying the relative positional change
+     * 
+     * @return boolean specifying if moveoperation for each module was successful
+     */
+    public boolean moveBy(Point p) {
+        Set<Module> selectedModules = new HashSet<Module>();
+        for (Element element : getSelectedElements()) {
+            if (element instanceof Module) {
+                Module m = (Module) element;
+                selectedModules.add(m);
+            }
+        }
+        return moveBy(selectedModules, p);
+    }
+
+    /**
+     * Instruct model to move given modules' positions by point p.<br>
+     * 
+     * @param modules
+     *            Module that needs relocation
+     * @param p
+     *            Point specifying the relative positional change
+     * 
+     * @return boolean specifying if moveoperation for each module was successful
+     */
+    public boolean moveBy(Set<Module> modules, Point p) {
+        boolean result = true;
+        for (Module m : modules) {
+            if (!moveBy(m, p)) {
+                result = false;
+            }
+        }
+        notifyForChangedElems();
+        if (result) {
+            dirty = true;
+        }
+        return result;
+    }
+
+    /**
+     * Replaces the current circuit with a new one. All Elements will be lost.
+     */
+    public void newCircuit() {
+        ModelEvent e = new ModelEvent();
+        // Let listeners interrupt. If interrupted don't create a new circuit.
+        for (ModelListener l : listeners) {
+            if (l.changeCircuitRequested(e)) {
+                return;
+            }
+        }
+        this.circuit = (Circuit) factory.getCircuitBuilder().build();
+        notifyForChangedElems();
+    }
+
+    /**
+     * Notifies ModelListeners about the stopped simulation.
+     */
+    protected void notifyForStoppedSim() {
+        ModelEvent e = new ModelEvent();
+        simIsRunning = false;
+        for (ModelListener l : listeners) {
+            l.simulationStopped(e);
+        }
+    }
+
+    /**
+     * Halts the current simulation without resetting it. Can be started again via unpause.
+     */
+    public void pause() {
+        synchronized (clock) {
+            try {
+                clock.wait();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            // clock.setPaused(true);
+        }
+    }
+
+    /**
+     * Restarts a previously halted simulation.
+     */
+    public void unpause() {
+
+    }
+
+    /**
      * Remove given element.
      * 
      * @param e
@@ -588,42 +662,240 @@ public class Model implements ClockListener {
     }
 
     /**
-     * {@inheritDoc}
+     * Removes a listener from the set of listeners.
+     * 
+     * @param l
+     *            Modellistener
      */
-    public void clockTicked(Clock clock) {
+    public void removeListener(ModelListener l) {
+        listeners.remove(l);
+    }
+
+    /**
+     * Selects or deselects an Element.
+     * 
+     * @param m
+     *            Element that will be selected
+     * @param b
+     *            true if selected, false if not selected
+     */
+    public void setElementSelected(Element m, boolean b) {
+        m.setSelected(b);
         notifyForChangedElems();
     }
 
     /**
-     * Gets available checks.
+     * Select elements from the circuit. An element is selected when it lies within a given rectangle. Note that does
+     * not deselect previously selected elements! Use this for multiple selections, e.g. via SHIFT.
      * 
-     * @return Available CircuitChecks.
+     * @param rect
+     *            The Rectangle defining the zone where elements are selected
+     * @return true iff at least one element has been selected
      */
-    public Set<CircuitCheck> getChecks() {
-        return checks;
+    public boolean selectElements(Rectangle rect) {
+        boolean result = false;
+        Set<DrawElement> drawElements = new HashSet<DrawElement>();
+        for (Element e : getElementsAt(rect)) {
+            e.setSelected(true);
+            drawElements.add((DrawElement) e);
+            result = true;
+        }
+        // TODO jaja Codeduplikation checken wir spaeter
+        notifyForChangedElems();
+        return result;
+    }
+
+    public void setLayouter(ModuleLayouter layouter) {
+        if (layouter == null) {
+            throw new IllegalArgumentException();
+        }
+        factory.setLayouter(layouter);
     }
 
     /**
-     * Adapts the selected Elements of the Circuit to a Grid with given Size.
+     * Changes the frequency of the Module to the given value.
      * 
-     * @param gridSize
-     *            int the Size of a Grid-Cell.
+     * @param m
+     *            the Module to be modified
+     * @param i
+     *            the new value of m's frequency
+     * @return true iff (m instanceof ImpulseGenerator returns true && i >= 0)
      */
-    public void adaptToGrid(int gridSize) {
-        Set<Element> elementsToAdapt = getSelectedElements();
-        adaptToGrid(gridSize, elementsToAdapt);
+    public boolean setFrequency(Module m, int i) {
+        if (m instanceof ImpulseGenerator && i >= 0) {
+            ((ImpulseGenerator) m).setFrequency(i);
+            notifyForChangedElems();
+            return true;
+        }
+        return false;
     }
 
     /**
-     * Adapts the all Elements of the Circuit to a Grid with given Size.
-     * 
-     * @param gridSize
-     *            int the Size of a Grid-Cell.
+     * Start the selected checks on the current circuit.
      */
-    public void adaptAllToGrid(int gridSize) {
-        List<Element> elements = getElements();
-        Set<Element> elementsToAdapt = new HashSet<Element>(elements);
-        adaptToGrid(gridSize, elementsToAdapt);
+    public void startChecks() {
+        ModelEvent e = new ModelEvent();
+        for (ModelListener l : listeners) {
+            l.checksStarted(e);
+        }
+        boolean allChecksPassed = true;
+        boolean currentCheckPassed = true;
+        for (CircuitCheck check : checks) {
+            if (check.isActive()) {
+                currentCheckPassed = check.test(circuit);
+            }
+            if (!currentCheckPassed) {
+                allChecksPassed = false;
+            }
+        }
+        e.setChecksPassed(allChecksPassed);
+        for (ModelListener l : listeners) {
+            l.checksStopped(e);
+        }
+    }
+
+    /**
+     * Start the simulation on the current circuit. The starting elements are registered at the clock and compute their
+     * output.
+     */
+    public void startSimulation() {
+        if (simIsRunning) {
+            throw new IllegalStateException("End running Simulation first!");
+        }
+        simIsRunning = true;
+        for (ModelListener l : listeners) {
+            l.simulationStarted(new ModelEvent());
+        }
+        for (Module m : circuit.getStartingModules()) {
+            clock.addListener(m);
+        }
+        clock.startSimulation();
+        new Thread(clock).start();
+    }
+
+    /**
+     * Stops the simulation on the current circuit.
+     */
+    public void stopSimulation() {
+        clock.stopSimulation();
+    }
+
+    /**
+     * Toggle state of given module (if possible).
+     * 
+     * @param m
+     *            Module to toggle
+     */
+    public void toggleModule(Module m) {
+        if (m instanceof ImpulseGenerator) {
+            ((ImpulseGenerator) m).toggleState();
+        }
+        notifyForChangedElems();
+    }
+
+    /**
+     * Initialize list of available checks.
+     */
+    private void initChecks() {
+        checks.add(new CountCheck());
+        checks.add(new FeedbackCheck());
+        checks.add(new IllegalConnectionCheck());
+        checks.add(new OrphanCheck());
+        checks.add(new SinkCheck());
+        checks.add(new SourceCheck());
+    }
+
+    /**
+     * Loads or reloads the List containing the custom-circuits.
+     */
+    private void loadCustomList() {
+        // search PATH for circuits, non-recursive.
+        File dir = new File(".");
+        LOG.debug("Load custom circuits: " + dir.getAbsolutePath());
+        Importer importer = new SEPAFImporter();
+        importer.setFactory(factory);
+        Map<String, String> formats = importer.getFileFormats();
+        for (File f : dir.listFiles()) {
+            if (f.isFile() && f.canRead() && getFileExtension(f) != null) {
+                if (formats.containsKey(getFileExtension(f))) {
+                    importer.setFile(f);
+                    // TODO fertigimplementierung von getName oder sonstwas im Importer abwarten, damit hier nicht der
+                    // ganze Circuit eingelesen werden muss. Dafuer muss aber auch der Rueckgabewert von importCircuit()
+                    // zuverlaessig sein. Siehe importFromFile (null check nach if(import.importCircuit()) noetig).
+                    if (importer.importCircuit()) {
+                        viewModules.add(new ViewModule(f.getName(), null, f.getName(), null));
+                    } else {
+                        ModelEvent e = new ModelEvent();
+                        e.setMessage("import failed: " + importer.getErrorMessage());
+                        // for (ModelListener l : listeners) {
+                        // l.importFailed(e);
+                        // }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Get all connections intersecting a rectangle.
+     * 
+     * @param rect
+     *            Rectangle containing the x- and y-coordinate
+     * @return Set of Connections intersecting the given location
+     */
+    private Set<Connection> getConnsAt(Rectangle rect) {
+        Set<Connection> connsAt = new HashSet<Connection>();
+        for (Connection c : circuit.getConnections()) {
+            if (c.getLine().intersects(rect)) {
+                connsAt.add(c);
+            }
+        }
+        return connsAt;
+    }
+
+    /**
+     * Get a set of elements within a specific rectangle.
+     * 
+     * @param rect
+     *            Rectangle containing the x- and y-coordinate.
+     * @return Set of Elements at the given location.
+     */
+    private Set<Element> getElementsAt(Rectangle rect) {
+        Set<Element> elementsAt = new HashSet<Element>();
+        elementsAt.addAll(getConnsAt(rect));
+        elementsAt.addAll(getModsAt(rect));
+        return elementsAt;
+    }
+
+    /**
+     * Get all modules intersecting a rectangle.
+     * 
+     * @param rect
+     *            Rectangle containing the x- and y-coordinate
+     * @return Set of Modules intersecting the given location
+     */
+    private Set<Module> getModsAt(Rectangle rect) {
+        Set<Module> connsAt = new HashSet<Module>();
+        for (Module m : circuit.getModules()) {
+            if (m.getRectangle().intersects(rect)) {
+                connsAt.add(m);
+            }
+        }
+        return connsAt;
+    }
+
+    /**
+     * Get all selected elements from the main circuit.
+     * 
+     * @return Set<Element> containing, oh the magic, all selected elements
+     */
+    private Set<Element> getSelectedElements() {
+        Set<Element> selectitt = new HashSet<Element>();
+        for (Element e : getElements()) {
+            if (e.isSelected())
+                selectitt.add(e);
+        }
+        return selectitt;
     }
 
     /**
@@ -699,62 +971,6 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Instruct model to move given modules' positions by point p.<br>
-     * 
-     * @param modules
-     *            Module that needs relocation
-     * @param p
-     *            Point specifying the relative positional change
-     * 
-     * @return boolean specifying if moveoperation for each module was successful
-     */
-    public boolean moveBy(Set<Module> modules, Point p) {
-        boolean result = true;
-        for (Module m : modules) {
-            if (!moveBy(m, p)) {
-                result = false;
-            }
-        }
-        notifyForChangedElems();
-        if (result) {
-            dirty = true;
-        }
-        return result;
-    }
-
-    /**
-     * Instruct model to move selected modules' positions by point p.
-     * 
-     * @param p
-     *            Point specifying the relative positional change
-     * 
-     * @return boolean specifying if moveoperation for each module was successful
-     */
-    public boolean moveBy(Point p) {
-        Set<Module> selectedModules = new HashSet<Module>();
-        for (Element element : getSelectedElements()) {
-            if (element instanceof Module) {
-                Module m = (Module) element;
-                selectedModules.add(m);
-            }
-        }
-        return moveBy(selectedModules, p);
-    }
-
-    /**
-     * Toggle state of given module (if possible).
-     * 
-     * @param m
-     *            Module to toggle
-     */
-    public void toggleModule(Module m) {
-        if (m instanceof ImpulseGenerator) {
-            ((ImpulseGenerator) m).toggleState();
-        }
-        notifyForChangedElems();
-    }
-
-    /**
      * Initializes all importers.
      */
     private void initImporters() {
@@ -792,24 +1008,6 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Return map containing valid file extensions and description for import.
-     * 
-     * @return Map with <b>key:</b> file extension and <b>value:</b> description
-     */
-    public Map<String, String> getImportFormats() {
-        return importFormats;
-    }
-
-    /**
-     * Return map containing valid file extensions and description for export.
-     * 
-     * @return Map with <b>key:</b> file extension and <b>value:</b> description
-     */
-    public Map<String, String> getExportFormats() {
-        return exportFormats;
-    }
-
-    /**
      * Get the extension of a file.
      * 
      * @param f
@@ -824,36 +1022,6 @@ public class Model implements ClockListener {
             ext = s.substring(i + 1).toLowerCase();
         }
         return ext;
-    }
-
-    /**
-     * Import a Circuit as the new top-level Circuit and all its elements from a file.
-     * 
-     * @param file
-     *            File to import top-level Circuit from
-     */
-    public void importRootFromFile(File file) {
-        ModelEvent e = new ModelEvent();
-        // Let listeners interrupt. If interrupted don't create a new circuit.
-        for (ModelListener l : listeners) {
-            if (l.changeCircuitRequested(e)) {
-                return;
-            }
-        }
-        this.circuit = importFromFile(file);
-        ModelEvent e2 = new ModelEvent();
-        // import failed
-        if (circuit == null) {
-            newCircuit();
-            for (ModelListener l : listeners) {
-                l.importFailed(e2);
-            }
-        } else {
-            for (ModelListener l : listeners) {
-                l.importSucceeded(e2);
-            }
-        }
-        notifyForChangedElems();
     }
 
     /**
@@ -883,152 +1051,6 @@ public class Model implements ClockListener {
             }
         }
         return m;
-    }
-
-    /**
-     * Export the top-level Circuit and all its elements to a file.
-     * 
-     * @param file
-     *            File to export top-level Circuit from
-     */
-    public void exportToFile(File file, ElementDrawer drawer) {
-        if (file == null) {
-            throw new IllegalArgumentException();
-        }
-        String ext = getFileExtension(file);
-        if (exporters.containsKey(ext)) {
-            Exporter ex = exporters.get(ext);
-            ex.setFile(file);
-            ex.setCircuit(circuit);
-            if (ex instanceof DrawExporter) {
-                ((DrawExporter) ex).setElementDrawer(drawer);
-            }
-
-            if (ex.exportCircuit()) {
-                LOG.debug("File exported successfully");
-                dirty = false;
-            } else {
-                LOG.warn("Export to " + file.getAbsolutePath() + " failed: " + ex.getErrorMessage());
-                // TODO Fehlermeldung an View?
-            }
-        }
-    }
-
-    // /**
-    // * Move the specific port according to the x + y values stored in the point. Throws an Exception if one parameter
-    // is
-    // * null.
-    // *
-    // * @param distance
-    // * Point containing the x and y
-    // * @param port
-    // * Port that will be moved
-    // */
-    // public void movePortBy(Point distance, Port port) {
-    // if (port == null || distance == null) {
-    // throw (new IllegalArgumentException("port and distancepoint must not be null!"));
-    // }
-    // Rectangle old = port.getRectangle();
-    // port.setRectangle(new Rectangle(old.x + distance.x, old.y + distance.y, old.width, old.height));
-    // }
-    /**
-     * Gets the current circuit.
-     * 
-     * @return Circuit, <code>NULL</code> if there is no circuit
-     */
-    public Circuit getCircuit() {
-        return circuit;
-    }
-
-    /**
-     * Replaces the current circuit with a new one. All Elements will be lost.
-     */
-    public void newCircuit() {
-        ModelEvent e = new ModelEvent();
-        // Let listeners interrupt. If interrupted don't create a new circuit.
-        for (ModelListener l : listeners) {
-            if (l.changeCircuitRequested(e)) {
-                return;
-            }
-        }
-        this.circuit = (Circuit) factory.getCircuitBuilder().build();
-        notifyForChangedElems();
-    }
-
-    /**
-     * Checks if circuit has unsaved changes.
-     * 
-     * @return True if circuit has unsaved changes.
-     */
-    public boolean isDirty() {
-        // we won't ask if the user wants to save empty an empty circuit
-        if (circuit == null || circuit.getElements().size() == 0) {
-            return false;
-        }
-        return dirty;
-    }
-
-    /**
-     * Creates a new Circuit containing selected Elements only. Connections leading to a Module outside the new Circuit
-     * won't be accepted.
-     * 
-     * @return the Circuit containing the selected Elements
-     */
-    public Circuit getCircuitFromSelected() {
-        Circuit result = (Circuit) factory.getCircuitBuilder().build();
-        for (Module m : circuit.getModules()) {
-            if (m.isSelected()) {
-                result.addModule(m);
-            }
-        }
-        for (Connection c : circuit.getConnections()) {
-            if (c.isSelected()) {
-                if (result.getModules().contains(c.getNextModule())
-                        && result.getModules().contains(c.getPreviousModule())) {
-                    result.addConnection(c.getInPort(), c.getOutPort());
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Export the the selected Elements to a file.
-     * 
-     * @param file
-     *            File to export top-level Circuit from
-     */
-    public void exportSelectedToFile(File file) {
-        if (file == null) {
-            throw new IllegalArgumentException();
-        }
-        String ext = getFileExtension(file);
-        if (exporters.containsKey(ext)) {
-            Exporter ex = exporters.get(ext);
-            ex.setFile(file);
-            //
-            Circuit selected = getCircuitFromSelected();
-            //
-            ex.setCircuit(selected);
-            if (ex.exportCircuit()) {
-                LOG.debug("File exported successfully");
-                dirty = false;
-            } else {
-                LOG.warn("Export to " + file.getAbsolutePath() + " failed: " + ex.getErrorMessage());
-                // TODO Fehlermeldung an View?
-            }
-        }
-    }
-
-    /**
-     * Notifies ModelListeners about the stopped simulation.
-     */
-    protected void notifyForStoppedSim() {
-        ModelEvent e = new ModelEvent();
-        simIsRunning = false;
-        for (ModelListener l : listeners) {
-            l.simulationStopped(e);
-        }
     }
 
     /**

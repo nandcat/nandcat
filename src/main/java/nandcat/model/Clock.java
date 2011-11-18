@@ -17,6 +17,11 @@ import org.apache.log4j.Logger;
 public class Clock implements Runnable {
 
     /**
+     * Simulation is paused.
+     */
+    private boolean paused;
+
+    /**
      * Class logger instance.
      */
     private static final Logger LOG = Logger.getLogger(Clock.class);
@@ -76,6 +81,7 @@ public class Clock implements Runnable {
         generators = new HashSet<ImpulseGenerator>();
         connections = new HashSet<ClockListener>();
         this.model = model;
+        paused = false;
     }
 
     /**
@@ -85,6 +91,16 @@ public class Clock implements Runnable {
      */
     protected int getCycle() {
         return cycle;
+    }
+
+    /**
+     * Indicates if the simulation will stop at the next cycle;
+     * 
+     * @param b
+     *            the new value
+     */
+    protected void setPaused(boolean b) {
+        paused = b;
     }
 
     /**
@@ -166,15 +182,6 @@ public class Clock implements Runnable {
     }
 
     /**
-     * Stop the simulation on this clock.
-     * 
-     * @return boolean if thread is running
-     */
-    private synchronized boolean isRunning() {
-        return running;
-    }
-
-    /**
      * Return value of sleepTimer.
      * 
      * @return int sleepTime for the simulation thread.
@@ -202,9 +209,12 @@ public class Clock implements Runnable {
         while (isRunning()) {
             try {
                 Thread.sleep(sleepTime);
-                synchronized (model) {
-                    cycle();
+                synchronized (this) {
+                    if (paused) {
+                        this.wait();
+                    }
                 }
+                cycle();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -244,6 +254,15 @@ public class Clock implements Runnable {
         listeners.clear();
         generators.clear();
         connections.clear();
+    }
+
+    /**
+     * Stop the simulation on this clock.
+     * 
+     * @return boolean if thread is running
+     */
+    private synchronized boolean isRunning() {
+        return running;
     }
 
     // TODO - entfernen wenn richtigkeit sichergestellt !
