@@ -9,7 +9,6 @@ import java.util.Set;
 import nandcat.model.check.CheckEvent.State;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Element;
-import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 
@@ -53,72 +52,67 @@ public class FeedbackCheck implements CircuitCheck {
     }
 
     /**
-     * {@inheritDoc} <br>
-     * This Check will fail if it is not possible to run through a Queue of this circuit, where the first Module adds
-     * the next modules, and visit every module only once
+     * {@inheritDoc} This Check will fail if it is not possible to run through a Queue of this circuit, where the first
+     * Module adds the next modules, and visit every module only once
      */
     public boolean test(Circuit circuit) {
         Set<Element> elements = new LinkedHashSet<Element>();
-        CheckEvent e = new CheckEvent(State.RUNNING, elements, this);
-        for (CheckListener l : listener) {
-            l.checkChanged(e);
-        }
-        HashSet<Module> visited = new HashSet<Module>();
-        Queue<Module> q = new LinkedList<Module>();
-        q.addAll(getStartModules(circuit));
-        while (!q.isEmpty()) {
-            Module current = q.poll();
-            if (visited.contains(current)) {
+        informListeners(State.RUNNING, elements);
+        HashSet<Port> visited = new HashSet<Port>();
+        Queue<Port> q = new LinkedList<Port>();
 
-                // If the test fails add the Module which caused the fail to the CheckEvent.
-                elements.add(current);
-                e = new CheckEvent(State.FAILED, elements, this);
-                for (CheckListener l : listener) {
-                    l.checkChanged(e);
+        for (Port port : getStartingPorts(circuit)) {
+            q.add(port);
+            visited.clear();
+            while (!q.isEmpty()) {
+                Port current = q.poll();
+                if (visited.contains(current)) {
+
+                    // If the test fails add the Module which caused the fail to the CheckEvent.
+                    elements.add(current.getModule());
+                    informListeners(State.FAILED, elements);
+                    return false;
                 }
-                return false;
-            }
-            visited.add(current);
-            for (Port p : current.getOutPorts()) {
-                if (p.getConnection() != null) {
-                    q.add(p.getConnection().getNextModule());
+                visited.add(current);
 
+                /*
+                 * When the port has a connection the outgoing ports of the following module are added to the queue. If
+                 * there is no further connection an ending module of the circuit is reached. If there are still
+                 * elements in the queue the algorithm starts from the beginning and the visited set has to be reset.
+                 */
+                if (current.getConnection() != null) {
+                    q.addAll(current.getConnection().getOutPort().getModule().getOutPorts());
                 }
             }
         }
-
-        e = new CheckEvent(State.SUCCEEDED, elements, this);
-        for (CheckListener l : listener) {
-            l.checkChanged(e);
-        }
+        informListeners(State.SUCCEEDED, elements);
         return true;
     }
 
     /**
-     * Returns the "first" Modules in this Circuit. "First" modules are those which do not have any ingoing connection.
+     * Notifies the Classes implementing the CheckListener interface about a change in this Check.
+     * 
+     * @param state
+     *            State of the check.
+     * @param elements
+     *            Elements causing a fail in the check. Empty if the check started or succeeded.
+     */
+    private void informListeners(State state, Set<Element> elements) {
+        CheckEvent e = new CheckEvent(state, elements, this);
+        for (CheckListener l : listener) {
+            l.checkChanged(e);
+        }
+    }
+
+    /**
+     * Returns the "first" Ports in this Circuit, meaning the ports from the "first" modules in the circuit.
      * 
      * @return List<Module> containing the starting Modules of this Circuit.
      */
-    public List<Module> getStartModules(Circuit circuit) {
-        List<Module> result = new LinkedList<Module>();
-        for (Element e : circuit.getElements()) {
-            if (e instanceof Module) {
-                boolean isStartModule = false;
-                Module m = (Module) e;
-                if (m instanceof ImpulseGenerator) {
-                    isStartModule = true;
-                } else {
-                    isStartModule = true;
-                    for (Port p : m.getInPorts()) {
-                        if (p.getConnection() != null) {
-                            isStartModule = false;
-                        }
-                    }
-                }
-                if (isStartModule) {
-                    result.add(m);
-                }
-            }
+    private List<Port> getStartingPorts(Circuit circuit) {
+        List<Port> result = new LinkedList<Port>();
+        for (Module m : circuit.getStartingModules()) {
+            result.addAll(m.getOutPorts());
         }
         return result;
     }

@@ -35,7 +35,7 @@ public class OrGateTest extends TestCase {
         assertFalse(or.isValidInBoundary(-1));
         assertFalse(or.isValidOutBoundary(-1));
 
-        or = new OrGate();
+        or = new OrGate(2, 1);
         Lamp lamp = new Lamp();
         or.getInPorts().get(1).setState(true, null);
         Connection conn = new Connection(or.getOutPorts().get(0), lamp.getInPorts().get(0));

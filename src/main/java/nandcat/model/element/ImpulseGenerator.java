@@ -53,22 +53,14 @@ public class ImpulseGenerator implements Module {
      * @param frequency
      *            frequency of the generator
      */
-    public ImpulseGenerator(int frequency) {
+    protected ImpulseGenerator(int frequency) {
         state = false;
         if (frequency < 0) {
             new IllegalArgumentException("invalid frequency for impulsegenerator");
         }
         this.frequency = frequency;
-        rectangle = new Rectangle(EXTENT, EXTENT);
+        rectangle = new Rectangle();
         outPort = new Port(this);
-        outPort.locateOnStandardPosition(this);
-    }
-
-    /**
-     * Default constructor. The frequency will be 1.
-     */
-    public ImpulseGenerator() {
-        this(1);
     }
 
     /**
@@ -190,11 +182,17 @@ public class ImpulseGenerator implements Module {
      * {@inheritDoc}
      */
     public String toString() {
-        String x = this.getClass().getSimpleName() + "(" + getRectangle().x + "/" + getRectangle().y + ") ";
+        String x;
+        if (name == null || name.equals("")) {
+            x = this.getClass().getSimpleName() + "(" + getRectangle().x + "/" + getRectangle().y + ") ";
+        } else {
+            x = name;
+        }
         x += "(out) ";
         if (outPort.getRectangle() != null) {
             x += outPort.getRectangle().x + "/" + outPort.getRectangle().y + ", ";
         }
+        x += ("Frequency: (" + getFrequency() + ")");
         return x;
     }
 

@@ -2,6 +2,8 @@ package nandcat.model.importexport;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import nandcat.model.FastDeepCopy;
+import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
@@ -12,14 +14,23 @@ import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
-import nandcat.model.importexport.sepaf.FastDeepCopy;
+import nandcat.model.element.factory.ModuleBuilderFactory;
+import org.junit.Before;
 import org.junit.Test;
 
 public class FastDeepCopyTest {
 
+    private ModuleBuilderFactory factory;
+
+    @Before
+    public void setUp() {
+        factory = new ModuleBuilderFactory();
+        factory.setDefaults(new ModelElementDefaults());
+    }
+
     @Test
     public void testSimple() {
-        Circuit obj = new Circuit();
+        Circuit obj = (Circuit) factory.getCircuitBuilder().build();
         obj.setName("name");
         Circuit copy = (Circuit) FastDeepCopy.copy(obj);
         assertTrue(obj.getName() != null);
@@ -27,16 +38,12 @@ public class FastDeepCopyTest {
     }
 
     private Circuit createCircuit() {
-        Circuit c = new Circuit();
-        AndGate andGate = new AndGate();
-        andGate.setName("andgate");
-        OrGate orGate = new OrGate();
-        orGate.setName("orgate");
-
+        Circuit c = (Circuit) factory.getCircuitBuilder().build();
+        AndGate andGate = (AndGate) factory.getAndGateBuilder().setAnnotation("andgate").build();
+        OrGate orGate = (OrGate) factory.getOrGateBuilder().setAnnotation("orgate").build();
         c.addModule(andGate);
         c.addModule(orGate);
         c.addConnection(andGate.getOutPorts().get(0), orGate.getInPorts().get(0));
-
         return c;
     }
 
@@ -114,17 +121,22 @@ public class FastDeepCopyTest {
 
     @Test
     public void testAllElements() {
-        FastDeepCopy.copy(new AndGate());
-        FastDeepCopy.copy(new OrGate());
-        FastDeepCopy.copy(new FlipFlop());
-        FastDeepCopy.copy(new IdentityGate());
-        FastDeepCopy.copy(new ImpulseGenerator(0));
-        FastDeepCopy.copy(new Lamp());
-        FastDeepCopy.copy(new NotGate());
-        AndGate gate = new AndGate();
-        OrGate gate2 = new OrGate();
+        FastDeepCopy.copy((AndGate) factory.getAndGateBuilder().build());
+        FastDeepCopy.copy((OrGate) factory.getOrGateBuilder().build());
+        FastDeepCopy.copy((FlipFlop) factory.getFlipFlopBuilder().build());
+        FastDeepCopy.copy((IdentityGate) factory.getIdentityGateBuilder().build());
+        FastDeepCopy.copy((ImpulseGenerator) factory.getClockBuilder().setFrequency(10).build());
+        FastDeepCopy.copy((ImpulseGenerator) factory.getSwitchBuilder().build());
+        FastDeepCopy.copy((Lamp) factory.getLampBuilder().build());
+        FastDeepCopy.copy((NotGate) factory.getNotGateBuilder().build());
+        AndGate gate = (AndGate) factory.getAndGateBuilder().build();
+        OrGate gate2 = (OrGate) factory.getOrGateBuilder().build();
         FastDeepCopy.copy(gate.getInPorts().get(0));
-        FastDeepCopy.copy(new Connection(gate.getOutPorts().get(0), gate2.getInPorts().get(0)));
+        Circuit c = (Circuit) factory.getCircuitBuilder().build();
+        c.addModule(gate);
+        c.addModule(gate2);
+        Connection con = c.addConnection(gate.getOutPorts().get(0), gate2.getInPorts().get(0));
+        FastDeepCopy.copy(con);
         // FastDeepCopy.copy(new Connection(null, null));
     }
 }

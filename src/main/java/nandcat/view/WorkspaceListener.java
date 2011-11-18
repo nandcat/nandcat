@@ -47,9 +47,14 @@ public interface WorkspaceListener {
 
     /**
      * Invoked when Close Button has been pressed.
+     */
+    void windowClosing();
+
+    /**
+     * Invoked when MouseWheel is Moved
      * 
      * @param e
-     *            WorkspaceEvent.
+     *            WorkspaceEvent containing informations about the MouseWheel.
      */
-    void windowClosing(WorkspaceEvent e);
+    void mouseWheelMoved(WorkspaceEvent e);
 }

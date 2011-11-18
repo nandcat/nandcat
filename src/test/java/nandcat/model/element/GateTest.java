@@ -31,13 +31,13 @@ public class GateTest extends TestCase {
      */
     public void testGate() {
         String name = "AND1";
-        Gate g1 = (Gate) new AndGate();
+        Gate g1 = (Gate) new AndGate(2, 1);
         assertNull(g1.getName());
         g1.setName(name);
         assertEquals(name, g1.getName());
         assertNotNull(g1.getNextElements());
         assertEquals(0, g1.getNextElements().size());
-        Gate g2 = (Gate) new AndGate();
+        Gate g2 = (Gate) new AndGate(2, 1);
         @SuppressWarnings("unused")
         Connection conn = new Connection(g1.getOutPorts().get(0), g2.getInPorts().get(0));
         assertEquals(1, g1.getNextElements().size());

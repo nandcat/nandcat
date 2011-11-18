@@ -13,13 +13,6 @@ public class OrGate extends Gate {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Default constructor. Create new OR gate with 1 incoming and 2 outcoming ports.
-     */
-    public OrGate() {
-        super(2, 1);
-    }
-
-    /**
      * Advanced constructor. Creates new OR with inPorts incoming and outPorts outgoing Ports.
      * 
      * @param inPorts
@@ -27,7 +20,7 @@ public class OrGate extends Gate {
      * @param outPorts
      *            int number of outPorts to append
      */
-    public OrGate(int inPorts, int outPorts) {
+    protected OrGate(int inPorts, int outPorts) {
         super(inPorts, outPorts);
     }
 

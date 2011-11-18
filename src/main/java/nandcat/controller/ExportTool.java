@@ -13,11 +13,12 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import nandcat.I18N;
+import nandcat.I18N.I18NBundle;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListener;
 import nandcat.model.ModelListenerAdapter;
-import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListenerAdapter;
 import org.apache.log4j.Logger;
 
@@ -54,7 +55,7 @@ public class ExportTool implements Tool {
     /**
      * Icon representation of the Tool.
      */
-    private ImageIcon icon; // TODO icon setzen
+    private ImageIcon icon;
 
     /**
      * Holds uuid of last saved circuit.
@@ -65,6 +66,11 @@ public class ExportTool implements Tool {
      * Holds file handle to last saved circuit file.
      */
     private File saveLastFile = null;
+
+    /**
+     * Translation unit.
+     */
+    private I18NBundle i18n = I18N.getBundle("toolexport");
 
     /**
      * String representation of the Tool.
@@ -78,8 +84,9 @@ public class ExportTool implements Tool {
         {
             add("save");
             add("saveAs");
+            add("close");
         }
-    }; // TODO beschreibung schreiben
+    };
 
     /**
      * ActionListerner of the Tool on the Buttons.
@@ -127,7 +134,7 @@ public class ExportTool implements Tool {
     private WorkspaceListenerAdapter getWindowListener() {
         return new WorkspaceListenerAdapter() {
 
-            public void windowClosing(WorkspaceEvent e) {
+            public void windowClosing() {
                 if (!actionSaveBeforeLost()) {
                     System.exit(0);
                 }
@@ -164,10 +171,11 @@ public class ExportTool implements Tool {
      * @return Option No, Cancel, Yes as Integer.
      */
     private int showCircuitChangeConfirmDialog() {
-        Object[] options = { "No", "Cancel", "Yes" };
-        return JOptionPane.showOptionDialog(controller.getView(), "Circuit has been modified. Save changes?",
-                "Save Circuit", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
-                options[2]);
+        Object[] options = { i18n.getString("dialog.options.no"), i18n.getString("dialog.options.cancle"),
+                i18n.getString("dialog.options.yes") };
+        return JOptionPane.showOptionDialog(controller.getView(), i18n.getString("dialog.options.text"),
+                i18n.getString("dialog.options.title"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
+                null, options, options[2]);
     }
 
     /**
@@ -188,6 +196,8 @@ public class ExportTool implements Tool {
             actionSaveAs();
         } else if (command.equals("save")) {
             actionSave();
+        } else if (command.equals("close")) {
+            getWindowListener().windowClosing();
         } else {
             LOG.debug("Command '" + command + "' not supported.");
         }
@@ -236,18 +246,20 @@ public class ExportTool implements Tool {
                 }
                 // Overwrite Dialog
                 if (file.exists()) {
-                    int response = JOptionPane.showConfirmDialog(null, "Overwrite existing file?", "Confirm Overwrite",
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    int response = JOptionPane.showConfirmDialog(null, i18n.getString("dialog.override.text"),
+                            i18n.getString("dialog.override.title"), JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
                     if (response == JOptionPane.CANCEL_OPTION) {
                         LOG.debug("Save command cancelled by user.");
                         return;
                     }
                 }
                 // Add Image to circuit
-                Object[] options = { "Yes", "No", "Delete existing Image" };
-                int n = JOptionPane.showOptionDialog(controller.getView(),
-                        "Would you like to add a image to the current circuit?", "Circuit Image",
-                        JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+                Object[] options = { i18n.getString("dialog.options.yes"), i18n.getString("dialog.options.no"),
+                        i18n.getString("dialog.options.delete") };
+                int n = JOptionPane.showOptionDialog(controller.getView(), i18n.getString("dialog.image.text"),
+                        i18n.getString("dialog.image.title"), JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
                 if (n == 0) {
                     showImageLoadFileChooser();
                 } else if (n == 2) {
@@ -289,8 +301,8 @@ public class ExportTool implements Tool {
                     e.printStackTrace();
                 }
                 if (!imgSuccess) {
-                    JOptionPane.showMessageDialog(controller.getView(), "Image can not be attached to circuit!",
-                            "Export error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(controller.getView(), i18n.getString("dialog.image.fail.text"),
+                            i18n.getString("dialog.image.fail.title"), JOptionPane.ERROR_MESSAGE);
                     showImageLoadFileChooser();
                 }
             } else {
