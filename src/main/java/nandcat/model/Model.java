@@ -26,10 +26,12 @@ import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.element.factory.ModuleLayouter;
+import nandcat.model.importexport.DrawExporter;
 import nandcat.model.importexport.Exporter;
 import nandcat.model.importexport.Importer;
 import nandcat.model.importexport.sepaf.SEPAFExporter;
 import nandcat.model.importexport.sepaf.SEPAFImporter;
+import nandcat.view.ElementDrawer;
 import org.apache.log4j.Logger;
 
 /**
@@ -735,11 +737,17 @@ public class Model implements ClockListener {
         exporters.clear();
         exportFormats.clear();
         Exporter sepafExporter = new SEPAFExporter();
+        Exporter drawExporter = new DrawExporter();
         Map<String, String> sepafFormats = sepafExporter.getFileFormats();
         for (Map.Entry<String, String> format : sepafFormats.entrySet()) {
             exporters.put(format.getKey(), sepafExporter);
+            exportFormats.put(format.getKey(), format.getValue());
         }
-        exportFormats = sepafFormats;
+        Map<String, String> drawFormats = drawExporter.getFileFormats();
+        for (Map.Entry<String, String> format : drawFormats.entrySet()) {
+            exporters.put(format.getKey(), drawExporter);
+            exportFormats.put(format.getKey(), format.getValue());
+        }
     }
 
     /**
@@ -846,7 +854,7 @@ public class Model implements ClockListener {
      * @param file
      *            File to export top-level Circuit from
      */
-    public void exportToFile(File file) {
+    public void exportToFile(File file, ElementDrawer drawer) {
         if (file == null) {
             throw new IllegalArgumentException();
         }
@@ -855,6 +863,10 @@ public class Model implements ClockListener {
             Exporter ex = exporters.get(ext);
             ex.setFile(file);
             ex.setCircuit(circuit);
+            if (ex instanceof DrawExporter) {
+                ((DrawExporter) ex).setElementDrawer(drawer);
+            }
+
             if (ex.exportCircuit()) {
                 LOG.debug("File exported successfully");
                 dirty = false;

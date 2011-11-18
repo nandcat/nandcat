@@ -217,7 +217,7 @@ public class ExportTool implements Tool {
      */
     private void actionSave() {
         if (isQuickSaveAvailable()) {
-            model.exportToFile(saveLastFile);
+            model.exportToFile(saveLastFile, null);
         } else {
             LOG.debug("Last save not available - no quicksave");
             actionSaveAs();
@@ -272,7 +272,7 @@ public class ExportTool implements Tool {
                 LOG.debug("Exporting: " + file.getName());
                 saveLastFile = file;
                 saveLastUUID = model.getCircuit().getUuid();
-                model.exportToFile(file);
+                model.exportToFile(file, controller.getView().getDrawer());
             } else {
                 LOG.debug("File is null");
             }
