@@ -19,7 +19,7 @@ public class Clock implements Runnable {
     /**
      * Simulation is paused.
      */
-    private boolean paused;
+    private volatile boolean paused;
 
     /**
      * Class logger instance.
@@ -208,13 +208,16 @@ public class Clock implements Runnable {
         LOG.debug("new Thread started, Cycle = " + cycle);
         while (isRunning()) {
             try {
-                Thread.sleep(sleepTime);
+                cycle();
                 synchronized (this) {
                     if (paused) {
+                        System.out.println("paused");
                         this.wait();
                     }
                 }
-                cycle();
+                if (running) {
+                    Thread.sleep(sleepTime);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -41,6 +41,11 @@ import org.apache.log4j.Logger;
 public class Model implements ClockListener {
 
     /**
+     * The current paused-status of the simulation.
+     */
+    private boolean paused;
+
+    /**
      * A set of checks which can be performed on the circuit.
      */
     private Set<CircuitCheck> checks;
@@ -122,6 +127,7 @@ public class Model implements ClockListener {
         initExporters();
         initImporters();
         initChecks();
+        paused = false;
         // spielwiese, bis der import funktioniert TODO entfernen
         // LOG.shutdown();
         // ImpulseGenerator impy = new ImpulseGenerator(5);
@@ -631,14 +637,12 @@ public class Model implements ClockListener {
      * Halts the current simulation without resetting it. Can be started again via unpause.
      */
     public void pause() {
+        if (paused) {
+            throw new IllegalStateException("Unpause Simulation first!");
+        }
+        paused = true;
         synchronized (clock) {
-            try {
-                clock.wait();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            // clock.setPaused(true);
+            clock.setPaused(true);
         }
     }
 
@@ -646,7 +650,14 @@ public class Model implements ClockListener {
      * Restarts a previously halted simulation.
      */
     public void unpause() {
-
+        if (!paused) {
+            throw new IllegalStateException("Pause Simulation first!");
+        }
+        synchronized (clock) {
+            clock.setPaused(false);
+            clock.notify();
+        }
+        paused = false;
     }
 
     /**
@@ -778,6 +789,9 @@ public class Model implements ClockListener {
      */
     public void stopSimulation() {
         clock.stopSimulation();
+        if (paused) {
+            unpause();
+        }
     }
 
     /**
@@ -794,43 +808,30 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Initialize list of available checks.
+     * Adapts the given Elements to a Grid with given Size.
+     * 
+     * @param gridSize
+     *            int the Size of a Grid-Cell.
+     * @param elementsToAdapt
+     *            Set<Element> the elements to be adapted.
      */
-    private void initChecks() {
-        checks.add(new CountCheck());
-        checks.add(new FeedbackCheck());
-        checks.add(new IllegalConnectionCheck());
-        checks.add(new OrphanCheck());
-        checks.add(new SinkCheck());
-        checks.add(new SourceCheck());
-    }
-
-    /**
-     * Loads or reloads the List containing the custom-circuits.
-     */
-    private void loadCustomList() {
-        // search PATH for circuits, non-recursive.
-        File dir = new File(".");
-        LOG.debug("Load custom circuits: " + dir.getAbsolutePath());
-        Importer importer = new SEPAFImporter();
-        importer.setFactory(factory);
-        Map<String, String> formats = importer.getFileFormats();
-        for (File f : dir.listFiles()) {
-            if (f.isFile() && f.canRead() && getFileExtension(f) != null) {
-                if (formats.containsKey(getFileExtension(f))) {
-                    importer.setFile(f);
-                    // TODO fertigimplementierung von getName oder sonstwas im Importer abwarten, damit hier nicht der
-                    // ganze Circuit eingelesen werden muss. Dafuer muss aber auch der Rueckgabewert von importCircuit()
-                    // zuverlaessig sein. Siehe importFromFile (null check nach if(import.importCircuit()) noetig).
-                    if (importer.importCircuit()) {
-                        viewModules.add(new ViewModule(f.getName(), null, f.getName(), null));
-                    } else {
-                        ModelEvent e = new ModelEvent();
-                        e.setMessage("import failed: " + importer.getErrorMessage());
-                        // for (ModelListener l : listeners) {
-                        // l.importFailed(e);
-                        // }
-                    }
+    private void adaptToGrid(int gridSize, Set<Element> elementsToAdapt) {
+        for (Element element : elementsToAdapt) {
+            if (element instanceof Module) {
+                Module m = (Module) element;
+                Point p = m.getRectangle().getLocation();
+                Point mp = new Point(p);
+                p.x = (p.x % gridSize);
+                p.y = (p.y % gridSize);
+                m.getRectangle().setLocation(mp.x - p.x, mp.y - p.y);
+                // ports auch bewegen
+                for (Port port : m.getInPorts()) {
+                    port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
+                            port.getRectangle().getLocation().y - p.y);
+                }
+                for (Port port : m.getOutPorts()) {
+                    port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
+                            port.getRectangle().getLocation().y - p.y);
                 }
             }
         }
@@ -868,6 +869,23 @@ public class Model implements ClockListener {
     }
 
     /**
+     * Get the extension of a file.
+     * 
+     * @param f
+     *            File to get extension from
+     * @return Extension of given file
+     */
+    private static String getFileExtension(File f) {
+        String ext = null;
+        String s = f.getName();
+        int i = s.lastIndexOf('.');
+        if (i > 0 && i < s.length() - 1) {
+            ext = s.substring(i + 1).toLowerCase();
+        }
+        return ext;
+    }
+
+    /**
      * Get all modules intersecting a rectangle.
      * 
      * @param rect
@@ -899,30 +917,31 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Adapts the given Elements to a Grid with given Size.
-     * 
-     * @param gridSize
-     *            int the Size of a Grid-Cell.
-     * @param elementsToAdapt
-     *            Set<Element> the elements to be adapted.
+     * Loads or reloads the List containing the custom-circuits.
      */
-    private void adaptToGrid(int gridSize, Set<Element> elementsToAdapt) {
-        for (Element element : elementsToAdapt) {
-            if (element instanceof Module) {
-                Module m = (Module) element;
-                Point p = m.getRectangle().getLocation();
-                Point mp = new Point(p);
-                p.x = (p.x % gridSize);
-                p.y = (p.y % gridSize);
-                m.getRectangle().setLocation(mp.x - p.x, mp.y - p.y);
-                // ports auch bewegen
-                for (Port port : m.getInPorts()) {
-                    port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
-                            port.getRectangle().getLocation().y - p.y);
-                }
-                for (Port port : m.getOutPorts()) {
-                    port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
-                            port.getRectangle().getLocation().y - p.y);
+    private void loadCustomList() {
+        // search PATH for circuits, non-recursive.
+        File dir = new File(".");
+        LOG.debug("Load custom circuits: " + dir.getAbsolutePath());
+        Importer importer = new SEPAFImporter();
+        importer.setFactory(factory);
+        Map<String, String> formats = importer.getFileFormats();
+        for (File f : dir.listFiles()) {
+            if (f.isFile() && f.canRead() && getFileExtension(f) != null) {
+                if (formats.containsKey(getFileExtension(f))) {
+                    importer.setFile(f);
+                    // TODO fertigimplementierung von getName oder sonstwas im Importer abwarten, damit hier nicht der
+                    // ganze Circuit eingelesen werden muss. Dafuer muss aber auch der Rueckgabewert von importCircuit()
+                    // zuverlaessig sein. Siehe importFromFile (null check nach if(import.importCircuit()) noetig).
+                    if (importer.importCircuit()) {
+                        viewModules.add(new ViewModule(f.getName(), null, f.getName(), null));
+                    } else {
+                        ModelEvent e = new ModelEvent();
+                        e.setMessage("import failed: " + importer.getErrorMessage());
+                        // for (ModelListener l : listeners) {
+                        // l.importFailed(e);
+                        // }
+                    }
                 }
             }
         }
@@ -971,57 +990,16 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Initializes all importers.
-     */
-    private void initImporters() {
-        // Can be extended to multiple importers by merging maps. No need for it right now.
-        importers.clear();
-        importFormats.clear();
-        Importer sepafImporter = new SEPAFImporter();
-        sepafImporter.setFactory(factory);
-        Map<String, String> sepafFormats = sepafImporter.getFileFormats();
-        for (Map.Entry<String, String> format : sepafFormats.entrySet()) {
-            importers.put(format.getKey(), sepafImporter);
-        }
-        importFormats = sepafFormats;
-    }
-
-    /**
-     * Initializes all importers.
-     */
-    private void initExporters() {
-        // Can be extended to multiple importers by merging maps. No need for it right now.
-        exporters.clear();
-        exportFormats.clear();
-        Exporter sepafExporter = new SEPAFExporter();
-        Exporter drawExporter = new DrawExporter();
-        Map<String, String> sepafFormats = sepafExporter.getFileFormats();
-        for (Map.Entry<String, String> format : sepafFormats.entrySet()) {
-            exporters.put(format.getKey(), sepafExporter);
-            exportFormats.put(format.getKey(), format.getValue());
-        }
-        Map<String, String> drawFormats = drawExporter.getFileFormats();
-        for (Map.Entry<String, String> format : drawFormats.entrySet()) {
-            exporters.put(format.getKey(), drawExporter);
-            exportFormats.put(format.getKey(), format.getValue());
-        }
-    }
-
-    /**
-     * Get the extension of a file.
+     * Notifies ModelListeners about changed Elements.
      * 
-     * @param f
-     *            File to get extension from
-     * @return Extension of given file
+     * @param set
+     *            Set containing specific DrawElements
      */
-    private static String getFileExtension(File f) {
-        String ext = null;
-        String s = f.getName();
-        int i = s.lastIndexOf('.');
-        if (i > 0 && i < s.length() - 1) {
-            ext = s.substring(i + 1).toLowerCase();
+    private void notifyForChangedElems() {
+        ModelEvent e = new ModelEvent();
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
         }
-        return ext;
     }
 
     /**
@@ -1054,15 +1032,51 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Notifies ModelListeners about changed Elements.
-     * 
-     * @param set
-     *            Set containing specific DrawElements
+     * Initialize list of available checks.
      */
-    private void notifyForChangedElems() {
-        ModelEvent e = new ModelEvent();
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e);
+    private void initChecks() {
+        checks.add(new CountCheck());
+        checks.add(new FeedbackCheck());
+        checks.add(new IllegalConnectionCheck());
+        checks.add(new OrphanCheck());
+        checks.add(new SinkCheck());
+        checks.add(new SourceCheck());
+    }
+
+    /**
+     * Initializes all importers.
+     */
+    private void initExporters() {
+        // Can be extended to multiple importers by merging maps. No need for it right now.
+        exporters.clear();
+        exportFormats.clear();
+        Exporter sepafExporter = new SEPAFExporter();
+        Exporter drawExporter = new DrawExporter();
+        Map<String, String> sepafFormats = sepafExporter.getFileFormats();
+        for (Map.Entry<String, String> format : sepafFormats.entrySet()) {
+            exporters.put(format.getKey(), sepafExporter);
+            exportFormats.put(format.getKey(), format.getValue());
         }
+        Map<String, String> drawFormats = drawExporter.getFileFormats();
+        for (Map.Entry<String, String> format : drawFormats.entrySet()) {
+            exporters.put(format.getKey(), drawExporter);
+            exportFormats.put(format.getKey(), format.getValue());
+        }
+    }
+
+    /**
+     * Initializes all importers.
+     */
+    private void initImporters() {
+        // Can be extended to multiple importers by merging maps. No need for it right now.
+        importers.clear();
+        importFormats.clear();
+        Importer sepafImporter = new SEPAFImporter();
+        sepafImporter.setFactory(factory);
+        Map<String, String> sepafFormats = sepafImporter.getFileFormats();
+        for (Map.Entry<String, String> format : sepafFormats.entrySet()) {
+            importers.put(format.getKey(), sepafImporter);
+        }
+        importFormats = sepafFormats;
     }
 }
