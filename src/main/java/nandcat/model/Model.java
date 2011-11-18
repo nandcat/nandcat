@@ -122,7 +122,6 @@ public class Model implements ClockListener {
         initExporters();
         initImporters();
         initChecks();
-
         // spielwiese, bis der import funktioniert TODO entfernen
         // LOG.shutdown();
         // ImpulseGenerator impy = new ImpulseGenerator(5);
@@ -268,7 +267,6 @@ public class Model implements ClockListener {
         Importer importer = new SEPAFImporter();
         importer.setFactory(factory);
         Map<String, String> formats = importer.getFileFormats();
-
         for (File f : dir.listFiles()) {
             if (f.isFile() && f.canRead() && getFileExtension(f) != null) {
                 if (formats.containsKey(getFileExtension(f))) {
@@ -376,7 +374,6 @@ public class Model implements ClockListener {
         for (Connection c : getConnsAt(rect)) {
             elementsAt.add((DrawElement) c);
         }
-
         return elementsAt;
     }
 
@@ -432,7 +429,6 @@ public class Model implements ClockListener {
             elements.add(e);
         }
         notifyForChangedElems();
-
     }
 
     /**
@@ -512,7 +508,6 @@ public class Model implements ClockListener {
     public void clearCircuit() {
         circuit.getElements().clear();
         notifyForChangedElems();
-
     }
 
     /**
@@ -535,7 +530,6 @@ public class Model implements ClockListener {
         circuit.removeElement(inPort.getConnection());
         // this is NOT redundant because one new connection can destroy two old ones
         circuit.removeElement(outPort.getConnection());
-
         Connection connection = circuit.addConnection(inPort, outPort);
         inPort.setConnection(connection);
         outPort.setConnection(connection);
@@ -576,7 +570,6 @@ public class Model implements ClockListener {
         } else {
             module = m.getModule();
         }
-
         if (module != null) {
             addModule(module, p);
         }
@@ -611,6 +604,59 @@ public class Model implements ClockListener {
     }
 
     /**
+     * Adapts the selected Elements of the Circuit to a Grid with given Size.
+     * 
+     * @param gridSize
+     *            int the Size of a Grid-Cell.
+     */
+    public void adaptToGrid(int gridSize) {
+        Set<Element> elementsToAdapt = getSelectedElements();
+        adaptToGrid(gridSize, elementsToAdapt);
+    }
+
+    /**
+     * Adapts the all Elements of the Circuit to a Grid with given Size.
+     * 
+     * @param gridSize
+     *            int the Size of a Grid-Cell.
+     */
+    public void adaptAllToGrid(int gridSize) {
+        List<Element> elements = getElements();
+        Set<Element> elementsToAdapt = new HashSet<Element>(elements);
+        adaptToGrid(gridSize, elementsToAdapt);
+    }
+
+    /**
+     * Adapts the given Elements to a Grid with given Size.
+     * 
+     * @param gridSize
+     *            int the Size of a Grid-Cell.
+     * @param elementsToAdapt
+     *            Set<Element> the elements to be adapted.
+     */
+    private void adaptToGrid(int gridSize, Set<Element> elementsToAdapt) {
+        for (Element element : elementsToAdapt) {
+            if (element instanceof Module) {
+                Module m = (Module) element;
+                Point p = m.getRectangle().getLocation();
+                Point mp = new Point(p);
+                p.x = (p.x % gridSize);
+                p.y = (p.y % gridSize);
+                m.getRectangle().setLocation(mp.x - p.x, mp.y - p.y);
+                // ports auch bewegen
+                for (Port port : m.getInPorts()) {
+                    port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
+                            port.getRectangle().getLocation().y - p.y);
+                }
+                for (Port port : m.getOutPorts()) {
+                    port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
+                            port.getRectangle().getLocation().y - p.y);
+                }
+            }
+        }
+    }
+
+    /**
      * Instruct model to move given modules' position by point p.
      * 
      * @param module
@@ -621,7 +667,6 @@ public class Model implements ClockListener {
      * @return boolean specifying if moveoperation was successful
      */
     private boolean moveBy(Module module, Point p) {
-
         // check if module won't intersect after the move
         Rectangle r = new Rectangle(module.getRectangle());
         r.setLocation(r.x - p.x, r.y - p.y);
@@ -634,10 +679,8 @@ public class Model implements ClockListener {
         if (r.x <= 5 || r.y <= 5) {
             return false;
         }
-
         Point pr = module.getRectangle().getLocation();
         module.getRectangle().setLocation(pr.x - p.x, pr.y - p.y);
-
         module.setRectangle(r);
         ModelEvent e = new ModelEvent(module);
         // ports auch bewegen
@@ -645,13 +688,11 @@ public class Model implements ClockListener {
         for (Port port : module.getInPorts()) {
             port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
                     port.getRectangle().getLocation().y - p.y);
-
         }
         for (Port port : module.getOutPorts()) {
             port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
                     port.getRectangle().getLocation().y - p.y);
         }
-
         notifyForChangedElems();
         dirty = true;
         return true;
@@ -778,9 +819,7 @@ public class Model implements ClockListener {
     private static String getFileExtension(File f) {
         String ext = null;
         String s = f.getName();
-
         int i = s.lastIndexOf('.');
-
         if (i > 0 && i < s.length() - 1) {
             ext = s.substring(i + 1).toLowerCase();
         }
@@ -795,7 +834,6 @@ public class Model implements ClockListener {
      */
     public void importRootFromFile(File file) {
         ModelEvent e = new ModelEvent();
-
         // Let listeners interrupt. If interrupted don't create a new circuit.
         for (ModelListener l : listeners) {
             if (l.changeCircuitRequested(e)) {
@@ -803,7 +841,6 @@ public class Model implements ClockListener {
             }
         }
         this.circuit = importFromFile(file);
-
         ModelEvent e2 = new ModelEvent();
         // import failed
         if (circuit == null) {
@@ -894,7 +931,6 @@ public class Model implements ClockListener {
     // Rectangle old = port.getRectangle();
     // port.setRectangle(new Rectangle(old.x + distance.x, old.y + distance.y, old.width, old.height));
     // }
-
     /**
      * Gets the current circuit.
      * 
@@ -909,7 +945,6 @@ public class Model implements ClockListener {
      */
     public void newCircuit() {
         ModelEvent e = new ModelEvent();
-
         // Let listeners interrupt. If interrupted don't create a new circuit.
         for (ModelListener l : listeners) {
             if (l.changeCircuitRequested(e)) {
@@ -941,7 +976,6 @@ public class Model implements ClockListener {
      */
     public Circuit getCircuitFromSelected() {
         Circuit result = (Circuit) factory.getCircuitBuilder().build();
-
         for (Module m : circuit.getModules()) {
             if (m.isSelected()) {
                 result.addModule(m);
@@ -955,7 +989,6 @@ public class Model implements ClockListener {
                 }
             }
         }
-
         return result;
     }
 
@@ -973,11 +1006,9 @@ public class Model implements ClockListener {
         if (exporters.containsKey(ext)) {
             Exporter ex = exporters.get(ext);
             ex.setFile(file);
-
             //
             Circuit selected = getCircuitFromSelected();
             //
-
             ex.setCircuit(selected);
             if (ex.exportCircuit()) {
                 LOG.debug("File exported successfully");

@@ -175,8 +175,16 @@ public class CreateTool implements Tool {
             } else if (selectedModule == null) {
                 // Sets a default Module.
                 selectedModule = model.getViewModules().get(0);
+                if(view.getWorkspace().getGridEnable()){
+                    offset.x -= (offset.x%view.getWorkspace().getGridSize());
+                    offset.y -= (offset.y%view.getWorkspace().getGridSize());
+                }
                 model.addModule(selectedModule, offset);
-            } else {
+            } else {                
+                if(view.getWorkspace().getGridEnable()){
+                offset.x -= (offset.x%view.getWorkspace().getGridSize());
+                offset.y -= (offset.y%view.getWorkspace().getGridSize());
+            }
                 model.addModule(selectedModule, offset);
             }
         } else {
