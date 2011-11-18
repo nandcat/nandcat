@@ -279,7 +279,6 @@ public class SEPAFImporter implements Importer {
             // Add constructed circuit to cache index
             circuitIndex.put(name, circuit);
         }
-        factory.getLayouter().layout((Circuit) circuit);
         return circuit;
     }
 
