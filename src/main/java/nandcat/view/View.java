@@ -435,7 +435,7 @@ public class View extends JFrame {
         JButton select = new JButton("", selectButtonIcon);
         select.setPreferredSize(buttonDim);
         select.setToolTipText(i18n.getString("tooltip.select"));
-        disableElements.add(select);
+        noDisableElements.add(select);
         ImageIcon toggleButtonIcon = new ImageIcon("src/resources/togglemiddle.png");
         JButton toggle = new JButton("", toggleButtonIcon);
         toggle.setPreferredSize(buttonDim);
@@ -495,16 +495,19 @@ public class View extends JFrame {
         }
         // Adding Buttons to the ToolBar.
         toolBar.add(modules);
+        toolBar.addSeparator(new Dimension(80, 20));
         toolBar.add(create);
         toolBar.add(toggle);
         toolBar.add(select);
         toolBar.add(move);
         toolBar.add(annotate);
+        toolBar.addSeparator(new Dimension(80, 40));
         toolBar.add(faster);
         toolBar.add(slower);
         toolBar.add(start);
         toolBar.add(pause);
         toolBar.add(stop);
+        toolBar.addSeparator(new Dimension(80, 40));
         // Buttons do not have to be Focusable.
         for (Component elem : toolBar.getComponents()) {
             elem.setFocusable(false);
