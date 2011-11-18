@@ -79,6 +79,9 @@ public class ImportTool implements Tool {
      */
     private void request(String command) {
         LOG.debug("Request command: " + command);
+
+        // Deactivate other tools to stay consistent.
+        controller.requestActivation(this);
         if (command.equals("load")) {
             actionLoad();
         } else if (command.equals("new")) {
