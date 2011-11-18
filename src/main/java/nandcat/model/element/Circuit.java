@@ -1,6 +1,5 @@
 package nandcat.model.element;
 
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
@@ -379,19 +378,6 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
             createInPorts();
         }
         return connection;
-    }
-
-    /**
-     * Adds a Module to the Circuit.
-     * 
-     * @param m
-     *            Module to add
-     * @param p
-     *            Point specifying the location of the Module
-     */
-    public void addModule(Module m, Point p) {
-        addModule(m);
-        m.getRectangle().setLocation(p);
     }
 
     /**

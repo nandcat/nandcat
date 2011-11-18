@@ -34,10 +34,12 @@ public class CircuitTest {
     @Test
     public void testAddModule() {
         AndGate and0 = new AndGate(2, 1);
+        and0.getRectangle().setLocation(p);
         ImpulseGenerator impy = new ImpulseGenerator(0);
+        impy.getRectangle().setLocation(p);
         Circuit c = (Circuit) factory.getCircuitBuilder().build();
-        c.addModule(and0, p);
-        c.addModule(impy, p);
+        c.addModule(and0);
+        c.addModule(impy);
         assertTrue(c.getElements().contains(and0));
         assertTrue(c.getElements().contains(impy));
     }
@@ -48,19 +50,23 @@ public class CircuitTest {
     @Test
     public void testStartingModules() {
         AndGate and0 = new AndGate(2, 1);
+        and0.getRectangle().setLocation(p);
         AndGate and1 = new AndGate(2, 1);
+        and1.getRectangle().setLocation(p);
         AndGate and2 = new AndGate(2, 1);
+        and2.getRectangle().setLocation(p);
         ImpulseGenerator impy = new ImpulseGenerator(0);
+        impy.getRectangle().setLocation(p);
         Circuit c = (Circuit) factory.getCircuitBuilder().build();
         // NOTE will fail ???
         // Importer impo = new SEPAFImporter();
         // impo.setFile(new File("/tmp/fuck.xml"));
         // impo.importCircuit();
         // Circuit c = impo.getCircuit();
-        c.addModule(and0, p);
-        c.addModule(and1, p);
-        c.addModule(and2, p);
-        c.addModule(impy, p);
+        c.addModule(and0);
+        c.addModule(and1);
+        c.addModule(and2);
+        c.addModule(impy);
         c.addConnection(and0.getOutPorts().get(0), and1.getInPorts().get(1));
         c.addConnection(impy.getOutPorts().get(0), and2.getInPorts().get(0));
         c.addConnection(and1.getOutPorts().get(0), and2.getInPorts().get(1));
@@ -80,10 +86,12 @@ public class CircuitTest {
     @Test
     public void testRemoveElement() {
         AndGate and0 = new AndGate(2, 1);
+        and0.getRectangle().setLocation(p);
         AndGate and1 = new AndGate(2, 1);
+        and1.getRectangle().setLocation(p);
         Circuit c = (Circuit) factory.getCircuitBuilder().build();
-        c.addModule(and0, p);
-        c.addModule(and1, p);
+        c.addModule(and0);
+        c.addModule(and1);
         Connection conn = c.addConnection(and0.getOutPorts().get(0), and1.getInPorts().get(0));
         // removal of module
         c.removeElement(and1);
@@ -92,7 +100,7 @@ public class CircuitTest {
         assertNull(and0.getOutPorts().get(0).getConnection());
         assertNull(and1.getInPorts().get(0).getConnection());
         // removal of connection
-        c.addModule(and1, p);
+        c.addModule(and1);
         conn = c.addConnection(and0.getOutPorts().get(0), and1.getInPorts().get(0));
         c.removeElement(conn);
         assertFalse(c.getElements().contains(conn));
@@ -107,7 +115,8 @@ public class CircuitTest {
     public void testSetModuleActive() {
         Circuit c = (Circuit) factory.getCircuitBuilder().build();
         AndGate and0 = new AndGate(2, 1);
-        c.addModule(and0, p);
+        and0.getRectangle().setLocation(p);
+        c.addModule(and0);
         assertFalse(and0.isSelected());
         c.setModuleSelected(and0, true);
         assertTrue(and0.isSelected());
@@ -122,10 +131,12 @@ public class CircuitTest {
     public void testAddConnection() {
         Circuit c = (Circuit) factory.getCircuitBuilder().build();
         ImpulseGenerator impy = new ImpulseGenerator(0);
+        impy.getRectangle().setLocation(p);
         Lamp lamp = new Lamp();
-        c.addModule(impy, p);
+        lamp.getRectangle().setLocation(p);
+        c.addModule(impy);
         impy.toggleState();
-        c.addModule(lamp, p);
+        c.addModule(lamp);
         Connection conn = c.addConnection(impy.getOutPorts().get(0), lamp.getInPorts().get(0));
         assertTrue(c.getElements().contains(conn));
         assertTrue(impy.getOutPorts().get(0).getConnection().getNextModule() == lamp);
@@ -139,6 +150,7 @@ public class CircuitTest {
     public void testDawg() {
         Circuit c = (Circuit) factory.getCircuitBuilder().build();
         Circuit innerCircuit = new FlipFlop();
-        c.addModule(innerCircuit, p);
+        innerCircuit.getRectangle().setLocation(p);
+        c.addModule(innerCircuit);
     }
 }

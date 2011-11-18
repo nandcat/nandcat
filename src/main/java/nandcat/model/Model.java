@@ -564,7 +564,7 @@ public class Model implements ClockListener {
      */
     public void addModule(Module m, Point p) {
         moveBy(m, new Point(m.getRectangle().x - p.x, m.getRectangle().y - p.y));
-        circuit.addModule(m, p);
+        circuit.addModule(m);
         ModelEvent e = new ModelEvent(m);
         for (ModelListener l : listeners) {
             l.elementsChanged(e);
