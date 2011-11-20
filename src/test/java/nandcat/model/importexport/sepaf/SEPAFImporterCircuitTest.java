@@ -88,7 +88,6 @@ public class SEPAFImporterCircuitTest {
             }
         });
         String content = ImportExportUtil.getFileContent(file);
-        System.out.println(content.replace(">", ">\n"));
         assertTrue(importer.importCircuit());
         assertTrue(importer.getCircuit() != null);
         c = importer.getCircuit();
