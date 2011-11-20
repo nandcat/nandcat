@@ -247,6 +247,9 @@ public class View extends JFrame {
         JMenuItem mstop = new JMenuItem(i18n.getString("menu.simulation.stop"), KeyEvent.VK_E);
         mstop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0));
         noDisableElements.add(mstop);
+        JMenuItem mstep = new JMenuItem(i18n.getString("menu.simulation.step"), KeyEvent.VK_X);
+        mstep.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0));
+        noDisableElements.add(mstep);
         JMenuItem mslower = new JMenuItem(i18n.getString("menu.simulation.slower"), KeyEvent.VK_MINUS);
         mslower.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, ActionEvent.CTRL_MASK));
         noDisableElements.add(mslower);
@@ -365,6 +368,9 @@ public class View extends JFrame {
         if (toolFunctionalities.containsKey("delete")) {
             setupMenuItem(mdelete, "delete");
         }
+        if (toolFunctionalities.containsKey("step")) {
+            setupMenuItem(mstep, "step");
+        }
         /*
          * Add MenuItems to the Menus they belong to.
          */
@@ -373,6 +379,7 @@ public class View extends JFrame {
         menubar.add(sim);
         menubar.add(help);
         sim.add(mstart);
+        sim.add(mstep);
         sim.add(mpause);
         sim.add(mstop);
         sim.add(mfaster);
