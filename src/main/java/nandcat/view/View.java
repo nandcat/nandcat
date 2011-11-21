@@ -230,7 +230,7 @@ public class View extends JFrame {
         // Create the Menus. Setting Shortcuts.
         JMenu file = new JMenu(i18n.getString("menu.file"));
         file.setMnemonic(KeyEvent.VK_D);
-        disableElements.add(file);
+        noDisableElements.add(file);
         JMenu edit = new JMenu(i18n.getString("menu.edit"));
         edit.setMnemonic(KeyEvent.VK_B);
         noDisableElements.add(edit);
@@ -428,6 +428,11 @@ public class View extends JFrame {
         stop.setPreferredSize(buttonDim);
         stop.setToolTipText(i18n.getString("tooltip.simulation.stop"));
         noDisableElements.add(stop);
+        ImageIcon stepButtonIcon = new ImageIcon("src/resources/stepmiddle.png");
+        JButton step = new JButton("", stepButtonIcon);
+        step.setPreferredSize(buttonDim);
+        step.setToolTipText(i18n.getString("tooltip.simulation.step"));
+        noDisableElements.add(step);
         ImageIcon fasterButtonIcon = new ImageIcon("src/resources/plusmiddle.png");
         JButton faster = new JButton("", fasterButtonIcon);
         faster.setPreferredSize(buttonDim);
@@ -464,6 +469,9 @@ public class View extends JFrame {
         pause.setToolTipText(i18n.getString("tooltip.simulation.pause"));
         noDisableElements.add(pause);
         // Check if there are Functionalities for the Buttons and if yes calling the setup.
+        if (toolFunctionalities.containsKey("step")) {
+            setupButton(step, "step");
+        }
         if (toolFunctionalities.containsKey("annotate")) {
             setupButton(annotate, "annotate");
         }
@@ -516,6 +524,7 @@ public class View extends JFrame {
         toolBar.add(faster);
         toolBar.add(slower);
         toolBar.add(start);
+        toolBar.add(step);
         toolBar.add(pause);
         toolBar.add(stop);
         toolBar.addSeparator(new Dimension(80, 40));

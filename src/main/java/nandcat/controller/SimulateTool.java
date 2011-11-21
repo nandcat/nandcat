@@ -137,7 +137,6 @@ public class SimulateTool implements Tool {
 
             public void simulationStopped(ModelEvent e) {
                 // Stopping the simulation needs to enable the buttons and set the "Counter".
-                System.out.println("stopped");
                 simulating = false;
                 view.enableButtons();
                 view.setCycleCount(i18n.getString("cycle.stand"));
@@ -259,6 +258,11 @@ public class SimulateTool implements Tool {
                         paused = true;
                         startCheckManager();
                         model.startChecks();
+                    }
+                } else if (e.getActionCommand().equals("step")) {
+                    if (paused) {
+                        model.unpause();
+                        model.pause();
                     }
                 }
             }
