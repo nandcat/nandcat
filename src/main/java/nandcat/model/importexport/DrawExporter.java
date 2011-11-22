@@ -46,6 +46,8 @@ public class DrawExporter implements Exporter {
      */
     private Circuit circuit;
 
+    private FormatErrorHandler errorHandler;
+
     /**
      * Map of supported file extensions connected with the format description.
      */
@@ -214,6 +216,61 @@ public class DrawExporter implements Exporter {
     public String getErrorMessage() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /**
+     * Throws a warning using the Error Handler. If error handler decides to throw exception, processing is stopped by
+     * this exception.
+     * 
+     * @param e
+     *            Exception with information about warning.
+     * @throws FormatException
+     *             FormatException, reason for stop processing.
+     */
+    private void throwWarning(FormatException e) throws FormatException {
+        if (this.errorHandler != null) {
+            this.errorHandler.warning(e);
+        }
+    }
+
+    /**
+     * Throws a error using the Error Handler. If error handler decides to throw exception, processing is stopped by
+     * this exception.
+     * 
+     * @param e
+     *            Exception with information about error.
+     * @throws FormatException
+     *             FormatException, reason for stop processing.
+     */
+    private void throwError(FormatException e) throws FormatException {
+        if (this.errorHandler != null) {
+            this.errorHandler.error(e);
+        }
+    }
+
+    /**
+     * Throws a fatal error using the Error Handler. If error handler decides to throw exception, processing is stopped
+     * by this exception.
+     * 
+     * @param e
+     *            Exception with information about fatal error.
+     * @throws FormatException
+     *             FormatException, reason for stop processing.
+     */
+    private void throwFatalError(FormatException e) throws FormatException {
+        if (this.errorHandler != null) {
+            this.errorHandler.warning(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setErrorHandler(FormatErrorHandler h) {
+        if (h == null) {
+            throw new IllegalArgumentException();
+        }
+        this.errorHandler = h;
     }
 
 }

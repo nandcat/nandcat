@@ -19,25 +19,49 @@ import nandcat.model.importexport.FormatException;
 import org.apache.log4j.Logger;
 import org.apache.xerces.impl.dv.util.Base64;
 
-public class SEPAFFormat {
+/**
+ * SEPAF Format. Holds all information about the SEPAF format to share information between importer and exporter.
+ */
+public final class SEPAFFormat {
+
+    /**
+     * Representing schema files.
+     */
+    public static class VALIDATIONSCHEMA {
+
+        /**
+         * Path to SEPAF schema used for validation.
+         */
+        public static final String SCHEMA_SEPAF = "../circuits-1.0.xsd";
+
+        /**
+         * Path to NANDcat schema used for validation.
+         */
+        public static final String SCHEMA_NANDCAT = "../sepaf-extension.xsd";
+    }
 
     /**
      * Representing namespace of sepaf format.
      */
     public static class NAMESPACE {
 
+        /**
+         * Get default namespace.
+         * 
+         * @return default namespace.
+         */
         public static final org.jdom.Namespace getDefault() {
             return org.jdom.Namespace.getNamespace("http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0");
         }
 
         /**
-         * Default namespace (xmlns) without prefix.
+         * XSI namespace.
          */
         public static final org.jdom.Namespace XSI = org.jdom.Namespace.getNamespace("xsi",
                 "http://www.w3.org/2001/XMLSchema-instance");
 
         /**
-         * Default namespace (xmlns) without prefix.
+         * Circuit namespace (c).
          */
         public static final org.jdom.Namespace DEFAULT = org.jdom.Namespace.getNamespace("c",
                 "http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0");
@@ -107,6 +131,13 @@ public class SEPAFFormat {
      * Class logger instance.
      */
     private static final Logger LOG = Logger.getLogger(SEPAFFormat.class);
+
+    /**
+     * Private constructor.
+     */
+    private SEPAFFormat() {
+        throw new IllegalArgumentException();
+    }
 
     /**
      * Gets the string representation of a port.

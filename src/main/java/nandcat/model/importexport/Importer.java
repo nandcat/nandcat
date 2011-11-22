@@ -63,4 +63,12 @@ public interface Importer {
      *            Factory to build modules.
      */
     void setFactory(ModuleBuilderFactory factory);
+
+    /**
+     * Sets the handler called if warnings, errors, fatal errors occur.
+     * 
+     * @param h
+     *            ErrorHandler
+     */
+    void setErrorHandler(FormatErrorHandler h);
 }

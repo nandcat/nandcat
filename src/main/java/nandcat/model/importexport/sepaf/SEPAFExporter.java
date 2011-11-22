@@ -22,6 +22,7 @@ import nandcat.model.element.Module;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 import nandcat.model.importexport.Exporter;
+import nandcat.model.importexport.FormatErrorHandler;
 import nandcat.model.importexport.FormatException;
 import org.apache.log4j.Logger;
 import org.jdom.Content;
@@ -79,6 +80,8 @@ public class SEPAFExporter implements Exporter {
      * External circuits mapped with their uuid and external uuid.
      */
     private Map<String, String> externalCircuits = new HashMap<String, String>();
+
+    private FormatErrorHandler errorHandler;
 
     /**
      * {@inheritDoc}
@@ -448,5 +451,60 @@ public class SEPAFExporter implements Exporter {
      */
     public void setExternalCircuits(Map<String, String> circuits) {
         externalCircuits = circuits;
+    }
+
+    /**
+     * Throws a warning using the Error Handler. If error handler decides to throw exception, processing is stopped by
+     * this exception.
+     * 
+     * @param e
+     *            Exception with information about warning.
+     * @throws FormatException
+     *             FormatException, reason for stop processing.
+     */
+    private void throwWarning(FormatException e) throws FormatException {
+        if (this.errorHandler != null) {
+            this.errorHandler.warning(e);
+        }
+    }
+
+    /**
+     * Throws a error using the Error Handler. If error handler decides to throw exception, processing is stopped by
+     * this exception.
+     * 
+     * @param e
+     *            Exception with information about error.
+     * @throws FormatException
+     *             FormatException, reason for stop processing.
+     */
+    private void throwError(FormatException e) throws FormatException {
+        if (this.errorHandler != null) {
+            this.errorHandler.error(e);
+        }
+    }
+
+    /**
+     * Throws a fatal error using the Error Handler. If error handler decides to throw exception, processing is stopped
+     * by this exception.
+     * 
+     * @param e
+     *            Exception with information about fatal error.
+     * @throws FormatException
+     *             FormatException, reason for stop processing.
+     */
+    private void throwFatalError(FormatException e) throws FormatException {
+        if (this.errorHandler != null) {
+            this.errorHandler.warning(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setErrorHandler(FormatErrorHandler h) {
+        if (h == null) {
+            throw new IllegalArgumentException();
+        }
+        this.errorHandler = h;
     }
 }

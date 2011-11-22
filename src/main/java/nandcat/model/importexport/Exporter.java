@@ -64,4 +64,12 @@ public interface Exporter {
      * @return String Error message if export failed.
      */
     String getErrorMessage();
+
+    /**
+     * Sets the handler called if warnings, errors, fatal errors occur.
+     * 
+     * @param h
+     *            ErrorHandler
+     */
+    void setErrorHandler(FormatErrorHandler h);
 }

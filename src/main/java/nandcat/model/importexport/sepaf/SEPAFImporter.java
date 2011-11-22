@@ -15,6 +15,7 @@ import nandcat.model.element.Module;
 import nandcat.model.element.factory.ModuleBuilder;
 import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.ExternalCircuitSource;
+import nandcat.model.importexport.FormatErrorHandler;
 import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
 import nandcat.model.importexport.XsdValidation;
@@ -103,9 +104,20 @@ public class SEPAFImporter implements Importer {
     // bug?)
     private Source[] xsdSources;
 
+    /**
+     * Source of external circuits.
+     */
     private ExternalCircuitSource externalCircuitSource;
 
+    /**
+     * Factory to create Elements with.
+     */
     private ModuleBuilderFactory factory;
+
+    /**
+     * Errorhandler to handle errors.
+     */
+    private FormatErrorHandler errorHandler;
 
     /**
      * Sets the instance up.
@@ -130,8 +142,9 @@ public class SEPAFImporter implements Importer {
      */
     public void reset() {
         circuitIndex = new HashMap<String, Circuit>();
-        xsdSources = new Source[] { new StreamSource(Nandcat.class.getResourceAsStream("../sepaf-extension.xsd")),
-                new StreamSource(Nandcat.class.getResourceAsStream("../circuits-1.0.xsd")) };
+        xsdSources = new Source[] {
+                new StreamSource(Nandcat.class.getResourceAsStream(SEPAFFormat.VALIDATIONSCHEMA.SCHEMA_NANDCAT)),
+                new StreamSource(Nandcat.class.getResourceAsStream(SEPAFFormat.VALIDATIONSCHEMA.SCHEMA_SEPAF)) };
         importedCircuit = null;
         file = null;
         errorMsg = null;
@@ -300,8 +313,6 @@ public class SEPAFImporter implements Importer {
         }
         LOG.trace("Build module: " + el.getQualifiedName() + " : " + el.getAttributeValue("name"));
         Attribute aType = el.getAttribute("type");
-        Attribute aSubtype = el.getAttribute("type2");
-        Attribute aName = el.getAttribute("name");
         Attribute aPosX = el.getAttribute("posx");
         Attribute aPosY = el.getAttribute("posy");
 
@@ -325,7 +336,6 @@ public class SEPAFImporter implements Importer {
         Attribute aAnnotation = el.getAttribute("annotation", SEPAFFormat.NAMESPACE.NANDCAT);
         Attribute aPortsIn = el.getAttribute("ports_in", SEPAFFormat.NAMESPACE.NANDCAT);
         Attribute aPortsOut = el.getAttribute("ports_out", SEPAFFormat.NAMESPACE.NANDCAT);
-        Attribute inState = el.getAttribute("in_state", SEPAFFormat.NAMESPACE.NANDCAT);
         Attribute inTiming = el.getAttribute("in_timing", SEPAFFormat.NAMESPACE.NANDCAT);
 
         // Parse attribute for amount of incoming and outgoing ports if
@@ -590,11 +600,68 @@ public class SEPAFImporter implements Importer {
         this.externalCircuitSource = source;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setFactory(ModuleBuilderFactory factory) {
         if (factory == null) {
             throw new IllegalArgumentException();
         }
         this.factory = factory;
+    }
 
+    /**
+     * Throws a warning using the Error Handler. If error handler decides to throw exception, processing is stopped by
+     * this exception.
+     * 
+     * @param e
+     *            Exception with information about warning.
+     * @throws FormatException
+     *             FormatException, reason for stop processing.
+     */
+    private void throwWarning(FormatException e) throws FormatException {
+        if (this.errorHandler != null) {
+            this.errorHandler.warning(e);
+        }
+    }
+
+    /**
+     * Throws a error using the Error Handler. If error handler decides to throw exception, processing is stopped by
+     * this exception.
+     * 
+     * @param e
+     *            Exception with information about error.
+     * @throws FormatException
+     *             FormatException, reason for stop processing.
+     */
+    private void throwError(FormatException e) throws FormatException {
+        if (this.errorHandler != null) {
+            this.errorHandler.error(e);
+        }
+    }
+
+    /**
+     * Throws a fatal error using the Error Handler. If error handler decides to throw exception, processing is stopped
+     * by this exception.
+     * 
+     * @param e
+     *            Exception with information about fatal error.
+     * @throws FormatException
+     *             FormatException, reason for stop processing.
+     */
+    private void throwFatalError(FormatException e) throws FormatException {
+        if (this.errorHandler != null) {
+            this.errorHandler.warning(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setErrorHandler(FormatErrorHandler h) {
+        if (h == null) {
+            throw new IllegalArgumentException();
+        }
+        this.errorHandler = h;
     }
 }
