@@ -176,6 +176,11 @@ public class StandardElementDrawer implements ElementDrawer {
     private static final Color RECTANGLE_COLOR = Color.BLACK;
 
     /**
+     * Fill color of gates.
+     */
+    private static final Color GATE_FILL_COLOR = Color.WHITE;
+
+    /**
      * Color of the line drawn using draw(Line).
      */
     private static final Color LINE_COLOR = Color.BLACK;
@@ -370,6 +375,9 @@ public class StandardElementDrawer implements ElementDrawer {
         if (rec == null) {
             throw new IllegalArgumentException();
         }
+        g.setColor(GATE_FILL_COLOR);
+        g.fillRect(rec.x, rec.y, rec.width, rec.height);
+
         if (module.isSelected()) {
             g.setColor(GATE_COLOR_SELECTED);
         } else {
