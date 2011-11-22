@@ -997,6 +997,11 @@ public class Model implements ClockListener {
      */
     private void notifyForChangedElems() {
         ModelEvent e = new ModelEvent();
+        HashSet<DrawElement> eventSet = new HashSet<DrawElement>();
+        for (Element ele : getSelectedElements()) {
+            eventSet.add((DrawElement) ele);
+        }
+        e.setElements(eventSet);
         for (ModelListener l : listeners) {
             l.elementsChanged(e);
         }
