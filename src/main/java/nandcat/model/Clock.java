@@ -257,6 +257,7 @@ public class Clock implements Runnable {
         listeners.clear();
         generators.clear();
         connections.clear();
+        model.notifyForChangedElems();
     }
 
     /**

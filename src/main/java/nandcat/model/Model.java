@@ -672,6 +672,24 @@ public class Model implements ClockListener {
     }
 
     /**
+     * Notifies ModelListeners about changed Elements.
+     * 
+     * @param set
+     *            Set containing specific DrawElements
+     */
+    protected void notifyForChangedElems() {
+        ModelEvent e = new ModelEvent();
+        HashSet<DrawElement> eventSet = new HashSet<DrawElement>();
+        for (Element ele : getSelectedElements()) {
+            eventSet.add((DrawElement) ele);
+        }
+        e.setElements(eventSet);
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
+        }
+    }
+
+    /**
      * Notifies ModelListeners about the stopped simulation.
      */
     protected void notifyForStoppedSim() {
@@ -1049,24 +1067,6 @@ public class Model implements ClockListener {
         notifyForChangedElems();
         dirty = true;
         return true;
-    }
-
-    /**
-     * Notifies ModelListeners about changed Elements.
-     * 
-     * @param set
-     *            Set containing specific DrawElements
-     */
-    private void notifyForChangedElems() {
-        ModelEvent e = new ModelEvent();
-        HashSet<DrawElement> eventSet = new HashSet<DrawElement>();
-        for (Element ele : getSelectedElements()) {
-            eventSet.add((DrawElement) ele);
-        }
-        e.setElements(eventSet);
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e);
-        }
     }
 
     /**
