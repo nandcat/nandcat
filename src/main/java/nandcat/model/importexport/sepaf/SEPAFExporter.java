@@ -349,7 +349,7 @@ public class SEPAFExporter implements Exporter {
         }
         e.setAttribute("source", SEPAFFormat.getObjectAsUniqueString(sourceModule));
         e.setAttribute("sourcePort",
-                SEPAFFormat.getPortAsString(true, sourceModule.getOutPorts().indexOf(c.getInPort())));
+                SEPAFFormat.getPortAsString(true, sourceModule.getOutPorts().indexOf(c.getInPort()), sourceModule));
 
         // Connection may point to element inside a circuit. Search module in this layer.
         Module targetModule = getTargetModule(c, modules);
@@ -360,7 +360,7 @@ public class SEPAFExporter implements Exporter {
         e.setAttribute("target", SEPAFFormat.getObjectAsUniqueString(targetModule));
 
         e.setAttribute("targetPort",
-                SEPAFFormat.getPortAsString(false, targetModule.getInPorts().indexOf(c.getOutPort())));
+                SEPAFFormat.getPortAsString(false, targetModule.getInPorts().indexOf(c.getOutPort()), targetModule));
 
         return e;
     }

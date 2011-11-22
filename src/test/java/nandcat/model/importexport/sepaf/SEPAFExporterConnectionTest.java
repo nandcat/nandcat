@@ -96,7 +96,7 @@ public class SEPAFExporterConnectionTest {
         exporter.setCircuit(c);
         assertTrue(exporter.exportCircuit());
         String content = ImportExportUtil.getFileContent(file);
-        assertTrue(content.contains("targetPort=\"a\""));
+        assertTrue(content.contains("targetPort=\"r\""));
         assertTrue(content.contains("sourcePort=\"o\""));
         assertTrue(content.contains("source=\"" + SEPAFFormat.getObjectAsUniqueString(gate1) + "\""));
         assertTrue(content.contains("target=\"" + SEPAFFormat.getObjectAsUniqueString(ff) + "\""));
