@@ -43,6 +43,12 @@ import org.apache.log4j.Logger;
 public class Model implements ClockListener {
 
     /**
+     * Set of {@link ImpulseGenerator}s that got toggled by the user. Those will keep their status even if the
+     * simulation stopped.
+     */
+    private Set<ImpulseGenerator> activeImps;
+
+    /**
      * The current paused-status of the simulation.
      */
     private boolean paused;
@@ -176,6 +182,7 @@ public class Model implements ClockListener {
         initImporters();
         initChecks();
         paused = false;
+        activeImps = new HashSet<ImpulseGenerator>();
         // spielwiese, bis der import funktioniert TODO entfernen
         // LOG.shutdown();
         // ImpulseGenerator impy = new ImpulseGenerator(5);
@@ -378,6 +385,15 @@ public class Model implements ClockListener {
     public void exclusiveSelectElements(Rectangle rect) {
         deselectAll();
         selectElements(rect);
+    }
+
+    /**
+     * Get all {@link ImpulseGenerator}s selected before starting the simulation.
+     * 
+     * @return a Set of all {@link ImpulseGenerator}s selected before starting the simulation
+     */
+    protected Set<ImpulseGenerator> getActiveImpulseGens() {
+        return activeImps;
     }
 
     /**
@@ -750,6 +766,21 @@ public class Model implements ClockListener {
     }
 
     /**
+     * Resets all active {@link ImpulseGenerator}s' states to <code>false</code> and clears the set.
+     */
+    public void resetActiveImpulseGenerators() {
+        for (ImpulseGenerator i : activeImps) {
+            if (i.getState()) {
+                i.toggleState();
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        activeImps.clear();
+        notifyForChangedElems();
+    }
+
+    /**
      * Selects or deselects an Element.
      * 
      * @param m
@@ -869,7 +900,13 @@ public class Model implements ClockListener {
      */
     public void toggleModule(Module m) {
         if (m instanceof ImpulseGenerator) {
-            ((ImpulseGenerator) m).toggleState();
+            ImpulseGenerator imp = (ImpulseGenerator) m;
+            imp.toggleState();
+            if (imp.getState()) {
+                activeImps.add(imp);
+            } else {
+                activeImps.remove(imp);
+            }
         }
         notifyForChangedElems();
     }

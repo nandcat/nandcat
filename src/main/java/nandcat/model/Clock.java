@@ -245,7 +245,9 @@ public class Clock implements Runnable {
             }
             if (e instanceof ImpulseGenerator) {
                 ImpulseGenerator i = (ImpulseGenerator) e;
-                if (i.getState()) {
+                if (i.getState() && !(model.getActiveImpulseGens().contains(i))) {
+                    i.toggleState();
+                } else if (!i.getState() && (model.getActiveImpulseGens().contains(i))) {
                     i.toggleState();
                 }
             }
