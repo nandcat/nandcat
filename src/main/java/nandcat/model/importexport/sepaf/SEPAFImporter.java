@@ -6,10 +6,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-
 import nandcat.Nandcat;
 import nandcat.model.FastDeepCopy;
 import nandcat.model.element.Circuit;
@@ -20,7 +18,6 @@ import nandcat.model.importexport.ExternalCircuitSource;
 import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
 import nandcat.model.importexport.XsdValidation;
-
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.DataConversionException;
@@ -62,8 +59,8 @@ public class SEPAFImporter implements Importer {
     private XMLCheck[] checks = { new SEPAFCheckCircuitReference() };
 
     /**
-     * Defines which errors should result in an invalid validation result. If a
-     * exception is thrown the validation result is invalid.
+     * Defines which errors should result in an invalid validation result. If a exception is thrown the validation
+     * result is invalid.
      */
     private static final ErrorHandler VALIDATION_ERROR_HANDLER = new ErrorHandler() {
 
@@ -133,13 +130,8 @@ public class SEPAFImporter implements Importer {
      */
     public void reset() {
         circuitIndex = new HashMap<String, Circuit>();
-        xsdSources = new Source[] {
-                new StreamSource(
-                        Nandcat.class
-                                .getResourceAsStream("../sepaf-extension.xsd")),
-                new StreamSource(
-                        Nandcat.class
-                                .getResourceAsStream("../circuits-1.0.xsd")) };
+        xsdSources = new Source[] { new StreamSource(Nandcat.class.getResourceAsStream("../sepaf-extension.xsd")),
+                new StreamSource(Nandcat.class.getResourceAsStream("../circuits-1.0.xsd")) };
         importedCircuit = null;
         file = null;
         errorMsg = null;
@@ -215,8 +207,7 @@ public class SEPAFImporter implements Importer {
      *             if format is not valid.
      */
     @SuppressWarnings("rawtypes")
-    private Circuit buildCircuit(String name, Document doc)
-            throws FormatException {
+    private Circuit buildCircuit(String name, Document doc) throws FormatException {
         Circuit circuit = null;
 
         // Used cached circuit if parsed second time.
@@ -230,19 +221,16 @@ public class SEPAFImporter implements Importer {
             }
             List mainComponents = null;
             try {
-                mainComponents = getXPathInstance(
-                        "/c:circuits/c:circuit[@name='" + name
-                                + "']/c:component").selectNodes(doc);
+                mainComponents = getXPathInstance("/c:circuits/c:circuit[@name='" + name + "']/c:component")
+                        .selectNodes(doc);
             } catch (JDOMException e) {
                 // Does not happen!
                 e.printStackTrace();
             }
             if (mainComponents == null || mainComponents.isEmpty()) {
-                throw new FormatException("Circuit has no components: '" + name
-                        + "'");
+                throw new FormatException("Circuit has no components: '" + name + "'");
             }
-            circuit = (Circuit) factory.getCircuitBuilder().setUUID(name)
-                    .build();
+            circuit = (Circuit) factory.getCircuitBuilder().setUUID(name).build();
 
             // Index of imported modules used for connections
             Map<String, Module> moduleIndex = new HashMap<String, Module>();
@@ -257,9 +245,8 @@ public class SEPAFImporter implements Importer {
             // Connections between modules
             List connections = null;
             try {
-                connections = getXPathInstance(
-                        "/c:circuits/c:circuit[@name='" + name
-                                + "']/c:connection").selectNodes(doc);
+                connections = getXPathInstance("/c:circuits/c:circuit[@name='" + name + "']/c:connection").selectNodes(
+                        doc);
             } catch (JDOMException e) {
                 // Does not happen!
                 e.printStackTrace();
@@ -277,13 +264,11 @@ public class SEPAFImporter implements Importer {
 
             // Parse symbol if existing
             try {
-                Object symbol = getXPathInstance(
-                        "/c:circuits/c:circuit[@name='" + name
-                                + "']/nandcat:symbol").selectSingleNode(doc);
+                Object symbol = getXPathInstance("/c:circuits/c:circuit[@name='" + name + "']/nandcat:symbol")
+                        .selectSingleNode(doc);
                 if (symbol != null && symbol instanceof Element) {
                     Element symbolElement = (Element) symbol;
-                    circuit.setSymbol(SEPAFFormat.decodeImage(symbolElement
-                            .getText()));
+                    circuit.setSymbol(SEPAFFormat.decodeImage(symbolElement.getText()));
                     LOG.debug("Symbol set to circuit successfully");
                 }
             } catch (JDOMException e) {
@@ -309,13 +294,11 @@ public class SEPAFImporter implements Importer {
      * @throws FormatException
      *             if format is not valid.
      */
-    private void buildModule(Circuit c, Element el, Document doc,
-            Map<String, Module> index) throws FormatException {
+    private void buildModule(Circuit c, Element el, Document doc, Map<String, Module> index) throws FormatException {
         if (el == null) {
             throw new IllegalArgumentException();
         }
-        LOG.trace("Build module: " + el.getQualifiedName() + " : "
-                + el.getAttributeValue("name"));
+        LOG.trace("Build module: " + el.getQualifiedName() + " : " + el.getAttributeValue("name"));
         Attribute aType = el.getAttribute("type");
         Attribute aSubtype = el.getAttribute("type2");
         Attribute aName = el.getAttribute("name");
@@ -324,12 +307,10 @@ public class SEPAFImporter implements Importer {
 
         // Position x and y needed for all components.
         if (aPosX == null) {
-            throw new FormatException("posx not found at :"
-                    + el.getQualifiedName());
+            throw new FormatException("posx not found at :" + el.getQualifiedName());
         }
         if (aPosY == null) {
-            throw new FormatException("posy not found at :"
-                    + el.getQualifiedName());
+            throw new FormatException("posy not found at :" + el.getQualifiedName());
         }
 
         // Build point from coordinates.
@@ -341,16 +322,11 @@ public class SEPAFImporter implements Importer {
         }
 
         // Get attributes from nandcat extension. null if not present.
-        Attribute aAnnotation = el.getAttribute("annotation",
-                SEPAFFormat.NAMESPACE.NANDCAT);
-        Attribute aPortsIn = el.getAttribute("ports_in",
-                SEPAFFormat.NAMESPACE.NANDCAT);
-        Attribute aPortsOut = el.getAttribute("ports_out",
-                SEPAFFormat.NAMESPACE.NANDCAT);
-        Attribute inState = el.getAttribute("in_state",
-                SEPAFFormat.NAMESPACE.NANDCAT);
-        Attribute inTiming = el.getAttribute("in_timing",
-                SEPAFFormat.NAMESPACE.NANDCAT);
+        Attribute aAnnotation = el.getAttribute("annotation", SEPAFFormat.NAMESPACE.NANDCAT);
+        Attribute aPortsIn = el.getAttribute("ports_in", SEPAFFormat.NAMESPACE.NANDCAT);
+        Attribute aPortsOut = el.getAttribute("ports_out", SEPAFFormat.NAMESPACE.NANDCAT);
+        Attribute inState = el.getAttribute("in_state", SEPAFFormat.NAMESPACE.NANDCAT);
+        Attribute inTiming = el.getAttribute("in_timing", SEPAFFormat.NAMESPACE.NANDCAT);
 
         // Parse attribute for amount of incoming and outgoing ports if
         // available.
@@ -444,25 +420,20 @@ public class SEPAFImporter implements Importer {
         } else if (aType.getValue().equals("missing-circuit")) {
             String externalIdentifier = el.getAttributeValue("type2");
             if (externalCircuitSource != null) {
-                Circuit externalCircuit = externalCircuitSource
-                        .getExternalCircuit(externalIdentifier);
+                Circuit externalCircuit = externalCircuitSource.getExternalCircuit(externalIdentifier);
                 if (externalCircuit != null) {
                     module = (Circuit) FastDeepCopy.copy(externalCircuit);
                 } else {
-                    throw new FormatException(
-                            "External circuit cannot be found: "
-                                    + externalIdentifier);
+                    throw new FormatException("External circuit cannot be found: " + externalIdentifier);
                 }
             } else {
-                throw new FormatException(
-                        "External circuit source is not available but circuit is missing: "
-                                + externalIdentifier);
+                throw new FormatException("External circuit source is not available but circuit is missing: "
+                        + externalIdentifier);
             }
             module.getRectangle().setLocation(location);
             factory.getLayouter().layout((Circuit) module);
         } else {
-            throw new FormatException("Not a supported component type: '"
-                    + aType.getValue() + "'");
+            throw new FormatException("Not a supported component type: '" + aType.getValue() + "'");
         }
 
         if (aAnnotation != null) {
@@ -483,13 +454,11 @@ public class SEPAFImporter implements Importer {
      * @param el
      *            DOM element to build connection of.
      * @param moduleIndex
-     *            Holding all modules connection with their identifiers, used
-     *            for quick referencing.
+     *            Holding all modules connection with their identifiers, used for quick referencing.
      * @throws FormatException
      *             if format is not valid.
      */
-    private void buildConnection(Circuit c, Element el,
-            Map<String, Module> moduleIndex) throws FormatException {
+    private void buildConnection(Circuit c, Element el, Map<String, Module> moduleIndex) throws FormatException {
         String source = el.getAttributeValue("source");
         String target = el.getAttributeValue("target");
         String sourcePort = el.getAttributeValue("sourcePort");
@@ -509,17 +478,14 @@ public class SEPAFImporter implements Importer {
         Module sourceModule = moduleIndex.get(source);
         Module targetModule = moduleIndex.get(target);
         if (sourceModule == null) {
-            throw new FormatException("Connection: source module '" + source
-                    + "' not found");
+            throw new FormatException("Connection: source module '" + source + "' not found");
         }
         if (targetModule == null) {
-            throw new FormatException("Connection: target module '" + target
-                    + "' not found");
+            throw new FormatException("Connection: target module '" + target + "' not found");
         }
 
-        c.addConnection(
-                SEPAFFormat.getStringAsSourcePort(sourceModule, sourcePort),
-                SEPAFFormat.getStringAsTargetPort(targetModule, targetPort));
+        c.addConnection(SEPAFFormat.getStringAsPort(true, sourceModule, sourcePort),
+                SEPAFFormat.getStringAsPort(false, targetModule, targetPort));
     }
 
     /**
@@ -564,8 +530,7 @@ public class SEPAFImporter implements Importer {
      */
     private boolean validateXML() {
         try {
-            XsdValidation.validate(new StreamSource(file), xsdSources,
-                    VALIDATION_ERROR_HANDLER);
+            XsdValidation.validate(new StreamSource(file), xsdSources, VALIDATION_ERROR_HANDLER);
         } catch (SAXException e) {
             setErrorMessage(e.getLocalizedMessage());
             return false;

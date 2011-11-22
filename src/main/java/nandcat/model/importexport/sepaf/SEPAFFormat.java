@@ -4,9 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
-
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.FlipFlop;
@@ -18,7 +16,6 @@ import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
 import nandcat.model.importexport.FormatException;
-
 import org.apache.log4j.Logger;
 import org.apache.xerces.impl.dv.util.Base64;
 
@@ -30,23 +27,20 @@ public class SEPAFFormat {
     public static class NAMESPACE {
 
         public static final org.jdom.Namespace getDefault() {
-            return org.jdom.Namespace
-                    .getNamespace("http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0");
+            return org.jdom.Namespace.getNamespace("http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0");
         }
 
         /**
          * Default namespace (xmlns) without prefix.
          */
-        public static final org.jdom.Namespace XSI = org.jdom.Namespace
-                .getNamespace("xsi",
-                        "http://www.w3.org/2001/XMLSchema-instance");
+        public static final org.jdom.Namespace XSI = org.jdom.Namespace.getNamespace("xsi",
+                "http://www.w3.org/2001/XMLSchema-instance");
 
         /**
          * Default namespace (xmlns) without prefix.
          */
-        public static final org.jdom.Namespace DEFAULT = org.jdom.Namespace
-                .getNamespace("c",
-                        "http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0");
+        public static final org.jdom.Namespace DEFAULT = org.jdom.Namespace.getNamespace("c",
+                "http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0");
 
         /**
          * SEPAF namespace.
@@ -57,25 +51,20 @@ public class SEPAFFormat {
         /**
          * Custom NANDCat namespace.
          */
-        public static final org.jdom.Namespace NANDCAT = org.jdom.Namespace
-                .getNamespace("nandcat",
-                        "http://www.nandcat.de/xmlns/sepaf-extension");
+        public static final org.jdom.Namespace NANDCAT = org.jdom.Namespace.getNamespace("nandcat",
+                "http://www.nandcat.de/xmlns/sepaf-extension");
 
         /**
          * Namespaces used in the format.
          */
-        public static final org.jdom.Namespace[] ALL = new org.jdom.Namespace[] {
-                DEFAULT, SEPAF, NANDCAT };
+        public static final org.jdom.Namespace[] ALL = new org.jdom.Namespace[] { DEFAULT, SEPAF, NANDCAT };
 
         /**
          * Schema location string of used namespaces.
          */
         public static final String SCHEMA_LOCATION = "http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0"
-                + " "
-                + "http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0.xsd"
-                + " "
-                + "http://www.nandcat.de/xmlns/sepaf-extension"
-                + " "
+                + " " + "http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0.xsd" + " "
+                + "http://www.nandcat.de/xmlns/sepaf-extension" + " "
                 + "http://www.nandcat.de/xmlns/sepaf-extension.xsd";
     }
 
@@ -125,8 +114,7 @@ public class SEPAFFormat {
      * @param isOutPort
      *            True iff port is an outgoing port of the module.
      * @param index
-     *            Integer index (0..) as the number of the port in his section
-     *            (out, in)
+     *            Integer index (0..) as the number of the port in his section (out, in)
      * @param m
      *            Module to create Port for.
      * @return Port as string representation.
@@ -137,8 +125,7 @@ public class SEPAFFormat {
         }
         if (m instanceof FlipFlop) {
             if (index > 1) {
-                throw new IllegalArgumentException(
-                        "Port index > 1 for flipflop not allowed");
+                throw new IllegalArgumentException("Port index > 1 for flipflop not allowed");
             }
             if (isOutPort) {
                 // q and nq
@@ -161,85 +148,64 @@ public class SEPAFFormat {
     }
 
     /**
-     * Gets the target port of a connection (inPort of a module) depending on
-     * the port name (string).
+     * Gets the target port of a connection (inPort of a module) depending on the port name (string).
      * 
+     * @param isOutPort
+     *            True iff port is an outgoing port of the module.
      * @param module
      *            Module to get port of.
      * @param portname
-     *            Name of the port, a character identifying the number of the
-     *            port.
+     *            Name of the port, a character identifying the number of the port.
      * @return Selected port.
      * @throws FormatException
      *             If portname is wrong.
      */
-    public static Port getStringAsTargetPort(Module module, String portname)
-            throws FormatException {
+    public static Port getStringAsPort(boolean isOutPort, Module module, String portname) throws FormatException {
         int portnr = -1;
-        if (module instanceof FlipFlop) {
-            portnr = ((int) portname.charAt(0)) - ((int) 'r');
-        } else {
-            portnr = ((int) portname.charAt(0)) - ((int) 'a');
-        }
-        if (portnr < 0) {
-            throw new FormatException(
-                    "Connection: wrong targetport, requested: " + portnr);
-        }
-        if (portnr < module.getInPorts().size()) {
-            return module.getInPorts().get(portnr);
-        } else {
-            throw new FormatException(
-                    "Connection: wrong targetport, module has only "
-                            + module.getInPorts().size()
-                            + " inports, requested: " + portnr);
-        }
-    }
 
-    /**
-     * Gets the source port of a connection (outPort of a module) depending on
-     * the port name (string).
-     * 
-     * @param module
-     *            Module to get port of.
-     * @param portname
-     *            Name of the port, a character identifying the number of the
-     *            port.
-     * @return Selected port.
-     * @throws FormatException
-     *             If portname is wrong.
-     */
-    public static Port getStringAsSourcePort(Module module, String portname)
-            throws FormatException {
-        int portnr = -1;
-        if (module instanceof FlipFlop) {
-            if (portname.equals("q")) {
-                portnr = 0;
-            } else if (portname.equals("nq")) {
-                portnr = 1;
+        if (isOutPort) {
+            if (module instanceof FlipFlop) {
+                if (portname.equals("q")) {
+                    portnr = 0;
+                } else if (portname.equals("nq")) {
+                    portnr = 1;
+                } else {
+                    throw new FormatException("FlipFlop only has q and nq input ports");
+                }
             } else {
-                throw new FormatException(
-                        "FlipFlop only has q and nq input ports");
+                portnr = ((int) portname.charAt(0)) - ((int) 'o');
+            }
+            if (portnr < 0) {
+                throw new FormatException("Connection: wrong targetport, requested: " + portnr);
+            }
+            if (portnr < module.getOutPorts().size()) {
+                return module.getOutPorts().get(portnr);
+            } else {
+                throw new FormatException("Connection: wrong sourceport, module has only "
+                        + module.getOutPorts().size() + " inports, requested: " + portnr);
             }
         } else {
-            portnr = ((int) portname.charAt(0)) - ((int) 'o');
-        }
-        if (portnr < 0) {
-            throw new FormatException(
-                    "Connection: wrong targetport, requested: " + portnr);
-        }
-        if (portnr < module.getOutPorts().size()) {
-            return module.getOutPorts().get(portnr);
-        } else {
-            throw new FormatException(
-                    "Connection: wrong sourceport, module has only "
-                            + module.getOutPorts().size()
-                            + " inports, requested: " + portnr);
+
+            if (module instanceof FlipFlop) {
+                portnr = ((int) portname.charAt(0)) - ((int) 'r');
+            } else {
+                portnr = ((int) portname.charAt(0)) - ((int) 'a');
+            }
+            if (portnr < 0) {
+                throw new FormatException("Connection: wrong targetport, requested: " + portnr);
+            }
+            if (portnr < module.getInPorts().size()) {
+                return module.getInPorts().get(portnr);
+            } else {
+                throw new FormatException("Connection: wrong targetport, module has only " + module.getInPorts().size()
+                        + " inports, requested: " + portnr);
+            }
         }
     }
 
     /**
-     * Gets the unique string representation of an object. The String is unique
-     * for the given object inside the current VM.
+     * Gets the unique string representation of an object. The String is unique for the given object inside the current
+     * VM.
      * 
      * @param o
      *            Object to build string of.
@@ -302,8 +268,7 @@ public class SEPAFFormat {
     }
 
     /**
-     * Determines if the amount of in ports is the default and has not to be
-     * specified.
+     * Determines if the amount of in ports is the default and has not to be specified.
      * 
      * @param m
      *            Module to check incoming ports of.
@@ -338,16 +303,14 @@ public class SEPAFFormat {
         }
         // No default values for type circuit
 
-        if (defaultAmountOfPorts != null
-                && amountOfPorts == defaultAmountOfPorts) {
+        if (defaultAmountOfPorts != null && amountOfPorts == defaultAmountOfPorts) {
             return true;
         }
         return false;
     }
 
     /**
-     * Determines if the amount of out ports is the default and has not to be
-     * specified.
+     * Determines if the amount of out ports is the default and has not to be specified.
      * 
      * @param m
      *            Module to check outgoing ports of.
@@ -382,8 +345,7 @@ public class SEPAFFormat {
         }
         // No default values for type circuit
 
-        if (defaultAmountOfPorts != null
-                && amountOfPorts == defaultAmountOfPorts) {
+        if (defaultAmountOfPorts != null && amountOfPorts == defaultAmountOfPorts) {
             return true;
         }
         return false;
