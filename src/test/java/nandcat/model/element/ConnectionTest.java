@@ -82,6 +82,6 @@ public class ConnectionTest extends TestCase {
 
         c.clockTicked(null);
         lamp.clockTicked(null);
-        assertFalse(lamp.getState());
+        assertTrue(lamp.getState());
     }
 }

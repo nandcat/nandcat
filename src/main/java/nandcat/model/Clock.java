@@ -89,7 +89,7 @@ public class Clock implements Runnable {
      * 
      * @return the current cycle-number
      */
-    protected int getCycle() {
+    public int getCycle() {
         return cycle;
     }
 
