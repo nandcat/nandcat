@@ -18,8 +18,11 @@ import nandcat.model.element.factory.ModuleBuilder;
 import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.Exporter;
 import nandcat.model.importexport.ExternalCircuitSource;
+import nandcat.model.importexport.FormatErrorHandler;
+import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
 import nandcat.view.StandardModuleLayouter;
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +44,11 @@ public class SEPAFImporterCircuitTest {
 
     private ModuleBuilderFactory factory;
 
+    /**
+     * Class logger instance.
+     */
+    private static final Logger LOG = Logger.getLogger(SEPAFImporterCircuitTest.class);
+
     @Before
     public void setup() throws IOException {
         factory = new ModuleBuilderFactory();
@@ -53,7 +61,25 @@ public class SEPAFImporterCircuitTest {
 
         importer = new SEPAFImporter();
         importer.setFile(file);
+        importer.setErrorHandler(new FormatErrorHandler() {
 
+            public void warning(FormatException exception) throws FormatException {
+                LOG.debug("Warning: ");
+                LOG.debug(exception.getMessage());
+            }
+
+            public void fatal(FormatException exception) throws FormatException {
+                LOG.debug("Fatal Error: ");
+                LOG.debug(exception.getMessage());
+                throw exception;
+            }
+
+            public void error(FormatException exception) throws FormatException {
+                LOG.debug("Error: ");
+                LOG.debug(exception.getMessage());
+                throw exception;
+            }
+        });
         importer.setFactory(factory);
     }
 

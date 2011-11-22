@@ -73,6 +73,14 @@ public interface ModelListener {
     void importFailed(ModelEvent e);
 
     /**
+     * Invoked when import of custom circuit failed.
+     * 
+     * @param e
+     *            ModelEvent which holds changes.
+     */
+    void importCustomCircuitFailed(ModelEvent e);
+
+    /**
      * Invoked when export succeeded.
      * 
      * @param e

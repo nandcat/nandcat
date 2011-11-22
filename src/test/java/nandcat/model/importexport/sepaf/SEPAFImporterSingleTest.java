@@ -5,8 +5,6 @@ import static org.junit.Assert.fail;
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
-
-import nandcat.model.Model;
 import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
@@ -18,9 +16,10 @@ import nandcat.model.element.OrGate;
 import nandcat.model.element.factory.ModuleBuilder;
 import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.Exporter;
+import nandcat.model.importexport.FormatErrorHandler;
+import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
 import nandcat.view.StandardModuleLayouter;
-
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -46,8 +45,7 @@ public class SEPAFImporterSingleTest {
     /**
      * Class logger instance.
      */
-    private static final Logger LOG = Logger
-            .getLogger(SEPAFImporterSingleTest.class);
+    private static final Logger LOG = Logger.getLogger(SEPAFImporterSingleTest.class);
 
     @Before
     public void setup() throws IOException {
@@ -60,6 +58,25 @@ public class SEPAFImporterSingleTest {
         exportC = (Circuit) factory.getCircuitBuilder().build();
 
         importer = new SEPAFImporter();
+        importer.setErrorHandler(new FormatErrorHandler() {
+
+            public void warning(FormatException exception) throws FormatException {
+                LOG.debug("Warning: ");
+                LOG.debug(exception.getMessage());
+            }
+
+            public void fatal(FormatException exception) throws FormatException {
+                LOG.debug("Fatal Error: ");
+                LOG.debug(exception.getMessage());
+                throw exception;
+            }
+
+            public void error(FormatException exception) throws FormatException {
+                LOG.debug("Error: ");
+                LOG.debug(exception.getMessage());
+                throw exception;
+            }
+        });
 
         importer.setFactory(factory);
         importer.setFile(file);
@@ -298,8 +315,7 @@ public class SEPAFImporterSingleTest {
 
     private void deepCompareCircuits(Circuit expected, Circuit actual) {
         if (!expected.getUuid().equals(actual.getUuid())) {
-            fail("Uuid differs: " + expected.getUuid() + " actual: "
-                    + actual.getUuid());
+            fail("Uuid differs: " + expected.getUuid() + " actual: " + actual.getUuid());
         } else {
             if (expected.getElements().size() != actual.getElements().size()) {
                 fail("Circuits differ in amount of elements");
@@ -307,54 +323,42 @@ public class SEPAFImporterSingleTest {
             for (Element actualElement : actual.getElements()) {
                 boolean found = false;
                 for (Element expectedElement : expected.getElements()) {
-                    if (actualElement.getClass().getName()
-                            .equals(expectedElement.getClass().getName())) {
+                    if (actualElement.getClass().getName().equals(expectedElement.getClass().getName())) {
                         if (actualElement instanceof Module) {
-                            if (((Module) actualElement).getRectangle().x == ((Module) expectedElement)
-                                    .getRectangle().x
+                            if (((Module) actualElement).getRectangle().x == ((Module) expectedElement).getRectangle().x
                                     && ((Module) actualElement).getRectangle().y == ((Module) expectedElement)
                                             .getRectangle().y) {
                                 // Found element at same position.
-                                if (deepCompareModules(
-                                        (Module) expectedElement,
-                                        (Module) actualElement)) {
+                                if (deepCompareModules((Module) expectedElement, (Module) actualElement)) {
                                     found = true;
                                 } else {
-                                    System.out
-                                            .println("Similar element found: "
-                                                    + (Module) actualElement);
+                                    System.out.println("Similar element found: " + (Module) actualElement);
                                 }
                             } else {
                                 LOG.debug("coords not right");
                             }
                         } else if (actualElement instanceof Connection) {
-                            if (deepCompareConnections(
-                                    (Connection) expectedElement,
-                                    (Connection) actualElement)) {
+                            if (deepCompareConnections((Connection) expectedElement, (Connection) actualElement)) {
                                 found = true;
                             }
                         }
                     }
                 }
                 if (!found) {
-                    fail("Element " + actualElement
-                            + " not found in expectations");
+                    fail("Element " + actualElement + " not found in expectations");
                 }
             }
         }
     }
 
-    private boolean deepCompareConnections(Connection expected,
-            Connection actual) {
+    private boolean deepCompareConnections(Connection expected, Connection actual) {
         LOG.debug("Check connection");
-        if (!deepCompareModules(expected.getNextModule(),
-                actual.getNextModule())) {
+        if (!deepCompareModules(expected.getNextModule(), actual.getNextModule())) {
             LOG.debug("Next Module not similar");
             return false;
         }
 
-        if (!deepCompareModules(expected.getPreviousModule(),
-                actual.getPreviousModule())) {
+        if (!deepCompareModules(expected.getPreviousModule(), actual.getPreviousModule())) {
             LOG.debug("Previous Module not similar");
             return false;
         }
@@ -363,9 +367,8 @@ public class SEPAFImporterSingleTest {
     }
 
     private boolean deepCompareModules(Module expected, Module actual) {
-        if (!(((Module) actual).getRectangle().x == ((Module) expected)
-                .getRectangle().x && ((Module) actual).getRectangle().y == ((Module) expected)
-                .getRectangle().y)) {
+        if (!(((Module) actual).getRectangle().x == ((Module) expected).getRectangle().x && ((Module) actual)
+                .getRectangle().y == ((Module) expected).getRectangle().y)) {
             LOG.debug("Coordinates of modules differ");
             return false;
         }
@@ -385,14 +388,12 @@ public class SEPAFImporterSingleTest {
             LOG.debug("One name is null");
             return false;
         }
-        if (expected.getName() != null
-                && !expected.getName().equals(actual.getName())) {
+        if (expected.getName() != null && !expected.getName().equals(actual.getName())) {
             LOG.debug("Name differs");
             return false;
         }
         if (expected instanceof ImpulseGenerator) {
-            if (((ImpulseGenerator) expected).getFrequency() != ((ImpulseGenerator) actual)
-                    .getFrequency()) {
+            if (((ImpulseGenerator) expected).getFrequency() != ((ImpulseGenerator) actual).getFrequency()) {
                 LOG.debug("Frequency differs");
                 return false;
             }

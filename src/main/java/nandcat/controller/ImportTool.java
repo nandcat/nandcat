@@ -9,7 +9,13 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import nandcat.I18N;
+import nandcat.I18N.I18NBundle;
 import nandcat.model.Model;
+import nandcat.model.ModelEvent;
+import nandcat.model.ModelListener;
+import nandcat.model.ModelListenerAdapter;
 import org.apache.log4j.Logger;
 
 /**
@@ -60,6 +66,11 @@ public class ImportTool implements Tool {
     private static final Logger LOG = Logger.getLogger(ImportTool.class);
 
     /**
+     * Translation unit.
+     */
+    private I18NBundle i18n = I18N.getBundle("toolimport");
+
+    /**
      * Constructs the ImportTool.
      * 
      * @param controller
@@ -68,6 +79,31 @@ public class ImportTool implements Tool {
     public ImportTool(Controller controller) {
         this.controller = controller;
         this.model = controller.getModel();
+        this.model.addListener(getModelListener());
+    }
+
+    /**
+     * Gets the model listener to register on model events.
+     * 
+     * @return ModelListener.
+     */
+    private ModelListener getModelListener() {
+        return new ModelListenerAdapter() {
+
+            @Override
+            public void importFailed(ModelEvent e) {
+                JOptionPane.showMessageDialog(controller.getView(), i18n.getString("dialog.importfail.text") + " \n "
+                        + e.getMessage(), i18n.getString("dialog.importfail.title"), JOptionPane.WARNING_MESSAGE);
+            }
+
+            @Override
+            public void importCustomCircuitFailed(ModelEvent e) {
+                JOptionPane.showMessageDialog(controller.getView(), i18n.getString("dialog.importcustomfail.text")
+                        + " \n " + e.getMessage(), i18n.getString("dialog.importcustomfail.title"),
+                        JOptionPane.WARNING_MESSAGE);
+            }
+
+        };
     }
 
     /**

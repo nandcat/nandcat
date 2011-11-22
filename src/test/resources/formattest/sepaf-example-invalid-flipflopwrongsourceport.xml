@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<circuits xmlns="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0" xmlns:nandcat="http://www.nandcat.de/xmlns/sepaf-extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0 http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0.xsd http://www.nandcat.de/xmlns/sepaf-extension http://www.nandcat.de/xmlns/sepaf-extension.xsd" main="0106a4f2-d65f-4839-800d-535e13caa1a9">
+  <circuit name="0106a4f2-d65f-4839-800d-535e13caa1a9">
+    <component posx="329" posy="360" name="6fe22c75" type="flipflop" />
+    <component posx="596" posy="355" name="1c04ec59" type="flipflop" />
+    <component posx="204" posy="307" name="ff21056" type="and" />
+    <component posx="209" posy="382" name="6726fef6" type="or" />
+    <component posx="413" posy="304" name="796528a2" type="id" />
+    <component posx="436" posy="395" name="411f2158" type="out" />
+    <connection source="6fe22c75" sourcePort="abc" target="796528a2" targetPort="a" />
+    <connection source="6fe22c75" sourcePort="nq" target="411f2158" targetPort="a" />
+    <connection source="ff21056" sourcePort="o" target="6fe22c75" targetPort="r" />
+    <connection source="6726fef6" sourcePort="o" target="6fe22c75" targetPort="s" />
+    <connection source="796528a2" sourcePort="p" target="1c04ec59" targetPort="r" />
+    <connection source="796528a2" sourcePort="o" target="1c04ec59" targetPort="s" />
+  </circuit>
+</circuits>
+

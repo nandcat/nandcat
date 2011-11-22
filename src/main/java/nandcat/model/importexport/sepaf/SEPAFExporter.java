@@ -81,6 +81,9 @@ public class SEPAFExporter implements Exporter {
      */
     private Map<String, String> externalCircuits = new HashMap<String, String>();
 
+    /**
+     * Error handler called if an error occur.
+     */
     private FormatErrorHandler errorHandler;
 
     /**
@@ -118,20 +121,22 @@ public class SEPAFExporter implements Exporter {
         root.setAttribute("schemaLocation", SEPAFFormat.NAMESPACE.SCHEMA_LOCATION, SEPAFFormat.NAMESPACE.XSI);
         this.root = root;
         root.addNamespaceDeclaration(SEPAFFormat.NAMESPACE.NANDCAT);
-        try {
-            root.setAttribute("main", circuit.getUuid());
-            root.addContent(buildCircuit(circuit, true));
-            XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
-            outputter.output(doc, new FileOutputStream(file));
-            return true;
-        } catch (FileNotFoundException e) {
-            setErrorMessage("File not found");
-        } catch (IOException e) {
-            setErrorMessage("Can not read file");
-        } catch (FormatException e) {
-            setErrorMessage("Internal error: " + e.getMessage());
-        }
 
+        try {
+            try {
+                root.setAttribute("main", circuit.getUuid());
+                root.addContent(buildCircuit(circuit, true));
+                XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+                outputter.output(doc, new FileOutputStream(file));
+                return true;
+            } catch (FileNotFoundException e) {
+                throwFatalError(new FormatException("File not found: " + file.getAbsolutePath()));
+            } catch (IOException e) {
+                throwFatalError(new FormatException("Can not read file: " + file.getAbsolutePath(), e));
+            }
+        } catch (FormatException e) {
+            // Already handled using error handler.
+        }
         return false;
     }
 
@@ -197,13 +202,8 @@ public class SEPAFExporter implements Exporter {
                 root.addContent(buildCircuit((Circuit) e, false));
                 innerCircuitsIndex.add(((Circuit) e).getUuid());
             }
-        }
-
-        if (e instanceof Module) {
+        } else if (e instanceof Module) {
             c = buildComponent((Module) e);
-        } else if (e instanceof Connection) {
-            LOG.error("Should not happen");
-            throw new IllegalStateException();
         }
         return c;
     }
@@ -340,15 +340,17 @@ public class SEPAFExporter implements Exporter {
      * @param modules
      *            Available set of modules in this circuit layer.
      * @return Build element.
+     * @throws FormatException
      */
-    private Content buildConnection(Connection c, Set<Module> modules) {
+    private Content buildConnection(Connection c, Set<Module> modules) throws FormatException {
         Element e = new Element("connection", SEPAFFormat.NAMESPACE.SEPAF);
 
         // Connection may point to element inside a circuit. Search module in this layer.
         Module sourceModule = getSourceModule(c, modules);
 
         if (sourceModule == null) {
-            LOG.error("Connection has no source Module");
+            throwError(new FormatException("Connection has no target Module"));
+            return null;
         }
         e.setAttribute("source", SEPAFFormat.getObjectAsUniqueString(sourceModule));
         e.setAttribute("sourcePort",
@@ -358,7 +360,8 @@ public class SEPAFExporter implements Exporter {
         Module targetModule = getTargetModule(c, modules);
 
         if (targetModule == null) {
-            LOG.error("Connection has no target Module");
+            throwError(new FormatException("Connection has no target Module"));
+            return null;
         }
         e.setAttribute("target", SEPAFFormat.getObjectAsUniqueString(targetModule));
 
@@ -465,6 +468,8 @@ public class SEPAFExporter implements Exporter {
     private void throwWarning(FormatException e) throws FormatException {
         if (this.errorHandler != null) {
             this.errorHandler.warning(e);
+        } else {
+            throw e;
         }
     }
 
@@ -480,6 +485,8 @@ public class SEPAFExporter implements Exporter {
     private void throwError(FormatException e) throws FormatException {
         if (this.errorHandler != null) {
             this.errorHandler.error(e);
+        } else {
+            throw e;
         }
     }
 
@@ -495,6 +502,8 @@ public class SEPAFExporter implements Exporter {
     private void throwFatalError(FormatException e) throws FormatException {
         if (this.errorHandler != null) {
             this.errorHandler.warning(e);
+        } else {
+            throw e;
         }
     }
 

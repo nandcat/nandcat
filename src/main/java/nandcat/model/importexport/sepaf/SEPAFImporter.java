@@ -12,6 +12,7 @@ import nandcat.Nandcat;
 import nandcat.model.FastDeepCopy;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Module;
+import nandcat.model.element.Port;
 import nandcat.model.element.factory.ModuleBuilder;
 import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.ExternalCircuitSource;
@@ -58,25 +59,6 @@ public class SEPAFImporter implements Importer {
      * Checks used to validate xml.
      */
     private XMLCheck[] checks = { new SEPAFCheckCircuitReference() };
-
-    /**
-     * Defines which errors should result in an invalid validation result. If a exception is thrown the validation
-     * result is invalid.
-     */
-    private static final ErrorHandler VALIDATION_ERROR_HANDLER = new ErrorHandler() {
-
-        public void warning(SAXParseException exception) throws SAXException {
-            throw exception;
-        }
-
-        public void fatalError(SAXParseException exception) throws SAXException {
-            throw exception;
-        }
-
-        public void error(SAXParseException exception) throws SAXException {
-            throw exception;
-        }
-    };
 
     /**
      * Map of supported file extensions connected with the format description.
@@ -167,27 +149,31 @@ public class SEPAFImporter implements Importer {
         if (factory == null) {
             throw new IllegalArgumentException("Factory not set");
         }
-
         try {
             if (validateXML()) {
-                Document doc = getDocument(file);
-                if (doc == null) {
-                    setErrorMessage("File not found");
+                try {
+                    Document doc = getDocument(file);
+                    if (doc == null) {
+                        throwFatalError(new FormatException("File not found: " + file.getAbsolutePath()));
+                        return false;
+                    }
+                    runXMLChecks(doc);
+                    importFromDocument(doc);
+                } catch (JDOMException e) {
+                    throwFatalError(new FormatException("XML could not be parsed: " + file.getAbsolutePath(), e));
+                    return false;
+                } catch (IOException e) {
+                    throwFatalError(new FormatException("File could not be read:" + file.getAbsolutePath(), e));
                     return false;
                 }
-                runXMLChecks(doc);
-                importFromDocument(doc);
 
             } else {
-                setErrorMessage("XML Validation failed");
+                throwFatalError(new FormatException("XML Validation failed"));
                 return false;
             }
-        } catch (FormatException f) {
-            System.out.println(f.getMessage());
-        } catch (Exception e) {
-            System.out.println("Exception caught: ");
-            e.printStackTrace();
-            throw new RuntimeException(e);
+        } catch (FormatException e) {
+            // Exception already handled through error handler.
+            return false;
         }
         return true;
 
@@ -230,6 +216,7 @@ public class SEPAFImporter implements Importer {
             circuit = (Circuit) FastDeepCopy.copy(circuitIndex.get(name));
         } else {
             if (name == null) {
+                // TODO Name null possible?
                 throw new IllegalArgumentException();
             }
             List mainComponents = null;
@@ -241,7 +228,7 @@ public class SEPAFImporter implements Importer {
                 e.printStackTrace();
             }
             if (mainComponents == null || mainComponents.isEmpty()) {
-                throw new FormatException("Circuit has no components: '" + name + "'");
+                throwWarning(new FormatException("Circuit has no components: '" + name + "'"));
             }
             circuit = (Circuit) factory.getCircuitBuilder().setUUID(name).build();
 
@@ -265,7 +252,7 @@ public class SEPAFImporter implements Importer {
                 e.printStackTrace();
             }
             if (connections == null || connections.isEmpty()) {
-                LOG.debug("Circuit '" + name + "' has no connections");
+                throwWarning(new FormatException("Circuit has no connections: '" + name + "'"));
             } else {
                 for (Object c : connections) {
                     if (c instanceof Element) {
@@ -285,7 +272,7 @@ public class SEPAFImporter implements Importer {
                     LOG.debug("Symbol set to circuit successfully");
                 }
             } catch (JDOMException e) {
-                // TODO Auto-generated catch block
+                // Does not happen!
                 e.printStackTrace();
             }
 
@@ -302,6 +289,8 @@ public class SEPAFImporter implements Importer {
      *            Parent Circuit of the module.
      * @param el
      *            Dom Element to build module of.
+     * @param doc
+     *            Document to work on.
      * @param index
      *            Index of modules to add the parsed module to.
      * @throws FormatException
@@ -318,10 +307,12 @@ public class SEPAFImporter implements Importer {
 
         // Position x and y needed for all components.
         if (aPosX == null) {
-            throw new FormatException("posx not found at :" + el.getQualifiedName());
+            throwError(new FormatException("No X coordinate found for component:" + el.getQualifiedName()));
+            return;
         }
         if (aPosY == null) {
-            throw new FormatException("posy not found at :" + el.getQualifiedName());
+            throwError(new FormatException("No Y coordinate found for component:" + el.getQualifiedName()));
+            return;
         }
 
         // Build point from coordinates.
@@ -329,7 +320,9 @@ public class SEPAFImporter implements Importer {
         try {
             location = new Point(aPosX.getIntValue(), aPosY.getIntValue());
         } catch (DataConversionException e) {
-            throw new FormatException("Coordinates not integer", e);
+            throwError(new FormatException("Coordinate found for component are not valid numbers:"
+                    + el.getQualifiedName()));
+            return;
         }
 
         // Get attributes from nandcat extension. null if not present.
@@ -346,14 +339,16 @@ public class SEPAFImporter implements Importer {
             try {
                 portsIn = aPortsIn.getIntValue();
             } catch (DataConversionException e) {
-                throw new FormatException("ports_in not integer", e);
+                throwWarning(new FormatException("Number of incoming ports can not be parsed for component:"
+                        + el.getQualifiedName()));
             }
         }
         if (aPortsOut != null) {
             try {
                 portsOut = aPortsOut.getIntValue();
             } catch (DataConversionException e) {
-                throw new FormatException("ports_in not integer", e);
+                throwWarning(new FormatException("Number of outgoing ports can not be parsed for component:"
+                        + el.getQualifiedName()));
             }
         }
 
@@ -415,7 +410,8 @@ public class SEPAFImporter implements Importer {
                 try {
                     timing = inTiming.getIntValue();
                 } catch (DataConversionException e) {
-                    throw new FormatException("'in_timinig' not integer", e);
+                    throwWarning(new FormatException("Timing of clock can not be parsed for component:"
+                            + el.getQualifiedName()));
                 }
                 if (timing != null) {
                     b.setFrequency(timing);
@@ -434,16 +430,20 @@ public class SEPAFImporter implements Importer {
                 if (externalCircuit != null) {
                     module = (Circuit) FastDeepCopy.copy(externalCircuit);
                 } else {
-                    throw new FormatException("External circuit cannot be found: " + externalIdentifier);
+                    throwError(new FormatException("External circuit cannot be found: " + externalIdentifier));
+                    return;
                 }
             } else {
-                throw new FormatException("External circuit source is not available but circuit is missing: "
-                        + externalIdentifier);
+                throwError(new FormatException(
+                        "External circuit cannot be found because external circuits are not available: "
+                                + externalIdentifier));
+                return;
             }
             module.getRectangle().setLocation(location);
             factory.getLayouter().layout((Circuit) module);
         } else {
-            throw new FormatException("Not a supported component type: '" + aType.getValue() + "'");
+            throwWarning(new FormatException("Not a supported component type: '" + aType.getValue() + "'"));
+            return;
         }
 
         if (aAnnotation != null) {
@@ -474,28 +474,51 @@ public class SEPAFImporter implements Importer {
         String sourcePort = el.getAttributeValue("sourcePort");
         String targetPort = el.getAttributeValue("targetPort");
         if (source == null || source.isEmpty()) {
-            throw new FormatException("Connection has no source");
+            throwError(new FormatException("Connection has no source"));
+            return;
         }
         if (target == null || target.isEmpty()) {
-            throw new FormatException("Connection has no target");
+            throwError(new FormatException("Connection has no target"));
+            return;
         }
         if (sourcePort == null || sourcePort.isEmpty()) {
-            throw new FormatException("Connection has no sourcePort");
+            throwError(new FormatException("Connection has no sourcePort"));
+            return;
         }
         if (targetPort == null || targetPort.isEmpty()) {
-            throw new FormatException("Connection has no targetPort");
+            throwError(new FormatException("Connection has no targetPort"));
+            return;
         }
+
         Module sourceModule = moduleIndex.get(source);
         Module targetModule = moduleIndex.get(target);
         if (sourceModule == null) {
-            throw new FormatException("Connection: source module '" + source + "' not found");
+            throwError(new FormatException("Connection: source module '" + source + "' not found"));
+            return;
         }
         if (targetModule == null) {
-            throw new FormatException("Connection: target module '" + target + "' not found");
+            throwError(new FormatException("Connection: target module '" + target + "' not found"));
+            return;
         }
 
-        c.addConnection(SEPAFFormat.getStringAsPort(true, sourceModule, sourcePort),
-                SEPAFFormat.getStringAsPort(false, targetModule, targetPort));
+        Port startPort = null;
+        try {
+            startPort = SEPAFFormat.getStringAsPort(true, sourceModule, sourcePort);
+        } catch (Exception e) {
+            throwError(new FormatException("Connection not created from '" + source + "' to '" + target + "'", e));
+            return;
+        }
+
+        Port endPort = null;
+        try {
+            endPort = SEPAFFormat.getStringAsPort(false, targetModule, targetPort);
+        } catch (Exception e) {
+            throwError(new FormatException("Connection not created from '" + source + "' to '" + target + "'", e));
+            return;
+        }
+        if (startPort != null && endPort != null) {
+            c.addConnection(startPort, endPort);
+        }
     }
 
     /**
@@ -540,12 +563,36 @@ public class SEPAFImporter implements Importer {
      */
     private boolean validateXML() {
         try {
-            XsdValidation.validate(new StreamSource(file), xsdSources, VALIDATION_ERROR_HANDLER);
+            XsdValidation.validate(new StreamSource(file), xsdSources, new ErrorHandler() {
+
+                public void warning(SAXParseException exception) throws SAXException {
+                    try {
+                        throwWarning(new FormatException("Warning while validation", exception));
+                    } catch (FormatException e) {
+                        throw new SAXException(e);
+                    }
+                }
+
+                public void fatalError(SAXParseException exception) throws SAXException {
+                    try {
+                        throwFatalError(new FormatException("Fatal Error while validation", exception));
+                    } catch (FormatException e) {
+                        throw new SAXException(e);
+                    }
+
+                }
+
+                public void error(SAXParseException exception) throws SAXException {
+                    try {
+                        throwError(new FormatException("Error while validation", exception));
+                    } catch (FormatException e) {
+                        throw new SAXException(e);
+                    }
+                }
+            });
         } catch (SAXException e) {
-            setErrorMessage(e.getLocalizedMessage());
             return false;
         } catch (IOException e) {
-            setErrorMessage(e.getLocalizedMessage());
             return false;
         }
         return true;
@@ -622,6 +669,8 @@ public class SEPAFImporter implements Importer {
     private void throwWarning(FormatException e) throws FormatException {
         if (this.errorHandler != null) {
             this.errorHandler.warning(e);
+        } else {
+            throw e;
         }
     }
 
@@ -637,6 +686,8 @@ public class SEPAFImporter implements Importer {
     private void throwError(FormatException e) throws FormatException {
         if (this.errorHandler != null) {
             this.errorHandler.error(e);
+        } else {
+            throw e;
         }
     }
 
@@ -652,6 +703,8 @@ public class SEPAFImporter implements Importer {
     private void throwFatalError(FormatException e) throws FormatException {
         if (this.errorHandler != null) {
             this.errorHandler.warning(e);
+        } else {
+            throw e;
         }
     }
 

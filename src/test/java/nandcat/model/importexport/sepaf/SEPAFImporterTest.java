@@ -26,9 +26,12 @@ import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 import nandcat.model.element.Port;
 import nandcat.model.element.factory.ModuleBuilderFactory;
+import nandcat.model.importexport.FormatErrorHandler;
+import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
 import nandcat.model.importexport.XsdValidation;
 import nandcat.view.StandardModuleLayouter;
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.ErrorHandler;
@@ -39,6 +42,11 @@ public class SEPAFImporterTest {
 
     private Importer importer;
 
+    /**
+     * Class logger instance.
+     */
+    private static final Logger LOG = Logger.getLogger(SEPAFImporterTest.class);
+
     @Before
     public void setUp() {
         importer = new SEPAFImporter();
@@ -46,12 +54,32 @@ public class SEPAFImporterTest {
         factory.setDefaults(new ModelElementDefaults());
         factory.setLayouter(new StandardModuleLayouter());
         importer.setFactory(factory);
+        importer.setErrorHandler(new FormatErrorHandler() {
+
+            public void warning(FormatException exception) throws FormatException {
+                LOG.debug("Warning: ");
+                LOG.debug(exception.getMessage());
+            }
+
+            public void fatal(FormatException exception) throws FormatException {
+                LOG.debug("Fatal Error: ");
+                LOG.debug(exception.getMessage());
+                throw exception;
+            }
+
+            public void error(FormatException exception) throws FormatException {
+                LOG.debug("Error: ");
+                LOG.debug(exception.getMessage());
+                throw exception;
+            }
+        });
     }
 
     @Test
     public void testLocation() {
         File file = getFile("../formattest/sepaf-example-valid-fewcomponents.xml");
         importer.setFile(file);
+
         ModuleBuilderFactory factory = new ModuleBuilderFactory();
         factory.setDefaults(new ModelElementDefaults());
         factory.setLayouter(new StandardModuleLayouter());

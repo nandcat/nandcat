@@ -28,6 +28,8 @@ import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.element.factory.ModuleLayouter;
 import nandcat.model.importexport.DrawExporter;
 import nandcat.model.importexport.Exporter;
+import nandcat.model.importexport.FormatErrorHandler;
+import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
 import nandcat.model.importexport.sepaf.SEPAFExporter;
 import nandcat.model.importexport.sepaf.SEPAFImporter;
@@ -95,6 +97,9 @@ public class Model implements ClockListener {
      */
     private boolean dirty;
 
+    /**
+     * Factory used to create elements.
+     */
     private ModuleBuilderFactory factory;
 
     /**
@@ -106,6 +111,49 @@ public class Model implements ClockListener {
      * Class logger instance.
      */
     private static final Logger LOG = Logger.getLogger(Model.class);
+
+    /**
+     * Import and Export Error messages from last import/export.
+     */
+    private List<String> importExportErrorMessages = new LinkedList<String>();
+
+    /**
+     * Error handler used to handle errors while importing or exporting.
+     */
+    private FormatErrorHandler importExportErrorHandler = new FormatErrorHandler() {
+
+        public void warning(FormatException exception) throws FormatException {
+            addMessage(exception.getMessage());
+            if (exception.getCause() != null) {
+                addMessage("Reason: " + exception.getCause().getMessage());
+            }
+        }
+
+        public void fatal(FormatException exception) throws FormatException {
+            addMessage(exception.getMessage());
+            if (exception.getCause() != null) {
+                addMessage("Reason: " + exception.getCause().getMessage());
+            }
+            throw exception;
+
+        }
+
+        public void error(FormatException exception) throws FormatException {
+            addMessage(exception.getMessage());
+            if (exception.getCause() != null) {
+                addMessage("Reason: " + exception.getCause().getMessage());
+            }
+            throw exception;
+        }
+
+        /**
+         * @param messages
+         *            the messages to set
+         */
+        private void addMessage(String msg) {
+            importExportErrorMessages.add(msg);
+        }
+    };
 
     /**
      * The constructor for the model class.
@@ -303,6 +351,7 @@ public class Model implements ClockListener {
         String ext = getFileExtension(file);
         if (exporters.containsKey(ext)) {
             Exporter ex = exporters.get(ext);
+            ex.setErrorHandler(importExportErrorHandler);
             ex.setFile(file);
             ex.setCircuit(circuit);
             if (ex instanceof DrawExporter) {
@@ -516,14 +565,14 @@ public class Model implements ClockListener {
                 return;
             }
         }
+        importExportErrorMessages = new LinkedList<String>();
         this.circuit = importFromFile(file);
         ModelEvent e2 = new ModelEvent();
         // import failed
         if (circuit == null) {
+            // Listeners already notified in 'importFromFile(..)'
             newCircuit();
-            for (ModelListener l : listeners) {
-                l.importFailed(e2);
-            }
+
         } else {
             for (ModelListener l : listeners) {
                 l.importSucceeded(e2);
@@ -925,6 +974,7 @@ public class Model implements ClockListener {
         LOG.debug("Load custom circuits: " + dir.getAbsolutePath());
         Importer importer = new SEPAFImporter();
         importer.setFactory(factory);
+        importer.setErrorHandler(importExportErrorHandler);
         Map<String, String> formats = importer.getFileFormats();
         for (File f : dir.listFiles()) {
             if (f.isFile() && f.canRead() && getFileExtension(f) != null) {
@@ -933,11 +983,23 @@ public class Model implements ClockListener {
                     // TODO fertigimplementierung von getName oder sonstwas im Importer abwarten, damit hier nicht der
                     // ganze Circuit eingelesen werden muss. Dafuer muss aber auch der Rueckgabewert von importCircuit()
                     // zuverlaessig sein. Siehe importFromFile (null check nach if(import.importCircuit()) noetig).
+                    importExportErrorMessages = new LinkedList<String>();
                     if (importer.importCircuit()) {
                         viewModules.add(new ViewModule(f.getName(), null, f.getName(), null));
                     } else {
+                        LOG.warn("File import failed! File: " + f.getAbsolutePath());
+                        StringBuilder errorMsgBuilder = new StringBuilder();
+                        errorMsgBuilder.append(f.getAbsolutePath());
+                        errorMsgBuilder.append(":\n");
+                        for (String msg : importExportErrorMessages) {
+                            errorMsgBuilder.append(msg);
+                            errorMsgBuilder.append("\n");
+                        }
                         ModelEvent e = new ModelEvent();
-                        e.setMessage("import failed: " + importer.getErrorMessage());
+                        e.setMessage(errorMsgBuilder.toString());
+                        for (ModelListener l : listeners) {
+                            l.importCustomCircuitFailed(e);
+                        }
                         // for (ModelListener l : listeners) {
                         // l.importFailed(e);
                         // }
@@ -1023,6 +1085,8 @@ public class Model implements ClockListener {
         if (importers.containsKey(ext)) {
             Importer im = importers.get(ext);
             im.setFile(file);
+            importExportErrorMessages = new LinkedList<String>();
+            im.setErrorHandler(importExportErrorHandler);
             if (im.importCircuit()) {
                 m = im.getCircuit();
                 if (m == null) {
@@ -1030,7 +1094,18 @@ public class Model implements ClockListener {
                 }
             } else {
                 LOG.warn("File import failed! File: " + file.getAbsolutePath());
+                StringBuilder errorMsgBuilder = new StringBuilder();
+                for (String msg : importExportErrorMessages) {
+                    errorMsgBuilder.append(msg);
+                    errorMsgBuilder.append("\n");
+                }
+                ModelEvent e = new ModelEvent();
+                e.setMessage(errorMsgBuilder.toString());
+                for (ModelListener l : listeners) {
+                    l.importFailed(e);
+                }
                 // TODO Fehlermeldung an View?
+
             }
         }
         return m;
