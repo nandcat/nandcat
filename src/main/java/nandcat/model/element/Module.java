@@ -30,7 +30,7 @@ public interface Module extends Element, DrawModule {
     Rectangle getRectangle();
 
     /**
-     * Set the module's rectangle.
+     * Set the module's rectangle. <b>Note: this won't relayout the Module's ports' positions!</b>
      * 
      * @param rectangle
      *            Rectangle to set module's shape to.

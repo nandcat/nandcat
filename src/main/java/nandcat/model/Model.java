@@ -22,6 +22,7 @@ import nandcat.model.element.Connection;
 import nandcat.model.element.DrawElement;
 import nandcat.model.element.Element;
 import nandcat.model.element.ImpulseGenerator;
+import nandcat.model.element.Lamp;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 import nandcat.model.element.factory.ModuleBuilderFactory;
@@ -183,13 +184,6 @@ public class Model implements ClockListener {
         initChecks();
         paused = false;
         activeImps = new HashSet<ImpulseGenerator>();
-        // spielwiese, bis der import funktioniert TODO entfernen
-        // LOG.shutdown();
-        // ImpulseGenerator impy = new ImpulseGenerator(5);
-        // Lamp lamp = new Lamp();
-        // circuit.addModule(impy, new Point(250, 450));
-        // circuit.addModule(lamp, new Point(400, 450));
-        // circuit.addConnection(impy.getOutPorts().get(0), lamp.getInPorts().get(0));
     }
 
     /**
@@ -271,7 +265,20 @@ public class Model implements ClockListener {
         // spawn new circuit / element _object_
         if (m.getFileName() != "") {
             module = importFromFile(new File(m.getFileName()));
-            factory.getLayouter().layout((Circuit) module);
+            Circuit c = (Circuit) module;
+
+            // Strip lamps and impulsegenerators of the circuit
+            List<Element> destroy = new LinkedList<Element>();
+            for (Element e : c.getElements()) {
+                if (e instanceof Lamp || e instanceof ImpulseGenerator) {
+                    destroy.add(e);
+                }
+            }
+            for (Element e : destroy) {
+                removeElement(e);
+            }
+
+            factory.getLayouter().layout(c);
         } else {
             module = m.getModule();
         }
@@ -388,11 +395,11 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Get all {@link ImpulseGenerator}s selected before starting the simulation.
+     * Get all {@link ImpulseGenerator}s activated before starting the simulation.
      * 
      * @return a Set of all {@link ImpulseGenerator}s selected before starting the simulation
      */
-    protected Set<ImpulseGenerator> getActiveImpulseGens() {
+    public Set<ImpulseGenerator> getActiveImpulseGens() {
         return activeImps;
     }
 
@@ -1090,9 +1097,7 @@ public class Model implements ClockListener {
         Point pr = module.getRectangle().getLocation();
         module.getRectangle().setLocation(pr.x - p.x, pr.y - p.y);
         module.setRectangle(r);
-        ModelEvent e = new ModelEvent(module);
         // ports auch bewegen
-        // TODO was ist, wenn Module ein Circuit ist?
         for (Port port : module.getInPorts()) {
             port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
                     port.getRectangle().getLocation().y - p.y);
@@ -1141,8 +1146,6 @@ public class Model implements ClockListener {
                 for (ModelListener l : listeners) {
                     l.importFailed(e);
                 }
-                // TODO Fehlermeldung an View?
-
             }
         }
         return m;

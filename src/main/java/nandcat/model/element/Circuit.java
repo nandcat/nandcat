@@ -404,6 +404,31 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     }
 
     /**
+     * Reset all Element states to false.
+     */
+    public void reset() {
+        for (Element e : getElements()) {
+            if (e instanceof Circuit) {
+                ((Circuit) e).reset();
+            } else if (e instanceof Module) {
+                Module m = (Module) e;
+                for (Port p : m.getOutPorts()) {
+                    p.setState(false, null);
+                }
+                for (Port p : m.getInPorts()) {
+                    p.setState(false, null);
+                }
+            }
+            // Note: no impulsegenerators can be encountered in this stage
+            // as they all were removed (in case of circuits added as modules)
+
+            if (e instanceof Connection) {
+                ((Connection) e).setState(false, null);
+            }
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     public String toString() {
