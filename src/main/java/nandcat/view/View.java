@@ -290,6 +290,12 @@ public class View extends JFrame {
         JMenuItem mstart = new JMenuItem(i18n.getString("menu.simulation.start"), KeyEvent.VK_S);
         mstart.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0));
         disableElements.add(mstart);
+        JMenuItem mreset = new JMenuItem(i18n.getString("menu.simulation.reset"), KeyEvent.VK_R);
+        mreset.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
+        disableElements.add(mreset);
+        JMenuItem mresetSpeed = new JMenuItem(i18n.getString("menu.simulation.resetSpeed"), KeyEvent.VK_0);
+        mresetSpeed.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0, ActionEvent.CTRL_MASK));
+        noDisableElements.add(mresetSpeed);
         JMenuItem mstop = new JMenuItem(i18n.getString("menu.simulation.stop"), KeyEvent.VK_E);
         mstop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0));
         noDisableElements.add(mstop);
@@ -354,6 +360,12 @@ public class View extends JFrame {
         /*
          * check if there are functionalities given for the MenuItems.
          */
+        if (toolFunctionalities.containsKey("resetSpeed")) {
+            setupMenuItem(mresetSpeed, "resetSpeed");
+        }
+        if (toolFunctionalities.containsKey("reset")) {
+            setupMenuItem(mreset, "reset");
+        }
         if (toolFunctionalities.containsKey("grid")) {
             setupMenuItem(mgrid, "grid");
         }
@@ -440,6 +452,9 @@ public class View extends JFrame {
         edit.add(mannotate);
         edit.add(mtoggle);
         edit.add(mgrid);
+        edit.addSeparator();
+        edit.add(mreset);
+        edit.add(mresetSpeed);
         file.add(mnew);
         file.add(mload);
         file.add(msave);
