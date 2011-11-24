@@ -2,6 +2,7 @@ package nandcat.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
@@ -32,6 +33,7 @@ import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeListener;
 import nandcat.I18N;
 import nandcat.I18N.I18NBundle;
@@ -69,7 +71,7 @@ public class View extends JFrame {
     /**
      * Default Button Dimension.
      */
-    private static final Dimension BUTTON_DIM = new Dimension(32, 32);
+    private static final Dimension BUTTON_DIM = new Dimension(38, 38);
 
     /**
      * Default Workspace Dimension.
@@ -217,6 +219,18 @@ public class View extends JFrame {
      * JScrollBar, the Vertical ScrollBar of the ScrollPane.
      */
     private JScrollBar vertical;
+
+    private JButton annotate;
+
+    private JButton toggle;
+
+    private JButton select;
+
+    private JButton create;
+
+    private JButton move;
+
+    private JButton selectedTool;
 
     /**
      * Constructs the view.
@@ -369,7 +383,6 @@ public class View extends JFrame {
         JMenuItem msave2 = new JMenuItem(i18n.getString("menu.file.saveas"), KeyEvent.VK_A);
         msave2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
         disableElements.add(msave2);
-        // TODO Testen ob keys gehen
         JMenuItem msave3 = new JMenuItem(i18n.getString("menu.file.saveselectedas"), KeyEvent.VK_A);
         msave3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.SHIFT_MASK));
         disableElements.add(msave3);
@@ -526,17 +539,18 @@ public class View extends JFrame {
      */
     private void buildToolbar(JToolBar toolBar) {
         toolBar.removeAll();
-        // Create Buttons of the Application. Setting Icons and Descriptions and
-        // Size.
+        // Create Buttons of the Application. Setting Icons and Descriptions and Size.
         ImageIcon startButtonIcon = new ImageIcon(getResource("startmiddle.png"));
         JButton start = new JButton("", startButtonIcon);
         start.setPreferredSize(buttonDim);
         start.setToolTipText(i18n.getString("tooltip.simulation.start"));
         disableElements.add(start);
         ImageIcon moveButtonIcon = new ImageIcon(getResource("movemiddle.png"));
-        JButton move = new JButton("", moveButtonIcon);
+        move = new JButton("", moveButtonIcon);
         move.setPreferredSize(buttonDim);
         move.setToolTipText(i18n.getString("tooltip.view.move"));
+        move.setBorder(new LineBorder(Color.lightGray, 1, true));
+        move.setBorderPainted(false);
         disableElements.add(move);
         ImageIcon stopButtonIcon = new ImageIcon(getResource("stopmiddle.png"));
         JButton stop = new JButton("", stopButtonIcon);
@@ -559,32 +573,39 @@ public class View extends JFrame {
         slower.setToolTipText(i18n.getString("tooltip.simulation.slower"));
         noDisableElements.add(slower);
         ImageIcon createButtonIcon = new ImageIcon(getResource("createmiddle.png"));
-        JButton create = new JButton("", createButtonIcon);
+        create = new JButton("", createButtonIcon);
         create.setPreferredSize(buttonDim);
         create.setToolTipText(i18n.getString("tooltip.create"));
+        create.setBorder(new LineBorder(Color.lightGray, 1, true));
+        create.setBorderPainted(false);
         disableElements.add(create);
         ImageIcon selectButtonIcon = new ImageIcon(getResource("selectmiddle.png"));
-        JButton select = new JButton("", selectButtonIcon);
+        select = new JButton("", selectButtonIcon);
         select.setPreferredSize(buttonDim);
         select.setToolTipText(i18n.getString("tooltip.select"));
+        select.setBorder(new LineBorder(Color.lightGray, 1, true));
+        select.setBorderPainted(false);
         noDisableElements.add(select);
         ImageIcon toggleButtonIcon = new ImageIcon(getResource("togglemiddle.png"));
-        JButton toggle = new JButton("", toggleButtonIcon);
+        toggle = new JButton("", toggleButtonIcon);
         toggle.setPreferredSize(buttonDim);
         toggle.setToolTipText(i18n.getString("tooltip.state.toggle"));
+        toggle.setBorder(new LineBorder(Color.lightGray, 1, true));
+        toggle.setBorderPainted(false);
         disableElements.add(toggle);
         ImageIcon annotateButtonIcon = new ImageIcon(getResource("annotatemiddle.png"));
-        JButton annotate = new JButton("", annotateButtonIcon);
+        annotate = new JButton("", annotateButtonIcon);
         annotate.setPreferredSize(buttonDim);
         annotate.setToolTipText(i18n.getString("tooltip.annotate"));
+        annotate.setBorder(new LineBorder(Color.lightGray, 1, true));
+        annotate.setBorderPainted(false);
         disableElements.add(annotate);
         ImageIcon pauseButtonIcon = new ImageIcon(getResource("pausemiddle.png"));
         JButton pause = new JButton("", pauseButtonIcon);
         pause.setPreferredSize(buttonDim);
         pause.setToolTipText(i18n.getString("tooltip.simulation.pause"));
         noDisableElements.add(pause);
-        // Check if there are Functionalities for the Buttons and if yes calling
-        // the setup.
+        // Check if there are Functionalities for the Buttons and if yes calling the setup.
         if (toolFunctionalities.containsKey("step")) {
             setupButton(step, "step");
         }
@@ -644,6 +665,9 @@ public class View extends JFrame {
         toolBar.add(pause);
         toolBar.add(stop);
         toolBar.addSeparator(SEPERATOR_DIM);
+        for (Component comp : toolBar.getComponents()) {
+            comp.setFocusable(false);
+        }
     }
 
     /**
@@ -689,8 +713,7 @@ public class View extends JFrame {
         }
         for (DrawElement elem : elementsToCheck) {
             if (elem instanceof Module) {
-                // If elem is a Module we must check if it is out of the
-                // workspace and if yes extend the workspace.
+                // If elem is a Module we must check if it is out of the workspace and if yes extend the workspace.
                 if (((Module) elem).getRectangle().x >= workspace.getWidth()) {
                     workspace.setSize(((Module) elem).getRectangle().x, workspace.getHeight());
                     workspace.setPreferredSize(new Dimension(((Module) elem).getRectangle().x + SPACE_ARROUND_ELEM,
@@ -863,6 +886,28 @@ public class View extends JFrame {
             modules.setName("selectModule");
         }
         toolBar.add(modules, 0);
+    }
+
+    public void focuseButton(String name) {
+        if (selectedTool != null) {
+            selectedTool.setBorderPainted(false);
+        }
+        if (name.equals("move")) {
+            move.setBorderPainted(true);
+            selectedTool = move;
+        } else if (name.equals("select")) {
+            select.setBorderPainted(true);
+            selectedTool = select;
+        } else if (name.equals("toggle")) {
+            toggle.setBorderPainted(true);
+            selectedTool = toggle;
+        } else if (name.equals("annotate")) {
+            annotate.setBorderPainted(true);
+            selectedTool = annotate;
+        } else if (name.equals("create")) {
+            create.setBorderPainted(true);
+            selectedTool = create;
+        }
     }
 
     /**
