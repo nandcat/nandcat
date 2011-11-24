@@ -116,6 +116,12 @@ public class Workspace extends JPanel {
         setupWorkspace();
         mouseListener = new MouseAdapter() {
 
+            public void mouseExited(MouseEvent e) {
+                selectRect = null;
+                connectLine = null;
+                repaint();
+            }
+
             public void mouseMoved(MouseEvent e) {
                 notifyMouseMoved(e);
             }

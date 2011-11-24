@@ -1,10 +1,15 @@
 package nandcat.view;
 
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.SplashScreen;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -50,6 +55,11 @@ public class View extends JFrame {
      * Frame title of the main frame.
      */
     private static final String FRAME_TITLE = "NANDcat";
+    
+    /**
+     * Icon of the Application.
+     */
+    private static final Image cat = Toolkit.getDefaultToolkit().getImage("src/resources/catsmal.png");
 
     /**
      * View over the Workspace.
@@ -155,6 +165,12 @@ public class View extends JFrame {
      * JScrollBar, the Vertical ScrollBar of the ScrollPane.
      */
     private JScrollBar vertical;
+    
+    static void renderSplashFrame(Graphics2D g) {
+        g.setComposite(AlphaComposite.Clear);
+        g.fillRect(120,140,200,40);
+        g.setPaintMode();
+    }
 
     /**
      * Constructs the view.
@@ -197,6 +213,7 @@ public class View extends JFrame {
             }
         });
         setTitle(FRAME_TITLE);
+        setIconImage(cat);
         setSize(1024, 768);
         setLocation(frameLocation);
         setLayout(new BorderLayout());
@@ -217,6 +234,28 @@ public class View extends JFrame {
         getContentPane().add(scroller, BorderLayout.CENTER);
         getContentPane().add(toolBar, BorderLayout.WEST);
         getContentPane().add(menubar, BorderLayout.NORTH);
+        final SplashScreen splash = SplashScreen.getSplashScreen();
+        if (splash == null) {
+            System.out.println("SplashScreen.getSplashScreen() returned null");
+            return;
+        }
+        Graphics2D g = splash.createGraphics();
+        if (g == null) {
+            System.out.println("g is null");
+            return;
+        }
+        for(int i=0; i<20; i++) {
+            renderSplashFrame(g);
+            splash.update();
+            try {
+                Thread.sleep(90);
+            }
+            catch(InterruptedException e) {
+            }
+        }
+        splash.close();
+        setVisible(true);
+        toFront();
     }
 
     /**
