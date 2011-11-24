@@ -2,7 +2,6 @@ package nandcat.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
@@ -202,7 +201,6 @@ public class View extends JFrame {
     /**
      * JComboBox with the Available Modules.
      */
-    @SuppressWarnings("rawtypes")
     private JComboBox modules;
 
     /**
@@ -295,10 +293,10 @@ public class View extends JFrame {
                     System.out.println(e.getCause());
                 }
             }
+            splash.close();
+            setVisible(true);
+            toFront();
         }
-        splash.close();
-        setVisible(true);
-        toFront();
     }
 
     /**
@@ -863,7 +861,6 @@ public class View extends JFrame {
      * Extension of JComboBox to ensure the PopupMenu of the ComoBox is wide enough to Display the full names of the
      * Elements.
      */
-    @SuppressWarnings("rawtypes")
     public class WideComboBox extends JComboBox {
 
         /**
