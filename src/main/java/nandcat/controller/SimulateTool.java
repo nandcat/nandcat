@@ -281,6 +281,9 @@ public class SimulateTool implements Tool {
                     model.resetActiveImpulseGenerators();
                 } else if (e.getActionCommand().equals("resetSpeed")) {
                     Clock clock = model.getClock();
+                    if (defaultSleepTime == 0) {
+                        defaultSleepTime = clock.getSleepTime();
+                    }
                     clock.setSleepTime(defaultSleepTime);
                 }
             }
