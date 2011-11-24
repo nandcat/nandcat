@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,7 +60,7 @@ public class View extends JFrame {
     /**
      * Icon of the Application.
      */
-    private static final Image cat = Toolkit.getDefaultToolkit().getImage("src/resources/catsmal.png");
+    private static final Image CAT = Toolkit.getDefaultToolkit().getImage("src/resources/catsmal.png");
 
     /**
      * View over the Workspace.
@@ -166,6 +167,12 @@ public class View extends JFrame {
      */
     private JScrollBar vertical;
 
+    /**
+     * Static class for the SplasScreen.
+     * 
+     * @param g
+     *            Grahpics2D to draw on.
+     */
     static void renderSplashFrame(Graphics2D g) {
         g.setComposite(AlphaComposite.Clear);
         g.fillRect(120, 140, 200, 40);
@@ -204,16 +211,17 @@ public class View extends JFrame {
         model.addListener(new ModelListenerAdapter() {
 
             public void elementsChanged(ModelEvent e) {
-                allModulesInSight();
+                allModulesInSight(e.getElements());
                 redraw(e);
             }
 
             public void importSucceeded(ModelEvent e) {
-                allModulesInSight();
+                Set<DrawElement> set = null;
+                allModulesInSight(set);
             }
         });
         setTitle(FRAME_TITLE);
-        setIconImage(cat);
+        setIconImage(CAT);
         setSize(1024, 768);
         setLocation(frameLocation);
         setLayout(new BorderLayout());
@@ -602,9 +610,18 @@ public class View extends JFrame {
 
     /**
      * Checks after an Import if all Elements are on the workspace or if it has to be extended.
+     * 
+     * @param set
+     *            Set<DrawElement> the Set with the Elements to Check.
      */
-    private void allModulesInSight() {
-        for (DrawElement elem : model.getDrawElements()) {
+    private void allModulesInSight(Set<DrawElement> set) {
+        List<DrawElement> elementsToCheck = new LinkedList<DrawElement>();
+        if (set == null) {
+            elementsToCheck = model.getDrawElements();
+        } else {
+            elementsToCheck.addAll(set);
+        }
+        for (DrawElement elem : elementsToCheck) {
             if (elem instanceof Module) {
                 // If elem is a Module we must check if it is out of the workspace and if yes extend the workspace.
                 if (((Module) elem).getRectangle().x >= workspace.getWidth()) {
