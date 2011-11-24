@@ -220,16 +220,34 @@ public class View extends JFrame {
      */
     private JScrollBar vertical;
 
+    /**
+     * JButton, the Annotate Button.
+     */
     private JButton annotate;
 
+    /**
+     * JButton, the Toggle Button.
+     */
     private JButton toggle;
 
+    /**
+     * JButton, the SElect Button.
+     */
     private JButton select;
 
+    /**
+     * JButton, the Create Button.
+     */
     private JButton create;
 
+    /**
+     * JButton, the Move Button.
+     */
     private JButton move;
 
+    /**
+     * JButton, the Button actual active.
+     */
     private JButton selectedTool;
 
     /**
@@ -888,6 +906,12 @@ public class View extends JFrame {
         toolBar.add(modules, 0);
     }
 
+    /**
+     * Makes the Border around the active Tool Visible.
+     * 
+     * @param name
+     *            String representing the name of the active Tool.
+     */
     public void focuseButton(String name) {
         if (selectedTool != null) {
             selectedTool.setBorderPainted(false);
