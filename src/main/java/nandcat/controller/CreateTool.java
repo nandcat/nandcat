@@ -121,6 +121,7 @@ public class CreateTool implements Tool {
      */
     public void setActive(boolean active) {
         if (active) {
+            view.focuseButton("create");
             setListeners();
             isYetActive = true;
             if (selectedModule == null) {

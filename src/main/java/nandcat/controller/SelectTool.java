@@ -113,6 +113,7 @@ public class SelectTool implements Tool {
      */
     public void setActive(boolean active) {
         if (active) {
+            view.focuseButton("select");
             setListeners();
         } else {
             removeListeners();
@@ -233,7 +234,6 @@ public class SelectTool implements Tool {
                 } else if (e.getActionCommand().equals("grid")) {
                     boolean b = gridActive;
                     gridActive = !b;
-                    activateTool();
                     view.getWorkspace().setGridEnable(gridActive, GRID_SIZE);
                     if (gridActive) {
                         model.adaptAllToGrid(GRID_SIZE);

@@ -89,7 +89,7 @@ public class ViewTool implements Tool {
             // if size is changed it my happen that former invisible elements come in sight.
             public void stateChanged(ChangeEvent e) {
                 view.giveViewPortRect();
-                // view.getWorkspace().redraw();
+                view.getWorkspace().redraw();
             }
         });
         view.getWorkspace().addListener(new WorkspaceListenerAdapter() {
@@ -109,6 +109,7 @@ public class ViewTool implements Tool {
      */
     public void setActive(boolean active) {
         if (active) {
+            view.focuseButton("move");
             if (workspaceListener == null) {
                 workspaceListener = new WorkspaceListenerAdapter() {
 
@@ -129,8 +130,8 @@ public class ViewTool implements Tool {
                         view.setViewportPosition(dx, dy);
                         offset = e.getLocation();
                         // redraw new elements in sight
-                        // view.giveViewPortRect();
-                        // view.getWorkspace().redraw();
+                        view.giveViewPortRect();
+                        view.getWorkspace().redraw();
                     }
                 };
             }

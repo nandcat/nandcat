@@ -99,6 +99,7 @@ public class AnnotationTool implements Tool {
      */
     public void setActive(boolean active) {
         if (active) {
+            view.focuseButton("annotate");
             setWorkspaceListener();
         } else {
             unsetWorkspaceListeners();
