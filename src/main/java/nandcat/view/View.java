@@ -55,7 +55,7 @@ public class View extends JFrame {
      * Frame title of the main frame.
      */
     private static final String FRAME_TITLE = "NANDcat";
-    
+
     /**
      * Icon of the Application.
      */
@@ -165,10 +165,10 @@ public class View extends JFrame {
      * JScrollBar, the Vertical ScrollBar of the ScrollPane.
      */
     private JScrollBar vertical;
-    
+
     static void renderSplashFrame(Graphics2D g) {
         g.setComposite(AlphaComposite.Clear);
-        g.fillRect(120,140,200,40);
+        g.fillRect(120, 140, 200, 40);
         g.setPaintMode();
     }
 
@@ -237,25 +237,24 @@ public class View extends JFrame {
         final SplashScreen splash = SplashScreen.getSplashScreen();
         if (splash == null) {
             System.out.println("SplashScreen.getSplashScreen() returned null");
-            return;
-        }
-        Graphics2D g = splash.createGraphics();
-        if (g == null) {
-            System.out.println("g is null");
-            return;
-        }
-        for(int i=0; i<20; i++) {
-            renderSplashFrame(g);
-            splash.update();
-            try {
-                Thread.sleep(90);
+        } else {
+            Graphics2D g = splash.createGraphics();
+            if (g == null) {
+                System.out.println("g is null");
+                return;
             }
-            catch(InterruptedException e) {
+            for (int i = 0; i < 20; i++) {
+                renderSplashFrame(g);
+                splash.update();
+                try {
+                    Thread.sleep(90);
+                } catch (InterruptedException e) {
+                }
             }
+            splash.close();
+            setVisible(true);
+            toFront();
         }
-        splash.close();
-        setVisible(true);
-        toFront();
     }
 
     /**
