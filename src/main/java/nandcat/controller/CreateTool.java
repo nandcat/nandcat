@@ -124,7 +124,9 @@ public class CreateTool implements Tool {
             isYetActive = true;
             if (selectedModule == null) {
                 // Sets a default Module.
-                selectedModule = model.getViewModules().get(0);
+                if (!model.getViewModules().isEmpty()) {
+                    selectedModule = model.getViewModules().get(0);
+                }
             }
         } else {
             removeListeners();
