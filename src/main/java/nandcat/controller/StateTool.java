@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -97,15 +98,18 @@ public class StateTool implements Tool {
         }
     }
 
+    /**
+     * Set the Listeners on the Workspace and if Listener is Null creates new one.
+     */
     private void setListeners() {
         if (workspaceListener == null) {
             workspaceListener = new WorkspaceListenerAdapter() {
 
                 @Override
                 public void mouseClicked(WorkspaceEvent e) {
-                    if (e.getButton() == 1) {
+                    if (e.getButton() == MouseEvent.BUTTON1) {
                         changeState(e.getLocation());
-                    } else if (e.getButton() == 3) {
+                    } else if (e.getButton() == MouseEvent.BUTTON3) {
                         popTextField(e.getLocation());
                     }
                 }
@@ -114,10 +118,19 @@ public class StateTool implements Tool {
         view.getWorkspace().addListener(workspaceListener);
     }
 
+    /**
+     * Removes Listener on the Workspace.
+     */
     private void removeListeners() {
         view.getWorkspace().removeListener(workspaceListener);
     }
 
+    /**
+     * Changes the state of the Element under the Point if it is a ImpulseGenerator.
+     * 
+     * @param point
+     *            the Point where it was clicked.
+     */
     private void changeState(Point point) {
         assert point != null;
         Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(point, new Dimension(1, 1)));
@@ -133,8 +146,10 @@ public class StateTool implements Tool {
     }
 
     /**
+     * If clicked on a ImpulseGenerator this pops up the TextField, waiting for the new Frequenz set.
      * 
      * @param point
+     *            Point where it was clicked, under this the IG must be.
      */
     private void popTextField(Point point) {
         assert point != null;
@@ -148,9 +163,13 @@ public class StateTool implements Tool {
                     int freq = -1;
                     try {
                         freq = Integer.parseInt(frequenzy);
-                        worked = (freq >= 0 ? true : false);
-                        System.out.println(worked);
+                        if (freq >= 0) {
+                            worked = true;
+                        } else {
+                            worked = false;
+                        }
                     } catch (Exception e) {
+                        System.out.println(e.getMessage());
                     }
                     worked = model.setFrequency(ig, freq);
                     if (!worked) {
@@ -162,6 +181,13 @@ public class StateTool implements Tool {
         }
     }
 
+    /**
+     * This Method returns the TextField which ask for the new Frequency.
+     * 
+     * @param frequency
+     *            old Frequency shown in the TextField.
+     * @return String with new Frequency.
+     */
     private String askForFrequenz(int frequency) {
         return (String) JOptionPane.showInputDialog(view, i18n.getString("dialog.state.text"),
                 i18n.getString("dialog.state.title"), JOptionPane.PLAIN_MESSAGE, null, null, frequency);
@@ -184,6 +210,9 @@ public class StateTool implements Tool {
         return map;
     }
 
+    /**
+     * Requests activation for this tool by the Controller.
+     */
     private void activateTool() {
         controller.requestActivation(this);
     }

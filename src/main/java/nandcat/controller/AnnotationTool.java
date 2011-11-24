@@ -49,7 +49,7 @@ public class AnnotationTool implements Tool {
     /**
      * Icon representation of the Tool.
      */
-    private ImageIcon icon; // TODO icon setzen
+    private ImageIcon icon;
 
     /**
      * Translation unit.

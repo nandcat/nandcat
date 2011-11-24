@@ -623,9 +623,9 @@ public class View extends JFrame {
         // Adding Buttons to the ToolBar.
         toolBar.add(modules);
         toolBar.addSeparator(SEPERATOR_DIM);
+        toolBar.add(select);
         toolBar.add(create);
         toolBar.add(toggle);
-        toolBar.add(select);
         toolBar.add(move);
         toolBar.add(annotate);
         toolBar.addSeparator(SEPERATOR_DIM);
