@@ -143,18 +143,20 @@ public class StateTool implements Tool {
             if (element instanceof ImpulseGenerator) {
                 ImpulseGenerator ig = (ImpulseGenerator) element;
                 String frequenzy = askForFrequenz(ig.getFrequency());
-                boolean worked = false;
-                int freq = -1;
-                try {
-                    freq = Integer.parseInt(frequenzy);
-                    worked = (freq >= 0 ? true : false);
-                    System.out.println(worked);
-                } catch (Exception e) {
-                }
-                worked = model.setFrequency(ig, freq);
-                if (!worked) {
-                    JOptionPane.showMessageDialog(view, i18n.getString("dialog.state.freqerrormsg"),
-                            i18n.getString("dialog.state.freqerrortitle"), JOptionPane.ERROR_MESSAGE);
+                if (frequenzy != null) {
+                    boolean worked = false;
+                    int freq = -1;
+                    try {
+                        freq = Integer.parseInt(frequenzy);
+                        worked = (freq >= 0 ? true : false);
+                        System.out.println(worked);
+                    } catch (Exception e) {
+                    }
+                    worked = model.setFrequency(ig, freq);
+                    if (!worked) {
+                        JOptionPane.showMessageDialog(view, i18n.getString("dialog.state.freqerrormsg"),
+                                i18n.getString("dialog.state.freqerrortitle"), JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
         }
