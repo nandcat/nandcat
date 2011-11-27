@@ -13,6 +13,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +38,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.event.ChangeListener;
 import nandcat.I18N;
 import nandcat.I18N.I18NBundle;
+import nandcat.Nandcat;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListenerAdapter;
@@ -60,7 +62,7 @@ public class View extends JFrame {
     /**
      * Icon of the Application.
      */
-    private static final Image CAT = Toolkit.getDefaultToolkit().getImage("src/resources/catsmal.png");
+    private static final Image CAT = Toolkit.getDefaultToolkit().getImage(getResource("catsmal.png"));
 
     /**
      * View over the Workspace.
@@ -196,7 +198,8 @@ public class View extends JFrame {
                 }
             }
         } catch (Exception e) {
-            // No catch needed cause if Nimbus is not installed the standard LookAndFeel will be used.
+            // No catch needed cause if Nimbus is not installed the standard
+            // LookAndFeel will be used.
         }
         setupGui(model);
     }
@@ -230,7 +233,8 @@ public class View extends JFrame {
         workspace.setPreferredSize(workspaceDimension);
         workspace.setSize(workspaceDimension);
         workspace.setBackground(Color.white);
-        workspace.setLayout(null); // no layout is required for free move of the components
+        workspace.setLayout(null); // no layout is required for free move of the
+                                   // components
         scroller = new JScrollPane(workspace);
         scroller.setWheelScrollingEnabled(false);
         horizontal = scroller.getHorizontalScrollBar();
@@ -464,6 +468,10 @@ public class View extends JFrame {
         menubar.add(cycle);
     }
 
+    private static URL getResource(String file) {
+        return Nandcat.class.getClassLoader().getResource(file);
+    }
+
     /**
      * set up the ToolBar of the Frame. Creates Buttons and gives them Functionalities according to the set of
      * toolFunctionalities given from the Controller.
@@ -473,63 +481,65 @@ public class View extends JFrame {
      */
     private void buildToolbar(JToolBar toolBar) {
         toolBar.removeAll();
-        // Create Buttons of the Application. Setting Icons and Descriptions and Size.
-        ImageIcon startButtonIcon = new ImageIcon("src/resources/startmiddle.png");
+        // Create Buttons of the Application. Setting Icons and Descriptions and
+        // Size.
+        ImageIcon startButtonIcon = new ImageIcon(getResource("startmiddle.png"));
         JButton start = new JButton("", startButtonIcon);
         start.setPreferredSize(buttonDim);
         start.setToolTipText(i18n.getString("tooltip.simulation.start"));
         disableElements.add(start);
-        ImageIcon moveButtonIcon = new ImageIcon("src/resources/movemiddle.png");
+        ImageIcon moveButtonIcon = new ImageIcon(getResource("movemiddle.png"));
         JButton move = new JButton("", moveButtonIcon);
         move.setPreferredSize(buttonDim);
         move.setToolTipText(i18n.getString("tooltip.view.move"));
         disableElements.add(move);
-        ImageIcon stopButtonIcon = new ImageIcon("src/resources/stopmiddle.png");
+        ImageIcon stopButtonIcon = new ImageIcon(getResource("stopmiddle.png"));
         JButton stop = new JButton("", stopButtonIcon);
         stop.setPreferredSize(buttonDim);
         stop.setToolTipText(i18n.getString("tooltip.simulation.stop"));
         noDisableElements.add(stop);
-        ImageIcon stepButtonIcon = new ImageIcon("src/resources/stepmiddle.png");
+        ImageIcon stepButtonIcon = new ImageIcon(getResource("stepmiddle.png"));
         JButton step = new JButton("", stepButtonIcon);
         step.setPreferredSize(buttonDim);
         step.setToolTipText(i18n.getString("tooltip.simulation.step"));
         noDisableElements.add(step);
-        ImageIcon fasterButtonIcon = new ImageIcon("src/resources/plusmiddle.png");
+        ImageIcon fasterButtonIcon = new ImageIcon(getResource("plusmiddle.png"));
         JButton faster = new JButton("", fasterButtonIcon);
         faster.setPreferredSize(buttonDim);
         faster.setToolTipText(i18n.getString("tooltip.simulation.faster"));
         noDisableElements.add(faster);
-        ImageIcon slowerButtonIcon = new ImageIcon("src/resources/minusmiddle.png");
+        ImageIcon slowerButtonIcon = new ImageIcon(getResource("minusmiddle.png"));
         JButton slower = new JButton("", slowerButtonIcon);
         slower.setPreferredSize(buttonDim);
         slower.setToolTipText(i18n.getString("tooltip.simulation.slower"));
         noDisableElements.add(slower);
-        ImageIcon createButtonIcon = new ImageIcon("src/resources/createmiddle.png");
+        ImageIcon createButtonIcon = new ImageIcon(getResource("createmiddle.png"));
         JButton create = new JButton("", createButtonIcon);
         create.setPreferredSize(buttonDim);
         create.setToolTipText(i18n.getString("tooltip.create"));
         disableElements.add(create);
-        ImageIcon selectButtonIcon = new ImageIcon("src/resources/selectmiddle.png");
+        ImageIcon selectButtonIcon = new ImageIcon(getResource("selectmiddle.png"));
         JButton select = new JButton("", selectButtonIcon);
         select.setPreferredSize(buttonDim);
         select.setToolTipText(i18n.getString("tooltip.select"));
         noDisableElements.add(select);
-        ImageIcon toggleButtonIcon = new ImageIcon("src/resources/togglemiddle.png");
+        ImageIcon toggleButtonIcon = new ImageIcon(getResource("togglemiddle.png"));
         JButton toggle = new JButton("", toggleButtonIcon);
         toggle.setPreferredSize(buttonDim);
         toggle.setToolTipText(i18n.getString("tooltip.state.toggle"));
         disableElements.add(toggle);
-        ImageIcon annotateButtonIcon = new ImageIcon("src/resources/annotatemiddle.png");
+        ImageIcon annotateButtonIcon = new ImageIcon(getResource("annotatemiddle.png"));
         JButton annotate = new JButton("", annotateButtonIcon);
         annotate.setPreferredSize(buttonDim);
         annotate.setToolTipText(i18n.getString("tooltip.annotate"));
         disableElements.add(annotate);
-        ImageIcon pauseButtonIcon = new ImageIcon("src/resources/pausemiddle.png");
+        ImageIcon pauseButtonIcon = new ImageIcon(getResource("pausemiddle.png"));
         JButton pause = new JButton("", pauseButtonIcon);
         pause.setPreferredSize(buttonDim);
         pause.setToolTipText(i18n.getString("tooltip.simulation.pause"));
         noDisableElements.add(pause);
-        // Check if there are Functionalities for the Buttons and if yes calling the setup.
+        // Check if there are Functionalities for the Buttons and if yes calling
+        // the setup.
         if (toolFunctionalities.containsKey("step")) {
             setupButton(step, "step");
         }
@@ -638,7 +648,8 @@ public class View extends JFrame {
         }
         for (DrawElement elem : elementsToCheck) {
             if (elem instanceof Module) {
-                // If elem is a Module we must check if it is out of the workspace and if yes extend the workspace.
+                // If elem is a Module we must check if it is out of the
+                // workspace and if yes extend the workspace.
                 if (((Module) elem).getRectangle().x >= workspace.getWidth()) {
                     workspace.setSize(((Module) elem).getRectangle().x, workspace.getHeight());
                     workspace.setPreferredSize(new Dimension(((Module) elem).getRectangle().x + 100, workspace
