@@ -581,6 +581,7 @@ public class Model implements ClockListener {
      *            File to import top-level Circuit from
      */
     public void importRootFromFile(File file) {
+        LOG.debug("Start importing");
         ModelEvent e = new ModelEvent();
         // Let listeners interrupt. If interrupted don't create a new circuit.
         for (ModelListener l : listeners) {
@@ -590,6 +591,7 @@ public class Model implements ClockListener {
         }
         importExportErrorMessages = new LinkedList<String>();
         this.circuit = importFromFile(file);
+        LOG.debug("Import finished");
         ModelEvent e2 = new ModelEvent();
         // import failed
         if (circuit == null) {
@@ -601,7 +603,9 @@ public class Model implements ClockListener {
                 l.importSucceeded(e2);
             }
         }
+        LOG.debug("Notifing listeners");
         notifyForChangedElems();
+        LOG.debug("Listeners notified");
     }
 
     /**

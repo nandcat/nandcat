@@ -102,6 +102,16 @@ public class SEPAFImporter implements Importer {
     private FormatErrorHandler errorHandler;
 
     /**
+     * DEBUG Component counter.
+     */
+    private int componentCounter = 0;
+
+    /**
+     * DEBUG Connection counter.
+     */
+    private int connectionCounter = 0;
+
+    /**
      * Sets the instance up.
      */
     public SEPAFImporter() {
@@ -130,6 +140,8 @@ public class SEPAFImporter implements Importer {
         importedCircuit = null;
         file = null;
         errorMsg = null;
+        componentCounter = 0;
+        connectionCounter = 0;
     }
 
     /**
@@ -150,15 +162,23 @@ public class SEPAFImporter implements Importer {
             throw new IllegalArgumentException("Factory not set");
         }
         try {
+            LOG.debug("Validating XML starting");
             if (validateXML()) {
+                LOG.debug("Validating XML finished");
                 try {
+                    LOG.debug("Document parsing starting");
                     Document doc = getDocument(file);
+                    LOG.debug("Document parsing finished");
                     if (doc == null) {
                         throwFatalError(new FormatException("File not found: " + file.getAbsolutePath()));
                         return false;
                     }
+                    LOG.debug("XML checks starting");
                     runXMLChecks(doc);
+                    LOG.debug("XML checks finished");
+                    LOG.debug("Import starting");
                     importFromDocument(doc);
+                    LOG.debug("Import finished");
                 } catch (JDOMException e) {
                     throwFatalError(new FormatException("XML could not be parsed: " + file.getAbsolutePath(), e));
                     return false;
@@ -299,6 +319,10 @@ public class SEPAFImporter implements Importer {
     private void buildModule(Circuit c, Element el, Document doc, Map<String, Module> index) throws FormatException {
         if (el == null) {
             throw new IllegalArgumentException();
+        }
+        componentCounter++;
+        if (componentCounter % 100 == 0) {
+            LOG.debug("Components imported: " + componentCounter);
         }
         LOG.trace("Build module: " + el.getQualifiedName() + " : " + el.getAttributeValue("name"));
         Attribute aType = el.getAttribute("type");
@@ -469,6 +493,10 @@ public class SEPAFImporter implements Importer {
      *             if format is not valid.
      */
     private void buildConnection(Circuit c, Element el, Map<String, Module> moduleIndex) throws FormatException {
+        connectionCounter++;
+        if (connectionCounter % 100 == 0) {
+            LOG.debug("Connections imported: " + connectionCounter);
+        }
         String source = el.getAttributeValue("source");
         String target = el.getAttributeValue("target");
         String sourcePort = el.getAttributeValue("sourcePort");
@@ -620,17 +648,6 @@ public class SEPAFImporter implements Importer {
      */
     public String getErrorMessage() {
         return errorMsg;
-    }
-
-    /**
-     * Sets the error message.
-     * 
-     * @param errorMsg
-     *            Error message to set.
-     */
-    private void setErrorMessage(String errorMsg) {
-        LOG.debug("Error: " + errorMsg);
-        this.errorMsg = errorMsg + " | " + this.errorMsg;
     }
 
     /**

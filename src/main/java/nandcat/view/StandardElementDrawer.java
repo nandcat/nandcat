@@ -196,6 +196,11 @@ public class StandardElementDrawer implements ElementDrawer {
     private static final String LABEL_FLIPFLOP = "RS-FF";
 
     /**
+     * DEBUG: Object counter.
+     */
+    private int objectCounter = 0;
+
+    /**
      * {@inheritDoc}
      */
     public void draw(Connection connection) {
@@ -225,6 +230,8 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void setGraphics(Graphics g) {
+        LOG.debug("Set new Graphics object");
+        objectCounter = 0;
         this.g = g;
     }
 
@@ -244,6 +251,13 @@ public class StandardElementDrawer implements ElementDrawer {
         drawModulePorts(circuit);
         if (circuit.getName() != null && !circuit.getName().isEmpty()) {
             drawLabel(circuit.getName(), circuit.getRectangle(), circuit.isSelected());
+        }
+    }
+
+    private void debugComponentCounter() {
+        objectCounter++;
+        if (objectCounter % 100 == 0) {
+            LOG.debug("Object drawn: " + objectCounter);
         }
     }
 
@@ -283,6 +297,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void draw(NotGate gate) {
+        debugComponentCounter();
         LOG.trace("Draw: " + gate);
         if (gate == null) {
             throw new IllegalArgumentException();
