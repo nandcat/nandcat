@@ -301,7 +301,6 @@ public class CreateTool implements Tool {
                 } else if (e.getActionCommand().equals("new")) {
                     model.clearCircuit();
                 } else if (e.getActionCommand().equals("loaddef")) {
-                    System.out.println("loaddef");
                     model.initView2Module();
                     view.setViewModules(model.getViewModules());
                     view.refreshBox();
