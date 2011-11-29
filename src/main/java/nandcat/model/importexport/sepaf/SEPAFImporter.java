@@ -39,6 +39,11 @@ import org.xml.sax.SAXParseException;
 public class SEPAFImporter implements Importer {
 
     /**
+     * Debug: Threshold of imported components/connections to debug.
+     */
+    private static final int DEBUG_THRESHOLD = 100;
+
+    /**
      * Class logger instance.
      */
     private static final Logger LOG = Logger.getLogger(SEPAFImporter.class);
@@ -47,11 +52,6 @@ public class SEPAFImporter implements Importer {
      * Handle of file to import from.
      */
     private File file = null;
-
-    /**
-     * Error message of the import process.
-     */
-    private String errorMsg = null;
 
     /**
      * Checks used to validate xml.
@@ -74,7 +74,6 @@ public class SEPAFImporter implements Importer {
     /**
      * Circuit index for fast copy.
      */
-    // TODO Reset needed if reused
     private Map<String, Circuit> circuitIndex;
 
     /**
@@ -139,7 +138,6 @@ public class SEPAFImporter implements Importer {
                         SEPAFFormat.VALIDATIONSCHEMA.SCHEMA_SEPAF)) };
         importedCircuit = null;
         file = null;
-        errorMsg = null;
         componentCounter = 0;
         connectionCounter = 0;
     }
@@ -227,6 +225,12 @@ public class SEPAFImporter implements Importer {
      */
     @SuppressWarnings("rawtypes")
     private Circuit buildCircuit(String name, Document doc) throws FormatException {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        }
+        if (doc == null) {
+            throw new IllegalArgumentException();
+        }
         Circuit circuit = null;
 
         // Used cached circuit if parsed second time.
@@ -235,10 +239,6 @@ public class SEPAFImporter implements Importer {
             // Create deep copy of circuit
             circuit = (Circuit) FastDeepCopy.copy(circuitIndex.get(name));
         } else {
-            if (name == null) {
-                // TODO Name null possible?
-                throw new IllegalArgumentException();
-            }
             List mainComponents = null;
             try {
                 mainComponents = SEPAFFormat
@@ -321,7 +321,7 @@ public class SEPAFImporter implements Importer {
             throw new IllegalArgumentException();
         }
         componentCounter++;
-        if (componentCounter % 100 == 0) {
+        if (componentCounter % DEBUG_THRESHOLD == 0) {
             LOG.debug("Components imported: " + componentCounter);
         }
         LOG.trace("Build module: " + el.getQualifiedName() + " : " + el.getAttributeValue("name"));
@@ -494,7 +494,7 @@ public class SEPAFImporter implements Importer {
      */
     private void buildConnection(Circuit c, Element el, Map<String, Module> moduleIndex) throws FormatException {
         connectionCounter++;
-        if (connectionCounter % 100 == 0) {
+        if (connectionCounter % DEBUG_THRESHOLD == 0) {
             LOG.debug("Connections imported: " + connectionCounter);
         }
         String source = el.getAttributeValue("source");
@@ -624,13 +624,6 @@ public class SEPAFImporter implements Importer {
             return false;
         }
         return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getErrorMessage() {
-        return errorMsg;
     }
 
     /**

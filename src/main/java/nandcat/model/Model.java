@@ -346,7 +346,7 @@ public class Model implements ClockListener {
                 LOG.debug("File exported successfully");
                 dirty = false;
             } else {
-                LOG.warn("Export to " + file.getAbsolutePath() + " failed: " + ex.getErrorMessage());
+                LOG.warn("Export to " + file.getAbsolutePath() + " failed");
                 // TODO Fehlermeldung an View?
             }
         }
@@ -357,6 +357,8 @@ public class Model implements ClockListener {
      * 
      * @param file
      *            File to export top-level Circuit from
+     * @param drawer
+     *            Drawer to use if exporter supports this. Null otherwise.
      */
     public void exportToFile(File file, ElementDrawer drawer) {
         if (file == null) {
@@ -376,7 +378,7 @@ public class Model implements ClockListener {
                 LOG.debug("File exported successfully");
                 dirty = false;
             } else {
-                LOG.warn("Export to " + file.getAbsolutePath() + " failed: " + ex.getErrorMessage());
+                LOG.warn("Export to " + file.getAbsolutePath() + " failed");
                 // TODO Fehlermeldung an View?
             }
         }
@@ -1136,7 +1138,7 @@ public class Model implements ClockListener {
             if (im.importCircuit()) {
                 m = im.getCircuit();
                 if (m == null) {
-                    LOG.error("circuit from " + file.getAbsolutePath() + " was null: " + im.getErrorMessage());
+                    LOG.error("circuit from " + file.getAbsolutePath() + " was null");
                 }
             } else {
                 LOG.warn("File import failed! File: " + file.getAbsolutePath());

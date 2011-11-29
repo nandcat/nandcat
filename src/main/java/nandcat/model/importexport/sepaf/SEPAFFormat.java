@@ -95,38 +95,89 @@ public final class SEPAFFormat {
                 + "http://www.nandcat.de/xmlns/sepaf-extension.xsd";
     }
 
-    public static class GATE_DEFS {
+    /**
+     * Gate defaults.
+     */
+    public static class GATEDEFAULTS {
 
+        /**
+         * Default amount of incoming ports: and.
+         */
         public static final int DEFAULT_INPORTS_AND = 2;
 
+        /**
+         * Default amount of outgoing ports: and.
+         */
         public static final int DEFAULT_OUTPORTS_AND = 1;
 
+        /**
+         * Default amount of incoming ports: or.
+         */
         public static final int DEFAULT_INPORTS_OR = 2;
 
+        /**
+         * Default amount of outgoing ports: or.
+         */
         public static final int DEFAULT_OUTPORTS_OR = 1;
 
+        /**
+         * Default amount of incoming ports: not.
+         */
         public static final int DEFAULT_INPORTS_NOT = 1;
 
+        /**
+         * Default amount of outgoing ports: not.
+         */
         public static final int DEFAULT_OUTPORTS_NOT = 1;
 
+        /**
+         * Default amount of incoming ports: lamp.
+         */
         public static final int DEFAULT_INPORTS_LAMP = 1;
 
+        /**
+         * Default amount of outgoing ports: lamp.
+         */
         public static final int DEFAULT_OUTPORTS_LAMP = 0;
 
+        /**
+         * Default amount of incoming ports: identity.
+         */
         public static final int DEFAULT_INPORTS_IDENTITY = 1;
 
+        /**
+         * Default amount of outgoing ports: identity.
+         */
         public static final int DEFAULT_OUTPORTS_IDENTITY = 2;
 
+        /**
+         * Default amount of incoming ports: clock.
+         */
         public static final int DEFAULT_INPORTS_CLOCK = 0;
 
+        /**
+         * Default amount of outgoing ports: clock.
+         */
         public static final int DEFAULT_OUTPORTS_CLOCK = 1;
 
+        /**
+         * Default amount of incoming ports: switch.
+         */
         public static final int DEFAULT_INPORTS_SWITCH = 0;
 
+        /**
+         * Default amount of outgoing ports: switch.
+         */
         public static final int DEFAULT_OUTPORTS_SWITCH = 1;
 
+        /**
+         * Default amount of incoming ports: flipflop.
+         */
         public static final int DEFAULT_INPORTS_FLIPFLOP = 2;
 
+        /**
+         * Default amount of outgoing ports: flipflop.
+         */
         public static final int DEFAULT_OUTPORTS_FLOPFLOP = 2;
     }
 
@@ -330,25 +381,25 @@ public final class SEPAFFormat {
         Integer defaultAmountOfPorts = null;
 
         if (m instanceof AndGate) {
-            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_AND;
+            defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_INPORTS_AND;
         } else if (m instanceof OrGate) {
-            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_OR;
+            defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_INPORTS_OR;
         } else if (m instanceof NotGate) {
-            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_NOT;
+            defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_INPORTS_NOT;
         } else if (m instanceof IdentityGate) {
-            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_IDENTITY;
+            defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_INPORTS_IDENTITY;
         } else if (m instanceof ImpulseGenerator) {
 
             // type in
             if (((ImpulseGenerator) m).getFrequency() == 0) {
-                defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_SWITCH;
+                defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_INPORTS_SWITCH;
             } else { // type clock
-                defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_CLOCK;
+                defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_INPORTS_CLOCK;
             }
         } else if (m instanceof Lamp) {
-            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_LAMP;
+            defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_INPORTS_LAMP;
         } else if (m instanceof FlipFlop) {
-            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_FLIPFLOP;
+            defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_INPORTS_FLIPFLOP;
         } else if (m instanceof Circuit) {
             return true;
         }
@@ -372,25 +423,25 @@ public final class SEPAFFormat {
         Integer defaultAmountOfPorts = null;
 
         if (m instanceof AndGate) {
-            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_AND;
+            defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_AND;
         } else if (m instanceof OrGate) {
-            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_OR;
+            defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_OR;
         } else if (m instanceof NotGate) {
-            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_NOT;
+            defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_NOT;
         } else if (m instanceof IdentityGate) {
-            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_IDENTITY;
+            defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_IDENTITY;
         } else if (m instanceof ImpulseGenerator) {
 
             // type in
             if (((ImpulseGenerator) m).getFrequency() == 0) {
-                defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_SWITCH;
+                defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_SWITCH;
             } else { // type clock
-                defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_CLOCK;
+                defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_CLOCK;
             }
         } else if (m instanceof Lamp) {
-            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_LAMP;
+            defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_LAMP;
         } else if (m instanceof FlipFlop) {
-            defaultAmountOfPorts = SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_FLOPFLOP;
+            defaultAmountOfPorts = SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_FLOPFLOP;
         } else if (m instanceof Circuit) {
             return true;
         }

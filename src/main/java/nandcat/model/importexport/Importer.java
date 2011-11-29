@@ -50,13 +50,6 @@ public interface Importer {
     Map<String, String> getFileFormats();
 
     /**
-     * Gets the error message if import failed.
-     * 
-     * @return String Error message if import failed, null if no error occurred.
-     */
-    String getErrorMessage();
-
-    /**
      * Sets the factory used to create modules.
      * 
      * @param factory

@@ -80,8 +80,8 @@ public class SEPAFExporterSingleTest {
     @Test
     public void testMultiAndGateDefaultInPorts() throws Exception {
         ModuleBuilder b = factory.getAndGateBuilder();
-        b.setInPorts(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_AND);
-        b.setOutPorts(SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_AND + 2);
+        b.setInPorts(SEPAFFormat.GATEDEFAULTS.DEFAULT_INPORTS_AND);
+        b.setOutPorts(SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_AND + 2);
         b.setAnnotation("Annotation");
         b.setLocation(new Point(5, 10));
         c.addModule(b.build());
@@ -94,14 +94,14 @@ public class SEPAFExporterSingleTest {
         assertTrue(content.contains("name=\""));
         assertTrue(content.contains("type=\"and\""));
         assertFalse(content.contains("nandcat:ports_in"));
-        assertTrue(content.contains("nandcat:ports_out=\"" + (SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_AND + 2) + "\""));
+        assertTrue(content.contains("nandcat:ports_out=\"" + (SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_AND + 2) + "\""));
     }
 
     @Test
     public void testMultiAndGateDefaultOutPorts() throws Exception {
         ModuleBuilder b = factory.getAndGateBuilder();
-        b.setInPorts(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_AND + 2);
-        b.setOutPorts(SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_AND);
+        b.setInPorts(SEPAFFormat.GATEDEFAULTS.DEFAULT_INPORTS_AND + 2);
+        b.setOutPorts(SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_AND);
         b.setAnnotation("Annotation");
         b.setLocation(new Point(5, 10));
         c.addModule(b.build());
@@ -113,7 +113,7 @@ public class SEPAFExporterSingleTest {
         assertTrue(content.contains("posy=\"10\""));
         assertTrue(content.contains("name=\""));
         assertTrue(content.contains("type=\"and\""));
-        assertTrue(content.contains("nandcat:ports_in=\"" + (SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_AND + 2) + "\""));
+        assertTrue(content.contains("nandcat:ports_in=\"" + (SEPAFFormat.GATEDEFAULTS.DEFAULT_INPORTS_AND + 2) + "\""));
         assertFalse(content.contains("nandcat:ports_out"));
     }
 
@@ -158,8 +158,8 @@ public class SEPAFExporterSingleTest {
     @Test
     public void testMultiOrGateDefaultOutPorts() throws Exception {
         ModuleBuilder b = factory.getOrGateBuilder();
-        b.setInPorts(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_OR + 2);
-        b.setOutPorts(SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_OR);
+        b.setInPorts(SEPAFFormat.GATEDEFAULTS.DEFAULT_INPORTS_OR + 2);
+        b.setOutPorts(SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_OR);
         b.setAnnotation("Annotation");
         b.setLocation(new Point(5, 10));
         c.addModule(b.build());
@@ -171,15 +171,15 @@ public class SEPAFExporterSingleTest {
         assertTrue(content.contains("posy=\"10\""));
         assertTrue(content.contains("name=\""));
         assertTrue(content.contains("type=\"or\""));
-        assertTrue(content.contains("nandcat:ports_in=\"" + (SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_OR + 2) + "\""));
+        assertTrue(content.contains("nandcat:ports_in=\"" + (SEPAFFormat.GATEDEFAULTS.DEFAULT_INPORTS_OR + 2) + "\""));
         assertFalse(content.contains("nandcat:ports_out"));
     }
 
     @Test
     public void testMultiOrGateDefaultInPorts() throws Exception {
         ModuleBuilder b = factory.getOrGateBuilder();
-        b.setInPorts(SEPAFFormat.GATE_DEFS.DEFAULT_INPORTS_OR);
-        b.setOutPorts(SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_OR + 2);
+        b.setInPorts(SEPAFFormat.GATEDEFAULTS.DEFAULT_INPORTS_OR);
+        b.setOutPorts(SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_OR + 2);
         b.setAnnotation("Annotation");
         b.setLocation(new Point(5, 10));
         c.addModule(b.build());
@@ -192,7 +192,7 @@ public class SEPAFExporterSingleTest {
         assertTrue(content.contains("name=\""));
         assertTrue(content.contains("type=\"or\""));
         assertFalse(content.contains("nandcat:ports_in"));
-        assertTrue(content.contains("nandcat:ports_out=\"" + (SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_OR + 2) + "\""));
+        assertTrue(content.contains("nandcat:ports_out=\"" + (SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_OR + 2) + "\""));
     }
 
     @Test
@@ -235,7 +235,7 @@ public class SEPAFExporterSingleTest {
     @Test
     public void testMultiNotGateDefaultOutPorts() throws Exception {
         ModuleBuilder b = factory.getNotGateBuilder();
-        b.setOutPorts(SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_NOT);
+        b.setOutPorts(SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_NOT);
         b.setAnnotation("Annotation");
         b.setLocation(new Point(5, 10));
         c.addModule(b.build());
@@ -291,7 +291,7 @@ public class SEPAFExporterSingleTest {
     @Test
     public void testMultiIdentityGateDefaultOutPorts() throws Exception {
         ModuleBuilder b = factory.getIdentityGateBuilder();
-        b.setOutPorts(SEPAFFormat.GATE_DEFS.DEFAULT_OUTPORTS_IDENTITY);
+        b.setOutPorts(SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_IDENTITY);
         b.setAnnotation("Annotation");
         b.setLocation(new Point(5, 10));
         c.addModule(b.build());
