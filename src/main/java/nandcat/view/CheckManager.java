@@ -45,7 +45,7 @@ public class CheckManager extends JDialog {
     /**
      * Default Size of the Buttons.
      */
-    private static final Dimension BUTTON_SIZE = new Dimension(300, 30);
+    private static final Dimension BUTTON_SIZE = new Dimension(200, 30);
 
     /**
      * Default serial version uid.
