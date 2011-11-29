@@ -3,12 +3,9 @@ package nandcat.model.importexport.sepaf;
 import java.io.IOException;
 import nandcat.NandcatTest;
 import nandcat.model.importexport.FormatException;
-import nandcat.model.importexport.sepaf.SEPAFCheckCircuitReference;
-import nandcat.model.importexport.sepaf.XMLCheck;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class SEPAFCheckReferenceTest {
@@ -37,10 +34,35 @@ public class SEPAFCheckReferenceTest {
         check.validate();
     }
 
-    @Ignore
+    @Test(expected = FormatException.class)
+    public void testCircuitDeepRecursionSingle() throws Exception {
+        Document doc = getDocument("../formattest/sepaf-example-invalid-circuitdeepsinglerecursion.xml");
+        XMLCheck check = new SEPAFCheckCircuitReference();
+        check.setDocument(doc);
+        check.validate();
+    }
+
     @Test
-    public void testCircuitDeepRecursion() {
-        // TODO Implement me
+    public void testValidCircuitDeepWideRecursion() throws Exception {
+        Document doc = getDocument("../formattest/sepaf-example-valid-circuitdeepwiderecursion.xml");
+        XMLCheck check = new SEPAFCheckCircuitReference();
+        check.setDocument(doc);
+        check.validate();
+    }
+
+    @Test(expected = FormatException.class)
+    public void testInValidCircuitDeepWideRecursion() throws Exception {
+        Document doc = getDocument("../formattest/sepaf-example-invalid-circuitdeepwiderecursion.xml");
+        XMLCheck check = new SEPAFCheckCircuitReference();
+        check.setDocument(doc);
+        check.validate();
+    }
+
+    @Test
+    public void testValidCircuitDeepRecursionSingle() throws Exception {
+        Document doc = getDocument("../formattest/sepaf-example-valid-circuitdeepsinglerecursion.xml");
+        XMLCheck check = new SEPAFCheckCircuitReference();
+        check.setDocument(doc);
     }
 
     @Test

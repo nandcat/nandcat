@@ -7,7 +7,7 @@ import javax.swing.JFileChooser;
 /**
  * Utilities for import export functionality.
  */
-public class ImportExportUtils {
+public final class ImportExportUtils {
 
     /**
      * Private constructor for utility class.
@@ -42,6 +42,7 @@ public class ImportExportUtils {
      * 
      * @param f
      *            File to get extension from.
+     * @return Extension of the file.
      */
     public static String getExtension(File f) {
         String ext = null;

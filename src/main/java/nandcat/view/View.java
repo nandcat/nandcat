@@ -202,7 +202,8 @@ public class View extends JFrame {
     /**
      * JComboBox with the Available Modules.
      */
-    private JComboBox<?> modules;
+    @SuppressWarnings("rawtypes")
+    private JComboBox modules;
 
     /**
      * Layouter used to layout modules.
@@ -500,11 +501,11 @@ public class View extends JFrame {
     }
 
     /**
-     * Returns the URL of the Resources.
+     * Gets the resource URL depending on environment. Works with Jar.
      * 
      * @param file
-     *            String of the FileName.
-     * @return the URL of the Resources.
+     *            File to get URL for. Realpath: src/main/resources/main.png -> Parameter: main.png
+     * @return URL to file.
      */
     private static URL getResource(String file) {
         return Nandcat.class.getClassLoader().getResource(file);
@@ -637,10 +638,6 @@ public class View extends JFrame {
         toolBar.add(pause);
         toolBar.add(stop);
         toolBar.addSeparator(SEPERATOR_DIM);
-        // Buttons do not have to be Focusable.
-        for (Component elem : toolBar.getComponents()) {
-            elem.setFocusable(false);
-        }
     }
 
     /**
@@ -866,7 +863,8 @@ public class View extends JFrame {
      * Extension of JComboBox to ensure the PopupMenu of the ComoBox is wide enough to Display the full names of the
      * Elements.
      */
-    public class WideComboBox extends JComboBox<Object> {
+    @SuppressWarnings("rawtypes")
+    public class WideComboBox extends JComboBox {
 
         /**
          * Default serial uid.

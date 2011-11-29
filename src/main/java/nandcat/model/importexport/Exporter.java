@@ -59,13 +59,6 @@ public interface Exporter {
     Map<String, String> getFileFormats();
 
     /**
-     * Gets the error message if export failed.
-     * 
-     * @return String Error message if export failed.
-     */
-    String getErrorMessage();
-
-    /**
      * Sets the handler called if warnings, errors, fatal errors occur.
      * 
      * @param h

@@ -26,9 +26,7 @@ import org.jdom.DataConversionException;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
-import org.jdom.xpath.XPath;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -41,6 +39,11 @@ import org.xml.sax.SAXParseException;
 public class SEPAFImporter implements Importer {
 
     /**
+     * Debug: Threshold of imported components/connections to debug.
+     */
+    private static final int DEBUG_THRESHOLD = 100;
+
+    /**
      * Class logger instance.
      */
     private static final Logger LOG = Logger.getLogger(SEPAFImporter.class);
@@ -49,11 +52,6 @@ public class SEPAFImporter implements Importer {
      * Handle of file to import from.
      */
     private File file = null;
-
-    /**
-     * Error message of the import process.
-     */
-    private String errorMsg = null;
 
     /**
      * Checks used to validate xml.
@@ -76,7 +74,6 @@ public class SEPAFImporter implements Importer {
     /**
      * Circuit index for fast copy.
      */
-    // TODO Reset needed if reused
     private Map<String, Circuit> circuitIndex;
 
     /**
@@ -97,7 +94,7 @@ public class SEPAFImporter implements Importer {
     private ModuleBuilderFactory factory;
 
     /**
-     * Errorhandler to handle errors.
+     * ErrorHandler to handle errors.
      */
     private FormatErrorHandler errorHandler;
 
@@ -135,11 +132,12 @@ public class SEPAFImporter implements Importer {
     public void reset() {
         circuitIndex = new HashMap<String, Circuit>();
         xsdSources = new Source[] {
-                new StreamSource(Nandcat.class.getResourceAsStream(SEPAFFormat.VALIDATIONSCHEMA.SCHEMA_NANDCAT)),
-                new StreamSource(Nandcat.class.getResourceAsStream(SEPAFFormat.VALIDATIONSCHEMA.SCHEMA_SEPAF)) };
+                new StreamSource(Nandcat.class.getClassLoader().getResourceAsStream(
+                        SEPAFFormat.VALIDATIONSCHEMA.SCHEMA_NANDCAT)),
+                new StreamSource(Nandcat.class.getClassLoader().getResourceAsStream(
+                        SEPAFFormat.VALIDATIONSCHEMA.SCHEMA_SEPAF)) };
         importedCircuit = null;
         file = null;
-        errorMsg = null;
         componentCounter = 0;
         connectionCounter = 0;
     }
@@ -227,6 +225,12 @@ public class SEPAFImporter implements Importer {
      */
     @SuppressWarnings("rawtypes")
     private Circuit buildCircuit(String name, Document doc) throws FormatException {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        }
+        if (doc == null) {
+            throw new IllegalArgumentException();
+        }
         Circuit circuit = null;
 
         // Used cached circuit if parsed second time.
@@ -235,14 +239,10 @@ public class SEPAFImporter implements Importer {
             // Create deep copy of circuit
             circuit = (Circuit) FastDeepCopy.copy(circuitIndex.get(name));
         } else {
-            if (name == null) {
-                // TODO Name null possible?
-                throw new IllegalArgumentException();
-            }
             List mainComponents = null;
             try {
-                mainComponents = getXPathInstance("/c:circuits/c:circuit[@name='" + name + "']/c:component")
-                        .selectNodes(doc);
+                mainComponents = SEPAFFormat
+                        .getXPathInstance("/c:circuits/c:circuit[@name='" + name + "']/c:component").selectNodes(doc);
             } catch (JDOMException e) {
                 // Does not happen!
                 e.printStackTrace();
@@ -265,8 +265,8 @@ public class SEPAFImporter implements Importer {
             // Connections between modules
             List connections = null;
             try {
-                connections = getXPathInstance("/c:circuits/c:circuit[@name='" + name + "']/c:connection").selectNodes(
-                        doc);
+                connections = SEPAFFormat.getXPathInstance("/c:circuits/c:circuit[@name='" + name + "']/c:connection")
+                        .selectNodes(doc);
             } catch (JDOMException e) {
                 // Does not happen!
                 e.printStackTrace();
@@ -284,8 +284,8 @@ public class SEPAFImporter implements Importer {
 
             // Parse symbol if existing
             try {
-                Object symbol = getXPathInstance("/c:circuits/c:circuit[@name='" + name + "']/nandcat:symbol")
-                        .selectSingleNode(doc);
+                Object symbol = SEPAFFormat.getXPathInstance(
+                        "/c:circuits/c:circuit[@name='" + name + "']/nandcat:symbol").selectSingleNode(doc);
                 if (symbol != null && symbol instanceof Element) {
                     Element symbolElement = (Element) symbol;
                     circuit.setSymbol(SEPAFFormat.decodeImage(symbolElement.getText()));
@@ -321,7 +321,7 @@ public class SEPAFImporter implements Importer {
             throw new IllegalArgumentException();
         }
         componentCounter++;
-        if (componentCounter % 100 == 0) {
+        if (componentCounter % DEBUG_THRESHOLD == 0) {
             LOG.debug("Components imported: " + componentCounter);
         }
         LOG.trace("Build module: " + el.getQualifiedName() + " : " + el.getAttributeValue("name"));
@@ -494,7 +494,7 @@ public class SEPAFImporter implements Importer {
      */
     private void buildConnection(Circuit c, Element el, Map<String, Module> moduleIndex) throws FormatException {
         connectionCounter++;
-        if (connectionCounter % 100 == 0) {
+        if (connectionCounter % DEBUG_THRESHOLD == 0) {
             LOG.debug("Connections imported: " + connectionCounter);
         }
         String source = el.getAttributeValue("source");
@@ -624,30 +624,6 @@ public class SEPAFImporter implements Importer {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Creates a XPath instance with given path and added namespaces.
-     * 
-     * @param path
-     *            Path to instantiate xpath with.
-     * @return XPath instance with namespaces.
-     * @throws JDOMException
-     *             Exception if path is wrong.
-     */
-    private XPath getXPathInstance(String path) throws JDOMException {
-        XPath xpath = XPath.newInstance(path);
-        for (Namespace ns : SEPAFFormat.NAMESPACE.ALL) {
-            xpath.addNamespace(ns);
-        }
-        return xpath;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getErrorMessage() {
-        return errorMsg;
     }
 
     /**

@@ -31,6 +31,11 @@ import org.apache.log4j.Logger;
 public class StandardElementDrawer implements ElementDrawer {
 
     /**
+     * Debug: Amount of objects needed to reach to print progress.
+     */
+    private static final int DEBUG_PRINT_THRESHOLD = 100;
+
+    /**
      * Label for the And-Gate.
      */
     private static final String LABEL_ANDGATE = "AND";
@@ -254,9 +259,12 @@ public class StandardElementDrawer implements ElementDrawer {
         }
     }
 
+    /**
+     * Debug component counter and printer.
+     */
     private void debugComponentCounter() {
         objectCounter++;
-        if (objectCounter % 100 == 0) {
+        if ((objectCounter % DEBUG_PRINT_THRESHOLD) == 0) {
             LOG.debug("Object drawn: " + objectCounter);
         }
     }

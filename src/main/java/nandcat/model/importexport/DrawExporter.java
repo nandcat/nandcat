@@ -25,11 +25,37 @@ import nandcat.model.element.Module;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 import nandcat.view.ElementDrawer;
+import org.apache.log4j.Logger;
 
 /**
  * Draws an image using the given ElementDrawer.
  */
 public class DrawExporter implements Exporter {
+
+    /**
+     * File format to export image as.
+     */
+    private static final String FILE_FORMAT = "png";
+
+    /**
+     * Margin used to separate border from image.
+     */
+    private static final int MARGIN = 10;
+
+    /**
+     * Image height threshold to throw warning.
+     */
+    private static final int WARN_HEIGHT_THRESHOLD = 720;
+
+    /**
+     * Image width threshold to throw warning.
+     */
+    private static final int WARN_WIDTH_THRESHOLD = 1280;
+
+    /**
+     * Class logger instance.
+     */
+    private static final Logger LOG = Logger.getLogger(DrawExporter.class);
 
     /**
      * File to write.
@@ -46,6 +72,9 @@ public class DrawExporter implements Exporter {
      */
     private Circuit circuit;
 
+    /**
+     * Error handler called if an error occur.
+     */
     private FormatErrorHandler errorHandler;
 
     /**
@@ -53,7 +82,7 @@ public class DrawExporter implements Exporter {
      */
     private static final Map<String, String> SUPPORTED_FORMATS = new HashMap<String, String>();
     static {
-        SUPPORTED_FORMATS.put("png", "Image");
+        SUPPORTED_FORMATS.put(FILE_FORMAT, "Image");
     }
 
     /**
@@ -144,55 +173,65 @@ public class DrawExporter implements Exporter {
         if (circuit == null) {
             throw new IllegalArgumentException();
         }
-        System.out.println("Export drawer");
-        Point minPoint = getLeftTop(circuit.getElements());
-        Dimension dim = getRightBottom(circuit.getElements());
-        dim.height = dim.height + 10;
-        dim.width = dim.width + 10;
-        minPoint.x = minPoint.x - 10;
-        minPoint.y = minPoint.y - 10;
-        BufferedImage bufferedImage = new BufferedImage(dim.width - minPoint.x, dim.height - minPoint.y,
-                BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = bufferedImage.createGraphics();
-        g2d.translate(-minPoint.x, -minPoint.y);
-
-        g2d.setBackground(Color.white);
-        g2d.setColor(Color.white);
-        g2d.fillRect(minPoint.x, minPoint.y, dim.width - minPoint.x, dim.height - minPoint.y);
-        List<Element> elements = circuit.getElements();
-        drawer.setGraphics(g2d);
-        List<Connection> cachedConnections = new LinkedList<Connection>();
-        for (Element elem : elements) {
-            if (elem instanceof Connection) {
-                cachedConnections.add((Connection) elem);
-            } else if (elem instanceof AndGate) {
-                drawer.draw((AndGate) elem);
-            } else if (elem instanceof FlipFlop) {
-                drawer.draw((FlipFlop) elem);
-            } else if (elem instanceof Circuit) {
-                drawer.draw((Circuit) elem);
-            } else if (elem instanceof ImpulseGenerator) {
-                drawer.draw((ImpulseGenerator) elem);
-            } else if (elem instanceof IdentityGate) {
-                drawer.draw((IdentityGate) elem);
-            } else if (elem instanceof NotGate) {
-                drawer.draw((NotGate) elem);
-            } else if (elem instanceof OrGate) {
-                drawer.draw((OrGate) elem);
-            } else if (elem instanceof Lamp) {
-                drawer.draw((Lamp) elem);
-            }
-        }
-        for (Connection connection : cachedConnections) {
-            drawer.draw(connection);
-        }
-        RenderedImage image = bufferedImage;
         try {
-            ImageIO.write(image, "png", file);
-        } catch (IOException e) {
+            System.out.println("Export drawer");
+            Point minPoint = getLeftTop(circuit.getElements());
+            Dimension dim = getRightBottom(circuit.getElements());
+            dim.height = dim.height + MARGIN;
+            dim.width = dim.width + MARGIN;
+            minPoint.x = minPoint.x - MARGIN;
+            minPoint.y = minPoint.y - MARGIN;
+            BufferedImage bufferedImage = new BufferedImage(dim.width - minPoint.x, dim.height - minPoint.y,
+                    BufferedImage.TYPE_INT_RGB);
+            if ((dim.width - minPoint.x) > WARN_WIDTH_THRESHOLD) {
+                throwWarning(new FormatException("Image width > " + WARN_WIDTH_THRESHOLD));
+            }
+            if ((dim.height - minPoint.y) > WARN_HEIGHT_THRESHOLD) {
+                throwWarning(new FormatException("Image height > " + WARN_HEIGHT_THRESHOLD));
+            }
+            Graphics2D g2d = bufferedImage.createGraphics();
+            g2d.translate(-minPoint.x, -minPoint.y);
+
+            g2d.setBackground(Color.white);
+            g2d.setColor(Color.white);
+            g2d.fillRect(minPoint.x, minPoint.y, dim.width - minPoint.x, dim.height - minPoint.y);
+            List<Element> elements = circuit.getElements();
+            drawer.setGraphics(g2d);
+            List<Connection> cachedConnections = new LinkedList<Connection>();
+            for (Element elem : elements) {
+                if (elem instanceof Connection) {
+                    cachedConnections.add((Connection) elem);
+                } else if (elem instanceof AndGate) {
+                    drawer.draw((AndGate) elem);
+                } else if (elem instanceof FlipFlop) {
+                    drawer.draw((FlipFlop) elem);
+                } else if (elem instanceof Circuit) {
+                    drawer.draw((Circuit) elem);
+                } else if (elem instanceof ImpulseGenerator) {
+                    drawer.draw((ImpulseGenerator) elem);
+                } else if (elem instanceof IdentityGate) {
+                    drawer.draw((IdentityGate) elem);
+                } else if (elem instanceof NotGate) {
+                    drawer.draw((NotGate) elem);
+                } else if (elem instanceof OrGate) {
+                    drawer.draw((OrGate) elem);
+                } else if (elem instanceof Lamp) {
+                    drawer.draw((Lamp) elem);
+                }
+            }
+            for (Connection connection : cachedConnections) {
+                drawer.draw(connection);
+            }
+            RenderedImage image = bufferedImage;
+            try {
+                ImageIO.write(image, FILE_FORMAT, file);
+            } catch (IOException e) {
+                throwFatalError(new FormatException("File couldn't be written.", e));
+            }
+        } catch (FormatException e) {
+            LOG.debug("FormatException caught handled using ErrorHandler");
             return false;
         }
-
         return true;
     }
 
@@ -211,14 +250,6 @@ public class DrawExporter implements Exporter {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public String getErrorMessage() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
      * Throws a warning using the Error Handler. If error handler decides to throw exception, processing is stopped by
      * this exception.
      * 
@@ -230,21 +261,6 @@ public class DrawExporter implements Exporter {
     private void throwWarning(FormatException e) throws FormatException {
         if (this.errorHandler != null) {
             this.errorHandler.warning(e);
-        }
-    }
-
-    /**
-     * Throws a error using the Error Handler. If error handler decides to throw exception, processing is stopped by
-     * this exception.
-     * 
-     * @param e
-     *            Exception with information about error.
-     * @throws FormatException
-     *             FormatException, reason for stop processing.
-     */
-    private void throwError(FormatException e) throws FormatException {
-        if (this.errorHandler != null) {
-            this.errorHandler.error(e);
         }
     }
 

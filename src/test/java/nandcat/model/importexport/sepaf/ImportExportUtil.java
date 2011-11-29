@@ -32,8 +32,8 @@ public class ImportExportUtil {
 
     public static void testValidOutput(File file) throws FileNotFoundException, SAXException, IOException {
         Source[] xsdSources = new Source[] {
-                new StreamSource(Nandcat.class.getResourceAsStream("../sepaf-extension.xsd")),
-                new StreamSource(Nandcat.class.getResourceAsStream("../circuits-1.0.xsd")) };
+                new StreamSource(Nandcat.class.getClassLoader().getResourceAsStream("sepaf-extension.xsd")),
+                new StreamSource(Nandcat.class.getClassLoader().getResourceAsStream("circuits-1.0.xsd")) };
         ErrorHandler throwingErrorHandler = new ErrorHandler() {
 
             public void warning(SAXParseException exception) throws SAXException {

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<circuits main="myCircuit"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0"
+  xmlns:c="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0"
+  xmlns:nandcat="http://www.nandcat.de/xmlns/sepaf-extension"
+  xsi:schemaLocation="
+    http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0
+    http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0.xsd
+    http://www.nandcat.de/xmlns/sepaf-extension
+    http://www.nandcat.de/xmlns/sepaf-extension.xsd">
+
+<circuit name="myCircuit">
+  <component type="circuit" type2="inner-1" name="inner0" posx="0" posy="0" nandcat:annotation="test annotation"/>
+</circuit> 
+        
+<circuit name="inner-1">
+  <component type="circuit" type2="inner-2" name="inner1" posx="0" posy="0" nandcat:annotation="test annotation"/>
+</circuit> 
+
+<circuit name="inner-2">
+  <component type="circuit" type2="inner-3" name="inner2" posx="0" posy="0" nandcat:annotation="test annotation"/>
+</circuit> 
+
+<circuit name="inner-3">
+  <component type="circuit" type2="inner-4" name="inner3" posx="0" posy="0" nandcat:annotation="test annotation"/>
+</circuit> 
+
+<circuit name="inner-4">
+  <component type="circuit" type2="inner-5" name="inner4" posx="0" posy="0" nandcat:annotation="test annotation"/>
+</circuit> 
+
+<circuit name="inner-5">
+  <component type="circuit" type2="inner-1" name="inner5" posx="0" posy="0" nandcat:annotation="test annotation"/>
+</circuit> 
+        
+</circuits>

@@ -54,11 +54,6 @@ public class SEPAFExporter implements Exporter {
     private Circuit circuit;
 
     /**
-     * Error message of the export process.
-     */
-    private String errorMsg;
-
-    /**
      * Map of supported file extensions connected with the format description.
      */
     private static final Map<String, String> SUPPORTED_FORMATS = new HashMap<String, String>();
@@ -103,7 +98,6 @@ public class SEPAFExporter implements Exporter {
     public void reset() {
         innerCircuitsIndex = new LinkedHashSet<String>();
         file = null;
-        errorMsg = null;
     }
 
     /**
@@ -136,6 +130,7 @@ public class SEPAFExporter implements Exporter {
             }
         } catch (FormatException e) {
             // Already handled using error handler.
+            LOG.debug("Format exception caught, handled using error handler");
         }
         return false;
     }
@@ -165,6 +160,9 @@ public class SEPAFExporter implements Exporter {
                 e.addContent(buildModule(circuitE));
                 cachedModules.add((Module) circuitE);
             }
+        }
+        if (cachedConnections.isEmpty()) {
+            throwWarning(new FormatException("Circuit '" + c.getUuid() + "' has no connections"));
         }
         for (Connection connection : cachedConnections) {
             e.addContent(buildConnection(connection, cachedModules));
@@ -341,6 +339,7 @@ public class SEPAFExporter implements Exporter {
      *            Available set of modules in this circuit layer.
      * @return Build element.
      * @throws FormatException
+     *             if DOM Element can not be generated.
      */
     private Content buildConnection(Connection c, Set<Module> modules) throws FormatException {
         Element e = new Element("connection", SEPAFFormat.NAMESPACE.SEPAF);
@@ -426,23 +425,6 @@ public class SEPAFExporter implements Exporter {
     }
 
     /**
-     * Sets the error message.
-     * 
-     * @param errorMsg
-     *            Error message to set.
-     */
-    private void setErrorMessage(String errorMsg) {
-        this.errorMsg = errorMsg;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getErrorMessage() {
-        return errorMsg;
-    }
-
-    /**
      * {@inheritDoc}
      */
     public Map<String, String> getFileFormats() {
@@ -468,8 +450,6 @@ public class SEPAFExporter implements Exporter {
     private void throwWarning(FormatException e) throws FormatException {
         if (this.errorHandler != null) {
             this.errorHandler.warning(e);
-        } else {
-            throw e;
         }
     }
 
