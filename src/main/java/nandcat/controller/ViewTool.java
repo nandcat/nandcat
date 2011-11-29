@@ -38,7 +38,7 @@ public class ViewTool implements Tool {
     /**
      * Icon representation of the Tool.
      */
-    private ImageIcon icon; // TODO icon setzen
+    private ImageIcon icon;
 
     /**
      * String representation of the Tool.
@@ -67,7 +67,12 @@ public class ViewTool implements Tool {
     /**
      * Number of Pixels scrolled by MouseWheel.
      */
-    private final static int SCROLL_SPEED = 20;
+    private static final int SCROLL_SPEED = 20;
+
+    /**
+     * Constant int to slow down Scrol Speed by deviding trough this value.
+     */
+    protected static final double SCROLL_DELAY = 1.5;
 
     /**
      * Constructs the ViewTool.
@@ -119,8 +124,8 @@ public class ViewTool implements Tool {
 
                     public void mouseDragged(WorkspaceEvent e) {
                         // divide by 1.5 so it isn't soo fast
-                        dx = (int) ((e.getLocation().x - offset.x) / 1.5);
-                        dy = (int) ((e.getLocation().y - offset.y) / 1.5);
+                        dx = (int) ((e.getLocation().x - offset.x) / SCROLL_DELAY);
+                        dy = (int) ((e.getLocation().y - offset.y) / SCROLL_DELAY);
                         view.setViewportPosition(dx, dy);
                         offset = e.getLocation();
                         // redraw new elements in sight

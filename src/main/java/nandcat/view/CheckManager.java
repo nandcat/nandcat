@@ -38,9 +38,24 @@ import nandcat.model.check.SourceCheck;
 public class CheckManager extends JDialog {
 
     /**
+     * Default Location on Screen of the Frame.
+     */
+    private static final Point FRAME_LOCATION = new Point(800, 10);
+
+    /**
+     * Default Size of the Buttons.
+     */
+    private static final Dimension BUTTON_SIZE = new Dimension(200, 30);
+
+    /**
      * Default serial version uid.
      */
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Dimension representing the Size of the Frame.
+     */
+    private static final Dimension FRAME_SIZE = new Dimension(620, 300);
 
     /**
      * Icon representing a check has not started yet.
@@ -65,7 +80,7 @@ public class CheckManager extends JDialog {
     /**
      * Location of upper left corner of the frame on the screen.
      */
-    private Point frameLocation = new Point(800, 10);
+    private Point frameLocation = FRAME_LOCATION;
 
     /**
      * JPanel on which the CheckBoxes with its CheckBoxMenuItem are placed.
@@ -85,7 +100,7 @@ public class CheckManager extends JDialog {
     /**
      * Dimension of the Buttons.
      */
-    private Dimension buttonDim = new Dimension(200, 30);
+    private Dimension buttonDim = BUTTON_SIZE;
 
     /**
      * Button to start the checks.
@@ -102,6 +117,8 @@ public class CheckManager extends JDialog {
      * 
      * @param set
      *            List with all checks to be performed.
+     * @param buttonListener
+     *            ActionListener from the ControllerTool for the Buttons.
      */
     public CheckManager(Set<CircuitCheck> set, ActionListener buttonListener) {
         this.buttonListener = buttonListener;
@@ -174,7 +191,7 @@ public class CheckManager extends JDialog {
      *            List with Checks to be listed in the Frame.
      */
     private void setupCheckmanager(final Set<CircuitCheck> checks) {
-        setSize(620, 300);
+        setSize(FRAME_SIZE);
         setLocation(frameLocation);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLayout(new BorderLayout());

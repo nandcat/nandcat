@@ -107,6 +107,9 @@ public class SimulateTool implements Tool {
      */
     private boolean simToStart = false;
 
+    /**
+     * Represesnts if the user wants to simulate step by step.
+     */
     private boolean stepSim = false;
 
     /**
@@ -168,46 +171,7 @@ public class SimulateTool implements Tool {
      * {@inheritDoc}
      */
     public void setActive(boolean active) {
-        // if (active) {
-        // if (modelListener == null) {
-        // modelListener = new ModelListenerAdapter() {
-        //
-        // private boolean simulating = false;
-        //
-        // public void elementsChanged(ModelEvent e) {
-        // if (simulating) {
-        // // set the cycle count on the current cycle.
-        // view.setCycleCount(i18n.getString("cycle.count") + model.getCycle());
-        // }
-        // }
-        //
-        // public void simulationStarted(ModelEvent e) {
-        // simulating = true;
-        // view.disableButtons();
-        // checkManager.setButton(false);
-        // }
-        //
-        // public void simulationStopped(ModelEvent e) {
-        // // Stopping the simulation needs to enable the buttons and set the "Counter".
-        // simulating = false;
-        // view.enableButtons();
-        // view.setCycleCount(i18n.getString("cycle.stand"));
-        // checkManager.setButton(true);
-        // }
-        //
-        // public void checksStopped(ModelEvent e) {
-        // // All checks are passed if everyone was successful we can start the simulation.
-        // if (e.allChecksPassed() && simToStart) {
-        // // checkManager.setVisible(false);
-        // model.startSimulation();
-        // }
-        // }
-        // };
-        // }
-        // model.addListener(modelListener);
-        // } else {
-        // model.removeListener(modelListener);
-        // }
+        // Always active!
     }
 
     /**
@@ -295,10 +259,13 @@ public class SimulateTool implements Tool {
         return map;
     }
 
+    /**
+     * This method starts the CheckManager. If a CM exists already it is set visible else a new one is created.
+     */
     private void startCheckManager() {
         if (checkManager == null) {
             if (checkManagerListener == null) {
-                checkManager = new CheckManager(model.getChecks(), checkManagerListener = new ActionListener() {
+                checkManagerListener = new ActionListener() {
 
                     public void actionPerformed(ActionEvent e) {
                         if (e.getActionCommand().equals("okay")) {
@@ -317,7 +284,8 @@ public class SimulateTool implements Tool {
                             model.startChecks();
                         }
                     }
-                });
+                };
+                checkManager = new CheckManager(model.getChecks(), checkManagerListener);
             } else {
                 checkManager = new CheckManager(model.getChecks(), checkManagerListener);
             }
