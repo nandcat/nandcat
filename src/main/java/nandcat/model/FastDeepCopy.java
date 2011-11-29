@@ -53,6 +53,11 @@ public final class FastDeepCopy {
     private class FastByteArrayInputStream extends InputStream {
 
         /**
+         * Used to convert from byte to integer.
+         */
+        private static final int BYTE_TO_INT = 0xff;
+
+        /**
          * Byte buffer.
          */
         private byte[] buf = null;
@@ -95,7 +100,11 @@ public final class FastDeepCopy {
          * @return Integer representation of read byte, if not possible -1.
          */
         public final int read() {
-            return (pos < count) ? (buf[pos++] & 0xff) : -1;
+            if (pos < count) {
+                return (buf[pos++] & BYTE_TO_INT);
+            } else {
+                return -1;
+            }
         }
 
         /**
