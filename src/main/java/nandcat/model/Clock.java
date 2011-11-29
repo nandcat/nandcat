@@ -5,8 +5,6 @@ import java.util.Set;
 import nandcat.model.element.Connection;
 import nandcat.model.element.Element;
 import nandcat.model.element.ImpulseGenerator;
-import nandcat.model.element.Module;
-import nandcat.model.element.Port;
 import org.apache.log4j.Logger;
 
 /**
@@ -89,7 +87,7 @@ public class Clock implements Runnable {
      * 
      * @return the current cycle-number
      */
-    protected int getCycle() {
+    public int getCycle() {
         return cycle;
     }
 
@@ -233,30 +231,24 @@ public class Clock implements Runnable {
      * Reset all listeners, clears the lists and resets the cycle.
      */
     private void reset() {
+        model.getCircuit().reset();
+
         for (Element e : model.getElements()) {
-            if (e instanceof Module) {
-                Module m = (Module) e;
-                for (Port p : m.getOutPorts()) {
-                    p.setState(false, null);
-                }
-                for (Port p : m.getInPorts()) {
-                    p.setState(false, null);
-                }
-            }
             if (e instanceof ImpulseGenerator) {
                 ImpulseGenerator i = (ImpulseGenerator) e;
-                if (i.getState()) {
+                if (i.getState() && !(model.getActiveImpulseGens().contains(i))) {
+                    i.toggleState();
+                } else if (!i.getState() && (model.getActiveImpulseGens().contains(i))) {
                     i.toggleState();
                 }
             }
-            if (e instanceof Connection) {
-                ((Connection) e).setState(false, null);
-            }
         }
+
         cycle = 0;
         listeners.clear();
         generators.clear();
         connections.clear();
+        model.notifyForChangedElems();
     }
 
     /**

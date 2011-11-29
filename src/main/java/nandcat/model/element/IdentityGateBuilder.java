@@ -16,7 +16,7 @@ public class IdentityGateBuilder extends ModuleBuilder {
 
     @Override
     public Module build() {
-        IdentityGate m = new IdentityGate(1, getOutPorts());
+        IdentityGate m = new IdentityGate(getOutPorts());
         m.setName(getAnnotation());
         if (getLocation() != null) {
             m.getRectangle().setLocation(getLocation());

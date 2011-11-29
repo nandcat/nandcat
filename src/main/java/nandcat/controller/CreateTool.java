@@ -69,11 +69,11 @@ public class CreateTool implements Tool {
      */
     private ViewModule selectedModule;
 
-    /**
-     * Tolerance for creating a gate.
-     */
-    private static final Dimension GATE_TOLERANCE = new Dimension(80, 60);
-
+    //
+    // /**
+    // * Tolerance for creating a gate.
+    // */
+    // private static final Dimension GATE_TOLERANCE = new Dimension(80, 60);
     /**
      * Size of a gate.
      */
@@ -123,9 +123,17 @@ public class CreateTool implements Tool {
         if (active) {
             setListeners();
             isYetActive = true;
+            if (selectedModule == null) {
+                // Sets a default Module.
+                if (!model.getViewModules().isEmpty()) {
+                    selectedModule = model.getViewModules().get(0);
+                }
+            }
         } else {
             removeListeners();
             isYetActive = false;
+            Rectangle rect = null;
+            view.getWorkspace().redraw(rect);
         }
     }
 
@@ -159,28 +167,32 @@ public class CreateTool implements Tool {
     private void createElement(Point point) {
         // Offset for avoiding intersecting modules.
         Point offset = new Point();
-        offset.x = point.x - (GATE_TOLERANCE.width) / 2;
-        offset.y = point.y - (GATE_TOLERANCE.height) / 2;
-        Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(offset, GATE_TOLERANCE));
+        Rectangle rect = null;
+        if (selectedModule.getModule() == null || selectedModule.getModule().getRectangle() == null) {
+            rect = new Rectangle(GATE_SIZE);
+        } else {
+            rect = selectedModule.getModule().getRectangle();
+        }
+        offset.x = point.x - (rect.width) / 2;
+        offset.y = point.y - (rect.height) / 2;
+        // If Grid is enabled the offset must be adapted to the grid.
+        if (view.getWorkspace().getGridEnable()) {
+            offset.x -= (offset.x % view.getWorkspace().getGridSize());
+            offset.y -= (offset.y % view.getWorkspace().getGridSize());
+        }
+        Set<DrawElement> elementsAt = model.getDrawElementsAt(new Rectangle(offset, rect.getSize()));
         // First check if the user clicked on an empty space on the workspace. This means they want to create a new
         // module.
         if (elementsAt.isEmpty()) {
-            offset.x = point.x - (GATE_SIZE.width) / 2;
-            offset.y = point.y - (GATE_SIZE.height) / 2;
+            offset.x = point.x - (rect.width) / 2;
+            offset.y = point.y - (rect.height) / 2;
             if (sourcePort != null) {
                 // If the user clicked on an empty space on the workspace but a sourcePort is selected, the sourcePort
                 // will be set to null. The connection preview is reseted and a new gate can be created.
                 sourcePort = null;
                 view.getWorkspace().redraw();
-            } else if (selectedModule == null) {
-                // Sets a default Module.
-                selectedModule = model.getViewModules().get(0);
-                if (view.getWorkspace().getGridEnable()) {
-                    offset.x -= (offset.x % view.getWorkspace().getGridSize());
-                    offset.y -= (offset.y % view.getWorkspace().getGridSize());
-                }
-                model.addModule(selectedModule, offset);
             } else {
+                // If Grid is enabled the offset must be adapted to the grid.
                 if (view.getWorkspace().getGridEnable()) {
                     offset.x -= (offset.x % view.getWorkspace().getGridSize());
                     offset.y -= (offset.y % view.getWorkspace().getGridSize());
@@ -239,6 +251,28 @@ public class CreateTool implements Tool {
             }
         } else {
             view.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            Rectangle rect = null;
+            if (selectedModule.getModule() == null || selectedModule.getModule().getRectangle() == null) {
+                rect = new Rectangle(GATE_SIZE);
+            } else {
+                rect = selectedModule.getModule().getRectangle();
+            }
+            Point offset = new Point();
+            offset.x = point.x - (rect.width) / 2;
+            offset.y = point.y - (rect.height) / 2;
+            // If Grid is enabled the offset must be adapted to the grid.
+            if (view.getWorkspace().getGridEnable()) {
+                offset.x -= (offset.x % view.getWorkspace().getGridSize());
+                offset.y -= (offset.y % view.getWorkspace().getGridSize());
+            }
+            rect.setLocation(offset);
+            Set<DrawElement> elementsAt = model.getDrawElementsAt(rect);
+            if (elementsAt.isEmpty()) {
+                view.getWorkspace().redraw(rect);
+            } else {
+                rect = null;
+                view.getWorkspace().redraw(rect);
+            }
         }
     }
 
@@ -267,7 +301,6 @@ public class CreateTool implements Tool {
                 } else if (e.getActionCommand().equals("new")) {
                     model.clearCircuit();
                 } else if (e.getActionCommand().equals("loaddef")) {
-                    System.out.println("loaddef");
                     model.initView2Module();
                     view.setViewModules(model.getViewModules());
                     view.refreshBox();

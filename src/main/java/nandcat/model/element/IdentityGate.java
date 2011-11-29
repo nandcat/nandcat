@@ -20,8 +20,8 @@ public class IdentityGate extends Gate {
      * @param outPorts
      *            int number of outPorts to append
      */
-    protected IdentityGate(int inPorts, int outPorts) {
-        super(inPorts, outPorts);
+    protected IdentityGate(int outPorts) {
+        super(1, outPorts);
     }
 
     /**

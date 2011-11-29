@@ -30,7 +30,7 @@ public class HelpTool implements Tool {
     /**
      * Icon representation of the Tool.
      */
-    private ImageIcon icon; // TODO icon setzen
+    private ImageIcon icon;
 
     /**
      * String representation of the Tool.
@@ -40,7 +40,7 @@ public class HelpTool implements Tool {
         {
             add("help");
         }
-    }; // TODO beschreibung schreiben
+    };
 
     /**
      * ActionListener of the Tool on the Buttons.
@@ -68,34 +68,32 @@ public class HelpTool implements Tool {
      */
     public void setActive(boolean active) {
         if (active) {
-            if (workspaceListener == null) {
-                workspaceListener = new WorkspaceListenerAdapter() {
-
-                    public void mouseReleased(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mousePressed(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseMoved(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseDragged(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    public void mouseClicked(WorkspaceEvent e) {
-                        // TODO Auto-generated method stub
-                    }
-                };
-            }
-            view.getWorkspace().addListener(workspaceListener);
+            setListeners();
         } else {
-            view.getWorkspace().removeListener(workspaceListener);
+            removeListeners();
         }
+    }
+
+    /**
+     * Set the listeners for this tool.
+     */
+    private void setListeners() {
+        if (workspaceListener == null) {
+            workspaceListener = new WorkspaceListenerAdapter() {
+
+                public void mouseClicked(WorkspaceEvent e) {
+                    // TODO Auto-generated method stub
+                }
+            };
+        }
+        view.getWorkspace().addListener(workspaceListener);
+    }
+
+    /**
+     * Unset the listeners for this tool.
+     */
+    private void removeListeners() {
+        view.getWorkspace().removeListener(workspaceListener);
     }
 
     /**

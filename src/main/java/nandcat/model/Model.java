@@ -22,6 +22,7 @@ import nandcat.model.element.Connection;
 import nandcat.model.element.DrawElement;
 import nandcat.model.element.Element;
 import nandcat.model.element.ImpulseGenerator;
+import nandcat.model.element.Lamp;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 import nandcat.model.element.factory.ModuleBuilderFactory;
@@ -41,6 +42,12 @@ import org.apache.log4j.Logger;
  * the big three parts in NANDcat. Every query regarding data will be directed to this class.
  */
 public class Model implements ClockListener {
+
+    /**
+     * Set of {@link ImpulseGenerator}s that got toggled by the user. Those will keep their status even if the
+     * simulation stopped.
+     */
+    private Set<ImpulseGenerator> activeImps;
 
     /**
      * The current paused-status of the simulation.
@@ -176,13 +183,7 @@ public class Model implements ClockListener {
         initImporters();
         initChecks();
         paused = false;
-        // spielwiese, bis der import funktioniert TODO entfernen
-        // LOG.shutdown();
-        // ImpulseGenerator impy = new ImpulseGenerator(5);
-        // Lamp lamp = new Lamp();
-        // circuit.addModule(impy, new Point(250, 450));
-        // circuit.addModule(lamp, new Point(400, 450));
-        // circuit.addConnection(impy.getOutPorts().get(0), lamp.getInPorts().get(0));
+        activeImps = new HashSet<ImpulseGenerator>();
     }
 
     /**
@@ -264,7 +265,20 @@ public class Model implements ClockListener {
         // spawn new circuit / element _object_
         if (m.getFileName() != "") {
             module = importFromFile(new File(m.getFileName()));
-            factory.getLayouter().layout((Circuit) module);
+            Circuit c = (Circuit) module;
+
+            // Strip lamps and impulsegenerators of the circuit
+            List<Element> destroy = new LinkedList<Element>();
+            for (Element e : c.getElements()) {
+                if (e instanceof Lamp || e instanceof ImpulseGenerator) {
+                    destroy.add(e);
+                }
+            }
+            for (Element e : destroy) {
+                removeElement(e);
+            }
+
+            factory.getLayouter().layout(c);
         } else {
             module = m.getModule();
         }
@@ -378,6 +392,15 @@ public class Model implements ClockListener {
     public void exclusiveSelectElements(Rectangle rect) {
         deselectAll();
         selectElements(rect);
+    }
+
+    /**
+     * Get all {@link ImpulseGenerator}s activated before starting the simulation.
+     * 
+     * @return a Set of all {@link ImpulseGenerator}s selected before starting the simulation
+     */
+    public Set<ImpulseGenerator> getActiveImpulseGens() {
+        return activeImps;
     }
 
     /**
@@ -558,6 +581,7 @@ public class Model implements ClockListener {
      *            File to import top-level Circuit from
      */
     public void importRootFromFile(File file) {
+        LOG.debug("Start importing");
         ModelEvent e = new ModelEvent();
         // Let listeners interrupt. If interrupted don't create a new circuit.
         for (ModelListener l : listeners) {
@@ -567,6 +591,7 @@ public class Model implements ClockListener {
         }
         importExportErrorMessages = new LinkedList<String>();
         this.circuit = importFromFile(file);
+        LOG.debug("Import finished");
         ModelEvent e2 = new ModelEvent();
         // import failed
         if (circuit == null) {
@@ -578,7 +603,9 @@ public class Model implements ClockListener {
                 l.importSucceeded(e2);
             }
         }
+        LOG.debug("Notifing listeners");
         notifyForChangedElems();
+        LOG.debug("Listeners notified");
     }
 
     /**
@@ -672,6 +699,24 @@ public class Model implements ClockListener {
     }
 
     /**
+     * Notifies ModelListeners about changed Elements.
+     * 
+     * @param set
+     *            Set containing specific DrawElements
+     */
+    protected void notifyForChangedElems() {
+        ModelEvent e = new ModelEvent();
+        HashSet<DrawElement> eventSet = new HashSet<DrawElement>();
+        for (Element ele : getSelectedElements()) {
+            eventSet.add((DrawElement) ele);
+        }
+        e.setElements(eventSet);
+        for (ModelListener l : listeners) {
+            l.elementsChanged(e);
+        }
+    }
+
+    /**
      * Notifies ModelListeners about the stopped simulation.
      */
     protected void notifyForStoppedSim() {
@@ -729,6 +774,21 @@ public class Model implements ClockListener {
      */
     public void removeListener(ModelListener l) {
         listeners.remove(l);
+    }
+
+    /**
+     * Resets all active {@link ImpulseGenerator}s' states to <code>false</code> and clears the set.
+     */
+    public void resetActiveImpulseGenerators() {
+        for (ImpulseGenerator i : activeImps) {
+            if (i.getState()) {
+                i.toggleState();
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        activeImps.clear();
+        notifyForChangedElems();
     }
 
     /**
@@ -851,7 +911,13 @@ public class Model implements ClockListener {
      */
     public void toggleModule(Module m) {
         if (m instanceof ImpulseGenerator) {
-            ((ImpulseGenerator) m).toggleState();
+            ImpulseGenerator imp = (ImpulseGenerator) m;
+            imp.toggleState();
+            if (imp.getState()) {
+                activeImps.add(imp);
+            } else {
+                activeImps.remove(imp);
+            }
         }
         notifyForChangedElems();
     }
@@ -1035,9 +1101,7 @@ public class Model implements ClockListener {
         Point pr = module.getRectangle().getLocation();
         module.getRectangle().setLocation(pr.x - p.x, pr.y - p.y);
         module.setRectangle(r);
-        ModelEvent e = new ModelEvent(module);
         // ports auch bewegen
-        // TODO was ist, wenn Module ein Circuit ist?
         for (Port port : module.getInPorts()) {
             port.getRectangle().setLocation(port.getRectangle().getLocation().x - p.x,
                     port.getRectangle().getLocation().y - p.y);
@@ -1049,24 +1113,6 @@ public class Model implements ClockListener {
         notifyForChangedElems();
         dirty = true;
         return true;
-    }
-
-    /**
-     * Notifies ModelListeners about changed Elements.
-     * 
-     * @param set
-     *            Set containing specific DrawElements
-     */
-    private void notifyForChangedElems() {
-        ModelEvent e = new ModelEvent();
-        HashSet<DrawElement> eventSet = new HashSet<DrawElement>();
-        for (Element ele : getSelectedElements()) {
-            eventSet.add((DrawElement) ele);
-        }
-        e.setElements(eventSet);
-        for (ModelListener l : listeners) {
-            l.elementsChanged(e);
-        }
     }
 
     /**
@@ -1104,8 +1150,6 @@ public class Model implements ClockListener {
                 for (ModelListener l : listeners) {
                     l.importFailed(e);
                 }
-                // TODO Fehlermeldung an View?
-
             }
         }
         return m;

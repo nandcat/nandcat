@@ -53,6 +53,11 @@ public class SimulateTool implements Tool {
     private ActionListener checkManagerListener;
 
     /**
+     * The SleepTime of the Clock at the first call. So this Value represents the DefaultSleepTime.
+     */
+    private int defaultSleepTime = 0;
+
+    /**
      * String representation of the Tool.
      */
     @SuppressWarnings("serial")
@@ -67,6 +72,8 @@ public class SimulateTool implements Tool {
             add("startcheck");
             add("editcheck");
             add("step");
+            add("reset");
+            add("resetSpeed");
         }
     };
 
@@ -224,10 +231,16 @@ public class SimulateTool implements Tool {
                 } else if (e.getActionCommand().equals("faster")) {
                     // reduce clock sleep time -> faster simulation.
                     Clock clock = model.getClock();
+                    if (defaultSleepTime == 0) {
+                        defaultSleepTime = clock.getSleepTime();
+                    }
                     clock.setSleepTime(clock.getSleepTime() - SPEED_STEPS);
                 } else if (e.getActionCommand().equals("slower")) {
                     // raise clock sleep time -> slower simulation.
                     Clock clock = model.getClock();
+                    if (defaultSleepTime == 0) {
+                        defaultSleepTime = clock.getSleepTime();
+                    }
                     clock.setSleepTime(clock.getSleepTime() + SPEED_STEPS);
                 } else if (e.getActionCommand().equals("startcheck")) {
                     startCheckManager();
@@ -264,6 +277,14 @@ public class SimulateTool implements Tool {
                         model.unpause();
                         model.pause();
                     }
+                } else if (e.getActionCommand().equals("reset")) {
+                    model.resetActiveImpulseGenerators();
+                } else if (e.getActionCommand().equals("resetSpeed")) {
+                    Clock clock = model.getClock();
+                    if (defaultSleepTime == 0) {
+                        defaultSleepTime = clock.getSleepTime();
+                    }
+                    clock.setSleepTime(defaultSleepTime);
                 }
             }
         };
@@ -283,6 +304,13 @@ public class SimulateTool implements Tool {
                         if (e.getActionCommand().equals("okay")) {
                             checkManager.setVisible(false);
                         } else if (e.getActionCommand().equals("check")) {
+                            simToStart = false;
+                            if (model.isDirty()) {
+                                checkManager.resetList();
+                            }
+                            model.startChecks();
+                        } else if (e.getActionCommand().equals("checkStart")) {
+                            simToStart = true;
                             if (model.isDirty()) {
                                 checkManager.resetList();
                             }

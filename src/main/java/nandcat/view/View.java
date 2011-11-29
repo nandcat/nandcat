@@ -1,14 +1,21 @@
 package nandcat.view;
 
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.SplashScreen;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +38,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.event.ChangeListener;
 import nandcat.I18N;
 import nandcat.I18N.I18NBundle;
+import nandcat.Nandcat;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListenerAdapter;
@@ -50,6 +58,11 @@ public class View extends JFrame {
      * Frame title of the main frame.
      */
     private static final String FRAME_TITLE = "NANDcat";
+
+    /**
+     * Icon of the Application.
+     */
+    private static final Image CAT = Toolkit.getDefaultToolkit().getImage(getResource("catsmal.png"));
 
     /**
      * View over the Workspace.
@@ -157,6 +170,18 @@ public class View extends JFrame {
     private JScrollBar vertical;
 
     /**
+     * Static class for the SplasScreen.
+     * 
+     * @param g
+     *            Grahpics2D to draw on.
+     */
+    static void renderSplashFrame(Graphics2D g) {
+        g.setComposite(AlphaComposite.Clear);
+        g.fillRect(120, 140, 200, 40);
+        g.setPaintMode();
+    }
+
+    /**
      * Constructs the view.
      * 
      * @param model
@@ -173,7 +198,8 @@ public class View extends JFrame {
                 }
             }
         } catch (Exception e) {
-            // No catch needed cause if Nimbus is not installed the standard LookAndFeel will be used.
+            // No catch needed cause if Nimbus is not installed the standard
+            // LookAndFeel will be used.
         }
         setupGui(model);
     }
@@ -188,15 +214,17 @@ public class View extends JFrame {
         model.addListener(new ModelListenerAdapter() {
 
             public void elementsChanged(ModelEvent e) {
-                allModulesInSight();
+                allModulesInSight(e.getElements());
                 redraw(e);
             }
 
             public void importSucceeded(ModelEvent e) {
-                allModulesInSight();
+                Set<DrawElement> set = null;
+                allModulesInSight(set);
             }
         });
         setTitle(FRAME_TITLE);
+        setIconImage(CAT);
         setSize(1024, 768);
         setLocation(frameLocation);
         setLayout(new BorderLayout());
@@ -205,7 +233,8 @@ public class View extends JFrame {
         workspace.setPreferredSize(workspaceDimension);
         workspace.setSize(workspaceDimension);
         workspace.setBackground(Color.white);
-        workspace.setLayout(null); // no layout is required for free move of the components
+        workspace.setLayout(null); // no layout is required for free move of the
+                                   // components
         scroller = new JScrollPane(workspace);
         scroller.setWheelScrollingEnabled(false);
         horizontal = scroller.getHorizontalScrollBar();
@@ -217,6 +246,27 @@ public class View extends JFrame {
         getContentPane().add(scroller, BorderLayout.CENTER);
         getContentPane().add(toolBar, BorderLayout.WEST);
         getContentPane().add(menubar, BorderLayout.NORTH);
+        final SplashScreen splash = SplashScreen.getSplashScreen();
+        if (splash == null) {
+            System.out.println("SplashScreen.getSplashScreen() returned null");
+        } else {
+            Graphics2D g = splash.createGraphics();
+            if (g == null) {
+                System.out.println("g is null");
+                return;
+            }
+            for (int i = 0; i < 20; i++) {
+                renderSplashFrame(g);
+                splash.update();
+                try {
+                    Thread.sleep(90);
+                } catch (InterruptedException e) {
+                }
+            }
+            splash.close();
+            setVisible(true);
+            toFront();
+        }
     }
 
     /**
@@ -244,6 +294,12 @@ public class View extends JFrame {
         JMenuItem mstart = new JMenuItem(i18n.getString("menu.simulation.start"), KeyEvent.VK_S);
         mstart.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0));
         disableElements.add(mstart);
+        JMenuItem mreset = new JMenuItem(i18n.getString("menu.simulation.reset"), KeyEvent.VK_R);
+        mreset.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK));
+        disableElements.add(mreset);
+        JMenuItem mresetSpeed = new JMenuItem(i18n.getString("menu.simulation.resetSpeed"), KeyEvent.VK_0);
+        mresetSpeed.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0, ActionEvent.CTRL_MASK));
+        noDisableElements.add(mresetSpeed);
         JMenuItem mstop = new JMenuItem(i18n.getString("menu.simulation.stop"), KeyEvent.VK_E);
         mstop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0));
         noDisableElements.add(mstop);
@@ -308,6 +364,12 @@ public class View extends JFrame {
         /*
          * check if there are functionalities given for the MenuItems.
          */
+        if (toolFunctionalities.containsKey("resetSpeed")) {
+            setupMenuItem(mresetSpeed, "resetSpeed");
+        }
+        if (toolFunctionalities.containsKey("reset")) {
+            setupMenuItem(mreset, "reset");
+        }
         if (toolFunctionalities.containsKey("grid")) {
             setupMenuItem(mgrid, "grid");
         }
@@ -394,6 +456,9 @@ public class View extends JFrame {
         edit.add(mannotate);
         edit.add(mtoggle);
         edit.add(mgrid);
+        edit.addSeparator();
+        edit.add(mreset);
+        edit.add(mresetSpeed);
         file.add(mnew);
         file.add(mload);
         file.add(msave);
@@ -401,6 +466,10 @@ public class View extends JFrame {
         file.add(mloaddef);
         file.add(mclose);
         menubar.add(cycle);
+    }
+
+    private static URL getResource(String file) {
+        return Nandcat.class.getClassLoader().getResource(file);
     }
 
     /**
@@ -412,63 +481,65 @@ public class View extends JFrame {
      */
     private void buildToolbar(JToolBar toolBar) {
         toolBar.removeAll();
-        // Create Buttons of the Application. Setting Icons and Descriptions and Size.
-        ImageIcon startButtonIcon = new ImageIcon("src/resources/startmiddle.png");
+        // Create Buttons of the Application. Setting Icons and Descriptions and
+        // Size.
+        ImageIcon startButtonIcon = new ImageIcon(getResource("startmiddle.png"));
         JButton start = new JButton("", startButtonIcon);
         start.setPreferredSize(buttonDim);
         start.setToolTipText(i18n.getString("tooltip.simulation.start"));
         disableElements.add(start);
-        ImageIcon moveButtonIcon = new ImageIcon("src/resources/movemiddle.png");
+        ImageIcon moveButtonIcon = new ImageIcon(getResource("movemiddle.png"));
         JButton move = new JButton("", moveButtonIcon);
         move.setPreferredSize(buttonDim);
         move.setToolTipText(i18n.getString("tooltip.view.move"));
         disableElements.add(move);
-        ImageIcon stopButtonIcon = new ImageIcon("src/resources/stopmiddle.png");
+        ImageIcon stopButtonIcon = new ImageIcon(getResource("stopmiddle.png"));
         JButton stop = new JButton("", stopButtonIcon);
         stop.setPreferredSize(buttonDim);
         stop.setToolTipText(i18n.getString("tooltip.simulation.stop"));
         noDisableElements.add(stop);
-        ImageIcon stepButtonIcon = new ImageIcon("src/resources/stepmiddle.png");
+        ImageIcon stepButtonIcon = new ImageIcon(getResource("stepmiddle.png"));
         JButton step = new JButton("", stepButtonIcon);
         step.setPreferredSize(buttonDim);
         step.setToolTipText(i18n.getString("tooltip.simulation.step"));
         noDisableElements.add(step);
-        ImageIcon fasterButtonIcon = new ImageIcon("src/resources/plusmiddle.png");
+        ImageIcon fasterButtonIcon = new ImageIcon(getResource("plusmiddle.png"));
         JButton faster = new JButton("", fasterButtonIcon);
         faster.setPreferredSize(buttonDim);
         faster.setToolTipText(i18n.getString("tooltip.simulation.faster"));
         noDisableElements.add(faster);
-        ImageIcon slowerButtonIcon = new ImageIcon("src/resources/minusmiddle.png");
+        ImageIcon slowerButtonIcon = new ImageIcon(getResource("minusmiddle.png"));
         JButton slower = new JButton("", slowerButtonIcon);
         slower.setPreferredSize(buttonDim);
         slower.setToolTipText(i18n.getString("tooltip.simulation.slower"));
         noDisableElements.add(slower);
-        ImageIcon createButtonIcon = new ImageIcon("src/resources/createmiddle.png");
+        ImageIcon createButtonIcon = new ImageIcon(getResource("createmiddle.png"));
         JButton create = new JButton("", createButtonIcon);
         create.setPreferredSize(buttonDim);
         create.setToolTipText(i18n.getString("tooltip.create"));
         disableElements.add(create);
-        ImageIcon selectButtonIcon = new ImageIcon("src/resources/selectmiddle.png");
+        ImageIcon selectButtonIcon = new ImageIcon(getResource("selectmiddle.png"));
         JButton select = new JButton("", selectButtonIcon);
         select.setPreferredSize(buttonDim);
         select.setToolTipText(i18n.getString("tooltip.select"));
         noDisableElements.add(select);
-        ImageIcon toggleButtonIcon = new ImageIcon("src/resources/togglemiddle.png");
+        ImageIcon toggleButtonIcon = new ImageIcon(getResource("togglemiddle.png"));
         JButton toggle = new JButton("", toggleButtonIcon);
         toggle.setPreferredSize(buttonDim);
         toggle.setToolTipText(i18n.getString("tooltip.state.toggle"));
         disableElements.add(toggle);
-        ImageIcon annotateButtonIcon = new ImageIcon("src/resources/annotatemiddle.png");
+        ImageIcon annotateButtonIcon = new ImageIcon(getResource("annotatemiddle.png"));
         JButton annotate = new JButton("", annotateButtonIcon);
         annotate.setPreferredSize(buttonDim);
         annotate.setToolTipText(i18n.getString("tooltip.annotate"));
         disableElements.add(annotate);
-        ImageIcon pauseButtonIcon = new ImageIcon("src/resources/pausemiddle.png");
+        ImageIcon pauseButtonIcon = new ImageIcon(getResource("pausemiddle.png"));
         JButton pause = new JButton("", pauseButtonIcon);
         pause.setPreferredSize(buttonDim);
         pause.setToolTipText(i18n.getString("tooltip.simulation.pause"));
         noDisableElements.add(pause);
-        // Check if there are Functionalities for the Buttons and if yes calling the setup.
+        // Check if there are Functionalities for the Buttons and if yes calling
+        // the setup.
         if (toolFunctionalities.containsKey("step")) {
             setupButton(step, "step");
         }
@@ -564,11 +635,21 @@ public class View extends JFrame {
 
     /**
      * Checks after an Import if all Elements are on the workspace or if it has to be extended.
+     * 
+     * @param set
+     *            Set<DrawElement> the Set with the Elements to Check.
      */
-    private void allModulesInSight() {
-        for (DrawElement elem : model.getDrawElements()) {
+    private void allModulesInSight(Set<DrawElement> set) {
+        List<DrawElement> elementsToCheck = new LinkedList<DrawElement>();
+        if (set == null) {
+            elementsToCheck = model.getDrawElements();
+        } else {
+            elementsToCheck.addAll(set);
+        }
+        for (DrawElement elem : elementsToCheck) {
             if (elem instanceof Module) {
-                // If elem is a Module we must check if it is out of the workspace and if yes extend the workspace.
+                // If elem is a Module we must check if it is out of the
+                // workspace and if yes extend the workspace.
                 if (((Module) elem).getRectangle().x >= workspace.getWidth()) {
                     workspace.setSize(((Module) elem).getRectangle().x, workspace.getHeight());
                     workspace.setPreferredSize(new Dimension(((Module) elem).getRectangle().x + 100, workspace
