@@ -301,8 +301,8 @@ public class ExportTool implements Tool {
                         imgSuccess = true;
                     }
                 } catch (IOException e) {
-                    // TODO Check exception
-                    e.printStackTrace();
+                    // If happend, imgSuccess is false and dialog is shown again.
+                    LOG.debug("Can't read file");
                 }
                 if (!imgSuccess) {
                     JOptionPane.showMessageDialog(controller.getView(), i18n.getString("dialog.image.fail.text"),
