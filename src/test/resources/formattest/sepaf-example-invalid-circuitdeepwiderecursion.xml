@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<circuits main="myCircuit"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0"
+  xmlns:c="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0"
+  xmlns:nandcat="http://www.nandcat.de/xmlns/sepaf-extension"
+  xsi:schemaLocation="
+    http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0
+    http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0.xsd
+    http://www.nandcat.de/xmlns/sepaf-extension
+    http://www.nandcat.de/xmlns/sepaf-extension.xsd">
+
+<circuit name="myCircuit">
+  <component type="circuit" type2="inner-1/1" name="inner0" posx="0" posy="0" nandcat:annotation="test annotation"/>
+  <component type="circuit" type2="inner-1/2" name="inner1" posx="1" posy="0" nandcat:annotation="test annotation"/>
+</circuit> 
+        
+<circuit name="inner-1/1">
+  <component type="circuit" type2="inner-1/1/1" name="inner0" posx="0" posy="0" nandcat:annotation="test annotation"/>
+  <component type="circuit" type2="inner-1/1/2" name="inner1" posx="1" posy="0" nandcat:annotation="test annotation"/>
+</circuit> 
+
+<circuit name="inner-1/2">
+  <component type="circuit" type2="inner-1/2/1" name="inner0" posx="0" posy="0" nandcat:annotation="test annotation"/>
+  <component type="circuit" type2="inner-1/2/2" name="inner1" posx="1" posy="0" nandcat:annotation="test annotation"/>
+</circuit> 
+
+<circuit name="inner-1/1/1">
+  <component type="circuit" type2="inner-1/1/1/1" name="inner0" posx="0" posy="0" nandcat:annotation="test annotation"/>
+  <component type="circuit" type2="inner-1/1/1/2" name="inner1" posx="1" posy="0" nandcat:annotation="test annotation"/>
+</circuit> 
+
+<circuit name="inner-1/1/2">
+  <component type="circuit" type2="inner-1/1/2/1" name="inner0" posx="0" posy="0" nandcat:annotation="test annotation"/>
+  <component type="circuit" type2="inner-1/1/2/2" name="inner1" posx="1" posy="0" nandcat:annotation="test annotation"/>
+</circuit> 
+
+<circuit name="inner-1/2/1">
+  <component type="circuit" type2="inner-1/2/1/1" name="inner0" posx="0" posy="0" nandcat:annotation="test annotation"/>
+  <component type="circuit" type2="inner-1/2/1/2" name="inner1" posx="1" posy="0" nandcat:annotation="test annotation"/>
+</circuit> 
+
+<circuit name="inner-1/2/2">
+  <component type="circuit" type2="inner-1/2/2/1" name="inner0" posx="0" posy="0" nandcat:annotation="test annotation"/>
+  <component type="circuit" type2="inner-1/2/2/2" name="inner1" posx="1" posy="0" nandcat:annotation="test annotation"/>
+</circuit> 
+
+<!-- Circuits to complete recursion -->
+
+<circuit name="inner-1/1/1/1">
+  <component type="and" name="and0" posx="2" posy="2" nandcat:annotation="and"/>
+</circuit> 
+
+<circuit name="inner-1/1/1/2">
+  <component type="and" name="and0" posx="2" posy="2" nandcat:annotation="and"/>
+</circuit> 
+
+<circuit name="inner-1/1/2/1">
+  <component type="and" name="and0" posx="2" posy="2" nandcat:annotation="and"/>
+</circuit> 
+
+<circuit name="inner-1/1/2/2">
+  <component type="circuit" type2="inner-1/2" name="inner0" posx="0" posy="0" nandcat:annotation="test annotation"/>
+  <component type="and" name="and0" posx="2" posy="2" nandcat:annotation="and"/>
+</circuit> 
+
+<circuit name="inner-1/2/1/1">
+  <component type="and" name="and0" posx="2" posy="2" nandcat:annotation="and"/>
+</circuit> 
+
+<circuit name="inner-1/2/1/2">
+  <component type="and" name="and0" posx="2" posy="2" nandcat:annotation="and"/>
+</circuit> 
+
+<circuit name="inner-1/2/2/1">
+  <component type="and" name="and0" posx="2" posy="2" nandcat:annotation="and"/>
+</circuit> 
+
+<circuit name="inner-1/2/2/2">
+	<component type="circuit" type2="inner-1/1" name="inner0" posx="0" posy="0" nandcat:annotation="test annotation"/>
+</circuit> 
+</circuits>

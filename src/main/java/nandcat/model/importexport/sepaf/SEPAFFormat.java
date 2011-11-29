@@ -18,6 +18,9 @@ import nandcat.model.element.Port;
 import nandcat.model.importexport.FormatException;
 import org.apache.log4j.Logger;
 import org.apache.xerces.impl.dv.util.Base64;
+import org.jdom.JDOMException;
+import org.jdom.Namespace;
+import org.jdom.xpath.XPath;
 
 /**
  * SEPAF Format. Holds all information about the SEPAF format to share information between importer and exporter.
@@ -232,6 +235,23 @@ public final class SEPAFFormat {
                         + " inports, requested: " + portnr);
             }
         }
+    }
+
+    /**
+     * Creates a XPath instance with given path and added namespaces.
+     * 
+     * @param path
+     *            Path to instantiate xpath with.
+     * @return XPath instance with namespaces.
+     * @throws JDOMException
+     *             Exception if path is wrong.
+     */
+    public static XPath getXPathInstance(String path) throws JDOMException {
+        XPath xpath = XPath.newInstance(path);
+        for (Namespace ns : SEPAFFormat.NAMESPACE.ALL) {
+            xpath.addNamespace(ns);
+        }
+        return xpath;
     }
 
     /**
