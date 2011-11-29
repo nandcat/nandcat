@@ -95,7 +95,7 @@ public class SEPAFImporter implements Importer {
     private ModuleBuilderFactory factory;
 
     /**
-     * Errorhandler to handle errors.
+     * ErrorHandler to handle errors.
      */
     private FormatErrorHandler errorHandler;
 
@@ -133,8 +133,10 @@ public class SEPAFImporter implements Importer {
     public void reset() {
         circuitIndex = new HashMap<String, Circuit>();
         xsdSources = new Source[] {
-                new StreamSource(Nandcat.class.getResourceAsStream(SEPAFFormat.VALIDATIONSCHEMA.SCHEMA_NANDCAT)),
-                new StreamSource(Nandcat.class.getResourceAsStream(SEPAFFormat.VALIDATIONSCHEMA.SCHEMA_SEPAF)) };
+                new StreamSource(Nandcat.class.getClassLoader().getResourceAsStream(
+                        SEPAFFormat.VALIDATIONSCHEMA.SCHEMA_NANDCAT)),
+                new StreamSource(Nandcat.class.getClassLoader().getResourceAsStream(
+                        SEPAFFormat.VALIDATIONSCHEMA.SCHEMA_SEPAF)) };
         importedCircuit = null;
         file = null;
         errorMsg = null;

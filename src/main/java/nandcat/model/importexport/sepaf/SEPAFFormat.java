@@ -35,12 +35,12 @@ public final class SEPAFFormat {
         /**
          * Path to SEPAF schema used for validation.
          */
-        public static final String SCHEMA_SEPAF = "../circuits-1.0.xsd";
+        public static final String SCHEMA_SEPAF = "circuits-1.0.xsd";
 
         /**
          * Path to NANDcat schema used for validation.
          */
-        public static final String SCHEMA_NANDCAT = "../sepaf-extension.xsd";
+        public static final String SCHEMA_NANDCAT = "sepaf-extension.xsd";
     }
 
     /**
