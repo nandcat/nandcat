@@ -19,8 +19,7 @@ public class Controller {
     /**
      * Collection of available tools.
      */
-    // TODO: protected für Tests
-    protected Set<Tool> tools = new LinkedHashSet<Tool>();
+    private Set<Tool> tools = new LinkedHashSet<Tool>();
 
     /**
      * Currently active tool.
@@ -55,16 +54,16 @@ public class Controller {
      * Initializes the Tool Classes.
      */
     protected void initTools() {
-        tools.add(new SimulateTool(this));
-        tools.add(new CreateTool(this));
-        tools.add(new SelectTool(this));
-        tools.add(new ViewTool(this));
-        tools.add(new AnnotationTool(this));
-        tools.add(new StateTool(this));
-        tools.add(new DeleteTool(this));
-        tools.add(new ExportTool(this));
-        tools.add(new ImportTool(this));
-        tools.add(new HelpTool(this));
+        getTools().add(new SimulateTool(this));
+        getTools().add(new CreateTool(this));
+        getTools().add(new SelectTool(this));
+        getTools().add(new ViewTool(this));
+        getTools().add(new AnnotationTool(this));
+        getTools().add(new StateTool(this));
+        getTools().add(new DeleteTool(this));
+        getTools().add(new ExportTool(this));
+        getTools().add(new ImportTool(this));
+        getTools().add(new HelpTool(this));
     }
 
     /**
@@ -114,5 +113,14 @@ public class Controller {
             map.putAll(tool.getFunctionalities());
         }
         view.setFunctionalities(map);
+    }
+
+    /**
+     * Gets the current tool set.
+     * 
+     * @return Set of tools
+     */
+    protected Set<Tool> getTools() {
+        return tools;
     }
 }

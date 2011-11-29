@@ -106,7 +106,7 @@ public class ControllerTest {
         }
 
         public void addTool(Tool t) {
-            tools.add(t);
+            getTools().add(t);
         }
 
         @Override
