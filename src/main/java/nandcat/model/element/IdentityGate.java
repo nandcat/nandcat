@@ -15,8 +15,6 @@ public class IdentityGate extends Gate {
     /**
      * Advanced constructor. Creates new Identity gate with inPorts incoming and outPorts outgoing Ports.
      * 
-     * @param inPorts
-     *            int number of inPorts to append
      * @param outPorts
      *            int number of outPorts to append
      */
