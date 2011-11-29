@@ -40,7 +40,7 @@ public abstract class WorkspaceListenerAdapter implements WorkspaceListener {
      */
     public void windowClosing() {
     }
-    
+
     /**
      * {@inheritDoc}
      */

@@ -1,11 +1,9 @@
 package nandcat.view;
 
-import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.SplashScreen;
@@ -65,6 +63,63 @@ public class View extends JFrame {
     private static final Image CAT = Toolkit.getDefaultToolkit().getImage(getResource("catsmal.png"));
 
     /**
+     * Default serial version uid.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Default Button Dimension.
+     */
+    private static final Dimension BUTTON_DIM = new Dimension(32, 32);
+
+    /**
+     * Default Workspace Dimension.
+     */
+    private static final Dimension WORKSPACE_SIZE = new Dimension(2000, 2000);
+
+    /**
+     * Default Viewport location on the workspace.
+     */
+    private static final Point VIEWPORT_LOCATION = new Point(200, 200);
+
+    /**
+     * Default Frame location on the Screen.
+     */
+    private static final Point START_LOCATION = new Point(200, 150);
+
+    /**
+     * Default Frame size.
+     */
+    private static final Dimension FRAME_SIZE = new Dimension(1024, 768);
+
+    /**
+     * How often the splash thread is sent to sleep.
+     * 
+     * this value multiplied with the SPLASH_THREAD_SLEEP gives the sleep time in ms.
+     */
+    private static final int SPLASH_SLEEPTIME = 20;
+
+    /**
+     * Sleep time of the thread representing the splash screen.
+     */
+    private static final long SPLASH_THREAD_SLEEP = 100;
+
+    /**
+     * Dimension of the Separator in the ToolBar.
+     */
+    private static final Dimension SEPERATOR_DIM = new Dimension(80, 40);
+
+    /**
+     * Dimension of the ComboBox in the ToolBar.
+     */
+    private static final Dimension COMBO_DIM = new Dimension(80, 40);
+
+    /**
+     * this value represents how much pixel should at least be around an Element.
+     */
+    private static final int SPACE_ARROUND_ELEM = 100;
+
+    /**
      * View over the Workspace.
      */
     private JScrollPane scroller;
@@ -80,11 +135,6 @@ public class View extends JFrame {
     private JViewport viewport;
 
     /**
-     * Default serial version uid.
-     */
-    private static final long serialVersionUID = 1L;
-
-    /**
      * Workspace displays model elements.
      */
     private Workspace workspace;
@@ -92,17 +142,17 @@ public class View extends JFrame {
     /**
      * Location of upper left corner of the frame on the screen.
      */
-    private Point frameLocation = new Point(200, 150);
+    private Point frameLocation = new Point(START_LOCATION);
 
     /**
      * Location of the upper left corner of the viewport on the screen.
      */
-    private Point viewportLocation = new Point(200, 250);
+    private Point viewportLocation = new Point(VIEWPORT_LOCATION);
 
     /**
      * Dimension of the panel we work in.
      */
-    private Dimension workspaceDimension = new Dimension(2000, 2000);
+    private Dimension workspaceDimension = new Dimension(WORKSPACE_SIZE);
 
     /**
      * Menu of the application.
@@ -132,7 +182,7 @@ public class View extends JFrame {
     /**
      * Dimension of Buttons.
      */
-    private Dimension buttonDim = new Dimension(32, 32);
+    private Dimension buttonDim = new Dimension(BUTTON_DIM);
 
     /**
      * Model instance.
@@ -152,7 +202,7 @@ public class View extends JFrame {
     /**
      * JComboBox with the Available Modules.
      */
-    private JComboBox modules;
+    private JComboBox<?> modules;
 
     /**
      * Layouter used to layout modules.
@@ -168,18 +218,6 @@ public class View extends JFrame {
      * JScrollBar, the Vertical ScrollBar of the ScrollPane.
      */
     private JScrollBar vertical;
-
-    /**
-     * Static class for the SplasScreen.
-     * 
-     * @param g
-     *            Grahpics2D to draw on.
-     */
-    static void renderSplashFrame(Graphics2D g) {
-        g.setComposite(AlphaComposite.Clear);
-        g.fillRect(120, 140, 200, 40);
-        g.setPaintMode();
-    }
 
     /**
      * Constructs the view.
@@ -200,6 +238,7 @@ public class View extends JFrame {
         } catch (Exception e) {
             // No catch needed cause if Nimbus is not installed the standard
             // LookAndFeel will be used.
+            System.out.println("No Nimbus Look and Feel found!");
         }
         setupGui(model);
     }
@@ -225,7 +264,7 @@ public class View extends JFrame {
         });
         setTitle(FRAME_TITLE);
         setIconImage(CAT);
-        setSize(1024, 768);
+        setSize(FRAME_SIZE);
         setLocation(frameLocation);
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -247,26 +286,18 @@ public class View extends JFrame {
         getContentPane().add(toolBar, BorderLayout.WEST);
         getContentPane().add(menubar, BorderLayout.NORTH);
         final SplashScreen splash = SplashScreen.getSplashScreen();
-        if (splash == null) {
-            System.out.println("SplashScreen.getSplashScreen() returned null");
-        } else {
-            Graphics2D g = splash.createGraphics();
-            if (g == null) {
-                System.out.println("g is null");
-                return;
-            }
-            for (int i = 0; i < 20; i++) {
-                renderSplashFrame(g);
-                splash.update();
+        if (splash != null) {
+            for (int i = 0; i < SPLASH_SLEEPTIME; i++) {
                 try {
-                    Thread.sleep(90);
+                    Thread.sleep(SPLASH_THREAD_SLEEP);
                 } catch (InterruptedException e) {
+                    System.out.println(e.getCause());
                 }
             }
-            splash.close();
-            setVisible(true);
-            toFront();
         }
+        splash.close();
+        setVisible(true);
+        toFront();
     }
 
     /**
@@ -468,6 +499,13 @@ public class View extends JFrame {
         menubar.add(cycle);
     }
 
+    /**
+     * Returns the URL of the Resources.
+     * 
+     * @param file
+     *            String of the FileName.
+     * @return the URL of the Resources.
+     */
     private static URL getResource(String file) {
         return Nandcat.class.getClassLoader().getResource(file);
     }
@@ -575,7 +613,7 @@ public class View extends JFrame {
         }
         if (viewModules != null) {
             modules = new WideComboBox(viewModules.toArray());
-            modules.setPreferredSize(new Dimension(80, 40));
+            modules.setPreferredSize(COMBO_DIM);
             modules.setToolTipText(i18n.getString("tooltip.modules"));
         }
         if (toolFunctionalities.containsKey("selectModule")) {
@@ -585,20 +623,20 @@ public class View extends JFrame {
         }
         // Adding Buttons to the ToolBar.
         toolBar.add(modules);
-        toolBar.addSeparator(new Dimension(80, 20));
+        toolBar.addSeparator(SEPERATOR_DIM);
         toolBar.add(create);
         toolBar.add(toggle);
         toolBar.add(select);
         toolBar.add(move);
         toolBar.add(annotate);
-        toolBar.addSeparator(new Dimension(80, 40));
+        toolBar.addSeparator(SEPERATOR_DIM);
         toolBar.add(faster);
         toolBar.add(slower);
         toolBar.add(start);
         toolBar.add(step);
         toolBar.add(pause);
         toolBar.add(stop);
-        toolBar.addSeparator(new Dimension(80, 40));
+        toolBar.addSeparator(SEPERATOR_DIM);
         // Buttons do not have to be Focusable.
         for (Component elem : toolBar.getComponents()) {
             elem.setFocusable(false);
@@ -652,13 +690,13 @@ public class View extends JFrame {
                 // workspace and if yes extend the workspace.
                 if (((Module) elem).getRectangle().x >= workspace.getWidth()) {
                     workspace.setSize(((Module) elem).getRectangle().x, workspace.getHeight());
-                    workspace.setPreferredSize(new Dimension(((Module) elem).getRectangle().x + 100, workspace
-                            .getHeight()));
+                    workspace.setPreferredSize(new Dimension(((Module) elem).getRectangle().x + SPACE_ARROUND_ELEM,
+                            workspace.getHeight()));
                 }
                 if (((Module) elem).getRectangle().y >= workspace.getHeight()) {
                     workspace.setSize(workspace.getWidth(), ((Module) elem).getRectangle().y);
-                    workspace.setPreferredSize(new Dimension(workspace.getWidth(),
-                            ((Module) elem).getRectangle().y + 100));
+                    workspace.setPreferredSize(new Dimension(workspace.getWidth(), ((Module) elem).getRectangle().y
+                            + SPACE_ARROUND_ELEM));
                 }
             }
         }
@@ -814,7 +852,7 @@ public class View extends JFrame {
         toolBar.remove(modules);
         // Build it new and adds it again at pos 0
         modules = new WideComboBox(viewModules.toArray());
-        modules.setPreferredSize(new Dimension(80, 40));
+        modules.setPreferredSize(COMBO_DIM);
         modules.setToolTipText(i18n.getString("tooltip.modules"));
         if (toolFunctionalities.containsKey("selectModule")) {
             modules.addActionListener(toolFunctionalities.get("selectModule"));
@@ -828,12 +866,17 @@ public class View extends JFrame {
      * Extension of JComboBox to ensure the PopupMenu of the ComoBox is wide enough to Display the full names of the
      * Elements.
      */
-    public class WideComboBox extends JComboBox {
+    public class WideComboBox extends JComboBox<Object> {
 
         /**
          * Default serial uid.
          */
         private static final long serialVersionUID = 1L;
+
+        /**
+         * Width of the Combo Popup Menu.
+         */
+        private static final int COMBO_WIDTH = 160;
 
         /**
          * Default Constructor.
@@ -848,7 +891,7 @@ public class View extends JFrame {
          * @param items
          *            array of Objects to be placed in the ComboBox.
          */
-        public WideComboBox(final Object items[]) {
+        public WideComboBox(final Object[] items) {
             super(items);
         }
 
@@ -871,11 +914,13 @@ public class View extends JFrame {
 
         /**
          * Getter for the Dimension of the Popupmenu.
+         * 
+         * @return Dimension, representing the Dimension of the Popup.
          */
         public Dimension getSize() {
             Dimension dim = super.getSize();
             if (!layingOut) {
-                dim.width = Math.max(160, getPreferredSize().width);
+                dim.width = Math.max(COMBO_WIDTH, getPreferredSize().width);
             }
             return dim;
         }
