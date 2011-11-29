@@ -468,6 +468,13 @@ public class View extends JFrame {
         menubar.add(cycle);
     }
 
+    /**
+     * Gets the resource URL depending on environment. Works with Jar.
+     * 
+     * @param file
+     *            File to get URL for. Realpath: src/main/resources/main.png -> Parameter: main.png
+     * @return URL to file.
+     */
     private static URL getResource(String file) {
         return Nandcat.class.getClassLoader().getResource(file);
     }
