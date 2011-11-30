@@ -14,7 +14,8 @@ import nandcat.model.element.Lamp;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.Port;
 import nandcat.model.element.factory.ModuleBuilderFactory;
-import org.junit.Ignore;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests flipflop functionality.
@@ -52,16 +53,16 @@ public class FlipFlopTest {
      * @throws Exception
      *             Any Exception should fail the test.
      */
-    @Ignore
-    // @Before
+    // @Ignore
+    @Before
     public void setUp() throws Exception {
         factory = new ModuleBuilderFactory();
         factory.setDefaults(new ModelElementDefaults());
         model = new Model();
         AndGate andGate1 = (AndGate) factory.getAndGateBuilder().build();
         AndGate andGate2 = (AndGate) factory.getAndGateBuilder().build();
-        NotGate notGate1 = (NotGate) factory.getAndGateBuilder().setOutPorts(2).build();
-        NotGate notGate2 = (NotGate) factory.getAndGateBuilder().setOutPorts(2).build();
+        NotGate notGate1 = (NotGate) factory.getNotGateBuilder().setOutPorts(2).build();
+        NotGate notGate2 = (NotGate) factory.getNotGateBuilder().setOutPorts(2).build();
         setButton = (ImpulseGenerator) factory.getSwitchBuilder().build();
         resetButton = (ImpulseGenerator) factory.getSwitchBuilder().build();
         lampQ1 = (Lamp) factory.getLampBuilder().build();
@@ -105,8 +106,8 @@ public class FlipFlopTest {
     /**
      * Tests the flipflop functionality at specific cycles.
      */
-    @Ignore
-    // @Test
+    // @Ignore
+    @Test
     public void test() {
         // Test if both buttons are off
         assertFalse(setButton.getState());
