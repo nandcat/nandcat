@@ -325,42 +325,16 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Export the the selected Elements to a file.
+     * Export the given circuit to a file.
      * 
+     * @param c
+     *            Circuit to export.
      * @param file
-     *            File to export top-level Circuit from
-     */
-    public void exportSelectedToFile(File file) {
-        if (file == null) {
-            throw new IllegalArgumentException();
-        }
-        String ext = getFileExtension(file);
-        if (exporters.containsKey(ext)) {
-            Exporter ex = exporters.get(ext);
-            ex.setFile(file);
-            //
-            Circuit selected = getCircuitFromSelected();
-            //
-            ex.setCircuit(selected);
-            if (ex.exportCircuit()) {
-                LOG.debug("File exported successfully");
-                dirty = false;
-            } else {
-                LOG.warn("Export to " + file.getAbsolutePath() + " failed");
-                // TODO Fehlermeldung an View?
-            }
-        }
-    }
-
-    /**
-     * Export the top-level Circuit and all its elements to a file.
-     * 
-     * @param file
-     *            File to export top-level Circuit from
+     *            File to export to.
      * @param drawer
      *            Drawer to use if exporter supports this. Null otherwise.
      */
-    public void exportToFile(File file, ElementDrawer drawer) {
+    public void exportToFile(Circuit c, File file, ElementDrawer drawer) {
         if (file == null) {
             throw new IllegalArgumentException();
         }
@@ -369,11 +343,10 @@ public class Model implements ClockListener {
             Exporter ex = exporters.get(ext);
             ex.setErrorHandler(importExportErrorHandler);
             ex.setFile(file);
-            ex.setCircuit(circuit);
+            ex.setCircuit(c);
             if (ex instanceof DrawExporter) {
                 ((DrawExporter) ex).setElementDrawer(drawer);
             }
-
             if (ex.exportCircuit()) {
                 LOG.debug("File exported successfully");
                 dirty = false;
@@ -455,13 +428,60 @@ public class Model implements ClockListener {
         }
         for (Connection c : circuit.getConnections()) {
             if (c.isSelected()) {
-                if (result.getModules().contains(c.getNextModule())
-                        && result.getModules().contains(c.getPreviousModule())) {
-                    result.addConnection(c.getInPort(), c.getOutPort());
+                Module targetModule = getTargetModule(c, result.getModules());
+                Module sourceModule = getSourceModule(c, result.getModules());
+                if (targetModule != null && sourceModule != null) {
+                    if (result.getModules().contains(targetModule) && result.getModules().contains(sourceModule)) {
+                        result.addConnection(c.getInPort(), c.getOutPort());
+                    }
                 }
             }
         }
         return result;
+    }
+
+    /**
+     * Connections source module may lead inside another circuit. This method finds the module inside the given set of
+     * modules.
+     * 
+     * @param c
+     *            Connection to get source module for.
+     * @param modules
+     *            Set of modules to search in.
+     * @return Source module, otherwise null.
+     */
+    private Module getSourceModule(Connection c, Set<Module> modules) {
+        if (modules.contains(c.getPreviousModule())) {
+            return c.getPreviousModule();
+        }
+        for (Module module : modules) {
+            if (module.getOutPorts().contains(c.getInPort())) {
+                return module;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Connections target module may lead inside another circuit. This method finds the module inside the given set of
+     * modules.
+     * 
+     * @param c
+     *            Connection to get target module for.
+     * @param modules
+     *            Set of modules to search in.
+     * @return Source module, otherwise null.
+     */
+    private Module getTargetModule(Connection c, Set<Module> modules) {
+        if (modules.contains(c.getNextModule())) {
+            return c.getNextModule();
+        }
+        for (Module module : modules) {
+            if (module.getInPorts().contains(c.getOutPort())) {
+                return module;
+            }
+        }
+        return null;
     }
 
     /**

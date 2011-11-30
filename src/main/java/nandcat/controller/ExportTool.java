@@ -19,6 +19,7 @@ import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListener;
 import nandcat.model.ModelListenerAdapter;
+import nandcat.model.element.Circuit;
 import nandcat.view.WorkspaceListenerAdapter;
 import org.apache.log4j.Logger;
 
@@ -84,6 +85,7 @@ public class ExportTool implements Tool {
         {
             add("save");
             add("saveAs");
+            add("saveSelectedAs");
             add("close");
         }
     };
@@ -198,6 +200,8 @@ public class ExportTool implements Tool {
             actionSave();
         } else if (command.equals("close")) {
             getWindowListener().windowClosing();
+        } else if (command.equals("saveSelectedAs")) {
+            actionSaveSelectedAs();
         } else {
             LOG.debug("Command '" + command + "' not supported.");
         }
@@ -217,7 +221,7 @@ public class ExportTool implements Tool {
      */
     private void actionSave() {
         if (isQuickSaveAvailable()) {
-            model.exportToFile(saveLastFile, null);
+            model.exportToFile(model.getCircuit(), saveLastFile, null);
         } else {
             LOG.debug("Last save not available - no quicksave");
             actionSaveAs();
@@ -228,65 +232,203 @@ public class ExportTool implements Tool {
      * Shows save dialogs to export the circuit.
      */
     private void actionSaveAs() {
-        JFileChooser fc = new JFileChooser();
+        JFileChooser fc = buildExportFileChooser();
         if (saveLastFile != null) {
             fc.setSelectedFile(saveLastFile);
         }
-        ImportExportUtils.addFileFilterToChooser(fc, model.getExportFormats());
-        fc.setAcceptAllFileFilterUsed(false);
         int returnVal = fc.showSaveDialog(controller.getView());
+
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             if (fc.getFileFilter() == null) {
                 actionSaveAs();
                 return;
             }
-            File file = fc.getSelectedFile();
-            if (file != null) {
-                String extension = ImportExportUtils.getExtension(file);
-                if (extension == null) {
-                    ExtensionFileFilter eFileFilter = (ExtensionFileFilter) fc.getFileFilter();
-                    String ext = eFileFilter.getExtension();
-                    file = new File(file.getAbsolutePath() + "." + ext);
-                }
-                // Overwrite Dialog
-                if (file.exists()) {
-                    int response = JOptionPane.showConfirmDialog(null, i18n.getString("dialog.override.text"),
-                            i18n.getString("dialog.override.title"), JOptionPane.OK_CANCEL_OPTION,
-                            JOptionPane.QUESTION_MESSAGE);
-                    if (response == JOptionPane.CANCEL_OPTION) {
-                        LOG.debug("Save command cancelled by user.");
-                        return;
-                    }
-                }
-                // Add Image to circuit
-                Object[] options = { i18n.getString("dialog.options.yes"), i18n.getString("dialog.options.no"),
-                        i18n.getString("dialog.options.delete") };
-                int n = JOptionPane.showOptionDialog(controller.getView(), i18n.getString("dialog.image.text"),
-                        i18n.getString("dialog.image.title"), JOptionPane.YES_NO_CANCEL_OPTION,
-                        JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
-                if (n == 0) {
-                    showImageLoadFileChooser();
-                } else if (n == 2) {
-                    model.getCircuit().setSymbol(null);
-                }
-                LOG.debug("Exporting: " + file.getName());
-                saveLastFile = file;
-                saveLastUUID = model.getCircuit().getUuid();
-                model.exportToFile(file, controller.getView().getDrawer());
-            } else {
-                LOG.debug("File is null");
+            File file = getFileToSaveTo(fc);
+
+            // Restart process if file is null
+            if (file == null) {
+                actionSaveAs();
+                return;
             }
+
+            // Overwrite Dialog
+            if (file.exists()) {
+                int response = showFileOverwriteConfirmation();
+                if (response == JOptionPane.CANCEL_OPTION) {
+                    LOG.debug("Save command cancelled by user.");
+                    return;
+                }
+            }
+
+            // Add Image to circuit
+            int n = showImageOptionDialog();
+
+            // Replace current image with new one.
+            if (n == 0) {
+                BufferedImage im = showImageLoadFileChooser();
+
+                // Only set image if image available.
+                if (im != null) {
+                    model.getCircuit().setSymbol(im);
+                }
+            } else if (n == 2) {
+
+                // Clear current image.
+                model.getCircuit().setSymbol(null);
+            }
+            LOG.debug("Exporting: " + file.getName());
+            saveLastFile = file;
+            saveLastUUID = model.getCircuit().getUuid();
+            model.exportToFile(model.getCircuit(), file, controller.getView().getDrawer());
+
         } else {
             LOG.debug("Save command cancelled by user.");
         }
     }
 
     /**
-     * Shows the image chooser dialog for changing circuits symbol.
+     * Shows save dialogs to export the selected elements as circuit.
      */
-    private void showImageLoadFileChooser() {
+    private void actionSaveSelectedAs() {
+        JFileChooser fc = buildExportFileChooser();
+        if (saveLastFile != null) {
+            fc.setSelectedFile(saveLastFile.getParentFile().getAbsoluteFile());
+        }
+        int returnVal = fc.showSaveDialog(controller.getView());
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            if (fc.getFileFilter() == null) {
+                actionSaveSelectedAs();
+                return;
+            }
+            File file = getFileToSaveTo(fc);
+
+            // Restart process if file is null
+            if (file == null) {
+                actionSaveAs();
+                return;
+            }
+
+            // Overwrite Dialog
+            if (file.exists()) {
+                int response = showFileOverwriteConfirmation();
+                if (response == JOptionPane.CANCEL_OPTION) {
+                    LOG.debug("Save command cancelled by user.");
+                    return;
+                }
+            }
+
+            Circuit c = model.getCircuitFromSelected();
+
+            // Add Image to circuit
+            int n = showImageOptionDialogSaveSelected();
+
+            // Replace current image with new one.
+            if (n == 0) {
+                BufferedImage im = showImageLoadFileChooser();
+
+                // Only set image if image available.
+                if (im != null) {
+                    c.setSymbol(im);
+                }
+            }
+
+            LOG.debug("Exporting: " + file.getName());
+            saveLastFile = file;
+            model.exportToFile(c, file, controller.getView().getDrawer());
+
+        } else {
+            LOG.debug("Save command cancelled by user.");
+        }
+    }
+
+    /**
+     * Shows a dialog to confirm if file would be overwritten.
+     * 
+     * @return Response code (JOptionPane).
+     */
+    private int showFileOverwriteConfirmation() {
+        return JOptionPane.showConfirmDialog(null, i18n.getString("dialog.override.text"),
+                i18n.getString("dialog.override.title"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+    }
+
+    /**
+     * Get file to save to from file chooser.
+     * 
+     * @param fc
+     *            FileChooser to get file from.
+     * @return File to save to, null otherwise.
+     */
+    private File getFileToSaveTo(JFileChooser fc) {
+        File file = fc.getSelectedFile();
+        if (file != null) {
+            String extension = ImportExportUtils.getExtension(file);
+            ExtensionFileFilter eFileFilter = (ExtensionFileFilter) fc.getFileFilter();
+            String ext = eFileFilter.getExtension();
+            if (extension == null || !extension.equalsIgnoreCase(ext)) {
+                file = new File(file.getAbsolutePath() + "." + ext);
+            }
+        }
+        return file;
+    }
+
+    /**
+     * Builds the export file chooser.
+     * 
+     * @return Export file chooser.
+     */
+    private JFileChooser buildExportFileChooser() {
+        JFileChooser fc = new JFileChooser();
+        ImportExportUtils.addFileFilterToChooser(fc, model.getExportFormats());
+        fc.setAcceptAllFileFilterUsed(false);
+        return fc;
+    }
+
+    /**
+     * Shows dialog with image options.
+     * 
+     * @param options
+     *            Available options.
+     * @param selected
+     *            Selected option.
+     * @return Selected option. 0 == Yes, 1 == No, 2 == Delete existing image.
+     */
+    private int showImageOptionDialog(Object[] options, int selected) {
+        return JOptionPane.showOptionDialog(controller.getView(), i18n.getString("dialog.image.text"),
+                i18n.getString("dialog.image.title"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
+                null, options, options[selected]);
+    }
+
+    /**
+     * Shows dialog with image options.
+     * 
+     * @return Selected option. 0 == Yes, 1 == No, 2 == Delete existing image.
+     */
+    private int showImageOptionDialog() {
+        Object[] options = { i18n.getString("dialog.options.yes"), i18n.getString("dialog.options.no"),
+                i18n.getString("dialog.options.delete") };
+        return showImageOptionDialog(options, 1);
+    }
+
+    /**
+     * Shows dialog with image options used for 'save selected as'.
+     * 
+     * @return Selected option. 0 == Yes, 1 == No
+     */
+    private int showImageOptionDialogSaveSelected() {
+        Object[] options = { i18n.getString("dialog.options.yes"), i18n.getString("dialog.options.no") };
+        return showImageOptionDialog(options, 1);
+    }
+
+    /**
+     * Shows the image chooser dialog for changing circuits symbol.
+     * 
+     * @return BufferedImage read from selected file, null otherwise.
+     */
+    private BufferedImage showImageLoadFileChooser() {
         JFileChooser fc = new JFileChooser();
         fc.setAcceptAllFileFilterUsed(false);
+        BufferedImage im = null;
         int returnVal = fc.showOpenDialog(controller.getView());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
@@ -294,9 +436,8 @@ public class ExportTool implements Tool {
                 boolean imgSuccess = false;
                 try {
                     LOG.debug("Importing image: " + file.getName());
-                    BufferedImage im = ImageIO.read(file);
+                    im = ImageIO.read(file);
                     if (im != null) {
-                        model.getCircuit().setSymbol(im);
                         LOG.debug("Imported image successful");
                         imgSuccess = true;
                     }
@@ -307,12 +448,13 @@ public class ExportTool implements Tool {
                 if (!imgSuccess) {
                     JOptionPane.showMessageDialog(controller.getView(), i18n.getString("dialog.image.fail.text"),
                             i18n.getString("dialog.image.fail.title"), JOptionPane.ERROR_MESSAGE);
-                    showImageLoadFileChooser();
+                    return showImageLoadFileChooser();
                 }
             } else {
                 LOG.debug("File is null");
             }
         }
+        return im;
     }
 
     /**

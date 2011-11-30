@@ -369,6 +369,10 @@ public class View extends JFrame {
         JMenuItem msave2 = new JMenuItem(i18n.getString("menu.file.saveas"), KeyEvent.VK_A);
         msave2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
         disableElements.add(msave2);
+        // TODO Testen ob keys gehen
+        JMenuItem msave3 = new JMenuItem(i18n.getString("menu.file.saveselectedas"), KeyEvent.VK_A);
+        msave3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.SHIFT_MASK));
+        disableElements.add(msave3);
         JMenuItem mloaddef = new JMenuItem(i18n.getString("menu.file.defload"), KeyEvent.VK_F5);
         mloaddef.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
         disableElements.add(mloaddef);
@@ -451,6 +455,9 @@ public class View extends JFrame {
         if (toolFunctionalities.containsKey("saveAs")) {
             setupMenuItem(msave2, "saveAs");
         }
+        if (toolFunctionalities.containsKey("saveSelectedAs")) {
+            setupMenuItem(msave3, "saveSelectedAs");
+        }
         if (toolFunctionalities.containsKey("loaddef")) {
             setupMenuItem(mloaddef, "loaddef");
         }
@@ -493,6 +500,7 @@ public class View extends JFrame {
         file.add(mload);
         file.add(msave);
         file.add(msave2);
+        file.add(msave3);
         file.add(mloaddef);
         file.add(mclose);
         menubar.add(cycle);
