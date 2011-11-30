@@ -32,6 +32,16 @@ public class SEPAFFormatTest {
         assertEquals("nq", SEPAFFormat.getPortAsString(true, 1, Mockito.mock(FlipFlop.class)));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetNegativePortAsString() {
+        SEPAFFormat.getPortAsString(true, -1, Mockito.mock(Module.class));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetWrongFlipFlopPortAsString() {
+        SEPAFFormat.getPortAsString(true, 2, Mockito.mock(FlipFlop.class));
+    }
+
     @Test
     public void testGetInPortFlipFlop() throws FormatException {
         FlipFlop f = Mockito.mock(FlipFlop.class);

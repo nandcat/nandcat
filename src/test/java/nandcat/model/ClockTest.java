@@ -1,34 +1,17 @@
 package nandcat.model;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  * Unit test for ANDGate.
  */
-public class ClockTest extends TestCase {
-
-    /**
-     * Create the test case.
-     * 
-     * @param testName
-     *            name of the test case
-     */
-    public ClockTest(String testName) {
-        super(testName);
-    }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(ClockTest.class);
-    }
+public class ClockTest {
 
     /**
      * Test checks for frequency and parent model.
      */
+    @Test
     public void testApp() {
         Clock clk;
         boolean negativeArg = false;
