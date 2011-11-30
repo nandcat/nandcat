@@ -184,13 +184,18 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      */
     private void createInPorts() {
         inPorts.clear();
-        for (Module m : getStartingModules()) {
-            for (Port p : m.getInPorts()) {
-                // Port is not connected or connted to a module outside the circuit or a impulsegenerator
-                if (p.getConnection() == null || !elements.contains(p.getConnection().getPreviousModule())
-                        || p.getConnection().getNextModule() instanceof ImpulseGenerator) {
-                    inPorts.add(p);
-                }
+        // for (Module m : getStartingModules()) {
+        // for (Port p : m.getInPorts()) {
+        // // Port is not connected or connted to a module outside the circuit or a impulsegenerator
+        // if (p.getConnection() == null || !elements.contains(p.getConnection().getPreviousModule())
+        // || p.getConnection().getNextModule() instanceof ImpulseGenerator) {
+        // inPorts.add(p);
+        // }
+        // }
+        // }
+        for (Port p : strippedModules.keySet()) {
+            if (strippedModules.get(p) instanceof ImpulseGenerator) {
+                inPorts.add(p);
             }
         }
     }
@@ -208,17 +213,22 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      */
     private void createOutPorts() {
         outPorts.clear();
-        for (Element e : elements) {
-            if (e instanceof Module) {
-                Module m = (Module) e;
-                for (Port p : m.getOutPorts()) {
-                    // empty ports are outPorts
-                    // not-emptyports with connections leading to modules outside the circuit or lamps are also outPorts
-                    if ((p.getConnection() == null) || !(this.elements.contains(p.getConnection().getNextModule()))
-                            || p.getConnection().getNextModule() instanceof Lamp) {
-                        outPorts.add(p);
-                    }
-                }
+        // for (Element e : elements) {
+        // if (e instanceof Module) {
+        // Module m = (Module) e;
+        // for (Port p : m.getOutPorts()) {
+        // // empty ports are outPorts
+        // // not-emptyports with connections leading to modules outside the circuit or lamps are also outPorts
+        // if ((p.getConnection() == null) || !(this.elements.contains(p.getConnection().getNextModule()))
+        // || p.getConnection().getNextModule() instanceof Lamp) {
+        // outPorts.add(p);
+        // }
+        // }
+        // }
+        // }
+        for (Port p : strippedModules.keySet()) {
+            if (strippedModules.get(p) instanceof Lamp) {
+                outPorts.add(p);
             }
         }
     }
