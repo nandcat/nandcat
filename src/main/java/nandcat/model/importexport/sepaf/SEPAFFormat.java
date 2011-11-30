@@ -30,7 +30,14 @@ public final class SEPAFFormat {
     /**
      * Representing schema files.
      */
-    public static class VALIDATIONSCHEMA {
+    public static final class VALIDATIONSCHEMA {
+
+        /**
+         * Private constructor.
+         */
+        private VALIDATIONSCHEMA() {
+            throw new UnsupportedOperationException();
+        }
 
         /**
          * Path to SEPAF schema used for validation.
@@ -46,14 +53,21 @@ public final class SEPAFFormat {
     /**
      * Representing namespace of sepaf format.
      */
-    public static class NAMESPACE {
+    public static final class NAMESPACE {
+
+        /**
+         * Private constructor.
+         */
+        private NAMESPACE() {
+            throw new UnsupportedOperationException();
+        }
 
         /**
          * Get default namespace.
          * 
          * @return default namespace.
          */
-        public static final org.jdom.Namespace getDefault() {
+        public static org.jdom.Namespace getDefault() {
             return org.jdom.Namespace.getNamespace("http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0");
         }
 
@@ -98,7 +112,14 @@ public final class SEPAFFormat {
     /**
      * Gate defaults.
      */
-    public static class GATEDEFAULTS {
+    public static final class GATEDEFAULTS {
+
+        /**
+         * Private constructor.
+         */
+        private GATEDEFAULTS() {
+            throw new UnsupportedOperationException();
+        }
 
         /**
          * Default amount of incoming ports: and.
@@ -190,7 +211,7 @@ public final class SEPAFFormat {
      * Private constructor.
      */
     private SEPAFFormat() {
-        throw new IllegalArgumentException();
+        throw new UnsupportedOperationException();
     }
 
     /**

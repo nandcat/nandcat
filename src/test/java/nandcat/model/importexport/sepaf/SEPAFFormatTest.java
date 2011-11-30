@@ -1,12 +1,16 @@
 package nandcat.model.importexport.sepaf;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 import nandcat.model.element.FlipFlop;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 import nandcat.model.importexport.FormatException;
+import org.jdom.Namespace;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -40,6 +44,57 @@ public class SEPAFFormatTest {
     @Test(expected = IllegalArgumentException.class)
     public void testGetWrongFlipFlopPortAsString() {
         SEPAFFormat.getPortAsString(true, 2, Mockito.mock(FlipFlop.class));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testPrivateConstructor() throws Throwable {
+        Constructor constructor = SEPAFFormat.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        try {
+            constructor.newInstance();
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testValidationschemaPrivateConstructor() throws Throwable {
+        Constructor constructor = SEPAFFormat.VALIDATIONSCHEMA.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        try {
+            constructor.newInstance();
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testGatedefaultsPrivateConstructor() throws Throwable {
+        Constructor constructor = SEPAFFormat.GATEDEFAULTS.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        try {
+            constructor.newInstance();
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testNamespacePrivateConstructor() throws Throwable {
+        Constructor constructor = SEPAFFormat.NAMESPACE.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        try {
+            constructor.newInstance();
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
+        }
+    }
+
+    @Test
+    public void testNamespaceType() {
+        if (!(SEPAFFormat.NAMESPACE.getDefault() instanceof Namespace)) {
+            fail("Namespace not org.jdom.Namespace");
+        }
     }
 
     @Test
