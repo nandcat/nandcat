@@ -55,6 +55,7 @@ public class CreateToolTest {
         inOrder.verify(workspace).removeListener(argument.getValue());
     }
 
+    @Ignore
     @Test
     public void testCreateModule() {
         Controller controller = Mockito.mock(Controller.class);
