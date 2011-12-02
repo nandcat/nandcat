@@ -181,6 +181,11 @@ public class View extends JFrame {
     private Set<JComponent> noDisableElements = new HashSet<JComponent>();
 
     /**
+     * Set of JComponents we want to be enabled during simulation and disabled else.
+     */
+    private Set<JComponent> reverseDisableElements = new HashSet<JComponent>();
+
+    /**
      * Dimension of Buttons.
      */
     private Dimension buttonDim = new Dimension(BUTTON_DIM);
@@ -364,7 +369,8 @@ public class View extends JFrame {
         noDisableElements.add(mresetSpeed);
         JMenuItem mstop = new JMenuItem(i18n.getString("menu.simulation.stop"), KeyEvent.VK_E);
         mstop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0));
-        noDisableElements.add(mstop);
+        mstop.setEnabled(false);
+        reverseDisableElements.add(mstop);
         JMenuItem mstep = new JMenuItem(i18n.getString("menu.simulation.step"), KeyEvent.VK_X);
         mstep.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0));
         noDisableElements.add(mstep);
@@ -424,7 +430,8 @@ public class View extends JFrame {
         disableElements.add(mgrid);
         JMenuItem mpause = new JMenuItem(i18n.getString("menu.simulation.pause"), KeyEvent.VK_P);
         mpause.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0));
-        noDisableElements.add(mselect);
+        reverseDisableElements.add(mpause);
+        mpause.setEnabled(false);
         cycle.setText(i18n.getString("cycle.stand"));
         /*
          * check if there are functionalities given for the MenuItems.
@@ -574,7 +581,8 @@ public class View extends JFrame {
         JButton stop = new JButton("", stopButtonIcon);
         stop.setPreferredSize(buttonDim);
         stop.setToolTipText(i18n.getString("tooltip.simulation.stop"));
-        noDisableElements.add(stop);
+        stop.setEnabled(false);
+        reverseDisableElements.add(stop);
         ImageIcon stepButtonIcon = new ImageIcon(getResource("stepmiddle.png"));
         JButton step = new JButton("", stepButtonIcon);
         step.setPreferredSize(buttonDim);
@@ -622,7 +630,8 @@ public class View extends JFrame {
         JButton pause = new JButton("", pauseButtonIcon);
         pause.setPreferredSize(buttonDim);
         pause.setToolTipText(i18n.getString("tooltip.simulation.pause"));
-        noDisableElements.add(pause);
+        pause.setEnabled(false);
+        reverseDisableElements.add(pause);
         // Check if there are Functionalities for the Buttons and if yes calling the setup.
         if (toolFunctionalities.containsKey("step")) {
             setupButton(step, "step");
@@ -764,6 +773,9 @@ public class View extends JFrame {
         for (JComponent enable : disableElements) {
             enable.setEnabled(true);
         }
+        for (JComponent enable : reverseDisableElements) {
+            enable.setEnabled(false);
+        }
         modules.setEnabled(true);
     }
 
@@ -774,6 +786,9 @@ public class View extends JFrame {
         // Disables all Elements in the List of Elements to be disabled.
         for (JComponent enable : disableElements) {
             enable.setEnabled(false);
+        }
+        for (JComponent enable : reverseDisableElements) {
+            enable.setEnabled(true);
         }
         modules.setEnabled(false);
     }
