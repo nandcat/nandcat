@@ -305,7 +305,7 @@ public class CreateTool implements Tool {
                     model.initView2Module();
                     view.setViewModules(model.getViewModules());
                     view.refreshBox();
-                    selectedModule = null;
+                    selectedModule = model.getViewModules().get(0);
                 }
             }
         };
