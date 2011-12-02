@@ -124,6 +124,7 @@ public class ImportTool implements Tool {
 
         // Deactivate other tools to stay consistent.
         controller.requestActivation(this);
+        controller.getView().focuseButton("nothing");
         if (command.equals("load")) {
             actionLoad();
         } else if (command.equals("new")) {
