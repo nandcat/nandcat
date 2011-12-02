@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import nandcat.view.View;
-import nandcat.view.WorkspaceEvent;
-import nandcat.view.WorkspaceListener;
-import nandcat.view.WorkspaceListenerAdapter;
 
 /**
  * The Help Tool is responsible for the Help Dialogs given to the User while using the Program.
@@ -18,14 +15,14 @@ import nandcat.view.WorkspaceListenerAdapter;
 public class HelpTool implements Tool {
 
     /**
-     * Current View instance.
-     */
-    private View view;
-
-    /**
      * Current Controller instance.
      */
     private Controller controller;
+
+    /**
+     * View instance.
+     */
+    private View view;
 
     /**
      * Icon representation of the Tool.
@@ -35,6 +32,7 @@ public class HelpTool implements Tool {
     /**
      * String representation of the Tool.
      */
+    @SuppressWarnings("serial")
     private List<String> represent = new LinkedList<String>() {
 
         {
@@ -46,11 +44,6 @@ public class HelpTool implements Tool {
      * ActionListener of the Tool on the Buttons.
      */
     private ActionListener buttonListener;
-
-    /**
-     * WorkspaceListener of the Tool on the Model.
-     */
-    private WorkspaceListener workspaceListener;
 
     /**
      * Constructs the HelpTool.
@@ -67,33 +60,8 @@ public class HelpTool implements Tool {
      * {@inheritDoc}
      */
     public void setActive(boolean active) {
-        if (active) {
-            setListeners();
-        } else {
-            removeListeners();
-        }
-    }
-
-    /**
-     * Set the listeners for this tool.
-     */
-    private void setListeners() {
-        if (workspaceListener == null) {
-            workspaceListener = new WorkspaceListenerAdapter() {
-
-                public void mouseClicked(WorkspaceEvent e) {
-                    // TODO Auto-generated method stub
-                }
-            };
-        }
-        view.getWorkspace().addListener(workspaceListener);
-    }
-
-    /**
-     * Unset the listeners for this tool.
-     */
-    private void removeListeners() {
-        view.getWorkspace().removeListener(workspaceListener);
+        // It is only activated for deactivating the old tool.
+        view.focuseButton("nothing");
     }
 
     /**
@@ -103,7 +71,7 @@ public class HelpTool implements Tool {
         buttonListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
+                activate();
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();
@@ -111,6 +79,13 @@ public class HelpTool implements Tool {
             map.put(functionality, buttonListener);
         }
         return map;
+    }
+
+    /**
+     * Requests activation by the controller.
+     */
+    private void activate() {
+        controller.requestActivation(this);
     }
 
     /**

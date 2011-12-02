@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE map     PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"     "http://java.sun.com/products/javahelp/map_2_0.dtd">
+<map version="2.0">
+<mapID target="toplevelfolder" url="images/toplevel.gif" >
+      <mapID target="start" url="handbuch.html#Simulation-durchfuehren" />
+      <mapID target="create" url="handbuch.html#Erstellen-von-Schaltungen"/>
+      <mapID target="move" url="handbuch.html#Bearbeiten-von-Schaltungen" />
+      <mapID target="stop" url="handbuch.html#Simulation-durchfuehren" />
+      <mapID target="step" url="handbuch.html#Simulation-durchfuehren" />
+      <mapID target="faster" url="handbuch.html#Simulation-durchfuehren" />
+      <mapID target="slower" url="handbuch.html#Simulation-durchfuehren" />
+      <mapID target="select" url="handbuch.html#Bearbeiten-von-Schaltungen" />
+      <mapID target="toggle" url="handbuch.html#Bearbeiten-von-Schaltungen" />
+      <mapID target="annotate" url="handbuch.html#Bearbeiten-von-Schaltungen" />
+      <mapID target="pause" url="handbuch.html#Simulation-durchfuehren" />
+      <mapID target="workspace" url="handbuch.html#Oberfläche" />
+        <mapID target="toolbar" url="handbuch.html#Oberfläche" />
+        <mapID target="menubar" url="handbuch.html#Oberfläche" />
+        <mapID target="app" url="handbuch.html#Einleitung" />
+      <mapID target="checkmanager" url="handbuch.html" />
+      <mapID target="check" url="handbuch.html" />
+</mapID>
+</map>

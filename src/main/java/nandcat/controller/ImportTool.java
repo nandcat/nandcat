@@ -148,6 +148,9 @@ public class ImportTool implements Tool {
             fc.setSelectedFile(lastLoadedFile);
         }
         ImportExportUtils.addFileFilterToChooser(fc, model.getImportFormats());
+        if (fc.getFileFilter() == null && fc.getChoosableFileFilters().length > 0) {
+            fc.setFileFilter(fc.getChoosableFileFilters()[0]);
+        }
         fc.setAcceptAllFileFilterUsed(false);
         int returnVal = fc.showOpenDialog(controller.getView());
         if (returnVal == JFileChooser.APPROVE_OPTION) {

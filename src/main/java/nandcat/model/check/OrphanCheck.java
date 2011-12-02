@@ -1,7 +1,10 @@
 package nandcat.model.check;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 import nandcat.model.check.CheckEvent.State;
 import nandcat.model.element.Circuit;
@@ -55,25 +58,45 @@ public class OrphanCheck implements CircuitCheck {
      */
     public boolean test(Circuit circuit) {
         Set<Element> elements = new LinkedHashSet<Element>();
-        
+
         informListeners(State.RUNNING, elements);
-        for (Module m : circuit.getModules()) {
-            boolean current = false;
-            for (Port p : m.getInPorts()) {
-                if (p.getConnection() != null) {
-                    current = true;
+        Set<Module> modules = circuit.getModules();
+        Iterator<Module> iter = circuit.getModules().iterator();
+        // Start with any Module you can get
+        Module start = null;
+        if (iter.hasNext()) {
+            start = (Module) iter.next();
+        }
+        Queue<Module> queue = new LinkedList<Module>();
+        // Remember if a Port has already been visited.
+        Set<Port> visited = new HashSet<Port>();
+        if (start != null) {
+            queue.offer(start);
+        }
+        // Put all preceding and following Modules of the current Module into the queue. Mark the Ports of the
+        // Modules as visited, and remove the Modules from the set of all Modules of the circuit.
+        while (!queue.isEmpty()) {
+            Module current = queue.poll();
+            modules.remove(current);
+            for (Port p : current.getInPorts()) {
+                if (!visited.contains(p) && (p.getConnection() != null)) {
+                    queue.add(p.getConnection().getPreviousModule());
+                    visited.add(p);
                 }
             }
-            for (Port p : m.getOutPorts()) {
-                if (p.getConnection() != null) {
-                    current = true;
+            for (Port p : current.getOutPorts()) {
+                if (!visited.contains(p) && (p.getConnection() != null)) {
+                    queue.add(p.getConnection().getNextModule());
+                    visited.add(p);
                 }
             }
-            if (!current) {
-                elements.add(m);
-                informListeners(State.FAILED, elements);
-                return false;
-            }
+        }
+        // If the set of all Modules of the circuit is empty it means every Module has been visited and is somehow
+        // connected to the first one. Otherwise there are orphans.
+        if (!modules.isEmpty()) {
+            elements.addAll(modules);
+            informListeners(State.FAILED, elements);
+            return false;
         }
         informListeners(State.SUCCEEDED, elements);
         return true;
@@ -93,7 +116,7 @@ public class OrphanCheck implements CircuitCheck {
             l.checkChanged(e);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */

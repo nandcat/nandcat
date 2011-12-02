@@ -1,4 +1,4 @@
-package nandcat.model.importexport;
+package nandcat.model.importexport.benchmark;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -6,21 +6,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.UUID;
 
-public class ImportBenchmark {
+public class XMLGenerator {
 
     /**
      * @param args
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
+        File f = generateBenchmarkFile(80, 100);
+        System.out.println("File generated: " + f.getAbsolutePath());
+    }
+
+    public static File generateBenchmarkFile(int cols, int rows) throws IOException {
         StringBuilder b = new StringBuilder();
         b.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><circuits xmlns=\"http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0\" xmlns:nandcat=\"http://www.nandcat.de/xmlns/sepaf-extension\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0 http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0.xsd http://www.nandcat.de/xmlns/sepaf-extension http://www.nandcat.de/xmlns/sepaf-extension.xsd\" main=\"myCircuit\">\n");
         b.append("<circuit name=\"myCircuit\">\n");
         StringBuilder c = new StringBuilder();
         int gatewidth = 80;
         int gateheight = 80;
-        int maxCol = 80;
-        int maxRow = 100;
+        int maxCol = cols;
+        int maxRow = rows;
         String lastuuid = "clock";
         b.append("<component posx=\"0\" posy=\"0\" name=\"clock\" nandcat:annotation=\"clock\" type=\"clock\"  />\n");
         for (int i = 0; i < maxCol; i++) {
@@ -45,7 +50,7 @@ public class ImportBenchmark {
         b.append("</circuits>\n");
         File f = File.createTempFile("big", ".xml");
         writeToFile(f, b.toString());
-        System.out.println("File generated: " + f.getAbsolutePath());
+        return f;
     }
 
     private static void writeToFile(File f, String input) throws IOException {
