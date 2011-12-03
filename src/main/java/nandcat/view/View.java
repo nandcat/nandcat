@@ -433,8 +433,8 @@ public class View extends JFrame {
         JMenuItem mselect = new JMenuItem(i18n.getString("menu.edit.select"), KeyEvent.VK_W);
         mselect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
         noDisableElements.add(mselect);
-        JMenuItem mstartcheck = new JMenuItem(i18n.getString("menu.test.execute"), KeyEvent.VK_T);
-        mstartcheck.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
+        JMenuItem mstartcheck = new JMenuItem(i18n.getString("menu.test.execute"), KeyEvent.VK_M);
+        mstartcheck.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.CTRL_MASK));
         disableElements.add(mstartcheck);
         JMenuItem meditcheck = new JMenuItem(i18n.getString("menu.test.manage"), KeyEvent.VK_V);
         meditcheck.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
