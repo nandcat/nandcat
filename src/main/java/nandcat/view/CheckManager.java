@@ -18,8 +18,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import nandcat.I18N;
 import nandcat.I18N.I18NBundle;
 import nandcat.model.check.CheckEvent;
@@ -57,12 +57,12 @@ public class CheckManager extends JDialog {
     /**
      * Dimension representing the Size of the Frame.
      */
-    private static final Dimension FRAME_SIZE = new Dimension(620, 300);
+    private static final Dimension FRAME_SIZE = new Dimension(680, 300);
 
     /**
      * Icon representing a check has not started yet.
      */
-    private ImageIcon checkPending = new ImageIcon("src/resources/help.jpg");;
+    private ImageIcon checkPending = new ImageIcon("src/resources/help.png");;
 
     /**
      * Icon representing a check has started but did not finish yet.
@@ -203,7 +203,7 @@ public class CheckManager extends JDialog {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(Color.white);
         panel.setFocusable(false);
-        CSH.setHelpIDString(panel, "checkmanager");
+        JScrollPane scroller = new JScrollPane(panel);
         // The listener waits for changes on the checkbox.
         ItemListener itemListener = new ItemListener() {
 
@@ -214,7 +214,6 @@ public class CheckManager extends JDialog {
                 }
             }
         };
-        JMenu menu = new JMenu();
         JCheckBox checkbox = null;
         JCheckBoxMenuItem checkboxItem = null;
         for (CircuitCheck check : checks) {
@@ -227,10 +226,7 @@ public class CheckManager extends JDialog {
             checkbox.add(checkboxItem);
             panel.add(checkbox);
         }
-        panel.add(menu);
-        CSH.setHelpIDString(menu, "check");
         CSH.setHelpIDString(checkbox, "check");
-        CSH.setHelpIDString(checkboxItem, "check");
         JButton okayButton = new JButton(i18n.getString("check.dialog.ok"));
         okayButton.setActionCommand(i18n.getString("check.button.okay"));
         okayButton.setPreferredSize(buttonDim);
@@ -252,7 +248,7 @@ public class CheckManager extends JDialog {
         toolbar.add(okayButton);
         toolbar.add(calc);
         toolbar.add(calcStart);
-        this.add(panel, BorderLayout.CENTER);
+        this.add(scroller, BorderLayout.CENTER);
         this.add(toolbar, BorderLayout.PAGE_END);
     }
 
