@@ -352,7 +352,6 @@ public class Model implements ClockListener {
                 dirty = false;
             } else {
                 LOG.warn("Export to " + file.getAbsolutePath() + " failed");
-                // TODO Fehlermeldung an View?
             }
         }
     }
@@ -387,23 +386,6 @@ public class Model implements ClockListener {
         return checks;
     }
 
-    // /**
-    // * Move the specific port according to the x + y values stored in the point. Throws an Exception if one parameter
-    // is
-    // * null.
-    // *
-    // * @param distance
-    // * Point containing the x and y
-    // * @param port
-    // * Port that will be moved
-    // */
-    // public void movePortBy(Point distance, Port port) {
-    // if (port == null || distance == null) {
-    // throw (new IllegalArgumentException("port and distancepoint must not be null!"));
-    // }
-    // Rectangle old = port.getRectangle();
-    // port.setRectangle(new Rectangle(old.x + distance.x, old.y + distance.y, old.width, old.height));
-    // }
     /**
      * Gets the current circuit.
      * 
@@ -635,7 +617,6 @@ public class Model implements ClockListener {
      */
     public void initView2Module() {
         viewModules = new LinkedList<ViewModule>();
-        // FIXME Keine instanzen sondern jetzt werden builder uebergeben!
         viewModules.add(new ViewModule("AND", factory.getAndGateBuilder().build(), "", null));
         viewModules.add(new ViewModule("OR", factory.getOrGateBuilder().build(), "", null));
         viewModules.add(new ViewModule("FlipFlop", factory.getFlipFlopBuilder().build(), "", null));
@@ -643,9 +624,10 @@ public class Model implements ClockListener {
         viewModules.add(new ViewModule("Lampe", factory.getLampBuilder().build(), "", null));
         viewModules.add(new ViewModule("NOT", factory.getNotGateBuilder().build(), "", null));
         viewModules.add(new ViewModule("ImpulseGenerator", factory.getClockBuilder().build(), "", null));
-        viewModules.add(new ViewModule("AND-3", factory.getAndGateBuilder().setInPorts(3).build(), "", null));
-        viewModules.add(new ViewModule("OR-3", factory.getOrGateBuilder().setInPorts(3).build(), "", null));
-        viewModules.add(new ViewModule("ID-3", factory.getIdentityGateBuilder().setOutPorts(3).build(), "", null));
+        // kthxbye
+        // viewModules.add(new ViewModule("AND-3", factory.getAndGateBuilder().setInPorts(3).build(), "", null));
+        // viewModules.add(new ViewModule("OR-3", factory.getOrGateBuilder().setInPorts(3).build(), "", null));
+        // viewModules.add(new ViewModule("ID-3", factory.getIdentityGateBuilder().setOutPorts(3).build(), "", null));
         loadCustomList();
     }
 
@@ -723,8 +705,6 @@ public class Model implements ClockListener {
     /**
      * Notifies ModelListeners about changed Elements.
      * 
-     * @param set
-     *            Set containing specific DrawElements
      */
     protected void notifyForChangedElems() {
         ModelEvent e = new ModelEvent();
@@ -842,11 +822,16 @@ public class Model implements ClockListener {
             drawElements.add((DrawElement) e);
             result = true;
         }
-        // TODO jaja Codeduplikation checken wir spaeter
         notifyForChangedElems();
         return result;
     }
 
+    /**
+     * Set the Module layouter.
+     * 
+     * @param layouter
+     *            Used Module Layouter
+     */
     public void setLayouter(ModuleLayouter layouter) {
         if (layouter == null) {
             throw new IllegalArgumentException();
@@ -1047,8 +1032,9 @@ public class Model implements ClockListener {
     private Set<Element> getSelectedElements() {
         Set<Element> selectitt = new HashSet<Element>();
         for (Element e : getElements()) {
-            if (e.isSelected())
+            if (e.isSelected()) {
                 selectitt.add(e);
+            }
         }
         return selectitt;
     }
@@ -1088,9 +1074,6 @@ public class Model implements ClockListener {
                         for (ModelListener l : listeners) {
                             l.importCustomCircuitFailed(e);
                         }
-                        // for (ModelListener l : listeners) {
-                        // l.importFailed(e);
-                        // }
                     }
                 }
             }
@@ -1117,7 +1100,7 @@ public class Model implements ClockListener {
             }
         }
         // check for negative coords
-        if (r.x <= 5 || r.y <= 5) {
+        if (r.x <= 1 || r.y <= 1) {
             return false;
         }
         Point pr = module.getRectangle().getLocation();

@@ -68,7 +68,6 @@ public class ConnectionTest extends TestCase {
 
         // Test signal propagation
         impy.toggleState();
-        // just to be sure FIXME OUTPORT!
         assertTrue(impy.getState());
 
         impy.clockTicked(null);
@@ -76,9 +75,6 @@ public class ConnectionTest extends TestCase {
         lamp.clockTicked(null);
 
         impy.clockTicked(null);
-        // just to be sure
-        // FIXME run assertion
-        // assertFalse(impy.getState());
 
         c.clockTicked(null);
         lamp.clockTicked(null);
