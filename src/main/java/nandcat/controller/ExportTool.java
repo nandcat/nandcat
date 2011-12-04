@@ -20,6 +20,8 @@ import nandcat.model.ModelEvent;
 import nandcat.model.ModelListener;
 import nandcat.model.ModelListenerAdapter;
 import nandcat.model.element.Circuit;
+import nandcat.model.element.Connection;
+import nandcat.model.element.DrawElement;
 import nandcat.view.WorkspaceListenerAdapter;
 import org.apache.log4j.Logger;
 
@@ -287,9 +289,29 @@ public class ExportTool implements Tool {
     }
 
     /**
+     * Checks if selected elements are available.
+     * 
+     * @return True if selected elements are available.
+     */
+    private boolean selectedElementsAvailable() {
+        List<DrawElement> elements = model.getDrawElements();
+        for (DrawElement drawElement : elements) {
+            if (drawElement.isSelected() && !(drawElement instanceof Connection)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Shows save dialogs to export the selected elements as circuit.
      */
     private void actionSaveSelectedAs() {
+        if (!selectedElementsAvailable()) {
+            JOptionPane.showMessageDialog(controller.getView(), i18n.getString("dialog.selected.fail.text"),
+                    i18n.getString("dialog.selected.fail.title"), JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         JFileChooser fc = buildExportFileChooser();
         if (saveLastFile != null) {
             fc.setSelectedFile(saveLastFile.getParentFile().getAbsoluteFile());
