@@ -219,9 +219,22 @@ public class ExportTool implements Tool {
     }
 
     /**
+     * Shows an error dialog informing about an empty circuit.
+     */
+    private void showDialogCircuitEmpty() {
+        JOptionPane.showMessageDialog(controller.getView(), i18n.getString("dialog.savecircuit.empty.text"),
+                i18n.getString("dialog.savecircuit.empty.title"), JOptionPane.ERROR_MESSAGE);
+    }
+
+    /**
      * Performs a 'quicksave' to the last used file if available, otherwise a 'save as'.
      */
     private void actionSave() {
+        if (model.getDrawElements().size() == 0) {
+            showDialogCircuitEmpty();
+            return;
+        }
+
         if (isQuickSaveAvailable()) {
             model.exportToFile(model.getCircuit(), saveLastFile, null);
         } else {
@@ -234,6 +247,11 @@ public class ExportTool implements Tool {
      * Shows save dialogs to export the circuit.
      */
     private void actionSaveAs() {
+        if (model.getDrawElements().size() == 0) {
+            showDialogCircuitEmpty();
+            return;
+        }
+
         JFileChooser fc = buildExportFileChooser();
         if (saveLastFile != null) {
             fc.setSelectedFile(saveLastFile);
