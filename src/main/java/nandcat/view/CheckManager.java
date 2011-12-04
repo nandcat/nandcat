@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Set;
+import javax.help.CSH;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -121,6 +122,7 @@ public class CheckManager extends JDialog {
      *            ActionListener from the ControllerTool for the Buttons.
      */
     public CheckManager(Set<CircuitCheck> set, ActionListener buttonListener) {
+        CSH.setHelpIDString(this, "checkmanager");
         this.buttonListener = buttonListener;
         setupCheckmanager(set);
         CheckListener checkListener = new CheckListener() {
@@ -222,6 +224,7 @@ public class CheckManager extends JDialog {
             checkbox.add(checkboxItem);
             panel.add(checkbox);
         }
+        CSH.setHelpIDString(checkbox, "check");
         JButton okayButton = new JButton(i18n.getString("check.dialog.ok"));
         okayButton.setActionCommand(i18n.getString("check.button.okay"));
         okayButton.setPreferredSize(buttonDim);

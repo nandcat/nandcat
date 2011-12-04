@@ -1,12 +1,19 @@
 package nandcat.controller;
 
+import java.awt.Component;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.help.CSH;
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
 import nandcat.view.WorkspaceListener;
@@ -51,6 +58,10 @@ public class HelpTool implements Tool {
      * WorkspaceListener of the Tool on the Model.
      */
     private WorkspaceListener workspaceListener;
+
+    private HelpSet hs;
+
+    private HelpBroker hb;
 
     /**
      * Constructs the HelpTool.
@@ -103,7 +114,8 @@ public class HelpTool implements Tool {
         buttonListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
+                activate();
+                Component source = (Component) CSH.trackCSEvents();
             }
         };
         Map<String, ActionListener> map = new HashMap<String, ActionListener>();
@@ -113,6 +125,9 @@ public class HelpTool implements Tool {
         return map;
     }
 
+    private void activate() {
+        controller.requestActivation(this);
+    }
     /**
      * {@inheritDoc}
      */
