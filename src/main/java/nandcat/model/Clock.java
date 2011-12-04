@@ -15,6 +15,11 @@ import org.apache.log4j.Logger;
 public class Clock implements Runnable {
 
     /**
+     * The default amount of ms between two calculation processes.
+     */
+    private static final int DEFAULT_SLEEP_TIME = 1000;
+
+    /**
      * Simulation is paused.
      */
     private volatile boolean paused;
@@ -73,7 +78,7 @@ public class Clock implements Runnable {
         }
 
         this.cycle = cycle;
-        sleepTime = 1000;
+        sleepTime = DEFAULT_SLEEP_TIME;
         running = false;
         listeners = new HashSet<ClockListener>();
         generators = new HashSet<ImpulseGenerator>();
@@ -92,7 +97,7 @@ public class Clock implements Runnable {
     }
 
     /**
-     * Indicates if the simulation will stop at the next cycle;
+     * Indicates if the simulation will stop at the next cycle.
      * 
      * @param b
      *            the new value
@@ -139,9 +144,7 @@ public class Clock implements Runnable {
      */
     public void cycle() {
 
-        // Added debug code !
-        EXTRACT_THE_DEBUGINFO();
-        long before = System.nanoTime();
+        // EXTRACT_THE_DEBUGINFO();
 
         // never ever refactor name listener
         for (ClockListener listener : listeners) {
@@ -157,10 +160,6 @@ public class Clock implements Runnable {
             listener.clockTicked(this);
         }
         model.clockTicked(this);
-
-        // Added debug code !
-        long after = System.nanoTime();
-        // LOG.debug("Cycle " + cycle + " took " + (after - before) + " ns");
 
         cycle++;
     }
@@ -201,6 +200,9 @@ public class Clock implements Runnable {
         this.sleepTime = sleepTime;
     }
 
+    /**
+     * Starts the simulation.
+     */
     public void run() {
         // Added debug code !
         LOG.debug("new Thread started, Cycle = " + cycle);
@@ -260,23 +262,22 @@ public class Clock implements Runnable {
         return running;
     }
 
-    // TODO - entfernen wenn richtigkeit sichergestellt !
-    private void EXTRACT_THE_DEBUGINFO() {
-        String imps = "\n\nCycle " + cycle + "\nactive impulseGenerators:\n";
-        for (ImpulseGenerator listener : generators) {
-            if ((cycle == 0) || (listener.getFrequency() == 1)
-                    || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
-                imps += (listener.toString() + "\n");
-            }
-        }
-        imps += "modules in queue:\n";
-        for (ClockListener l : listeners) {
-            imps += l.toString() + "\n";
-        }
-        imps += "connections in queue:\n";
-        for (ClockListener c : connections) {
-            imps += c.toString() + "\n";
-        }
-        LOG.debug(imps);
-    }
+    // private void EXTRACT_THE_DEBUGINFO() {
+    // String imps = "\n\nCycle " + cycle + "\nactive impulseGenerators:\n";
+    // for (ImpulseGenerator listener : generators) {
+    // if ((cycle == 0) || (listener.getFrequency() == 1)
+    // || (listener.getFrequency() != 0 && cycle % listener.getFrequency() == 0)) {
+    // imps += (listener.toString() + "\n");
+    // }
+    // }
+    // imps += "modules in queue:\n";
+    // for (ClockListener l : listeners) {
+    // imps += l.toString() + "\n";
+    // }
+    // imps += "connections in queue:\n";
+    // for (ClockListener c : connections) {
+    // imps += c.toString() + "\n";
+    // }
+    // LOG.debug(imps);
+    // }
 }

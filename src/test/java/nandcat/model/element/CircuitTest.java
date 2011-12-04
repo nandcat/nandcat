@@ -58,7 +58,7 @@ public class CircuitTest {
         ImpulseGenerator impy = new ImpulseGenerator(0);
         impy.getRectangle().setLocation(p);
         Circuit c = (Circuit) factory.getCircuitBuilder().build();
-        // NOTE will fail ???
+
         // Importer impo = new SEPAFImporter();
         // impo.setFile(new File("/tmp/fuck.xml"));
         // impo.importCircuit();

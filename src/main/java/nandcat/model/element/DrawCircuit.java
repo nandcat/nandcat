@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * This class represents a circuit. It could be a customized Module or the main circuit displayed in the GUI. A circuit
  * representing a custom Module will not be displayed in its full extent. Note that this leads to a recursive
- * datastructure, where a circuit could contain more circuits. TODO comment
+ * datastructure, where a circuit could contain more circuits.
  * 
  * @version 7
  */
@@ -52,8 +52,6 @@ public interface DrawCircuit extends DrawModule {
      */
     boolean isSelected();
 
-    // NOTE nice to have: durchlauf sortiert nach Y-Koordinate, sodass die in/outPorts entsprechend
-    // als Ein/Ausgaenge eines (Circuit)Bausteins auftauchen
     /**
      * Returns the "first" Modules in this Circuit.
      * 
