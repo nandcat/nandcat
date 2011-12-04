@@ -420,6 +420,9 @@ public class ExportTool implements Tool {
     private JFileChooser buildExportFileChooser() {
         JFileChooser fc = new JFileChooser();
         ImportExportUtils.addFileFilterToChooser(fc, model.getExportFormats());
+        if (fc.getFileFilter() == null && fc.getChoosableFileFilters().length > 0) {
+            fc.setFileFilter(fc.getChoosableFileFilters()[0]);
+        }
         fc.setAcceptAllFileFilterUsed(false);
         return fc;
     }

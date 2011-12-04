@@ -74,7 +74,6 @@ public class ElementDrawerViewer extends JFrame {
 
     private void createElementDrawerElements() {
         mainCircuit = (Circuit) factory.getCircuitBuilder().build();
-        // FIXME Brauche Layouter
         mainCircuit.addModule(factory.getAndGateBuilder().setLocation(new Point(5, 5)).build());
         mainCircuit.addModule(factory.getAndGateBuilder().setLocation(new Point(100, 5))
                 .setAnnotation("Meine Annotation").build());
@@ -181,7 +180,6 @@ public class ElementDrawerViewer extends JFrame {
             symbol = ImageIO.read(NandcatTest.class.getResourceAsStream("../images/cat.png"));
             circuit1.setSymbol(symbol);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
