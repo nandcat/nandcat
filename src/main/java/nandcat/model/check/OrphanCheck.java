@@ -96,7 +96,7 @@ public class OrphanCheck implements CircuitCheck {
         if (!modules.isEmpty()) {
             elements.addAll(modules);
             informListeners(State.FAILED, elements);
-            return true;
+            return false;
         }
         informListeners(State.SUCCEEDED, elements);
         return true;
