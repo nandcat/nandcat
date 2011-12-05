@@ -267,6 +267,8 @@ public class View extends JFrame {
      */
     private JButton selectedTool;
 
+    private JButton help;
+
     /**
      * Constructs the view.
      * 
@@ -554,8 +556,8 @@ public class View extends JFrame {
         sim.addSeparator();
         sim.add(mstartcheck);
         sim.add(meditcheck);
-        edit.add(mcreate);
         edit.add(mselect);
+        edit.add(mcreate);
         edit.add(mmove);
         edit.add(mdelete);
         edit.add(mannotate);
@@ -600,7 +602,6 @@ public class View extends JFrame {
         start.setPreferredSize(buttonDim);
         start.setToolTipText(i18n.getString("tooltip.simulation.start"));
         CSH.setHelpIDString(start, "start");
-
         disableElements.add(start);
         ImageIcon moveButtonIcon = new ImageIcon(getResource("movemiddle.png"));
         move = new JButton("", moveButtonIcon);
@@ -672,17 +673,14 @@ public class View extends JFrame {
         pause.setToolTipText(i18n.getString("tooltip.simulation.pause"));
         CSH.setHelpIDString(pause, "pause");
         noDisableElements.add(pause);
-        // Check if there are Functionalities for the Buttons and if yes calling the setup.
-        ImageIcon helpButtonIcon = new ImageIcon(getResource("help.jpg"));
-        JButton help = new JButton("", helpButtonIcon);
+        ImageIcon helpButtonIcon = new ImageIcon(getResource("Questionmark.png"));
+        help = new JButton("", helpButtonIcon);
         help.setPreferredSize(buttonDim);
         help.setToolTipText(i18n.getString("tooltip.help"));
         help.addActionListener(new CSH.DisplayHelpAfterTracking(hb.getHelpSet(), "javax.help.Popup", null));
         help.setBorder(new LineBorder(Color.lightGray, 1, true));
         help.setBorderPainted(false);
-
-        // Check if there are Functionalities for the Buttons and if yes calling
-        // the setup.
+        // Check if there are Functionalities for the Buttons and if yes calling the setup.
         if (toolFunctionalities.containsKey("step")) {
             setupButton(step, "step");
         }
@@ -994,6 +992,9 @@ public class View extends JFrame {
         } else if (name.equals("create")) {
             create.setBorderPainted(true);
             selectedTool = create;
+        } else if (name.equals("help")) {
+            help.setBorderPainted(true);
+            selectedTool = help;
         }
     }
 
@@ -1006,7 +1007,7 @@ public class View extends JFrame {
         /**
          * Default serial uid.
          */
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersinUID = 1L;
 
         /**
          * Width of the Combo Popup Menu.
