@@ -1,12 +1,16 @@
 package nandcat.model.element;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import java.awt.Point;
+import java.util.HashSet;
+import java.util.Set;
 import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.factory.ModuleBuilderFactory;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -152,5 +156,68 @@ public class CircuitTest {
         Circuit innerCircuit = new FlipFlop();
         innerCircuit.getRectangle().setLocation(p);
         c.addModule(innerCircuit);
+    }
+
+    @Ignore
+    @Test
+    public void testDeReconstruct() {
+        Circuit c = (Circuit) factory.getCircuitBuilder().build();
+        ImpulseGenerator clock = (ImpulseGenerator) factory.getClockBuilder().build();
+        AndGate a = (AndGate) factory.getAndGateBuilder().build();
+        Lamp lamp = (Lamp) factory.getLampBuilder().build();
+        c.addModule(clock);
+        c.addModule(a);
+        c.addModule(lamp);
+        c.addConnection(clock.getOutPorts().get(0), a.getInPorts().get(0));
+        c.addConnection(a.getOutPorts().get(0), lamp.getInPorts().get(0));
+        assertEquals(5, c.getElements().size());
+        Circuit enclosure = (Circuit) factory.getCircuitBuilder().build();
+        enclosure.addModule(c);
+        assertEquals(1, enclosure.getElements().size());
+        assertTrue(enclosure.getElements().get(0) instanceof Circuit);
+        Circuit deconstructed = (Circuit) enclosure.getElements().get(0);
+        assertEquals(1, deconstructed.getElements().size());
+        assertTrue(deconstructed.getElements().get(0) instanceof AndGate);
+        assertEquals(1, deconstructed.getInPorts().size());
+        assertEquals(1, deconstructed.getOutPorts().size());
+
+        Circuit reconstructed = deconstructed.reconstruct();
+        assertEquals(5, reconstructed.getElements().size());
+        assertEquals(0, reconstructed.getInPorts().size());
+        assertEquals(0, reconstructed.getOutPorts().size());
+
+        AndGate reA = null;
+        ImpulseGenerator reC = null;
+        Lamp reL = null;
+        Set<Connection> cache = new HashSet<Connection>();
+        Connection reC2A = null;
+        Connection reA2L = null;
+        for (Element e : reconstructed.getElements()) {
+            if (e instanceof Connection) {
+                cache.add((Connection) e);
+            } else if (e instanceof AndGate) {
+                reA = (AndGate) e;
+            } else if (e instanceof ImpulseGenerator) {
+                reC = (ImpulseGenerator) e;
+            } else if (e instanceof Lamp) {
+                reL = (Lamp) e;
+            }
+        }
+        assertTrue(reA != null);
+        assertTrue(reC != null);
+        assertTrue(reL != null);
+
+        for (Connection connection : cache) {
+            if (connection.getInPort() == reC.getOutPorts().get(0)
+                    && connection.getOutPort() == reA.getInPorts().get(0)) {
+                reC2A = connection;
+            } else if (connection.getInPort() == reA.getOutPorts().get(0)
+                    && connection.getOutPort() == reL.getInPorts().get(0)) {
+                reA2L = connection;
+            }
+        }
+        assertTrue(reC2A != null);
+        assertTrue(reA2L != null);
+
     }
 }
