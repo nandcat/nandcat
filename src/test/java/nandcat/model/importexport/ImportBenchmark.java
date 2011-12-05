@@ -19,7 +19,7 @@ public class ImportBenchmark {
         StringBuilder c = new StringBuilder();
         int gatewidth = 80;
         int gateheight = 80;
-        int maxCol = 80;
+        int maxCol = 500;
         int maxRow = 100;
         String lastuuid = "clock";
         b.append("<component posx=\"0\" posy=\"0\" name=\"clock\" nandcat:annotation=\"clock\" type=\"clock\"  />\n");

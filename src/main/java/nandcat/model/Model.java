@@ -344,6 +344,7 @@ public class Model implements ClockListener {
             ex.setErrorHandler(importExportErrorHandler);
             ex.setFile(file);
             ex.setCircuit(c);
+            importExportErrorMessages = new LinkedList<String>();
             if (ex instanceof DrawExporter) {
                 ((DrawExporter) ex).setElementDrawer(drawer);
             }
@@ -351,8 +352,17 @@ public class Model implements ClockListener {
                 LOG.debug("File exported successfully");
                 dirty = false;
             } else {
-                LOG.warn("Export to " + file.getAbsolutePath() + " failed");
-                // TODO Fehlermeldung an View?
+                LOG.warn("File import failed! File: " + file.getAbsolutePath());
+                StringBuilder errorMsgBuilder = new StringBuilder();
+                for (String msg : importExportErrorMessages) {
+                    errorMsgBuilder.append(msg);
+                    errorMsgBuilder.append("\n");
+                }
+                ModelEvent e = new ModelEvent();
+                e.setMessage(errorMsgBuilder.toString());
+                for (ModelListener l : listeners) {
+                    l.exportFailed(e);
+                }
             }
         }
     }

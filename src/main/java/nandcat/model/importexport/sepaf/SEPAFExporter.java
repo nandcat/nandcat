@@ -150,6 +150,9 @@ public class SEPAFExporter implements Exporter {
         org.jdom.Element e = new Element("circuit", SEPAFFormat.NAMESPACE.SEPAF);
         e.setAttribute("name", c.getUuid());
 
+        if (!mainCircuit) {
+            c = c.reconstruct();
+        }
         // Connections have to be after all components.
         List<Connection> cachedConnections = new LinkedList<Connection>();
         Set<Module> cachedModules = new HashSet<Module>();
