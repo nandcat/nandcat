@@ -17,11 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-// import javax.help.CSH;
-// import javax.help.DefaultHelpBroker;
-// import javax.help.HelpBroker;
-// import javax.help.HelpSet;
 import javax.help.CSH;
+import javax.help.CSH.DisplayHelpAfterTracking;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.swing.ImageIcon;
@@ -188,6 +185,11 @@ public class View extends JFrame {
     private Set<JComponent> noDisableElements = new HashSet<JComponent>();
 
     /**
+     * Set of JComponents we want to be enabled during simulation and disabled else.
+     */
+    private Set<JComponent> reverseDisableElements = new HashSet<JComponent>();
+
+    /**
      * Dimension of Buttons.
      */
     private Dimension buttonDim = new Dimension(BUTTON_DIM);
@@ -267,7 +269,15 @@ public class View extends JFrame {
      */
     private JButton selectedTool;
 
+    /**
+     * JButton, the Button for the Help Tool.
+     */
     private JButton help;
+
+    /**
+     * Listener for the Help Tool.
+     */
+    private DisplayHelpAfterTracking helpListener;
 
     /**
      * Constructs the view.
@@ -339,8 +349,7 @@ public class View extends JFrame {
         workspace.setPreferredSize(workspaceDimension);
         workspace.setSize(workspaceDimension);
         workspace.setBackground(Color.white);
-        workspace.setLayout(null); // no layout is required for free move of the
-                                   // components
+        workspace.setLayout(null); // no layout is required for free move of the components
         CSH.setHelpIDString(workspace, "workspace");
         scroller = new JScrollPane(workspace);
         scroller.setWheelScrollingEnabled(false);
@@ -390,6 +399,7 @@ public class View extends JFrame {
         noDisableElements.add(sim);
         JMenu help = new JMenu(i18n.getString("menu.help"));
         help.setMnemonic(KeyEvent.VK_H);
+        helpListener = new CSH.DisplayHelpAfterTracking(hb.getHelpSet(), "javax.help.Popup", null);
         disableElements.add(help);
         // Create MenuItems. Setting Shortcuts.
         JMenuItem mstart = new JMenuItem(i18n.getString("menu.simulation.start"), KeyEvent.VK_S);
@@ -403,7 +413,8 @@ public class View extends JFrame {
         noDisableElements.add(mresetSpeed);
         JMenuItem mstop = new JMenuItem(i18n.getString("menu.simulation.stop"), KeyEvent.VK_E);
         mstop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0));
-        noDisableElements.add(mstop);
+        mstop.setEnabled(false);
+        reverseDisableElements.add(mstop);
         JMenuItem mstep = new JMenuItem(i18n.getString("menu.simulation.step"), KeyEvent.VK_X);
         mstep.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0));
         noDisableElements.add(mstep);
@@ -463,11 +474,19 @@ public class View extends JFrame {
         disableElements.add(mgrid);
         JMenuItem mpause = new JMenuItem(i18n.getString("menu.simulation.pause"), KeyEvent.VK_P);
         mpause.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0));
-        noDisableElements.add(mselect);
+        reverseDisableElements.add(mpause);
+        mpause.setEnabled(false);
+        JMenuItem mhelp = new JMenuItem(i18n.getString("menu.help.help"), KeyEvent.VK_I);
+        mhelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
+        mhelp.addActionListener(helpListener);
+        disableElements.add(mhelp);
         cycle.setText(i18n.getString("cycle.stand"));
         /*
          * check if there are functionalities given for the MenuItems.
          */
+        if (toolFunctionalities.containsKey("help")) {
+            setupMenuItem(mhelp, "help");
+        }
         if (toolFunctionalities.containsKey("resetSpeed")) {
             setupMenuItem(mresetSpeed, "resetSpeed");
         }
@@ -573,6 +592,7 @@ public class View extends JFrame {
         file.add(msave3);
         file.add(mloaddef);
         file.add(mclose);
+        help.add(mhelp);
         menubar.add(cycle);
     }
 
@@ -615,7 +635,8 @@ public class View extends JFrame {
         JButton stop = new JButton("", stopButtonIcon);
         stop.setPreferredSize(buttonDim);
         stop.setToolTipText(i18n.getString("tooltip.simulation.stop"));
-        noDisableElements.add(stop);
+        stop.setEnabled(false);
+        reverseDisableElements.add(stop);
         CSH.setHelpIDString(stop, "stop");
         ImageIcon stepButtonIcon = new ImageIcon(getResource("stepmiddle.png"));
         JButton step = new JButton("", stepButtonIcon);
@@ -671,16 +692,18 @@ public class View extends JFrame {
         JButton pause = new JButton("", pauseButtonIcon);
         pause.setPreferredSize(buttonDim);
         pause.setToolTipText(i18n.getString("tooltip.simulation.pause"));
+        pause.setEnabled(false);
+        reverseDisableElements.add(pause);
         CSH.setHelpIDString(pause, "pause");
-        noDisableElements.add(pause);
         ImageIcon helpButtonIcon = new ImageIcon(getResource("Questionmark.png"));
         help = new JButton("", helpButtonIcon);
         help.setPreferredSize(buttonDim);
         help.setToolTipText(i18n.getString("tooltip.help"));
-        help.addActionListener(new CSH.DisplayHelpAfterTracking(hb.getHelpSet(), "javax.help.Popup", null));
-        help.setBorder(new LineBorder(Color.lightGray, 1, true));
-        help.setBorderPainted(false);
+        help.addActionListener(helpListener);
         // Check if there are Functionalities for the Buttons and if yes calling the setup.
+        if (toolFunctionalities.containsKey("help")) {
+            setupButton(help, "help");
+        }
         if (toolFunctionalities.containsKey("step")) {
             setupButton(step, "step");
         }
@@ -825,6 +848,9 @@ public class View extends JFrame {
         for (JComponent enable : disableElements) {
             enable.setEnabled(true);
         }
+        for (JComponent enable : reverseDisableElements) {
+            enable.setEnabled(false);
+        }
         modules.setEnabled(true);
     }
 
@@ -835,6 +861,9 @@ public class View extends JFrame {
         // Disables all Elements in the List of Elements to be disabled.
         for (JComponent enable : disableElements) {
             enable.setEnabled(false);
+        }
+        for (JComponent enable : reverseDisableElements) {
+            enable.setEnabled(true);
         }
         modules.setEnabled(false);
     }
@@ -1002,12 +1031,8 @@ public class View extends JFrame {
      * Extension of JComboBox to ensure the PopupMenu of the ComoBox is wide enough to Display the full names of the
      * Elements.
      */
+    @SuppressWarnings("serial")
     public class WideComboBox extends JComboBox {
-
-        /**
-         * Default serial uid.
-         */
-        private static final long serialVersinUID = 1L;
 
         /**
          * Width of the Combo Popup Menu.
