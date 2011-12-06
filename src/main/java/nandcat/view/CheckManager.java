@@ -61,7 +61,7 @@ public class CheckManager extends JDialog {
     /**
      * Icon representing a check has not started yet.
      */
-    private ImageIcon checkPending = new ImageIcon("src/resources/Questionmark.png");;
+    private ImageIcon checkPending = new ImageIcon("src/resources/help.jpg");;
 
     /**
      * Icon representing a check has started but did not finish yet.
