@@ -9,6 +9,7 @@ import java.util.Set;
 import nandcat.model.check.CheckEvent.State;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Element;
+import nandcat.model.element.IdentityGate;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 
@@ -58,20 +59,24 @@ public class FeedbackCheck implements CircuitCheck {
     public boolean test(Circuit circuit) {
         Set<Element> elements = new LinkedHashSet<Element>();
         informListeners(State.RUNNING, elements);
+        if (!findFeedback(getStartingPorts(circuit)).isEmpty()) {
+            informListeners(State.FAILED, elements);
+            return false;
+        }
+        informListeners(State.SUCCEEDED, elements);
+        return true;
+    }
+
+    private Queue<Port> findFeedback(List<Port> ports) {
         HashSet<Port> visited = new HashSet<Port>();
         Queue<Port> q = new LinkedList<Port>();
-
-        for (Port port : getStartingPorts(circuit)) {
+        for (Port port : ports) {
             q.add(port);
             visited.clear();
             while (!q.isEmpty()) {
                 Port current = q.poll();
                 if (visited.contains(current)) {
-
-                    // If the test fails add the Module which caused the fail to the CheckEvent.
-                    elements.add(current.getModule());
-                    informListeners(State.FAILED, elements);
-                    return false;
+                    return q;
                 }
                 visited.add(current);
 
@@ -80,15 +85,19 @@ public class FeedbackCheck implements CircuitCheck {
                  * there is no further connection an ending module of the circuit is reached. If there are still
                  * elements in the queue the algorithm starts from the beginning and the visited set has to be reset.
                  */
+                if (current.getModule() instanceof IdentityGate) {
+                    if (current.getConnection() != null) {
+                        findFeedback(current.getConnection().getNextModule().getOutPorts());
+                    }
+                    
+                }
                 if (current.getConnection() != null) {
                     q.addAll(current.getConnection().getOutPort().getModule().getOutPorts());
                 }
             }
         }
-        informListeners(State.SUCCEEDED, elements);
-        return true;
+        return q;
     }
-
     /**
      * Notifies the Classes implementing the CheckListener interface about a change in this Check.
      * 
