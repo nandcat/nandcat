@@ -24,12 +24,12 @@ public class SourceCheck implements CircuitCheck {
     /**
      * Listeners for this check.
      */
-    Set<CheckListener> listener;
+    private Set<CheckListener> listener;
 
     /**
      * Check is active or not.
      */
-    boolean active;
+    private boolean active;
 
     /**
      * Constructor for SourceCheck. By default the check is active.
@@ -123,7 +123,9 @@ public class SourceCheck implements CircuitCheck {
     /**
      * Returns the "last" Modules in this Circuit.
      * 
-     * @return List<Module> containing the starting Modules of this Circuit.
+     * @param circuit
+     *            The circuit from which the ending modules are taken.
+     * @return List<Module> containing the ending Modules of this Circuit.
      */
     private List<Module> getEndingModules(Circuit circuit) {
         List<Module> result = new LinkedList<Module>();

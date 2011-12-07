@@ -14,6 +14,11 @@ import nandcat.model.element.Element;
 public class CountCheck implements CircuitCheck {
 
     /**
+     * Number of gates at which user will be warned.
+     */
+    private static final int THRESHOLD = 1000;
+
+    /**
      * Listeners for this check.
      */
     private Set<CheckListener> listener;
@@ -56,7 +61,7 @@ public class CountCheck implements CircuitCheck {
         for (CheckListener l : listener) {
             l.checkChanged(e);
         }
-        if (countElems(circuit) > 1000) {
+        if (countElems(circuit) > THRESHOLD) {
             e = new CheckEvent(State.FAILED, elements, this);
             for (CheckListener l : listener) {
                 l.checkChanged(e);

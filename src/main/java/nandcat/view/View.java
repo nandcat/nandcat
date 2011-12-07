@@ -304,6 +304,9 @@ public class View extends JFrame {
         setupGui(model);
     }
 
+    /**
+     * Load HelpSet and defines HelpBroker for context-sensitive help.
+     */
     private void setUpHelp() {
         try {
             ClassLoader cl = View.class.getClassLoader();

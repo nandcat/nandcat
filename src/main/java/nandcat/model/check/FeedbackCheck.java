@@ -23,7 +23,7 @@ public class FeedbackCheck implements CircuitCheck {
     /**
      * Listeners for this check.
      */
-    Set<CheckListener> listener;
+    private Set<CheckListener> listener;
 
     /**
      * Check is active or not.
@@ -53,8 +53,7 @@ public class FeedbackCheck implements CircuitCheck {
     }
 
     /**
-     * {@inheritDoc} This Check will fail if it is not possible to run through a Queue of this circuit, where the first
-     * Module adds the next modules, and visit every module only once
+     * {@inheritDoc}
      */
     public boolean test(Circuit circuit) {
         Set<Element> elements = new LinkedHashSet<Element>();
@@ -160,6 +159,8 @@ public class FeedbackCheck implements CircuitCheck {
     /**
      * Returns the "first" Ports in this Circuit, meaning the ports from the "first" modules in the circuit.
      * 
+     * @param circuit
+     *            Circuit from which the starting ports are taken.
      * @return List<Module> containing the starting Modules of this Circuit.
      */
     private List<Port> getStartingPorts(Circuit circuit) {

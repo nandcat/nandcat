@@ -8,7 +8,7 @@ import nandcat.model.element.Circuit;
  * All checks implement this interface. An implementing check is able to check the circuit for errors.
  */
 public interface CircuitCheck {
-    
+
     /**
      * Gets the state of the check inside the model.
      * 

@@ -24,12 +24,12 @@ public class SinkCheck implements CircuitCheck {
     /**
      * Listeners for this check.
      */
-    Set<CheckListener> listener;
+    private Set<CheckListener> listener;
 
     /**
      * Check is active or not.
      */
-    boolean active;
+    private boolean active;
 
     /**
      * Constructor for SourceCheck. By default the check is active.
@@ -130,6 +130,8 @@ public class SinkCheck implements CircuitCheck {
     /**
      * Returns the "first" Modules in this Circuit. "First" modules are those which do not have any ingoing connection.
      * 
+     * @param circuit
+     *            Circuit from which the starting modules are taken.
      * @return List<Module> containing the starting Modules of this Circuit.
      */
     private List<Module> getStartModules(Circuit circuit) {
