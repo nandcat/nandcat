@@ -59,41 +59,50 @@ public class SourceCheck implements CircuitCheck {
     public boolean test(Circuit circuit) {
         Set<Element> elements = new LinkedHashSet<Element>();
         informListeners(State.RUNNING, elements);
-
         Set<Module> visited = new HashSet<Module>();
-        Set<Module> all = new HashSet<Module>();
         Queue<Module> q = new LinkedList<Module>();
-        q.addAll(getEndingModules(circuit));
+        List<Module> endingModules = getEndingModules(circuit);
+        if (!endingModules.isEmpty()) {
+            q.addAll(endingModules);
+        } else {
+            for (Module m : circuit.getModules()) {
+                if (m instanceof ImpulseGenerator) {
+                    informListeners(State.SUCCEEDED, elements);
+                    return true;
+                } else {
+                    elements.addAll(circuit.getModules());
+                    informListeners(State.FAILED, elements);
+                    return false;
+                }
+            }
+        }
         while (!q.isEmpty()) {
             Module current = q.poll();
-            all.remove(current);
             if (!visited.contains(current)) {
                 visited.add(current);
                 // Check if there is a connection from the module to another one.
-                boolean isLast = true;
+                boolean isFirst = true;
                 for (Port p : current.getInPorts()) {
                     if (p.getConnection() != null) {
-                        isLast = false;
+                        isFirst = false;
                         q.add(p.getConnection().getPreviousModule());
                     }
                 }
 
                 // If there is no following connection the current module must be an ImpulseGenerator because it
                 // represents a source of the circuit.
-                if (isLast) {
+                if (isFirst) {
                     if (!(current instanceof ImpulseGenerator)) {
-                        all.add(current);
+                        elements.add(current);
+                        informListeners(State.FAILED, elements);
+                        return false;
                     }
                 }
             }
         }
-        if (all.isEmpty()) {
-            informListeners(State.SUCCEEDED, elements);
-            return true;
-        }
-        elements.addAll(all);
-        informListeners(State.FAILED, elements);
-        return false;
+        informListeners(State.SUCCEEDED, elements);
+        return true;
+
     }
 
     /**
@@ -118,23 +127,20 @@ public class SourceCheck implements CircuitCheck {
      */
     private List<Module> getEndingModules(Circuit circuit) {
         List<Module> result = new LinkedList<Module>();
-        for (Element e : circuit.getElements()) {
-            if (e instanceof Module) {
-                boolean isEndingModule = false;
-                Module m = (Module) e;
-                if (m instanceof Lamp) {
-                    isEndingModule = true;
-                } else {
-                    isEndingModule = true;
-                    for (Port p : m.getOutPorts()) {
-                        if (p.getConnection() != null) {
-                            isEndingModule = false;
-                        }
+        for (Module m : circuit.getModules()) {
+            boolean isEndingModule = false;
+            if (m instanceof Lamp) {
+                isEndingModule = true;
+            } else {
+                isEndingModule = true;
+                for (Port p : m.getOutPorts()) {
+                    if (p.getConnection() != null) {
+                        isEndingModule = false;
                     }
                 }
-                if (isEndingModule) {
-                    result.add(m);
-                }
+            }
+            if (isEndingModule) {
+                result.add(m);
             }
         }
         return result;
