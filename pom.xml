@@ -150,6 +150,9 @@
 							<addClasspath>true</addClasspath>
 							<mainClass>nandcat.Nandcat</mainClass>
 						</manifest>
+						<manifestEntries>
+							<SplashScreen-Image>catsmal.png</SplashScreen-Image>
+						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>
