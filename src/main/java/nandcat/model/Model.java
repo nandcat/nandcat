@@ -29,6 +29,7 @@ import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.element.factory.ModuleLayouter;
 import nandcat.model.importexport.DrawExporter;
 import nandcat.model.importexport.Exporter;
+import nandcat.model.importexport.ExternalCircuitSource;
 import nandcat.model.importexport.FormatErrorHandler;
 import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
@@ -343,6 +344,15 @@ public class Model implements ClockListener {
             Exporter ex = exporters.get(ext);
             ex.setErrorHandler(importExportErrorHandler);
             ex.setFile(file);
+            Map<String, String> uuid2filename = new HashMap<String, String>();
+            for (ViewModule v : viewModules) {
+                if (!v.getFileName().equals("")) {
+                    Circuit tmp = importFromFile(new File(v.getFileName()));
+                    uuid2filename.put(tmp.getUuid(), v.getFileName());
+                }
+            }
+
+            ex.setExternalCircuits(uuid2filename);
             ex.setCircuit(c);
             if (ex instanceof DrawExporter) {
                 ((DrawExporter) ex).setElementDrawer(drawer);
@@ -1015,13 +1025,13 @@ public class Model implements ClockListener {
      * @return Set of Modules intersecting the given location
      */
     private Set<Module> getModsAt(Rectangle rect) {
-        Set<Module> connsAt = new HashSet<Module>();
+        Set<Module> modsAt = new HashSet<Module>();
         for (Module m : circuit.getModules()) {
             if (m.getRectangle().intersects(rect)) {
-                connsAt.add(m);
+                modsAt.add(m);
             }
         }
-        return connsAt;
+        return modsAt;
     }
 
     /**
@@ -1138,6 +1148,14 @@ public class Model implements ClockListener {
             im.setFile(file);
             importExportErrorMessages = new LinkedList<String>();
             im.setErrorHandler(importExportErrorHandler);
+            ExternalCircuitSource ecs = new ExternalCircuitSource() {
+
+                public Circuit getExternalCircuit(String identifier) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            };
+            im.setExternalCircuitSource(ecs);
             if (im.importCircuit()) {
                 m = im.getCircuit();
                 if (m == null) {
