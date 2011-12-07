@@ -47,7 +47,8 @@ public class CountCheck implements CircuitCheck {
      * {@inheritDoc}
      */
     public boolean setActive(boolean active) {
-        return this.active = active;
+        this.active = active;
+        return active;
     }
 
     /**
