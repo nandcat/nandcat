@@ -13,21 +13,21 @@
    </maps>
     
    <!-- views --> 
-   <view xml:lang="en" mergetype="javax.help.UniteAppendMerge">
+   <view xml:lang="de" mergetype="javax.help.UniteAppendMerge">
       <name>TOC</name>
       <label>Table Of Contents</label>
       <type>javax.help.TOCView</type>
-      <data>IdeHelpTOC.xml</data>
+      <data>TOC.xml</data>
    </view>
     
-   <view xml:lang="en" mergetype="javax.help.SortMerge">
+   <view xml:lang="de" mergetype="javax.help.SortMerge">
       <name>Index</name>
       <label>Index</label>
       <type>javax.help.IndexView</type>
       <data>IdeHelpIndex.xml</data>
    </view>
     
-   <view xml:lang="en">
+   <view xml:lang="de">
       <name>Search</name>
       <label>Search</label>
       <type>javax.help.SearchView</type>

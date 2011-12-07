@@ -18,6 +18,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JPanel;
 import nandcat.I18N;
 import nandcat.I18N.I18NBundle;
@@ -202,6 +203,7 @@ public class CheckManager extends JDialog {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(Color.white);
         panel.setFocusable(false);
+        CSH.setHelpIDString(panel, "checkmanager");
         // The listener waits for changes on the checkbox.
         ItemListener itemListener = new ItemListener() {
 
@@ -212,6 +214,7 @@ public class CheckManager extends JDialog {
                 }
             }
         };
+        JMenu menu = new JMenu();
         JCheckBox checkbox = null;
         JCheckBoxMenuItem checkboxItem = null;
         for (CircuitCheck check : checks) {
@@ -224,7 +227,10 @@ public class CheckManager extends JDialog {
             checkbox.add(checkboxItem);
             panel.add(checkbox);
         }
+        panel.add(menu);
+        CSH.setHelpIDString(menu, "check");
         CSH.setHelpIDString(checkbox, "check");
+        CSH.setHelpIDString(checkboxItem, "check");
         JButton okayButton = new JButton(i18n.getString("check.dialog.ok"));
         okayButton.setActionCommand(i18n.getString("check.button.okay"));
         okayButton.setPreferredSize(buttonDim);
