@@ -72,9 +72,6 @@ public class FeedbackCheck implements CircuitCheck {
                     // If the test fails add the Module which caused the fail to the CheckEvent.
                     elements.add(current.getModule());
                     informListeners(State.FAILED, elements);
-                    for (Element e : elements) {
-                        System.out.println(e);
-                    }
                     return false;
                 }
                 visited.add(current);
