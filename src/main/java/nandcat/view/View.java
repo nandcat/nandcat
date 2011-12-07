@@ -750,6 +750,7 @@ public class View extends JFrame {
             modules.setActionCommand("selectModule");
             modules.setName("selectModule");
         }
+        CSH.setHelpIDString(modules, "create");
         // Adding Buttons to the ToolBar.
         toolBar.add(modules);
         toolBar.addSeparator(SEPERATOR_DIM);

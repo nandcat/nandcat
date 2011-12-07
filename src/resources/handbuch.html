@@ -2,7 +2,6 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>NANCcat - Handbuch</title>
-<meta http-equiv="Content-Type" content="text/html">
 <meta name="description" content="NANDcat">
 <meta name="generator" content="Bluefish 2.0.3" >
 <link title="Top" rel="top" href="#Top">
@@ -45,12 +44,12 @@
 </li></ul>
 <li><a href="#Simulation">4.4 Simulation</a>
 <ul>
-<li><a href="#Simulation-durchfuehren">4.4.1 Simulation durchführen</a>
-<li><a href="#Was-bedeutet-die-Anzeige">4.4.2 Was bedeutet die Anzeige der Simulation</a>
-<li><a href="#Der-Checkmanager">4.4.3 Der Checkmanager</a>
+<li><a href="#simulieren">4.4.1 Simulation durchführen</a>
+<li><a href="#anzeige">4.4.2 Was bedeutet die Anzeige der Simulation</a>
+<li><a href="#checkmanager">4.4.3 Der Checkmanager</a>
 </li></ul>
 </li></ul>
-<li><a name="toc_Abgrenzung" href="Was-NANDcat-nicht-kann">5 Was NANDcat nicht kann</a></li>
+<li><a name="toc_Abgrenzung" href="abgrenzung">5 Was NANDcat nicht kann</a></li>
 </ul>
 </div>
 
@@ -92,8 +91,9 @@ erstellt, modifiziert und simuliert werden können.
 
 <div class="node">
 <p><hr>
-<a name="toc_Programmbenutzung" href="#Zielgruppen"></a>
+<a name="Zielgruppen"></a>
 </div>
+
 <h2 class="chapter">2 Programmbenutzung</h2>
 NANDcat wurde in JAVA programmiert uns ist somit lauffähig auf jedem Betribebs-
 system mit einer Java Virtual Machine. Die Anwendung öffnet sich sobald sie mit
@@ -106,29 +106,34 @@ erscheint eine Warnung mit den Möglichkeiten die Änderungen zu speichern, zu
 verwerfen oder zum Programm zurückzukehren.<br>
 <img src="bilder/aenderungenspeichern.PNG" width="552" height="149" alt="" />
 
+<div class="node">
 <p><hr>
 <a name="Zielgruppen"></a>
 </div>
+
 <h2 class="chapter">3 Zielgruppen</h2>
 NANDcat richtet sich vor allem an Schüler und Studierende aus den Bereichen
 Informatik und Elektrotechnik, die sich mit Schaltnetzen und -werken
 beschäftigen wollen, um bereits vorhandenes Wissen in diesem Bereich zu
 erproben, erweitern und zu vertiefen.
+
 <div class="node">
 <p><hr>
-
 <a name="Oberfläche"></a>
+</div>
+
 <h2 class="chapter">4 Oberfläche</h2>
 Die Benutzerobefläche wurde durch Java Swing realisiert und ist einfach und
 intuitiv zu Benutzen.<br>
+
 <img src="bilder/ganzes_Programm.PNG" width="550" height="370" alt="" />
+<br>
+<br>
+<a name="menu"></a>
 Im Hauptarbeitsfenster gibt es eine Menüleiste,
 die sämtliche Aktionen, die das Programm anbietet, enthält.<br>
+
 <ul>
-<div class="node">
-<p><hr>
-<a href="#menu"></a>
-</div>
 <li>Datei: Dieser Reiter enthält sämtliche Funktionen um die Datei zu
 bearbeiten. Hierzu gehören das Speichern und (neu-)Laden einer Schaltung.<br>
 <img src="bilder/menudatei.PNG" width="364" height="146" alt="" /></li>
@@ -140,9 +145,8 @@ Bedeutung sind, unter anderem Starten und Stoppen der Simulation - ebenso wie
 der Checkmanager.<br>
 <img src="bilder/menusimulation.PNG" width="392" height="190" alt="" /></li>
 </ul>
-<p><hr>
-<a href="#toolbar"></a>
-</div>
+<br>
+<a name="toolbar"></a>
 Des weiteren befindet sich auf der linken Seite des Fensters eine Werkzeugleiste,
 die  die wichtigsten Werkzeuge zum Erstellen und Bearbeiten von Schaltungen und
 deren Simulation enthält.<br>
@@ -153,7 +157,8 @@ angezeigt, wenn man mit der Maus auf dem Knopf verweilt.<br>
 Zur Oberfläche gehört ebenfalls ein weiteres Fenster - der Checkmanager -,
 das eine Liste aller vom Programm angebotenen Tests auf der Schaltung anzeigt.
 Die Tests können aktiviert und deaktiviert werden und beim durchführen
-der Tests wird der aktuelle Zustand angezeigt.
+der Tests wird der aktuelle Zustand angezeigt.<br>
+
 <ul class="menu">
 <li><a href="#Erstellen-von-Schaltungen">4.1 Erstellen von Schaltungen</a>
 <li><a href="#Bearbeiten-von-Schaltungen">4.2 Bearbeiten von Schaltungen</a>
@@ -164,18 +169,20 @@ der Tests wird der aktuelle Zustand angezeigt.
 <p><hr>
 <a name="Erstellen-von-Schaltungen"></a>
 </div>
+
 <h3 class="section">4.1 Erstellen von Schaltungen</h3>
 Zum Erstellen von Schaltungen bietet das Programm folgende Funktionen an:
+<br>
+<a name="new"></a>
 <ul>
 <li>Zunächst kann über den Menüeintrag "Neu" oder die Tastenkombination Strg+N
 eine neue Schaltung erstellt werden. Wird dieser Punkt ausgewählt und es gibt
 ungespeicherte Änderungen in der aktuellen Schaltung erscheint eine Warnung.
 Außerdem kann die aktuelle Schaltung durch Drücken von F5 neu geladen werden.
-<p><hr>
-<a href="#create"></a>
-</div>
-<li>Platzieren eines Bausteines: Zunächst muss das Programm in den
-Erstellenmodus versetzt werden.<br> 
+<br>
+<a name="create"></a>
+<li>Platzieren eines Bausteines:<br>
+Zunächst muss das Programm in den Erstellenmodus versetzt werden.<br> 
 <img src="bilder/createmiddle.png" width="15" height="14" alt="" /> Dazu muss der "Erstellen"-Knopf gedrückt,<br>
 der Menüpunkt gewählt oder die Tastenkombination Strg+E betätigt werden.
 Daraufhin kann in der Liste über dem Erstellenknopf ein Baustein ausgewählt
@@ -226,18 +233,22 @@ ist, wird die bestehende Verbindung durch die neue ersetzt.</li>
 gesetzt werde. Eine Verbindung zu sich selbst ist also nicht möglich.</li>
 </ul>
 </ul>
+
 <div class="node">
 <p><hr>
 <a name="Bearbeiten-von-Schaltungen"></a>
 </div>
+
 <h3 class="section">4.2 Bearbeiten von Schaltungen</h3>
 Sobald der erste Baustein auf der Arbeitsfläche platziert ist, kann die
 Schaltung modifiziert werden. Dazu muss das Programm in den entsprechenden
-Modus gesetzt werden. <br> 
+Modus gesetzt werden. <br>
 <img src="bilder/selectmiddle.png" width="15" height="18" alt="" /> Dies geschieht durch Klicken auf den "Auswahl"-Knopf,<br>
 Wählen des Menüpunktes oder durch Drücken der Tasten Strg+W.
 In diesem Modus werden die Bausteine zunächst ausgewählt um dann entsprechend
 bearbeitet werden zu können.
+<br>
+<a name="select"></a>
 <ul>
 <li>Auswählen von Bausteinen: durch Klicken auf einen Baustein wird dieser
 ausgewählt und rot markiert.<br>
@@ -262,8 +273,9 @@ anderen Bausteinen gelöscht.<br>
 <img src="bilder/schaltungvorlöschen.PNG" width="248" height="147" alt="" />
 wird nach dem Löschen zu:<br>
 <img src="bilder/schaltunggelöscht.PNG" width="249" height="148" alt="" /><br>
+<a name="annotate"></a>
 <li>Bennenen von Bausteinen:<br>
-<img src="bilder/annotatemiddle.png" width="15" height="15" alt="" />Mit Hilfe des "Benennen"-Werkzeuges,<br>
+<img src="bilder/annotatemiddle.png" width="15" height="15" alt="" /> Mit Hilfe des "Benennen"-Werkzeuges,<br>
 des Menüpunktes oder über die Tastenkombination Strg+A können Bausteine benannt
 werden. Dazu einfach das Werkzeug auswählen und auf den zu benennenden Baustein
 klicken. Daraufhin erscheint ein Dialogfenster in dem die Benennung eingetragen
@@ -272,12 +284,32 @@ werden kann.<br>
 Diese erscheint daraufhin unterhalb des Bausteins und kann durch erneutes
 Auswählen mit Hilfe des Werkzeugs bearbeitet werden.<br>
 <img src="bilder/andbenannt.PNG" width="67" height="57" alt="" /></li>
+<br>
+<a name="toggle"></a>
+<li>Setzen des Zustand von Taktgebern:<br>
+<img src="togglemiddle.png" width="15" height="15" alt="" /> Durch Drücken des "Zustand"-Werkzeuges in der Menüleiste,<br>
+Wählen des Menüpunktes oder über die Tastenkombination Strg+T wird das
+Werkzeug ausgewählt, mit dem der Zustand eines Schalters geändert werden kann.
+Durch Drücken der linken Maustaste auf einen Taktgeber verändert sich dessen
+Zustand. War das ausgehende Signal zunächst an, ist es jetzt aus und andersherum.
+Drückt man mit der rechten Maustaste auf den Taktgeber erscheint ein
+Dialogfenster in das man die gewünschte Taktfrequenz für den Taktgeber eingeben
+kann.Standardmäßig ist der Taktgeber auf "aus" eingestellt und hat die Takt-
+frequenz 1.<br>
+<dt><b>Taktfrequenz:</b><dt>
+Die Zahl die die Taktfrequenz angibt legt fest wie lange der Taktgeber sein
+aktuelles Signal hält. Bei einer Taktfrequenz von 3 und bei Startzustand "aus"
+gibt der Taktgeber für die ersten drei Takte kein Signal weiter, für die
+nächsten drei das Signal "an", bis er schließlich wieder das Signal wechselt.
+</li>
 </ul>
+
 <div class="node">
 <p><hr>
 <a name="Speichern-und-Laden"></a>
 </div>
-<h3 class="section">4.3 Speichern und laden</h3>
+
+<h3 class="section">4.3 Speichern und Laden</h3>
 
 <ul class="menu">
 <li><a href="#Schaltungen-speichern-und-laden">4.3.1 Schaltungen speichern und Laden</a>
@@ -289,7 +321,8 @@ Auswählen mit Hilfe des Werkzeugs bearbeitet werden.<br>
 <p><hr>
 <a name="Schaltungen-speichern-und-laden"></a>
 </div>
-<h3 class="section">4.1.1 Schaltungen speichern und laden</h3>
+
+<h3 class="section">4.3.1 Schaltungen speichern und laden</h3>
 Eine erstellte Schaltung kann über folgende Menüpunkte und Tastenkürzel
 abgespeichert werden:
 <ul>
@@ -305,6 +338,8 @@ wurde.</li>
 neue Schaltung erstellt wird, oder die Anwendung geschlossen wird. In diesen
 Fällen erscheint eine Warnmeldung falls ungespeicherte Änderungen bestehen.</li>
 </ul>
+<br>
+<a name="load"></a>
 Eine gespeicherte Schaltung kann über dem Menüpunkt "Laden" oder über Strg+L
 aus dem abgespeicherten Verzeichnis geladen und wieder vollständig
 überarbeitet werden.
@@ -313,20 +348,25 @@ aus dem abgespeicherten Verzeichnis geladen und wieder vollständig
 <p><hr>
 <a name="Schaltungen-als-Baustein-speichern"></a>
 </div>
+
 <h3 class="section">4.3.2 Schaltungen als Baustein speichern</h3>
 Eine Schaltung kann in einem neuen Schaltplan als eigener Baustein verwendet
 werden. Dazu muss die Schaltung entsprechend abgespeichert werden.
+
 <div class="node">
 <p><hr>
 <a name="Benutzerdefinierte-Bausteine-laden"></a>
 </div>
+
 <h3 class="section">4.3.3 Benutzerdefinierte Bausteine laden</h3>
 Sobald eine Schaltung als Baustein gespeichert wurde, wird sie in die Liste
 der Bausteine aufgenommen und kann wie jeder andere Baustein verwendet werden.
+
 <div class="node">
 <p><hr>
 <a name="Simulation"></a>
 </div>
+
 <h3 class="section">4.4 Simulation</h3>
 
 Das Verhalten der erstellten Schaltung kann simuliert werden. Simulation
@@ -335,18 +375,21 @@ Verbindungen zu den verschiedenen Taktzyklen angezeigt wird. Der Zustand
 kann hierbei entweder logisch 1 oder logisch 0 sein.
 
 <ul class="menu">
-<li><a href="#Simulation-durchfuehren">4.4.1 Simulation durchführen</a>
-<li><a href="#Was-bedeutet-die-Anzeige">4.4.2 Was bedeutet die Anzeige der Simulation</a>
-<li><a href="#Der-Checkmanager">4.4.3 Der Checkmanager</a>
+<li><a href="#simulieren">4.4.1 Simulation durchführen</a>
+<li><a href="#anzeige">4.4.2 Was bedeutet die Anzeige der Simulation</a>
+<li><a href="#checkmanager">4.4.3 Der Checkmanager</a>
 </ul>
 
 <div class="node">
 <p><hr>
-<a name="#Simulation-durchfuehren"></a>
+<a name="simulieren"></a>
 </div>
+
 <h3 class="section">4.4.1 Simulation durchführen</h3>
 Die Simulation der Schaltung kann auf folgende Weisen gesteuert werden:
 <ul>
+<br>
+<a name="start"></a>
 <li>Simulation starten:<br>
 <img src="bilder/startmiddle.png" width="15" height="15" alt="" /> Erfolgt entweder über Drücken des "Simulation starten" Knopfes in der
 Werkzeugleiste.<br>
@@ -362,6 +405,8 @@ möglich. Es können einzig Bausteine verschoben werden. Die Funktionen zum
 Erstellen, Löschen oder Setzen von Schaltern werden nicht angeboten und die
 entsprechenden Knöpfe und Menüpunkte sind ausgegraut und können nicht angewält
 werden.</li>
+<br>
+<a name="stop"></a>
 <li>Simulation beenden:
 <img src="bilder/stopmiddle.png" width="15" height="15" alt="" /> Beendet wird die Simulation entweder über Betätigen des "Simulation stoppen"
 Knopfes,<br>
@@ -369,6 +414,8 @@ Auswahl des Menüpunktes "Simulation beenden" oder Drücken der 'E'
 Taste auf der Tastatur. Daraufhin wird die Simulation beendet und keine
 Belegung der Elemente mehr angezeigt. Nun ist wieder das volle Bearbeiten der
 Schaltung möglich und die Simulation kann erneut gestartet werden.</li>
+<br>
+<a name="pause"></a>
 <li>Pause der Simulation:<br>
 <img src="bilder/pausemiddle.png" width="15" height="15" alt="" /> Über die Pausetaste,
 den Menüpunkt oder die Tastenkombination kann die Simulation vorübergehend
@@ -377,16 +424,20 @@ der Elemente an.<br>
 <img src="bilder/stepmiddle.png" width="15" height="15" alt="" /> Mit Hilfe des "Fortfahren"-Knopfes
 oder über die Tastenkombination Strg+X wird der nächste Schritt der Simulation
 berechnet und angezeigt. Durch Stoppen wird sie beendet.</li>
+<br>
+<a name="speed"></a>
 <li>Erhöhen und Verringern der Simulationsgeschwindigkeit:
 Die Geschwindigkeit der Simulation kann verringert/erhöht werden durch <br>
  <img src="bilder/minusmiddle.png" width="15" height="14" alt="" /> / <img src="bilder/plusmiddle.png" width="15" height="14" alt="" /> Drücken der "-"-/"+"-Taste, <br>
 Auswählen des Menüpunktes "Schneller"/"Langsamer" oder
 durch Drücken der Tastenkombination Strg+Minus/Strg+Plus.</li>
 </ul>
+
 <div class="node">
 <p><hr>
-<a name="#Was-bedeutet-die-Anzeige"></a>
+<a name="anzeige"></a>
 </div>
+
 <h3 class="section">4.4.2 Was bedeutet die Anzeige der Simulation</h3>
 <ul>
 <li>Taktgeber:
@@ -425,10 +476,12 @@ die ausgendenden Leitungen weiterzuleiten.</li>
 
 <div class="node">
 <p><hr>
-<a name="#Der-Checkmanager"></a>
+<a name="checkmanager"></a>
 </div>
+
+<a name="checkwindow"></a>
 <h3 class="section">4.4.3 Der Checkmanager</h3>
-Der Testmanager ist ein Fenster, das eine Liste aller Tests die auf der
+Der Checkmanager ist ein Fenster, das eine Liste aller Tests die auf der
 Schaltung durchgeführt werden können. Durch anklicken eines Tests kann dieser
 aktiviert und deaktiviert werden. Ein aktiver Test ist an dem Haken in dem
 Kästchen links neben der Beschreibung des Tests zu erkennen. Rechts neben diesem
@@ -450,6 +503,8 @@ wurde.</li>
 Das rote Kreuz bedeutet, dass der Test ausgeführt, jedoch nicht bestanden
 wurde.
 </ul>
+<br>
+<a name="checks"></a>
 Die Anwendung bietet folgende Tests auf der Schaltung an:
 <ul>
 <li>Rückkopplungstest: Schlägt fehlt, sobald eine Rückkopplung innerhalb der
@@ -475,9 +530,10 @@ Ergebnisse der Tests wie oben beschrieben an.<br>
 
 <div class="node">
 <p><hr>
-<a name="#Was-NANDcat-nicht-kann"></a>
+<a name="abgrenzung"></a>
 </div>
-<h3 class="section">5 Was NANDcat nicht kann</h3>
+
+<h3 class="chapter">5 Was NANDcat nicht kann</h3>
 <ul>
 <li>In der Anwendung kann immer nur eine einzige Schaltung bearbeitet werden.
 Es gibt nicht die Möglichkeit eine weitere Schaltung in einem neuen Fenster oder
@@ -487,4 +543,6 @@ Tab zu öffnen.
 Funktionen zu generieren.</li>
 <li>Physikalische Effekte, die in der Realität auftreten können (z.B. Fanout-
 Beschränkungen) werden nicht berücksichtigt.</li></ul>
+
+</body>
 </html>
