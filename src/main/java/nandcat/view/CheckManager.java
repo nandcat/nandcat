@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.net.URL;
 import java.util.Set;
 import javax.help.CSH;
 import javax.swing.BoxLayout;
@@ -22,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import nandcat.I18N;
 import nandcat.I18N.I18NBundle;
+import nandcat.Nandcat;
 import nandcat.model.check.CheckEvent;
 import nandcat.model.check.CheckEvent.State;
 import nandcat.model.check.CheckListener;
@@ -62,22 +64,22 @@ public class CheckManager extends JDialog {
     /**
      * Icon representing a check has not started yet.
      */
-    private ImageIcon checkPending = new ImageIcon("src/resources/help.jpg");;
+    private ImageIcon checkPending = new ImageIcon(getResource("help.jpg"));
 
     /**
      * Icon representing a check has started but did not finish yet.
      */
-    private ImageIcon checkStarted = new ImageIcon("src/resources/exclamation_mark.png");
+    private ImageIcon checkStarted = new ImageIcon(getResource("exclamation_mark.png"));
 
     /**
      * Icon representing a check passed successful.
      */
-    private ImageIcon checkSuccessful = new ImageIcon("src/resources/check-icon.gif");;
+    private ImageIcon checkSuccessful = new ImageIcon(getResource("check-icon.gif"));
 
     /**
      * Icon representing a check failed.
      */
-    private ImageIcon checkFailed = new ImageIcon("src/resources/cross_icon1.gif");;
+    private ImageIcon checkFailed = new ImageIcon(getResource("cross_icon1.gif"));
 
     /**
      * Location of upper left corner of the frame on the screen.
@@ -146,6 +148,17 @@ public class CheckManager extends JDialog {
         for (CircuitCheck c : set) {
             c.addListener(checkListener);
         }
+    }
+
+    /**
+     * Gets the resource URL depending on environment. Works with Jar.
+     * 
+     * @param file
+     *            File to get URL for. Realpath: src/main/resources/main.png -> Parameter: main.png
+     * @return URL to file.
+     */
+    private static URL getResource(String file) {
+        return Nandcat.class.getClassLoader().getResource(file);
     }
 
     /**
