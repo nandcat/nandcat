@@ -121,6 +121,11 @@ public class Model implements ClockListener {
     private static final Logger LOG = Logger.getLogger(Model.class);
 
     /**
+     * Search Path for circuit files.
+     */
+    private static final String CIRCUIT_PATH = ".";
+
+    /**
      * Import and Export Error messages from last import/export.
      */
     private List<String> importExportErrorMessages = new LinkedList<String>();
@@ -627,13 +632,13 @@ public class Model implements ClockListener {
      */
     public void initView2Module() {
         viewModules = new LinkedList<ViewModule>();
-        viewModules.add(new ViewModule("AND", factory.getAndGateBuilder().build(), "", null));
-        viewModules.add(new ViewModule("OR", factory.getOrGateBuilder().build(), "", null));
-        viewModules.add(new ViewModule("FlipFlop", factory.getFlipFlopBuilder().build(), "", null));
-        viewModules.add(new ViewModule("ID", factory.getIdentityGateBuilder().build(), "", null));
-        viewModules.add(new ViewModule("Lampe", factory.getLampBuilder().build(), "", null));
-        viewModules.add(new ViewModule("NOT", factory.getNotGateBuilder().build(), "", null));
-        viewModules.add(new ViewModule("ImpulseGenerator", factory.getClockBuilder().build(), "", null));
+        viewModules.add(new ViewModule("AND", factory.getAndGateBuilder().build(), ""));
+        viewModules.add(new ViewModule("OR", factory.getOrGateBuilder().build(), ""));
+        viewModules.add(new ViewModule("FlipFlop", factory.getFlipFlopBuilder().build(), ""));
+        viewModules.add(new ViewModule("ID", factory.getIdentityGateBuilder().build(), ""));
+        viewModules.add(new ViewModule("Lampe", factory.getLampBuilder().build(), ""));
+        viewModules.add(new ViewModule("NOT", factory.getNotGateBuilder().build(), ""));
+        viewModules.add(new ViewModule("ImpulseGenerator", factory.getClockBuilder().build(), ""));
         // kthxbye
         // viewModules.add(new ViewModule("AND-3", factory.getAndGateBuilder().setInPorts(3).build(), "", null));
         // viewModules.add(new ViewModule("OR-3", factory.getOrGateBuilder().setInPorts(3).build(), "", null));
@@ -1054,7 +1059,7 @@ public class Model implements ClockListener {
      */
     private void loadCustomList() {
         // search PATH for circuits, non-recursive.
-        File dir = new File(".");
+        File dir = new File(CIRCUIT_PATH);
         LOG.debug("Load custom circuits: " + dir.getAbsolutePath());
         Importer importer = new SEPAFImporter();
         importer.setFactory(factory);
@@ -1064,12 +1069,9 @@ public class Model implements ClockListener {
             if (f.isFile() && f.canRead() && getFileExtension(f) != null) {
                 if (formats.containsKey(getFileExtension(f))) {
                     importer.setFile(f);
-                    // TODO fertigimplementierung von getName oder sonstwas im Importer abwarten, damit hier nicht der
-                    // ganze Circuit eingelesen werden muss. Dafuer muss aber auch der Rueckgabewert von importCircuit()
-                    // zuverlaessig sein. Siehe importFromFile (null check nach if(import.importCircuit()) noetig).
                     importExportErrorMessages = new LinkedList<String>();
                     if (importer.importCircuit()) {
-                        viewModules.add(new ViewModule(f.getName(), null, f.getName(), null));
+                        viewModules.add(new ViewModule(f.getName(), null, f.getName()));
                     } else {
                         LOG.warn("File import failed! File: " + f.getAbsolutePath());
                         StringBuilder errorMsgBuilder = new StringBuilder();
@@ -1151,8 +1153,7 @@ public class Model implements ClockListener {
             ExternalCircuitSource ecs = new ExternalCircuitSource() {
 
                 public Circuit getExternalCircuit(String identifier) {
-                    // TODO Auto-generated method stub
-                    return null;
+                    return importFromFile(new File(identifier));
                 }
             };
             im.setExternalCircuitSource(ecs);

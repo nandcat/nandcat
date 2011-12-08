@@ -16,11 +16,6 @@ public class ViewModule {
     private String name;
 
     /**
-     * ViewModule's symbol. <b>Note:</b> may be null
-     */
-    private byte[] symbol;
-
-    /**
      * ViewModule's filename (may be null in case of standard gates). This has to be used to reference
      * circuit-definition files.
      */
@@ -43,7 +38,7 @@ public class ViewModule {
      * @param symbol
      *            bytearray containing ViewModule's symbol
      */
-    protected ViewModule(String name, Module module, String fileName, byte[] symbol) {
+    protected ViewModule(String name, Module module, String fileName) {
         this.name = name;
         this.module = module;
         if (fileName == null) {
@@ -51,7 +46,6 @@ public class ViewModule {
         } else {
             this.fileName = fileName;
         }
-        this.symbol = symbol;
     }
 
     /**
@@ -71,34 +65,6 @@ public class ViewModule {
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * Returns the file extension.
-     * 
-     * @return String containing the file extension
-     */
-    public String getFileExtension() {
-        return fileName;
-    }
-
-    /**
-     * Return ViewModule's symbol.
-     * 
-     * @return byte[] containing ViewModule's symbol
-     */
-    public byte[] getSymbol() {
-        return symbol;
-    }
-
-    /**
-     * Set ViewModule's symbol.
-     * 
-     * @param symbol
-     *            byte[] containing ViewModule's symbol
-     */
-    public void setSymbol(byte[] symbol) {
-        this.symbol = symbol;
     }
 
     /**
