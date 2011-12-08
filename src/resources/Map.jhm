@@ -13,17 +13,13 @@
       <mapID target="toggle" url="handbuch.html#toggle" />
       <mapID target="annotate" url="handbuch.html#annotate" />
       <mapID target="pause" url="handbuch.html#pause" />
-      <mapID target="workspace" url="handbuch.html#Oberflaeche" />
+      <mapID target="workspace" url="handbuch.html#Oberfläche" />
         <mapID target="toolbar" url="handbuch.html#toolbar" />
         <mapID target="menubar" url="handbuch.html#menu" />
         <mapID target="app" url="handbuch.html#Einleitung" />
-      <mapID target="checkmanager" url="handbuch.html#checkwindow" />
+      <mapID target="checkmanager" url="handbuch.html#checkmanager" />
       <mapID target="check" url="handbuch.html#checks" />
       <mapID target="new" url="handbuch.html#new" />
       <mapID target="load" url="handbuch.html#load" />
-      <mapID target="toggle" url="handbuch.html#toggle" />
-      <mapID target="annotate" url="handbuch.html#annotate" />
-      <mapID target="pause" url="handbuch.html#pause" />
-      <mapID target="workspace" url="handbuch.html#workspace" />
 </mapID>
 </map>

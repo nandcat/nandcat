@@ -63,7 +63,7 @@
    <presentation default=true>
        <name>main window</name>
        <size width="800" height="400" /> 
-       <location x="400" y="400" />
+       <location x="800" y="400" />
        <title>NANDcat Help</title>
        <toolbar>
            <helpaction>javax.help.BackAction</helpaction>

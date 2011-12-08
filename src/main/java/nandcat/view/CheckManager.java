@@ -57,12 +57,12 @@ public class CheckManager extends JDialog {
     /**
      * Dimension representing the Size of the Frame.
      */
-    private static final Dimension FRAME_SIZE = new Dimension(680, 300);
+    private static final Dimension FRAME_SIZE = new Dimension(680, 350);
 
     /**
      * Icon representing a check has not started yet.
      */
-    private ImageIcon checkPending = new ImageIcon("src/resources/help.png");;
+    private ImageIcon checkPending = new ImageIcon("src/resources/help.jpg");;
 
     /**
      * Icon representing a check has started but did not finish yet.
@@ -226,7 +226,9 @@ public class CheckManager extends JDialog {
             checkbox.add(checkboxItem);
             panel.add(checkbox);
         }
-        CSH.setHelpIDString(checkbox, "check");
+        CSH.setHelpIDString(panel, "checkmanager");
+        CSH.setHelpIDString(checkboxItem, "checkmanager");
+        CSH.setHelpIDString(checkbox, "checkmanager");
         JButton okayButton = new JButton(i18n.getString("check.dialog.ok"));
         okayButton.setActionCommand(i18n.getString("check.button.okay"));
         okayButton.setPreferredSize(buttonDim);
