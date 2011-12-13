@@ -1070,6 +1070,13 @@ public class Model implements ClockListener {
                 if (formats.containsKey(getFileExtension(f))) {
                     importer.setFile(f);
                     importExportErrorMessages = new LinkedList<String>();
+                    ExternalCircuitSource ecs = new ExternalCircuitSource() {
+
+                        public Circuit getExternalCircuit(String identifier) {
+                            return importFromFile(new File(identifier));
+                        }
+                    };
+                    importer.setExternalCircuitSource(ecs);
                     if (importer.importCircuit()) {
                         viewModules.add(new ViewModule(f.getName(), null, f.getName()));
                     } else {
