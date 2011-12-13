@@ -400,6 +400,9 @@ public class View extends JFrame {
         JMenu sim = new JMenu(i18n.getString("menu.simulation"));
         sim.setMnemonic(KeyEvent.VK_T);
         noDisableElements.add(sim);
+        JMenu layout = new JMenu(i18n.getString("menu.layout"));
+        layout.setMnemonic(KeyEvent.VK_Y);
+        disableElements.add(layout);
         JMenu help = new JMenu(i18n.getString("menu.help"));
         help.setMnemonic(KeyEvent.VK_H);
         helpListener = new nandcat.controller.Help.DisplayHelpAfterTracking(hb.getHelpSet(), "javax.help.Popup", null);
@@ -484,11 +487,24 @@ public class View extends JFrame {
         mhelp.addActionListener(helpListener);
         disableElements.add(mhelp);
         cycle.setText(i18n.getString("cycle.stand"));
+        JMenuItem miec = new JMenuItem(i18n.getString("menu.layout.iec"), KeyEvent.VK_2);
+        miec.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.CTRL_MASK));
+        disableElements.add(miec); 
+        JMenuItem mstandard = new JMenuItem(i18n.getString("menu.layout.standard"), KeyEvent.VK_1);
+        mstandard.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.CTRL_MASK));
+        disableElements.add(mstandard);
+
         /*
          * check if there are functionalities given for the MenuItems.
          */
         if (toolFunctionalities.containsKey("help")) {
             setupMenuItem(mhelp, "help");
+        }
+        if (toolFunctionalities.containsKey("iec")) {
+            setupMenuItem(miec, "iec");
+        }
+        if (toolFunctionalities.containsKey("standard")) {
+            setupMenuItem(mstandard, "standard");
         }
         if (toolFunctionalities.containsKey("resetSpeed")) {
             setupMenuItem(mresetSpeed, "resetSpeed");
@@ -569,6 +585,8 @@ public class View extends JFrame {
         menubar.add(edit);
         menubar.add(sim);
         menubar.add(help);
+        layout.add(miec);
+        layout.add(mstandard);
         sim.add(mstart);
         sim.add(mstep);
         sim.add(mpause);
@@ -588,6 +606,8 @@ public class View extends JFrame {
         edit.addSeparator();
         edit.add(mreset);
         edit.add(mresetSpeed);
+        edit.addSeparator();
+        edit.add(layout);
         file.add(mnew);
         file.add(mload);
         file.add(msave);

@@ -236,7 +236,6 @@ public class Workspace extends JPanel {
      */
     public void setDrawer(ElementDrawer drawer) {
         this.elementDrawer = drawer;
-        elementDrawer.setGraphics(this.getGraphics());
     }
 
     /**
