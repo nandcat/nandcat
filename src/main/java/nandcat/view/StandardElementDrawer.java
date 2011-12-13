@@ -277,7 +277,7 @@ public class StandardElementDrawer implements ElementDrawer {
      */
     private void drawCircuitSymbol(Circuit circuit) {
         if (circuit.getSymbol() != null) {
-            g.drawImage(circuit.getSymbol(), circuit.getRectangle().x + 1, circuit.getRectangle().y + 1,
+            g.drawImage(circuit.getSymbol().getImage(), circuit.getRectangle().x + 1, circuit.getRectangle().y + 1,
                     circuit.getRectangle().width - 1, circuit.getRectangle().height - 1, null);
         }
     }

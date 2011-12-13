@@ -289,7 +289,7 @@ public class ExportTool implements Tool {
 
                 // Only set image if image available.
                 if (im != null) {
-                    model.getCircuit().setSymbol(im);
+                    model.getCircuit().setSymbol(new ImageIcon(im));
                 }
             } else if (n == 2) {
 
@@ -369,7 +369,7 @@ public class ExportTool implements Tool {
 
                 // Only set image if image available.
                 if (im != null) {
-                    c.setSymbol(im);
+                    c.setSymbol(new ImageIcon(im));
                 }
             }
 

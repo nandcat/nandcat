@@ -1,13 +1,13 @@
 package nandcat.model.element;
 
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import javax.swing.ImageIcon;
 import nandcat.model.Clock;
 import nandcat.model.ClockListener;
 
@@ -53,7 +53,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     /**
      * Image representation of the Circuit symbol (if used as Module).
      */
-    private BufferedImage symbol;
+    private ImageIcon symbol;
 
     /**
      * Selection state of the circuit.
@@ -240,9 +240,9 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     /**
      * Returns PNG symbol representation of the circuit.
      * 
-     * @return BufferedImage representation of PNG symbol
+     * @return Image representation of PNG symbol
      */
-    public BufferedImage getSymbol() {
+    public ImageIcon getSymbol() {
         return symbol;
     }
 
@@ -252,7 +252,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      * @param symbol
      *            BufferedImage PNG symbol.
      */
-    public void setSymbol(BufferedImage symbol) {
+    public void setSymbol(ImageIcon symbol) {
         this.symbol = symbol;
     }
 

@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -178,7 +179,7 @@ public class ElementDrawerViewer extends JFrame {
         BufferedImage symbol;
         try {
             symbol = ImageIO.read(NandcatTest.class.getResourceAsStream("../images/cat.png"));
-            circuit1.setSymbol(symbol);
+            circuit1.setSymbol(new ImageIcon(symbol));
         } catch (IOException e) {
             e.printStackTrace();
         }

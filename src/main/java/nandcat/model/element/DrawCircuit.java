@@ -1,8 +1,8 @@
 package nandcat.model.element;
 
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.util.List;
+import javax.swing.ImageIcon;
 
 /**
  * This class represents a circuit. It could be a customized Module or the main circuit displayed in the GUI. A circuit
@@ -43,9 +43,9 @@ public interface DrawCircuit extends DrawModule {
     /**
      * Returns PNG symbol representation of the circuit.
      * 
-     * @return BufferedImage representation of PNG symbol
+     * @return Image representation of PNG symbol
      */
-    BufferedImage getSymbol();
+    ImageIcon getSymbol();
 
     /**
      * {@inheritDoc}
