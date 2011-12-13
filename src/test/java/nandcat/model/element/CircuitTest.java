@@ -10,7 +10,6 @@ import java.util.Set;
 import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.factory.ModuleBuilderFactory;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -158,7 +157,6 @@ public class CircuitTest {
         c.addModule(innerCircuit);
     }
 
-    @Ignore
     @Test
     public void testDeReconstruct() {
         Circuit c = (Circuit) factory.getCircuitBuilder().build();

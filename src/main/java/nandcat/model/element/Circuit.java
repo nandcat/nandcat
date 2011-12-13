@@ -23,6 +23,11 @@ import nandcat.model.FastDeepCopy;
 public class Circuit implements ClockListener, Module, DrawCircuit, Serializable {
 
     /**
+     * Original circuit.
+     */
+    private Circuit original;
+
+    /**
      * Set containing ports that sould not be shown.
      */
     private Set<Port> hiddenPorts;
@@ -98,6 +103,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         selected = false;
         strippedModules = new HashMap<Port, Module>();
         hiddenPorts = new HashSet<Port>();
+        original = null;
     }
 
     /**
@@ -421,11 +427,15 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     /**
      * This method modifies the circuit. It removes all {@link Lamp}s and {@link ImpulseGenerator}s and stores them in a
      * HashMap. The information what {@link Port} held the {@link Connection} leading towards those specified
-     * {@link Module}s will be conserved.
+     * {@link Module}s will be conserved. Also creates a copy for later.
      * 
      * @return this Circuit after the Modifications
      */
     public Circuit deconstruct() {
+
+        Circuit originalC = (Circuit) FastDeepCopy.copy(this);
+        this.original = originalC;
+
         for (Module m : getModules()) {
             if (m instanceof Lamp) {
                 if (m.getInPorts().get(0) != null && m.getInPorts().get(0).getConnection() != null) {
@@ -488,29 +498,34 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     }
 
     /**
-     * This method returns a copy of the current circuit, enriched with the {@link Lamp}s and {@link ImpulseGenerator}s
-     * previously stripped. Note that this is a completely different Object.
+     * This method returns the original version of the current circuit, enriched with the {@link Lamp}s and
+     * {@link ImpulseGenerator}s previously stripped. Note that this is a completely different Object.
      * 
-     * @return a Circuit beeing an exact copy of this circuit, except it got its Lamps and ImpulseGenerators back
+     * @return a Circuit beeing the original of this circuit
      */
     public Circuit reconstruct() {
-        Circuit result = (Circuit) FastDeepCopy.copy(this);
-        for (Port p : strippedModules.keySet()) {
-            Module dovakiin = strippedModules.get(p);
-            result.addModule(dovakiin);
+        // Circuit result = (Circuit) FastDeepCopy.copy(this);
+        // for (Port p : strippedModules.keySet()) {
+        // Module mod = strippedModules.get(p);
+        // result.addModule(mod);
+        // }
+        // // 2 loops because impy->lamp would be omgwtf otherwise
+        // for (Port p : result.strippedModules.keySet()) {
+        // Module mod = strippedModules.get(p);
+        // if (mod instanceof Lamp) {
+        // result.addConnection(p, mod.getInPorts().get(0));
+        // } else if (mod instanceof ImpulseGenerator) {
+        // result.addConnection(mod.getOutPorts().get(0), p);
+        // }
+        // result.strippedModules.clear();
+        // result.hiddenPorts.clear();
+        // }
+        // return result;
+        if (original != null) {
+            return original;
+        } else {
+            return this;
         }
-        // 2 loops because impy->lampd would be omgwtf otherwise
-        for (Port p : strippedModules.keySet()) {
-            Module dovakiin = strippedModules.get(p);
-            if (dovakiin instanceof Lamp) {
-                result.addConnection(p, dovakiin.getInPorts().get(0));
-            } else if (dovakiin instanceof ImpulseGenerator) {
-                result.addConnection(dovakiin.getOutPorts().get(0), p);
-            }
-            result.strippedModules.clear();
-            result.hiddenPorts.clear();
-        }
-        return result;
     }
 
     /**
@@ -538,5 +553,25 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         }
         return x + "-----------------------------------------------------------------------";
     }
+
+    // /**
+    // * DO NEVER EVER USE THIS METHOD Set new inports
+    // *
+    // * @param inProts
+    // * new list of inports
+    // */
+    // protected void overrideInPorts(List<Port> inProts) {
+    // this.inPorts = inProts;
+    // }
+    //
+    // /**
+    // * DO NEVER EVER USE THIS METHOD Set new outports
+    // *
+    // * @param outProts
+    // * new list of outports
+    // */
+    // protected void overrideOutPorts(List<Port> outProts) {
+    // this.outPorts = outProts;
+    // }
 
 }
