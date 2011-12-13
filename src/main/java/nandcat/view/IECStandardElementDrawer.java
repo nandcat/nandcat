@@ -41,9 +41,14 @@ public class IECStandardElementDrawer implements ElementDrawer {
     private static final String LABEL_ANDGATE = "&";
 
     /**
+     * ASCII-Code for the sign higher/equal.
+     */
+    private static final int ASCII_HIGHER_EQUAL = 8805;
+
+    /**
      * Label for the Or-Gate.
      */
-    private static final String LABEL_ORGATE = '\u2AB0' + "1";
+    private static final String LABEL_ORGATE = (char) ASCII_HIGHER_EQUAL + "1";
 
     /**
      * Label for the Not-Gate.
