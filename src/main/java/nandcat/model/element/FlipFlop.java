@@ -34,6 +34,10 @@ public class FlipFlop extends Circuit {
         NotGate sNot = new NotGate(1);
         IdentityGate idR = new IdentityGate(2);
         IdentityGate idS = new IdentityGate(2);
+        ImpulseGenerator impy = new ImpulseGenerator(0);
+        ImpulseGenerator impz = new ImpulseGenerator(0);
+        Lamp licht = new Lamp();
+        Lamp scheffel = new Lamp();
 
         // ImpulseGenerator rimp = new ImpulseGenerator(0);
         // ImpulseGenerator simp = new ImpulseGenerator(0);
@@ -46,6 +50,10 @@ public class FlipFlop extends Circuit {
         addModule(sNot);
         addModule(idR);
         addModule(idS);
+        addModule(impy);
+        addModule(impz);
+        addModule(licht);
+        addModule(scheffel);
 
         // addModule(rimp);
         // addModule(simp);

@@ -24,6 +24,7 @@ import nandcat.model.element.FlipFlop;
 import nandcat.model.element.IdentityGate;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
+import nandcat.model.element.Module;
 import nandcat.model.element.NotGate;
 import nandcat.model.element.OrGate;
 
@@ -235,7 +236,6 @@ public class Workspace extends JPanel {
      */
     public void setDrawer(ElementDrawer drawer) {
         this.elementDrawer = drawer;
-        elementDrawer.setGraphics(this.getGraphics());
     }
 
     /**
@@ -303,27 +303,27 @@ public class Workspace extends JPanel {
         List<DrawElement> elementsToDraw = model.getDrawElements();
         List<Connection> cachedConnections = new LinkedList<Connection>();
         for (DrawElement elem : elementsToDraw) {
-            // if (isInView(elem)) {
-            if (elem instanceof Connection) {
-                cachedConnections.add((Connection) elem);
-            } else if (elem instanceof AndGate) {
-                elementDrawer.draw((AndGate) elem);
-            } else if (elem instanceof FlipFlop) {
-                elementDrawer.draw((FlipFlop) elem);
-            } else if (elem instanceof Circuit) {
-                elementDrawer.draw((Circuit) elem);
-            } else if (elem instanceof ImpulseGenerator) {
-                elementDrawer.draw((ImpulseGenerator) elem);
-            } else if (elem instanceof IdentityGate) {
-                elementDrawer.draw((IdentityGate) elem);
-            } else if (elem instanceof NotGate) {
-                elementDrawer.draw((NotGate) elem);
-            } else if (elem instanceof OrGate) {
-                elementDrawer.draw((OrGate) elem);
-            } else if (elem instanceof Lamp) {
-                elementDrawer.draw((Lamp) elem);
+            if (isInView(elem)) {
+                if (elem instanceof Connection) {
+                    cachedConnections.add((Connection) elem);
+                } else if (elem instanceof AndGate) {
+                    elementDrawer.draw((AndGate) elem);
+                } else if (elem instanceof FlipFlop) {
+                    elementDrawer.draw((FlipFlop) elem);
+                } else if (elem instanceof Circuit) {
+                    elementDrawer.draw((Circuit) elem);
+                } else if (elem instanceof ImpulseGenerator) {
+                    elementDrawer.draw((ImpulseGenerator) elem);
+                } else if (elem instanceof IdentityGate) {
+                    elementDrawer.draw((IdentityGate) elem);
+                } else if (elem instanceof NotGate) {
+                    elementDrawer.draw((NotGate) elem);
+                } else if (elem instanceof OrGate) {
+                    elementDrawer.draw((OrGate) elem);
+                } else if (elem instanceof Lamp) {
+                    elementDrawer.draw((Lamp) elem);
+                }
             }
-            // }
         }
         for (Connection connection : cachedConnections) {
             elementDrawer.draw(connection);
@@ -441,39 +441,40 @@ public class Workspace extends JPanel {
             l.mouseWheelMoved(e);
         }
     }
+
     /*
      * Not needed at the Moment but maybe later useful.
      */
-    // /**
-    // * Checks if an Element is inside or intersects the ViewPort. Helps to decide whether or not to draw the Elements.
-    // * Elements out of sight must no be painted.
-    // *
-    // * @param elem
-    // * the Element to be checked
-    // * @return True or False. Whether the element is in sight or not.
-    // */
-    // private boolean isInView(DrawElement elem) {
-    // boolean isInView = false;
-    // if (elem instanceof Connection) {
-    // // Connections must be painted if one of the Modules it connects is in sight.
-    // if (viewPortRect.intersects(((Connection) elem).getNextModule().getRectangle())) {
-    // isInView = true;
-    // } else if (viewPortRect.intersects(((Connection) elem).getPreviousModule().getRectangle())) {
-    // isInView = true;
-    // } else if (viewPortRect.contains(((Connection) elem).getPreviousModule().getRectangle())) {
-    // isInView = true;
-    // } else if (viewPortRect.contains(((Connection) elem).getNextModule().getRectangle())) {
-    // isInView = true;
-    // }
-    // }
-    // if (elem instanceof Module) {
-    // // Modules must be painted if they are (partly) inside.
-    // if (viewPortRect.intersects(((Module) elem).getRectangle())) {
-    // isInView = true;
-    // } else if (viewPortRect.contains(((Module) elem).getRectangle())) {
-    // isInView = true;
-    // }
-    // }
-    // return isInView;
-    // }
+    /**
+     * Checks if an Element is inside or intersects the ViewPort. Helps to decide whether or not to draw the Elements.
+     * Elements out of sight must no be painted.
+     * 
+     * @param elem
+     *            the Element to be checked
+     * @return True or False. Whether the element is in sight or not.
+     */
+    private boolean isInView(DrawElement elem) {
+        boolean isInView = false;
+        if (elem instanceof Connection) {
+            // Connections must be painted if one of the Modules it connects is in sight.
+            if (viewPortRect.intersects(((Connection) elem).getNextModule().getRectangle())) {
+                isInView = true;
+            } else if (viewPortRect.intersects(((Connection) elem).getPreviousModule().getRectangle())) {
+                isInView = true;
+            } else if (viewPortRect.contains(((Connection) elem).getPreviousModule().getRectangle())) {
+                isInView = true;
+            } else if (viewPortRect.contains(((Connection) elem).getNextModule().getRectangle())) {
+                isInView = true;
+            }
+        }
+        if (elem instanceof Module) {
+            // Modules must be painted if they are (partly) inside.
+            if (viewPortRect.intersects(((Module) elem).getRectangle())) {
+                isInView = true;
+            } else if (viewPortRect.contains(((Module) elem).getRectangle())) {
+                isInView = true;
+            }
+        }
+        return isInView;
+    }
 }

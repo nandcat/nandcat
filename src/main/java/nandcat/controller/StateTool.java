@@ -92,6 +92,7 @@ public class StateTool implements Tool {
      */
     public void setActive(boolean active) {
         if (active) {
+            view.focuseButton("toggle");
             setListeners();
         } else {
             removeListeners();

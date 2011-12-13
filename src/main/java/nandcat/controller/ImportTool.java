@@ -124,6 +124,7 @@ public class ImportTool implements Tool {
 
         // Deactivate other tools to stay consistent.
         controller.requestActivation(this);
+        controller.getView().focuseButton("nothing");
         if (command.equals("load")) {
             actionLoad();
         } else if (command.equals("new")) {
@@ -147,6 +148,9 @@ public class ImportTool implements Tool {
             fc.setSelectedFile(lastLoadedFile);
         }
         ImportExportUtils.addFileFilterToChooser(fc, model.getImportFormats());
+        if (fc.getFileFilter() == null && fc.getChoosableFileFilters().length > 0) {
+            fc.setFileFilter(fc.getChoosableFileFilters()[0]);
+        }
         fc.setAcceptAllFileFilterUsed(false);
         int returnVal = fc.showOpenDialog(controller.getView());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -155,6 +159,9 @@ public class ImportTool implements Tool {
                 LOG.debug("Importing: " + file.getName());
                 this.lastLoadedFile = file;
                 model.importRootFromFile(file);
+                if(controller.getView().getWorkspace().getGridEnable()) {
+                    model.adaptAllToGrid(controller.getView().getWorkspace().getGridSize());
+                }
             } else {
                 LOG.debug("File is null");
             }

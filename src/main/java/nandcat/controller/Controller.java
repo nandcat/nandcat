@@ -64,6 +64,7 @@ public class Controller {
         getTools().add(new ExportTool(this));
         getTools().add(new ImportTool(this));
         getTools().add(new HelpTool(this));
+        getTools().add(new LayoutTool(this));
     }
 
     /**

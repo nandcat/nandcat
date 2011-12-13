@@ -2,6 +2,7 @@ package nandcat.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
@@ -16,6 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -32,10 +35,13 @@ import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeListener;
 import nandcat.I18N;
 import nandcat.I18N.I18NBundle;
 import nandcat.Nandcat;
+import javax.help.CSH;
+import nandcat.controller.Help.DisplayHelpAfterTracking;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListenerAdapter;
@@ -69,7 +75,7 @@ public class View extends JFrame {
     /**
      * Default Button Dimension.
      */
-    private static final Dimension BUTTON_DIM = new Dimension(32, 32);
+    private static final Dimension BUTTON_DIM = new Dimension(38, 38);
 
     /**
      * Default Workspace Dimension.
@@ -179,6 +185,11 @@ public class View extends JFrame {
     private Set<JComponent> noDisableElements = new HashSet<JComponent>();
 
     /**
+     * Set of JComponents we want to be enabled during simulation and disabled else.
+     */
+    private Set<JComponent> reverseDisableElements = new HashSet<JComponent>();
+
+    /**
      * Dimension of Buttons.
      */
     private Dimension buttonDim = new Dimension(BUTTON_DIM);
@@ -219,6 +230,56 @@ public class View extends JFrame {
     private JScrollBar vertical;
 
     /**
+     * The HelpBroker generated from the HelpSet for the context-sensitive help.
+     */
+    private HelpBroker hb;
+
+    /**
+     * HelpSet for context-sensitive help.
+     */
+    private HelpSet hs;
+
+    /**
+     * JButton, the Annotate Button.
+     */
+    private JButton annotate;
+
+    /**
+     * JButton, the Toggle Button.
+     */
+    private JButton toggle;
+
+    /**
+     * JButton, the SElect Button.
+     */
+    private JButton select;
+
+    /**
+     * JButton, the Create Button.
+     */
+    private JButton create;
+
+    /**
+     * JButton, the Move Button.
+     */
+    private JButton move;
+
+    /**
+     * JButton, the Button actual active.
+     */
+    private JButton selectedTool;
+
+    /**
+     * JButton, the Button for the Help Tool.
+     */
+    private JButton help;
+
+    /**
+     * Listener for the Help Tool.
+     */
+    private DisplayHelpAfterTracking helpListener;
+
+    /**
      * Constructs the view.
      * 
      * @param model
@@ -239,7 +300,26 @@ public class View extends JFrame {
             // LookAndFeel will be used.
             System.out.println("No Nimbus Look and Feel found!");
         }
+        setUpHelp();
         setupGui(model);
+    }
+
+    /**
+     * Load HelpSet and defines HelpBroker for context-sensitive help.
+     */
+    private void setUpHelp() {
+        try {
+            ClassLoader cl = View.class.getClassLoader();
+            URL url = HelpSet.findHelpSet(cl, "HelpSet");
+            hs = new HelpSet(cl, url);
+        } catch (Exception ee) {
+            System.out.println("Help Set not found");
+            return;
+        } catch (ExceptionInInitializerError ex) {
+            System.err.println("initialization error:");
+            ex.getException().printStackTrace();
+        }
+        hb = hs.createHelpBroker();
     }
 
     /**
@@ -267,12 +347,13 @@ public class View extends JFrame {
         setLocation(frameLocation);
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        CSH.setHelpIDString(this, "app");
         workspace = new Workspace(model, this);
         workspace.setPreferredSize(workspaceDimension);
         workspace.setSize(workspaceDimension);
         workspace.setBackground(Color.white);
-        workspace.setLayout(null); // no layout is required for free move of the
-                                   // components
+        workspace.setLayout(null); // no layout is required for free move of the components
+        CSH.setHelpIDString(workspace, "workspace");
         scroller = new JScrollPane(workspace);
         scroller.setWheelScrollingEnabled(false);
         horizontal = scroller.getHorizontalScrollBar();
@@ -280,7 +361,9 @@ public class View extends JFrame {
         viewport = scroller.getViewport();
         viewport.setViewPosition(viewportLocation);
         toolBar = new JToolBar(JToolBar.VERTICAL);
+        CSH.setHelpIDString(toolBar, "toolbar");
         menubar = new JMenuBar();
+        CSH.setHelpIDString(menubar, "menubar");
         getContentPane().add(scroller, BorderLayout.CENTER);
         getContentPane().add(toolBar, BorderLayout.WEST);
         getContentPane().add(menubar, BorderLayout.NORTH);
@@ -317,8 +400,12 @@ public class View extends JFrame {
         JMenu sim = new JMenu(i18n.getString("menu.simulation"));
         sim.setMnemonic(KeyEvent.VK_T);
         noDisableElements.add(sim);
+        JMenu layout = new JMenu(i18n.getString("menu.layout"));
+        layout.setMnemonic(KeyEvent.VK_Y);
+        disableElements.add(layout);
         JMenu help = new JMenu(i18n.getString("menu.help"));
         help.setMnemonic(KeyEvent.VK_H);
+        helpListener = new nandcat.controller.Help.DisplayHelpAfterTracking(hb.getHelpSet(), "javax.help.Popup", null);
         disableElements.add(help);
         // Create MenuItems. Setting Shortcuts.
         JMenuItem mstart = new JMenuItem(i18n.getString("menu.simulation.start"), KeyEvent.VK_S);
@@ -332,7 +419,8 @@ public class View extends JFrame {
         noDisableElements.add(mresetSpeed);
         JMenuItem mstop = new JMenuItem(i18n.getString("menu.simulation.stop"), KeyEvent.VK_E);
         mstop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0));
-        noDisableElements.add(mstop);
+        mstop.setEnabled(false);
+        reverseDisableElements.add(mstop);
         JMenuItem mstep = new JMenuItem(i18n.getString("menu.simulation.step"), KeyEvent.VK_X);
         mstep.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0));
         noDisableElements.add(mstep);
@@ -351,8 +439,8 @@ public class View extends JFrame {
         JMenuItem mselect = new JMenuItem(i18n.getString("menu.edit.select"), KeyEvent.VK_W);
         mselect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
         noDisableElements.add(mselect);
-        JMenuItem mstartcheck = new JMenuItem(i18n.getString("menu.test.execute"), KeyEvent.VK_T);
-        mstartcheck.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
+        JMenuItem mstartcheck = new JMenuItem(i18n.getString("menu.test.execute"), KeyEvent.VK_M);
+        mstartcheck.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.CTRL_MASK));
         disableElements.add(mstartcheck);
         JMenuItem meditcheck = new JMenuItem(i18n.getString("menu.test.manage"), KeyEvent.VK_V);
         meditcheck.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
@@ -369,7 +457,6 @@ public class View extends JFrame {
         JMenuItem msave2 = new JMenuItem(i18n.getString("menu.file.saveas"), KeyEvent.VK_A);
         msave2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
         disableElements.add(msave2);
-        // TODO Testen ob keys gehen
         JMenuItem msave3 = new JMenuItem(i18n.getString("menu.file.saveselectedas"), KeyEvent.VK_A);
         msave3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.SHIFT_MASK));
         disableElements.add(msave3);
@@ -393,11 +480,32 @@ public class View extends JFrame {
         disableElements.add(mgrid);
         JMenuItem mpause = new JMenuItem(i18n.getString("menu.simulation.pause"), KeyEvent.VK_P);
         mpause.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0));
-        noDisableElements.add(mselect);
+        reverseDisableElements.add(mpause);
+        mpause.setEnabled(false);
+        JMenuItem mhelp = new JMenuItem(i18n.getString("menu.help.help"), KeyEvent.VK_I);
+        mhelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
+        mhelp.addActionListener(helpListener);
+        disableElements.add(mhelp);
         cycle.setText(i18n.getString("cycle.stand"));
+        JMenuItem miec = new JMenuItem(i18n.getString("menu.layout.iec"), KeyEvent.VK_2);
+        miec.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.CTRL_MASK));
+        disableElements.add(miec); 
+        JMenuItem mstandard = new JMenuItem(i18n.getString("menu.layout.standard"), KeyEvent.VK_1);
+        mstandard.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.CTRL_MASK));
+        disableElements.add(mstandard);
+
         /*
          * check if there are functionalities given for the MenuItems.
          */
+        if (toolFunctionalities.containsKey("help")) {
+            setupMenuItem(mhelp, "help");
+        }
+        if (toolFunctionalities.containsKey("iec")) {
+            setupMenuItem(miec, "iec");
+        }
+        if (toolFunctionalities.containsKey("standard")) {
+            setupMenuItem(mstandard, "standard");
+        }
         if (toolFunctionalities.containsKey("resetSpeed")) {
             setupMenuItem(mresetSpeed, "resetSpeed");
         }
@@ -477,6 +585,8 @@ public class View extends JFrame {
         menubar.add(edit);
         menubar.add(sim);
         menubar.add(help);
+        layout.add(miec);
+        layout.add(mstandard);
         sim.add(mstart);
         sim.add(mstep);
         sim.add(mpause);
@@ -486,8 +596,8 @@ public class View extends JFrame {
         sim.addSeparator();
         sim.add(mstartcheck);
         sim.add(meditcheck);
-        edit.add(mcreate);
         edit.add(mselect);
+        edit.add(mcreate);
         edit.add(mmove);
         edit.add(mdelete);
         edit.add(mannotate);
@@ -496,6 +606,8 @@ public class View extends JFrame {
         edit.addSeparator();
         edit.add(mreset);
         edit.add(mresetSpeed);
+        edit.addSeparator();
+        edit.add(layout);
         file.add(mnew);
         file.add(mload);
         file.add(msave);
@@ -503,6 +615,7 @@ public class View extends JFrame {
         file.add(msave3);
         file.add(mloaddef);
         file.add(mclose);
+        help.add(mhelp);
         menubar.add(cycle);
     }
 
@@ -526,30 +639,37 @@ public class View extends JFrame {
      */
     private void buildToolbar(JToolBar toolBar) {
         toolBar.removeAll();
-        // Create Buttons of the Application. Setting Icons and Descriptions and
-        // Size.
+        // Create Buttons of the Application. Setting Icons and Descriptions and Size.
         ImageIcon startButtonIcon = new ImageIcon(getResource("startmiddle.png"));
         JButton start = new JButton("", startButtonIcon);
         start.setPreferredSize(buttonDim);
         start.setToolTipText(i18n.getString("tooltip.simulation.start"));
+        CSH.setHelpIDString(start, "start");
         disableElements.add(start);
         ImageIcon moveButtonIcon = new ImageIcon(getResource("movemiddle.png"));
-        JButton move = new JButton("", moveButtonIcon);
+        move = new JButton("", moveButtonIcon);
         move.setPreferredSize(buttonDim);
         move.setToolTipText(i18n.getString("tooltip.view.move"));
+        move.setBorder(new LineBorder(Color.lightGray, 1, true));
+        move.setBorderPainted(false);
+        CSH.setHelpIDString(move, "move");
         disableElements.add(move);
         ImageIcon stopButtonIcon = new ImageIcon(getResource("stopmiddle.png"));
         JButton stop = new JButton("", stopButtonIcon);
         stop.setPreferredSize(buttonDim);
         stop.setToolTipText(i18n.getString("tooltip.simulation.stop"));
-        noDisableElements.add(stop);
+        stop.setEnabled(false);
+        reverseDisableElements.add(stop);
+        CSH.setHelpIDString(stop, "stop");
         ImageIcon stepButtonIcon = new ImageIcon(getResource("stepmiddle.png"));
         JButton step = new JButton("", stepButtonIcon);
         step.setPreferredSize(buttonDim);
         step.setToolTipText(i18n.getString("tooltip.simulation.step"));
+        CSH.setHelpIDString(step, "step");
         noDisableElements.add(step);
         ImageIcon fasterButtonIcon = new ImageIcon(getResource("plusmiddle.png"));
         JButton faster = new JButton("", fasterButtonIcon);
+        CSH.setHelpIDString(faster, "faster");
         faster.setPreferredSize(buttonDim);
         faster.setToolTipText(i18n.getString("tooltip.simulation.faster"));
         noDisableElements.add(faster);
@@ -557,34 +677,56 @@ public class View extends JFrame {
         JButton slower = new JButton("", slowerButtonIcon);
         slower.setPreferredSize(buttonDim);
         slower.setToolTipText(i18n.getString("tooltip.simulation.slower"));
+        CSH.setHelpIDString(slower, "slower");
         noDisableElements.add(slower);
         ImageIcon createButtonIcon = new ImageIcon(getResource("createmiddle.png"));
-        JButton create = new JButton("", createButtonIcon);
+        create = new JButton("", createButtonIcon);
         create.setPreferredSize(buttonDim);
         create.setToolTipText(i18n.getString("tooltip.create"));
+        create.setBorder(new LineBorder(Color.lightGray, 1, true));
+        create.setBorderPainted(false);
+        CSH.setHelpIDString(create, "create");
         disableElements.add(create);
         ImageIcon selectButtonIcon = new ImageIcon(getResource("selectmiddle.png"));
-        JButton select = new JButton("", selectButtonIcon);
+        select = new JButton("", selectButtonIcon);
         select.setPreferredSize(buttonDim);
         select.setToolTipText(i18n.getString("tooltip.select"));
+        select.setBorder(new LineBorder(Color.lightGray, 1, true));
+        select.setBorderPainted(false);
+        CSH.setHelpIDString(select, "select");
         noDisableElements.add(select);
         ImageIcon toggleButtonIcon = new ImageIcon(getResource("togglemiddle.png"));
-        JButton toggle = new JButton("", toggleButtonIcon);
+        toggle = new JButton("", toggleButtonIcon);
         toggle.setPreferredSize(buttonDim);
         toggle.setToolTipText(i18n.getString("tooltip.state.toggle"));
+        toggle.setBorder(new LineBorder(Color.lightGray, 1, true));
+        toggle.setBorderPainted(false);
+        CSH.setHelpIDString(toggle, "toggle");
         disableElements.add(toggle);
         ImageIcon annotateButtonIcon = new ImageIcon(getResource("annotatemiddle.png"));
-        JButton annotate = new JButton("", annotateButtonIcon);
+        annotate = new JButton("", annotateButtonIcon);
         annotate.setPreferredSize(buttonDim);
         annotate.setToolTipText(i18n.getString("tooltip.annotate"));
+        annotate.setBorder(new LineBorder(Color.lightGray, 1, true));
+        annotate.setBorderPainted(false);
+        CSH.setHelpIDString(annotate, "annotate");
         disableElements.add(annotate);
         ImageIcon pauseButtonIcon = new ImageIcon(getResource("pausemiddle.png"));
         JButton pause = new JButton("", pauseButtonIcon);
         pause.setPreferredSize(buttonDim);
         pause.setToolTipText(i18n.getString("tooltip.simulation.pause"));
-        noDisableElements.add(pause);
-        // Check if there are Functionalities for the Buttons and if yes calling
-        // the setup.
+        pause.setEnabled(false);
+        reverseDisableElements.add(pause);
+        CSH.setHelpIDString(pause, "pause");
+        ImageIcon helpButtonIcon = new ImageIcon(getResource("Questionmark.png"));
+        help = new JButton("", helpButtonIcon);
+        help.setPreferredSize(buttonDim);
+        help.setToolTipText(i18n.getString("tooltip.help"));
+        help.addActionListener(helpListener);
+        // Check if there are Functionalities for the Buttons and if yes calling the setup.
+        if (toolFunctionalities.containsKey("help")) {
+            setupButton(help, "help");
+        }
         if (toolFunctionalities.containsKey("step")) {
             setupButton(step, "step");
         }
@@ -618,6 +760,9 @@ public class View extends JFrame {
         if (toolFunctionalities.containsKey("move")) {
             setupButton(move, "move");
         }
+        if (toolFunctionalities.containsKey("help")) {
+            setupButton(move, "help");
+        }
         if (viewModules != null) {
             modules = new WideComboBox(viewModules.toArray());
             modules.setPreferredSize(COMBO_DIM);
@@ -628,6 +773,7 @@ public class View extends JFrame {
             modules.setActionCommand("selectModule");
             modules.setName("selectModule");
         }
+        CSH.setHelpIDString(modules, "create");
         // Adding Buttons to the ToolBar.
         toolBar.add(modules);
         toolBar.addSeparator(SEPERATOR_DIM);
@@ -636,6 +782,7 @@ public class View extends JFrame {
         toolBar.add(toggle);
         toolBar.add(move);
         toolBar.add(annotate);
+        toolBar.add(help);
         toolBar.addSeparator(SEPERATOR_DIM);
         toolBar.add(faster);
         toolBar.add(slower);
@@ -644,6 +791,9 @@ public class View extends JFrame {
         toolBar.add(pause);
         toolBar.add(stop);
         toolBar.addSeparator(SEPERATOR_DIM);
+        for (Component comp : toolBar.getComponents()) {
+            comp.setFocusable(false);
+        }
     }
 
     /**
@@ -689,8 +839,7 @@ public class View extends JFrame {
         }
         for (DrawElement elem : elementsToCheck) {
             if (elem instanceof Module) {
-                // If elem is a Module we must check if it is out of the
-                // workspace and if yes extend the workspace.
+                // If elem is a Module we must check if it is out of the workspace and if yes extend the workspace.
                 if (((Module) elem).getRectangle().x >= workspace.getWidth()) {
                     workspace.setSize(((Module) elem).getRectangle().x, workspace.getHeight());
                     workspace.setPreferredSize(new Dimension(((Module) elem).getRectangle().x + SPACE_ARROUND_ELEM,
@@ -723,6 +872,9 @@ public class View extends JFrame {
         for (JComponent enable : disableElements) {
             enable.setEnabled(true);
         }
+        for (JComponent enable : reverseDisableElements) {
+            enable.setEnabled(false);
+        }
         modules.setEnabled(true);
     }
 
@@ -733,6 +885,9 @@ public class View extends JFrame {
         // Disables all Elements in the List of Elements to be disabled.
         for (JComponent enable : disableElements) {
             enable.setEnabled(false);
+        }
+        for (JComponent enable : reverseDisableElements) {
+            enable.setEnabled(true);
         }
         modules.setEnabled(false);
     }
@@ -866,15 +1021,42 @@ public class View extends JFrame {
     }
 
     /**
+     * Makes the Border around the active Tool Visible.
+     * 
+     * @param name
+     *            String representing the name of the active Tool.
+     */
+    public void focuseButton(String name) {
+        if (selectedTool != null) {
+            selectedTool.setBorderPainted(false);
+        }
+        if (name.equals("move")) {
+            move.setBorderPainted(true);
+            selectedTool = move;
+        } else if (name.equals("select")) {
+            select.setBorderPainted(true);
+            selectedTool = select;
+        } else if (name.equals("toggle")) {
+            toggle.setBorderPainted(true);
+            selectedTool = toggle;
+        } else if (name.equals("annotate")) {
+            annotate.setBorderPainted(true);
+            selectedTool = annotate;
+        } else if (name.equals("create")) {
+            create.setBorderPainted(true);
+            selectedTool = create;
+        } else if (name.equals("help")) {
+            help.setBorderPainted(true);
+            selectedTool = help;
+        }
+    }
+
+    /**
      * Extension of JComboBox to ensure the PopupMenu of the ComoBox is wide enough to Display the full names of the
      * Elements.
      */
+    @SuppressWarnings("serial")
     public class WideComboBox extends JComboBox {
-
-        /**
-         * Default serial uid.
-         */
-        private static final long serialVersionUID = 1L;
 
         /**
          * Width of the Combo Popup Menu.

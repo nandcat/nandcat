@@ -17,7 +17,7 @@ public class IllegalConnectionCheck implements CircuitCheck {
     /**
      * Listeners for this check.
      */
-    Set<CheckListener> listener;
+    private Set<CheckListener> listener;
 
     /**
      * Check is active or not.
@@ -43,7 +43,8 @@ public class IllegalConnectionCheck implements CircuitCheck {
      * {@inheritDoc}
      */
     public boolean setActive(boolean active) {
-        return this.active = active;
+        this.active = active;
+        return active;
     }
 
     /**

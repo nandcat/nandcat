@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
- * Unit test for ANDGate.
+ * Unit test for Clock.
  */
 public class ClockTest {
 

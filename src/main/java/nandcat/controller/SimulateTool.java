@@ -187,6 +187,7 @@ public class SimulateTool implements Tool {
                     simToStart = true;
                     startCheckManager();
                     model.startChecks();
+                    view.focuseButton("nothing");
                 } else if (e.getActionCommand().equals("stop")) {
                     model.stopSimulation();
                     simToStart = false;
@@ -235,6 +236,7 @@ public class SimulateTool implements Tool {
                         paused = true;
                         startCheckManager();
                         model.startChecks();
+                        view.focuseButton("nothing");
                     }
                 } else if (e.getActionCommand().equals("step")) {
                     if (paused) {

@@ -9,7 +9,9 @@ import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.net.URL;
 import java.util.Set;
+import javax.help.CSH;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,8 +20,10 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import nandcat.I18N;
 import nandcat.I18N.I18NBundle;
+import nandcat.Nandcat;
 import nandcat.model.check.CheckEvent;
 import nandcat.model.check.CheckEvent.State;
 import nandcat.model.check.CheckListener;
@@ -55,27 +59,27 @@ public class CheckManager extends JDialog {
     /**
      * Dimension representing the Size of the Frame.
      */
-    private static final Dimension FRAME_SIZE = new Dimension(620, 300);
+    private static final Dimension FRAME_SIZE = new Dimension(680, 350);
 
     /**
      * Icon representing a check has not started yet.
      */
-    private ImageIcon checkPending = new ImageIcon("src/resources/Questionmark.png");;
+    private ImageIcon checkPending = new ImageIcon(getResource("help.jpg"));
 
     /**
      * Icon representing a check has started but did not finish yet.
      */
-    private ImageIcon checkStarted = new ImageIcon("src/resources/exclamation_mark.png");
+    private ImageIcon checkStarted = new ImageIcon(getResource("exclamation_mark.png"));
 
     /**
      * Icon representing a check passed successful.
      */
-    private ImageIcon checkSuccessful = new ImageIcon("src/resources/check-icon.gif");;
+    private ImageIcon checkSuccessful = new ImageIcon(getResource("check-icon.gif"));
 
     /**
      * Icon representing a check failed.
      */
-    private ImageIcon checkFailed = new ImageIcon("src/resources/cross_icon1.gif");;
+    private ImageIcon checkFailed = new ImageIcon(getResource("cross_icon1.gif"));
 
     /**
      * Location of upper left corner of the frame on the screen.
@@ -121,6 +125,7 @@ public class CheckManager extends JDialog {
      *            ActionListener from the ControllerTool for the Buttons.
      */
     public CheckManager(Set<CircuitCheck> set, ActionListener buttonListener) {
+        CSH.setHelpIDString(this, "checkmanager");
         this.buttonListener = buttonListener;
         setupCheckmanager(set);
         CheckListener checkListener = new CheckListener() {
@@ -143,6 +148,17 @@ public class CheckManager extends JDialog {
         for (CircuitCheck c : set) {
             c.addListener(checkListener);
         }
+    }
+
+    /**
+     * Gets the resource URL depending on environment. Works with Jar.
+     * 
+     * @param file
+     *            File to get URL for. Realpath: src/main/resources/main.png -> Parameter: main.png
+     * @return URL to file.
+     */
+    private static URL getResource(String file) {
+        return Nandcat.class.getClassLoader().getResource(file);
     }
 
     /**
@@ -200,6 +216,7 @@ public class CheckManager extends JDialog {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(Color.white);
         panel.setFocusable(false);
+        JScrollPane scroller = new JScrollPane(panel);
         // The listener waits for changes on the checkbox.
         ItemListener itemListener = new ItemListener() {
 
@@ -222,6 +239,9 @@ public class CheckManager extends JDialog {
             checkbox.add(checkboxItem);
             panel.add(checkbox);
         }
+        CSH.setHelpIDString(panel, "checkmanager");
+        CSH.setHelpIDString(checkboxItem, "checkmanager");
+        CSH.setHelpIDString(checkbox, "checkmanager");
         JButton okayButton = new JButton(i18n.getString("check.dialog.ok"));
         okayButton.setActionCommand(i18n.getString("check.button.okay"));
         okayButton.setPreferredSize(buttonDim);
@@ -243,7 +263,7 @@ public class CheckManager extends JDialog {
         toolbar.add(okayButton);
         toolbar.add(calc);
         toolbar.add(calcStart);
-        this.add(panel, BorderLayout.CENTER);
+        this.add(scroller, BorderLayout.CENTER);
         this.add(toolbar, BorderLayout.PAGE_END);
     }
 

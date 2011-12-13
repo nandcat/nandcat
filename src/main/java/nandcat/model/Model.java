@@ -28,6 +28,7 @@ import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.element.factory.ModuleLayouter;
 import nandcat.model.importexport.DrawExporter;
 import nandcat.model.importexport.Exporter;
+import nandcat.model.importexport.ExternalCircuitSource;
 import nandcat.model.importexport.FormatErrorHandler;
 import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
@@ -117,6 +118,11 @@ public class Model implements ClockListener {
      * Class logger instance.
      */
     private static final Logger LOG = Logger.getLogger(Model.class);
+
+    /**
+     * Search Path for circuit files.
+     */
+    private static final String CIRCUIT_PATH = ".";
 
     /**
      * Import and Export Error messages from last import/export.
@@ -343,6 +349,15 @@ public class Model implements ClockListener {
             Exporter ex = exporters.get(ext);
             ex.setErrorHandler(importExportErrorHandler);
             ex.setFile(file);
+            Map<String, String> uuid2filename = new HashMap<String, String>();
+            for (ViewModule v : viewModules) {
+                if (!v.getFileName().equals("")) {
+                    Circuit tmp = importFromFile(new File(v.getFileName()));
+                    uuid2filename.put(tmp.getUuid(), v.getFileName());
+                }
+            }
+
+            ex.setExternalCircuits(uuid2filename);
             ex.setCircuit(c);
             importExportErrorMessages = new LinkedList<String>();
             if (ex instanceof DrawExporter) {
@@ -363,6 +378,7 @@ public class Model implements ClockListener {
                 for (ModelListener l : listeners) {
                     l.exportFailed(e);
                 }
+                LOG.warn("Export to " + file.getAbsolutePath() + " failed");
             }
         }
     }
@@ -397,23 +413,6 @@ public class Model implements ClockListener {
         return checks;
     }
 
-    // /**
-    // * Move the specific port according to the x + y values stored in the point. Throws an Exception if one parameter
-    // is
-    // * null.
-    // *
-    // * @param distance
-    // * Point containing the x and y
-    // * @param port
-    // * Port that will be moved
-    // */
-    // public void movePortBy(Point distance, Port port) {
-    // if (port == null || distance == null) {
-    // throw (new IllegalArgumentException("port and distancepoint must not be null!"));
-    // }
-    // Rectangle old = port.getRectangle();
-    // port.setRectangle(new Rectangle(old.x + distance.x, old.y + distance.y, old.width, old.height));
-    // }
     /**
      * Gets the current circuit.
      * 
@@ -645,17 +644,17 @@ public class Model implements ClockListener {
      */
     public void initView2Module() {
         viewModules = new LinkedList<ViewModule>();
-        // FIXME Keine instanzen sondern jetzt werden builder uebergeben!
-        viewModules.add(new ViewModule("AND", factory.getAndGateBuilder().build(), "", null));
-        viewModules.add(new ViewModule("OR", factory.getOrGateBuilder().build(), "", null));
-        viewModules.add(new ViewModule("FlipFlop", factory.getFlipFlopBuilder().build(), "", null));
-        viewModules.add(new ViewModule("ID", factory.getIdentityGateBuilder().build(), "", null));
-        viewModules.add(new ViewModule("Lampe", factory.getLampBuilder().build(), "", null));
-        viewModules.add(new ViewModule("NOT", factory.getNotGateBuilder().build(), "", null));
-        viewModules.add(new ViewModule("ImpulseGenerator", factory.getClockBuilder().build(), "", null));
-        viewModules.add(new ViewModule("AND-3", factory.getAndGateBuilder().setInPorts(3).build(), "", null));
-        viewModules.add(new ViewModule("OR-3", factory.getOrGateBuilder().setInPorts(3).build(), "", null));
-        viewModules.add(new ViewModule("ID-3", factory.getIdentityGateBuilder().setOutPorts(3).build(), "", null));
+        viewModules.add(new ViewModule("AND", factory.getAndGateBuilder().build(), ""));
+        viewModules.add(new ViewModule("OR", factory.getOrGateBuilder().build(), ""));
+        viewModules.add(new ViewModule("FlipFlop", factory.getFlipFlopBuilder().build(), ""));
+        viewModules.add(new ViewModule("ID", factory.getIdentityGateBuilder().build(), ""));
+        viewModules.add(new ViewModule("Lampe", factory.getLampBuilder().build(), ""));
+        viewModules.add(new ViewModule("NOT", factory.getNotGateBuilder().build(), ""));
+        viewModules.add(new ViewModule("ImpulseGenerator", factory.getClockBuilder().build(), ""));
+        // kthxbye
+        // viewModules.add(new ViewModule("AND-3", factory.getAndGateBuilder().setInPorts(3).build(), "", null));
+        // viewModules.add(new ViewModule("OR-3", factory.getOrGateBuilder().setInPorts(3).build(), "", null));
+        // viewModules.add(new ViewModule("ID-3", factory.getIdentityGateBuilder().setOutPorts(3).build(), "", null));
         loadCustomList();
     }
 
@@ -733,8 +732,6 @@ public class Model implements ClockListener {
     /**
      * Notifies ModelListeners about changed Elements.
      * 
-     * @param set
-     *            Set containing specific DrawElements
      */
     protected void notifyForChangedElems() {
         ModelEvent e = new ModelEvent();
@@ -852,11 +849,16 @@ public class Model implements ClockListener {
             drawElements.add((DrawElement) e);
             result = true;
         }
-        // TODO jaja Codeduplikation checken wir spaeter
         notifyForChangedElems();
         return result;
     }
 
+    /**
+     * Set the Module layouter.
+     * 
+     * @param layouter
+     *            Used Module Layouter
+     */
     public void setLayouter(ModuleLayouter layouter) {
         if (layouter == null) {
             throw new IllegalArgumentException();
@@ -1040,13 +1042,13 @@ public class Model implements ClockListener {
      * @return Set of Modules intersecting the given location
      */
     private Set<Module> getModsAt(Rectangle rect) {
-        Set<Module> connsAt = new HashSet<Module>();
+        Set<Module> modsAt = new HashSet<Module>();
         for (Module m : circuit.getModules()) {
             if (m.getRectangle().intersects(rect)) {
-                connsAt.add(m);
+                modsAt.add(m);
             }
         }
-        return connsAt;
+        return modsAt;
     }
 
     /**
@@ -1057,8 +1059,9 @@ public class Model implements ClockListener {
     private Set<Element> getSelectedElements() {
         Set<Element> selectitt = new HashSet<Element>();
         for (Element e : getElements()) {
-            if (e.isSelected())
+            if (e.isSelected()) {
                 selectitt.add(e);
+            }
         }
         return selectitt;
     }
@@ -1068,7 +1071,7 @@ public class Model implements ClockListener {
      */
     private void loadCustomList() {
         // search PATH for circuits, non-recursive.
-        File dir = new File(".");
+        File dir = new File(CIRCUIT_PATH);
         LOG.debug("Load custom circuits: " + dir.getAbsolutePath());
         Importer importer = new SEPAFImporter();
         importer.setFactory(factory);
@@ -1078,12 +1081,16 @@ public class Model implements ClockListener {
             if (f.isFile() && f.canRead() && getFileExtension(f) != null) {
                 if (formats.containsKey(getFileExtension(f))) {
                     importer.setFile(f);
-                    // TODO fertigimplementierung von getName oder sonstwas im Importer abwarten, damit hier nicht der
-                    // ganze Circuit eingelesen werden muss. Dafuer muss aber auch der Rueckgabewert von importCircuit()
-                    // zuverlaessig sein. Siehe importFromFile (null check nach if(import.importCircuit()) noetig).
                     importExportErrorMessages = new LinkedList<String>();
+                    ExternalCircuitSource ecs = new ExternalCircuitSource() {
+
+                        public Circuit getExternalCircuit(String identifier) {
+                            return importFromFile(new File(identifier));
+                        }
+                    };
+                    importer.setExternalCircuitSource(ecs);
                     if (importer.importCircuit()) {
-                        viewModules.add(new ViewModule(f.getName(), null, f.getName(), null));
+                        viewModules.add(new ViewModule(f.getName(), null, f.getName()));
                     } else {
                         LOG.warn("File import failed! File: " + f.getAbsolutePath());
                         StringBuilder errorMsgBuilder = new StringBuilder();
@@ -1098,9 +1105,6 @@ public class Model implements ClockListener {
                         for (ModelListener l : listeners) {
                             l.importCustomCircuitFailed(e);
                         }
-                        // for (ModelListener l : listeners) {
-                        // l.importFailed(e);
-                        // }
                     }
                 }
             }
@@ -1127,7 +1131,7 @@ public class Model implements ClockListener {
             }
         }
         // check for negative coords
-        if (r.x <= 5 || r.y <= 5) {
+        if (r.x <= 1 || r.y <= 1) {
             return false;
         }
         Point pr = module.getRectangle().getLocation();
@@ -1165,6 +1169,13 @@ public class Model implements ClockListener {
             im.setFile(file);
             importExportErrorMessages = new LinkedList<String>();
             im.setErrorHandler(importExportErrorHandler);
+            ExternalCircuitSource ecs = new ExternalCircuitSource() {
+
+                public Circuit getExternalCircuit(String identifier) {
+                    return importFromFile(new File(identifier));
+                }
+            };
+            im.setExternalCircuitSource(ecs);
             if (im.importCircuit()) {
                 m = im.getCircuit();
                 if (m == null) {

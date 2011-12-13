@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -74,7 +75,6 @@ public class ElementDrawerViewer extends JFrame {
 
     private void createElementDrawerElements() {
         mainCircuit = (Circuit) factory.getCircuitBuilder().build();
-        // FIXME Brauche Layouter
         mainCircuit.addModule(factory.getAndGateBuilder().setLocation(new Point(5, 5)).build());
         mainCircuit.addModule(factory.getAndGateBuilder().setLocation(new Point(100, 5))
                 .setAnnotation("Meine Annotation").build());
@@ -179,9 +179,8 @@ public class ElementDrawerViewer extends JFrame {
         BufferedImage symbol;
         try {
             symbol = ImageIO.read(NandcatTest.class.getResourceAsStream("../images/cat.png"));
-            circuit1.setSymbol(symbol);
+            circuit1.setSymbol(new ImageIcon(symbol));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

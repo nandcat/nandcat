@@ -4,7 +4,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import nandcat.model.check.CheckEvent.State;
 import nandcat.model.element.Circuit;
-import nandcat.model.element.Connection;
 import nandcat.model.element.Element;
 
 /**
@@ -17,7 +16,7 @@ public class MultipleConnectionsCheck implements CircuitCheck {
     /*
      * ***********************************
      */
-    // TODO MultipleOrgasmen check überflüssig, da wenn überhaupt implizit in illegal connection check mit dabei und
+    // MultipleOrgasmen check überflüssig, da wenn überhaupt implizit in illegal connection check mit dabei und
     // technisch gar nicht möglich dass der fehlschlägt
     // edit : ist aber im lastenheft vorgegeben.
     /*
@@ -53,7 +52,8 @@ public class MultipleConnectionsCheck implements CircuitCheck {
      * {@inheritDoc}
      */
     public boolean setActive(boolean active) {
-        return this.active = active;
+        this.active = active;
+        return active;
     }
 
     /**

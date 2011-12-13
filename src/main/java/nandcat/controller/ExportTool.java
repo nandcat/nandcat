@@ -20,6 +20,8 @@ import nandcat.model.ModelEvent;
 import nandcat.model.ModelListener;
 import nandcat.model.ModelListenerAdapter;
 import nandcat.model.element.Circuit;
+import nandcat.model.element.Connection;
+import nandcat.model.element.DrawElement;
 import nandcat.view.WorkspaceListenerAdapter;
 import org.apache.log4j.Logger;
 
@@ -223,9 +225,22 @@ public class ExportTool implements Tool {
     }
 
     /**
+     * Shows an error dialog informing about an empty circuit.
+     */
+    private void showDialogCircuitEmpty() {
+        JOptionPane.showMessageDialog(controller.getView(), i18n.getString("dialog.savecircuit.empty.text"),
+                i18n.getString("dialog.savecircuit.empty.title"), JOptionPane.ERROR_MESSAGE);
+    }
+
+    /**
      * Performs a 'quicksave' to the last used file if available, otherwise a 'save as'.
      */
     private void actionSave() {
+        if (model.getDrawElements().size() == 0) {
+            showDialogCircuitEmpty();
+            return;
+        }
+
         if (isQuickSaveAvailable()) {
             model.exportToFile(model.getCircuit(), saveLastFile, null);
         } else {
@@ -238,6 +253,11 @@ public class ExportTool implements Tool {
      * Shows save dialogs to export the circuit.
      */
     private void actionSaveAs() {
+        if (model.getDrawElements().size() == 0) {
+            showDialogCircuitEmpty();
+            return;
+        }
+
         JFileChooser fc = buildExportFileChooser();
         if (saveLastFile != null) {
             fc.setSelectedFile(saveLastFile);
@@ -275,7 +295,7 @@ public class ExportTool implements Tool {
 
                 // Only set image if image available.
                 if (im != null) {
-                    model.getCircuit().setSymbol(im);
+                    model.getCircuit().setSymbol(new ImageIcon(im));
                 }
             } else if (n == 2) {
 
@@ -293,9 +313,29 @@ public class ExportTool implements Tool {
     }
 
     /**
+     * Checks if selected elements are available.
+     * 
+     * @return True if selected elements are available.
+     */
+    private boolean selectedElementsAvailable() {
+        List<DrawElement> elements = model.getDrawElements();
+        for (DrawElement drawElement : elements) {
+            if (drawElement.isSelected() && !(drawElement instanceof Connection)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Shows save dialogs to export the selected elements as circuit.
      */
     private void actionSaveSelectedAs() {
+        if (!selectedElementsAvailable()) {
+            JOptionPane.showMessageDialog(controller.getView(), i18n.getString("dialog.selected.fail.text"),
+                    i18n.getString("dialog.selected.fail.title"), JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         JFileChooser fc = buildExportFileChooser();
         if (saveLastFile != null) {
             fc.setSelectedFile(saveLastFile.getParentFile().getAbsoluteFile());
@@ -335,7 +375,7 @@ public class ExportTool implements Tool {
 
                 // Only set image if image available.
                 if (im != null) {
-                    c.setSymbol(im);
+                    c.setSymbol(new ImageIcon(im));
                 }
             }
 
@@ -386,6 +426,9 @@ public class ExportTool implements Tool {
     private JFileChooser buildExportFileChooser() {
         JFileChooser fc = new JFileChooser();
         ImportExportUtils.addFileFilterToChooser(fc, model.getExportFormats());
+        if (fc.getFileFilter() == null && fc.getChoosableFileFilters().length > 0) {
+            fc.setFileFilter(fc.getChoosableFileFilters()[0]);
+        }
         fc.setAcceptAllFileFilterUsed(false);
         return fc;
     }

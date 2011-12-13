@@ -24,12 +24,12 @@ public class SinkCheck implements CircuitCheck {
     /**
      * Listeners for this check.
      */
-    Set<CheckListener> listener;
+    private Set<CheckListener> listener;
 
     /**
      * Check is active or not.
      */
-    boolean active;
+    private boolean active;
 
     /**
      * Constructor for SourceCheck. By default the check is active.
@@ -50,7 +50,8 @@ public class SinkCheck implements CircuitCheck {
      * {@inheritDoc}
      */
     public boolean setActive(boolean active) {
-        return this.active = active;
+        this.active = active;
+        return active;
     }
 
     /**
@@ -63,13 +64,25 @@ public class SinkCheck implements CircuitCheck {
          * idea is: start at starting elements. go with the flow and well, you should visit every module....
          */
         Set<Module> visited = new HashSet<Module>();
-        Set<Module> all = new HashSet<Module>();
         Queue<Module> q = new LinkedList<Module>();
+        List<Module> startModules = getStartModules(circuit);
+        if (!startModules.isEmpty()) {
+            q.addAll(startModules);
+        } else {
+            for (Module m : circuit.getModules()) {
+                if (m instanceof Lamp) {
+                    informListeners(State.SUCCEEDED, elements);
+                    return true;
+                } else {
+                    elements.addAll(circuit.getModules());
+                    informListeners(State.FAILED, elements);
+                    return false;
+                }
+            }
+        }
         q.addAll(getStartModules(circuit));
         while (!q.isEmpty()) {
             Module current = q.poll();
-            all.remove(current);
-
             /*
              * without visited set the amount of queue-loops might go up not only to over 9000, but straight through the
              * roof to infinity if there is a feedback. and this check should work even if feedback check fails,
@@ -89,18 +102,15 @@ public class SinkCheck implements CircuitCheck {
                 // the circuit and therefore has to be a lamp.
                 if (isLast) {
                     if (!(current instanceof Lamp)) {
-                        all.add(current);
+                        elements.add(current);
+                        informListeners(State.FAILED, elements);
+                        return false;
                     }
                 }
             }
         }
-        if (all.isEmpty()) {
-            informListeners(State.SUCCEEDED, elements);
-            return true;
-        }
-        elements.addAll(all);
-        informListeners(State.FAILED, elements);
-        return false;
+        informListeners(State.SUCCEEDED, elements);
+        return true;
     }
 
     /**
@@ -121,6 +131,8 @@ public class SinkCheck implements CircuitCheck {
     /**
      * Returns the "first" Modules in this Circuit. "First" modules are those which do not have any ingoing connection.
      * 
+     * @param circuit
+     *            Circuit from which the starting modules are taken.
      * @return List<Module> containing the starting Modules of this Circuit.
      */
     private List<Module> getStartModules(Circuit circuit) {

@@ -1,10 +1,14 @@
 package nandcat.model.importexport.sepaf;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.FlipFlop;
@@ -347,7 +351,7 @@ public final class SEPAFFormat {
      *            ImageFormat to export image as.
      * @return String as a result of the encoding.
      */
-    public static String encodeImage(BufferedImage im, String format) {
+    public static String encodeImage(ImageIcon im, String format) {
         if (im == null) {
             throw new IllegalArgumentException();
         }
@@ -356,7 +360,20 @@ public final class SEPAFFormat {
         }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            if (!ImageIO.write(im, format, baos)) {
+            Image image = im.getImage();
+            RenderedImage rendered = null;
+            if (image instanceof RenderedImage) {
+                rendered = (RenderedImage) image;
+            } else {
+                BufferedImage buffered = new BufferedImage(im.getIconWidth(), im.getIconHeight(),
+                        BufferedImage.TYPE_INT_RGB);
+                Graphics2D g = buffered.createGraphics();
+                g.drawImage(image, 0, 0, null);
+                g.dispose();
+                rendered = buffered;
+            }
+
+            if (!ImageIO.write(rendered, format, baos)) {
                 return null;
             }
             baos.flush();
@@ -376,13 +393,13 @@ public final class SEPAFFormat {
      *            String to decode.
      * @return BufferedImage as a result of the decoding.
      */
-    public static BufferedImage decodeImage(String base64string) {
+    public static ImageIcon decodeImage(String base64string) {
         if (base64string == null) {
             throw new IllegalArgumentException();
         }
         byte[] decoded = Base64.decode(base64string);
         try {
-            return ImageIO.read(new ByteArrayInputStream(decoded));
+            return new ImageIcon(ImageIO.read(new ByteArrayInputStream(decoded)));
         } catch (IOException e) {
             LOG.warn("Image could not be encoded" + e.getMessage());
             LOG.warn(e.getStackTrace());

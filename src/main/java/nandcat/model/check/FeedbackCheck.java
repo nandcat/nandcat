@@ -9,6 +9,7 @@ import java.util.Set;
 import nandcat.model.check.CheckEvent.State;
 import nandcat.model.element.Circuit;
 import nandcat.model.element.Element;
+import nandcat.model.element.IdentityGate;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 
@@ -22,7 +23,7 @@ public class FeedbackCheck implements CircuitCheck {
     /**
      * Listeners for this check.
      */
-    Set<CheckListener> listener;
+    private Set<CheckListener> listener;
 
     /**
      * Check is active or not.
@@ -48,12 +49,12 @@ public class FeedbackCheck implements CircuitCheck {
      * {@inheritDoc}
      */
     public boolean setActive(boolean active) {
-        return this.active = active;
+        this.active = active;
+        return active;
     }
 
     /**
-     * {@inheritDoc} This Check will fail if it is not possible to run through a Queue of this circuit, where the first
-     * Module adds the next modules, and visit every module only once
+     * {@inheritDoc}
      */
     public boolean test(Circuit circuit) {
         Set<Element> elements = new LinkedHashSet<Element>();
@@ -79,14 +80,66 @@ public class FeedbackCheck implements CircuitCheck {
                  * When the port has a connection the outgoing ports of the following module are added to the queue. If
                  * there is no further connection an ending module of the circuit is reached. If there are still
                  * elements in the queue the algorithm starts from the beginning and the visited set has to be reset.
+                 * SPECIAL TREATMENT: If there's an identityGate the algorithm looks at both paths outgoing from the
+                 * identity separately.
                  */
                 if (current.getConnection() != null) {
-                    q.addAll(current.getConnection().getOutPort().getModule().getOutPorts());
+                    if (current.getModule() instanceof IdentityGate) {
+                        for (Port p : current.getConnection().getNextModule().getOutPorts()) {
+                            Set<Element> els = findFeedback(p, visited, elements);
+                            if (!els.isEmpty()) {
+                                elements.addAll(els);
+                                informListeners(State.FAILED, elements);
+                                return false;
+                            }
+                        }
+                    } else {
+                        q.addAll(current.getConnection().getOutPort().getModule().getOutPorts());
+                    }
                 }
             }
         }
         informListeners(State.SUCCEEDED, elements);
         return true;
+    }
+
+    /**
+     * This helper calls the FeedbackCheck recursively when there's an identity gate.
+     * 
+     * @param port
+     *            OutPort of the identity gate's following module. The first path starts from here.
+     * @param v
+     *            Set of Ports already visited previously.
+     * @param elements
+     *            Set of Elements containing the elements causing the check to fail.
+     * @return Set of Elements which cause the check to fail. If the check was successful the set is empty.
+     */
+    private Set<Element> findFeedback(Port port, Set<Port> v, Set<Element> elements) {
+        Queue<Port> q = new LinkedList<Port>();
+        // If the algorithm goes deeper it must use the unmodified visited set to avoid duplicates.
+        Set<Port> visited = new HashSet<Port>();
+        visited.addAll(v);
+        q.add(port);
+        while (!q.isEmpty()) {
+            Port current = q.poll();
+            if (visited.contains(current)) {
+
+                // If the test fails add the Module which caused the fail.
+                elements.add(current.getModule());
+                return elements;
+            }
+            visited.add(current);
+            if (current.getConnection() != null) {
+                if (current.getModule() instanceof IdentityGate) {
+                    for (Port p : current.getConnection().getNextModule().getOutPorts()) {
+                        findFeedback(p, v, elements);
+                    }
+                } else {
+                    q.addAll(current.getConnection().getOutPort().getModule().getOutPorts());
+                }
+            }
+        }
+        return elements;
     }
 
     /**
@@ -107,6 +160,8 @@ public class FeedbackCheck implements CircuitCheck {
     /**
      * Returns the "first" Ports in this Circuit, meaning the ports from the "first" modules in the circuit.
      * 
+     * @param circuit
+     *            Circuit from which the starting ports are taken.
      * @return List<Module> containing the starting Modules of this Circuit.
      */
     private List<Port> getStartingPorts(Circuit circuit) {
