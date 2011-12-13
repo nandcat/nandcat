@@ -40,8 +40,8 @@ import javax.swing.event.ChangeListener;
 import nandcat.I18N;
 import nandcat.I18N.I18NBundle;
 import nandcat.Nandcat;
-import nandcat.controller.CSH;
-import nandcat.controller.CSH.DisplayHelpAfterTracking;
+import javax.help.CSH;
+import nandcat.controller.Help.DisplayHelpAfterTracking;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
 import nandcat.model.ModelListenerAdapter;
@@ -402,7 +402,7 @@ public class View extends JFrame {
         noDisableElements.add(sim);
         JMenu help = new JMenu(i18n.getString("menu.help"));
         help.setMnemonic(KeyEvent.VK_H);
-        helpListener = new CSH.DisplayHelpAfterTracking(hb.getHelpSet(), "javax.help.Popup", null);
+        helpListener = new nandcat.controller.Help.DisplayHelpAfterTracking(hb.getHelpSet(), "javax.help.Popup", null);
         disableElements.add(help);
         // Create MenuItems. Setting Shortcuts.
         JMenuItem mstart = new JMenuItem(i18n.getString("menu.simulation.start"), KeyEvent.VK_S);
