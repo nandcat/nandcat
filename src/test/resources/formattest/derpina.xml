@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<circuits xmlns="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0" xmlns:nandcat="http://www.nandcat.de/xmlns/sepaf-extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0 http://www.sosy-lab.org/Teaching/2011-WS-SEP/xmlns/circuits-1.0.xsd http://www.nandcat.de/xmlns/sepaf-extension http://www.nandcat.de/xmlns/sepaf-extension.xsd" main="9911af67-8004-4fbe-8665-586b01fca00e">
+  <circuit name="9911af67-8004-4fbe-8665-586b01fca00e">
+    <component posx="360" posy="260" name="1cb48230" type="and" />
+    <component posx="460" posy="380" name="ecf2c09" type="and" />
+    <component posx="360" posy="420" name="43540a77" type="and" />
+    <component posx="460" posy="300" name="427b2d29" type="or" />
+    <component posx="240" posy="260" name="24d200d8" type="not" />
+    <component posx="360" posy="340" name="573577ca" type="not" />
+    <component posx="600" posy="300" name="774b9b80" nandcat:annotation="s" type="out" />
+    <component posx="600" posy="420" name="4ce2db0" nandcat:annotation="c" type="out" />
+    <component posx="120" posy="300" name="7c198046" type="id" />
+    <component posx="120" posy="380" name="6e34b350" type="id" />
+    <component posx="40" posy="300" name="45e881b6" nandcat:annotation="x" type="in" />
+    <component posx="40" posy="380" name="239bf795" nandcat:annotation="y" type="in" />
+    <component posx="240" posy="340" name="549b6976" type="id" />
+    <component posx="240" posy="420" name="2728ed5f" type="id" />
+    <component posx="74" posy="619" name="6ff80c0e" type="clock" nandcat:in_timing="1" />
+    <component posx="84" posy="734" name="5dfa490" type="clock" nandcat:in_timing="1" />
+    <component posx="253" posy="633" name="1dacecf3" type="and" />
+    <component posx="522" posy="660" name="43f854bd" type="out" />
+    <connection source="45e881b6" sourcePort="o" target="7c198046" targetPort="a" />
+    <connection source="7c198046" sourcePort="o" target="24d200d8" targetPort="a" />
+    <connection source="24d200d8" sourcePort="o" target="1cb48230" targetPort="a" />
+    <connection source="1cb48230" sourcePort="o" target="427b2d29" targetPort="a" />
+    <connection source="427b2d29" sourcePort="o" target="774b9b80" targetPort="a" />
+    <connection source="239bf795" sourcePort="o" target="6e34b350" targetPort="a" />
+    <connection source="6e34b350" sourcePort="o" target="1cb48230" targetPort="b" />
+    <connection source="6e34b350" sourcePort="p" target="2728ed5f" targetPort="a" />
+    <connection source="2728ed5f" sourcePort="o" target="573577ca" targetPort="a" />
+    <connection source="ecf2c09" sourcePort="o" target="427b2d29" targetPort="b" />
+    <connection source="7c198046" sourcePort="p" target="549b6976" targetPort="a" />
+    <connection source="549b6976" sourcePort="p" target="43540a77" targetPort="a" />
+    <connection source="2728ed5f" sourcePort="p" target="43540a77" targetPort="b" />
+    <connection source="43540a77" sourcePort="o" target="4ce2db0" targetPort="a" />
+    <connection source="573577ca" sourcePort="o" target="ecf2c09" targetPort="a" />
+    <connection source="549b6976" sourcePort="o" target="ecf2c09" targetPort="b" />
+    <connection source="6ff80c0e" sourcePort="o" target="1dacecf3" targetPort="a" />
+    <connection source="5dfa490" sourcePort="o" target="1dacecf3" targetPort="b" />
+    <connection source="1dacecf3" sourcePort="o" target="43f854bd" targetPort="a" />
+  </circuit>
+</circuits>
+

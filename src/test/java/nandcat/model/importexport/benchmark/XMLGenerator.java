@@ -24,8 +24,13 @@ public class XMLGenerator {
         StringBuilder c = new StringBuilder();
         int gatewidth = 80;
         int gateheight = 80;
+        // <<<<<<< HEAD
+        // int maxCol = 500;
+        // int maxRow = 100;
+        // =======
         int maxCol = cols;
         int maxRow = rows;
+        // >>>>>>> master
         String lastuuid = "clock";
         b.append("<component posx=\"0\" posy=\"0\" name=\"clock\" nandcat:annotation=\"clock\" type=\"clock\"  />\n");
         for (int i = 0; i < maxCol; i++) {

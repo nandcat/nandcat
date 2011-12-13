@@ -2,6 +2,7 @@ package nandcat.model.element;
 
 import java.awt.Rectangle;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.UUID;
 import javax.swing.ImageIcon;
 import nandcat.model.Clock;
 import nandcat.model.ClockListener;
+import nandcat.model.FastDeepCopy;
 
 /**
  * This class represents a circuit. It could be a customized Module or the main circuit displayed in the GUI. A circuit
@@ -19,6 +21,21 @@ import nandcat.model.ClockListener;
  * @version 7
  */
 public class Circuit implements ClockListener, Module, DrawCircuit, Serializable {
+
+    /**
+     * Original circuit.
+     */
+    private Circuit original;
+
+    /**
+     * Set containing ports that sould not be shown.
+     */
+    private Set<Port> hiddenPorts;
+
+    /**
+     * Hashmap storing the Modules that got stripped during the addition of the circuit to the circuit (yo dawg).
+     */
+    private HashMap<Port, Module> strippedModules;
 
     /**
      * Default version uid.
@@ -84,6 +101,9 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         rectangle = new Rectangle();
         symbol = null;
         selected = false;
+        strippedModules = new HashMap<Port, Module>();
+        hiddenPorts = new HashSet<Port>();
+        original = null;
     }
 
     /**
@@ -176,13 +196,9 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      */
     private void createInPorts() {
         inPorts.clear();
-        for (Module m : getStartingModules()) {
-            for (Port p : m.getInPorts()) {
-                // Port is not connected or connted to a module outside the circuit or a impulsegenerator
-                if (p.getConnection() == null || !elements.contains(p.getConnection().getPreviousModule())
-                        || p.getConnection().getNextModule() instanceof ImpulseGenerator) {
-                    inPorts.add(p);
-                }
+        for (Port p : strippedModules.keySet()) {
+            if (strippedModules.get(p) instanceof ImpulseGenerator && !hiddenPorts.contains(p)) {
+                inPorts.add(p);
             }
         }
     }
@@ -200,17 +216,9 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      */
     private void createOutPorts() {
         outPorts.clear();
-        for (Element e : elements) {
-            if (e instanceof Module) {
-                Module m = (Module) e;
-                for (Port p : m.getOutPorts()) {
-                    // empty ports are outPorts
-                    // not-emptyports with connections leading to modules outside the circuit or lamps are also outPorts
-                    if ((p.getConnection() == null) || !(this.elements.contains(p.getConnection().getNextModule()))
-                            || p.getConnection().getNextModule() instanceof Lamp) {
-                        outPorts.add(p);
-                    }
-                }
+        for (Port p : strippedModules.keySet()) {
+            if (strippedModules.get(p) instanceof Lamp && !hiddenPorts.contains(p)) {
+                outPorts.add(p);
             }
         }
     }
@@ -233,7 +241,6 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      * {@inheritDoc}
      */
     public void setRectangle(Rectangle rectangle) {
-        // TODO check: set alle child element's rectangles, too?
         this.rectangle = rectangle;
     }
 
@@ -318,8 +325,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         if (e == null) {
             return;
         }
-        // check if we need to scan for new potential outports. Was removed connection a inner-connection?
-        boolean rescan = elements.contains(e);
+
         if (e instanceof Connection) {
             Connection c = (Connection) e;
             c.getInPort().setConnection(null);
@@ -335,11 +341,6 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
                 removeElement(p.getConnection());
             }
             elements.remove(m);
-        }
-
-        if (rescan) {
-            createInPorts();
-            createOutPorts();
         }
     }
 
@@ -387,13 +388,8 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      *            Module to add
      */
     public void addModule(Module m) {
-        if (m instanceof Circuit) {
-            Circuit c = (Circuit) m;
-            for (Element e : c.getElements()) {
-                if (e instanceof Lamp || e instanceof ImpulseGenerator) {
-                    removeElement(e);
-                }
-            }
+        if (m instanceof Circuit && !(m instanceof FlipFlop)) {
+            ((Circuit) m).deconstruct();
         }
 
         // one module may not appear more than once in elements (guaranteed by Set<>)
@@ -429,6 +425,110 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     }
 
     /**
+     * This method modifies the circuit. It removes all {@link Lamp}s and {@link ImpulseGenerator}s and stores them in a
+     * HashMap. The information what {@link Port} held the {@link Connection} leading towards those specified
+     * {@link Module}s will be conserved. Also creates a copy for later.
+     * 
+     * @return this Circuit after the Modifications
+     */
+    public Circuit deconstruct() {
+
+        Circuit originalC = (Circuit) FastDeepCopy.copy(this);
+        this.original = originalC;
+
+        for (Module m : getModules()) {
+            if (m instanceof Lamp) {
+                if (m.getInPorts().get(0) != null && m.getInPorts().get(0).getConnection() != null) {
+
+                    /*
+                     * just in case someone wants to take a look at it, but it is highly discouraged: map stores
+                     * Port-Module pairs, where the port is the port the connection from the module was leading to/from
+                     * unfortunately, this might pe superterribad if a circuit haz imp->lamp connections, since both
+                     * will be stored in the map and therefore listed as valid in/out ports (since thats the way we roll
+                     * (for in/out ports)- but we cant just remove those modules without storing, since we need to be
+                     * able to reconstruct the circuit. to avoid this nonsense, an additional set was created and keeps
+                     * the ports that should be hidden. danke das wa eignlich ales.
+                     */
+                    if (m.getInPorts().get(0).getConnection().getInPort().getModule() instanceof ImpulseGenerator) {
+                        Module target = m.getInPorts().get(0).getConnection().getInPort().getModule();
+                        strippedModules.put(m.getInPorts().get(0).getConnection().getInPort(), m);
+                        strippedModules.put(m.getInPorts().get(0), target);
+                        hiddenPorts.add(m.getInPorts().get(0).getConnection().getInPort());
+                        hiddenPorts.add(m.getInPorts().get(0));
+                        this.removeElement(m);
+                        this.removeElement(target);
+                        this.removeElement(m.getInPorts().get(0).getConnection());
+                    } else {
+                        strippedModules.put(m.getInPorts().get(0).getConnection().getInPort(), m);
+                        this.removeElement(m.getInPorts().get(0).getConnection());
+                        this.removeElement(m);
+                    }
+                }
+            } else if (m instanceof ImpulseGenerator) {
+                if (m.getOutPorts().get(0) != null && m.getOutPorts().get(0).getConnection() != null) {
+                    if (m.getOutPorts().get(0).getConnection().getOutPort().getModule() instanceof Lamp) {
+                        Module target = m.getOutPorts().get(0).getConnection().getOutPort().getModule();
+                        strippedModules.put(m.getOutPorts().get(0).getConnection().getOutPort(), m);
+                        strippedModules.put(m.getOutPorts().get(0), target);
+                        hiddenPorts.add(m.getOutPorts().get(0).getConnection().getOutPort());
+                        hiddenPorts.add(m.getOutPorts().get(0));
+                        this.removeElement(m);
+                        this.removeElement(target);
+                        this.removeElement(m.getOutPorts().get(0).getConnection());
+                    } else {
+                        strippedModules.put(m.getOutPorts().get(0).getConnection().getOutPort(), m);
+                        this.removeElement(m.getOutPorts().get(0).getConnection());
+                        this.removeElement(m);
+                    }
+                }
+            }
+        }
+        this.createInPorts();
+        this.createOutPorts();
+        return this;
+    }
+
+    /**
+     * Get the HashSet containing the information if and which Modules got stripped from the circuit.
+     * 
+     * @return HashSet containing the information if and which Modules got stripped from the circuit
+     */
+    public HashMap<Port, Module> getStrippedInfo() {
+        return strippedModules;
+    }
+
+    /**
+     * This method returns the original version of the current circuit, enriched with the {@link Lamp}s and
+     * {@link ImpulseGenerator}s previously stripped. Note that this is a completely different Object.
+     * 
+     * @return a Circuit beeing the original of this circuit
+     */
+    public Circuit reconstruct() {
+        // Circuit result = (Circuit) FastDeepCopy.copy(this);
+        // for (Port p : strippedModules.keySet()) {
+        // Module mod = strippedModules.get(p);
+        // result.addModule(mod);
+        // }
+        // // 2 loops because impy->lamp would be omgwtf otherwise
+        // for (Port p : result.strippedModules.keySet()) {
+        // Module mod = strippedModules.get(p);
+        // if (mod instanceof Lamp) {
+        // result.addConnection(p, mod.getInPorts().get(0));
+        // } else if (mod instanceof ImpulseGenerator) {
+        // result.addConnection(mod.getOutPorts().get(0), p);
+        // }
+        // result.strippedModules.clear();
+        // result.hiddenPorts.clear();
+        // }
+        // return result;
+        if (original != null) {
+            return original;
+        } else {
+            return this;
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     public String toString() {
@@ -453,4 +553,25 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         }
         return x + "-----------------------------------------------------------------------";
     }
+
+    // /**
+    // * DO NEVER EVER USE THIS METHOD Set new inports
+    // *
+    // * @param inProts
+    // * new list of inports
+    // */
+    // protected void overrideInPorts(List<Port> inProts) {
+    // this.inPorts = inProts;
+    // }
+    //
+    // /**
+    // * DO NEVER EVER USE THIS METHOD Set new outports
+    // *
+    // * @param outProts
+    // * new list of outports
+    // */
+    // protected void overrideOutPorts(List<Port> outProts) {
+    // this.outPorts = outProts;
+    // }
+
 }

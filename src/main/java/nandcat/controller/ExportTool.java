@@ -127,6 +127,12 @@ public class ExportTool implements Tool {
             public boolean changeCircuitRequested(ModelEvent e) {
                 return actionSaveBeforeLost();
             }
+
+            @Override
+            public void exportFailed(ModelEvent e) {
+                JOptionPane.showMessageDialog(controller.getView(), i18n.getString("dialog.exportfail.text") + " \n "
+                        + e.getMessage(), i18n.getString("dialog.exportfail.title"), JOptionPane.WARNING_MESSAGE);
+            }
         };
     }
 

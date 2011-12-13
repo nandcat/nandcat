@@ -22,7 +22,6 @@ import nandcat.model.element.Connection;
 import nandcat.model.element.DrawElement;
 import nandcat.model.element.Element;
 import nandcat.model.element.ImpulseGenerator;
-import nandcat.model.element.Lamp;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
 import nandcat.model.element.factory.ModuleBuilderFactory;
@@ -273,16 +272,17 @@ public class Model implements ClockListener {
             module = importFromFile(new File(m.getFileName()));
             Circuit c = (Circuit) module;
 
-            // Strip lamps and impulsegenerators of the circuit
-            List<Element> destroy = new LinkedList<Element>();
-            for (Element e : c.getElements()) {
-                if (e instanceof Lamp || e instanceof ImpulseGenerator) {
-                    destroy.add(e);
-                }
-            }
-            for (Element e : destroy) {
-                removeElement(e);
-            }
+            // // Strip lamps and impulsegenerators of the circuit
+            // List<Element> destroy = new LinkedList<Element>();
+            // for (Element e : c.getElements()) {
+            // if (e instanceof Lamp || e instanceof ImpulseGenerator) {
+            // destroy.add(e);
+            // }
+            // }
+            // for (Element e : destroy) {
+            // removeElement(e);
+            // }
+            c.deconstruct();
 
             factory.getLayouter().layout(c);
         } else {
@@ -359,6 +359,7 @@ public class Model implements ClockListener {
 
             ex.setExternalCircuits(uuid2filename);
             ex.setCircuit(c);
+            importExportErrorMessages = new LinkedList<String>();
             if (ex instanceof DrawExporter) {
                 ((DrawExporter) ex).setElementDrawer(drawer);
             }
@@ -366,6 +367,17 @@ public class Model implements ClockListener {
                 LOG.debug("File exported successfully");
                 dirty = false;
             } else {
+                LOG.warn("File import failed! File: " + file.getAbsolutePath());
+                StringBuilder errorMsgBuilder = new StringBuilder();
+                for (String msg : importExportErrorMessages) {
+                    errorMsgBuilder.append(msg);
+                    errorMsgBuilder.append("\n");
+                }
+                ModelEvent e = new ModelEvent();
+                e.setMessage(errorMsgBuilder.toString());
+                for (ModelListener l : listeners) {
+                    l.exportFailed(e);
+                }
                 LOG.warn("Export to " + file.getAbsolutePath() + " failed");
             }
         }

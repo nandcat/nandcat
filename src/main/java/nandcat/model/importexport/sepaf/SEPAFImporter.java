@@ -478,6 +478,9 @@ public class SEPAFImporter implements Importer {
         // Put module in the index for referencing later.
         index.put(el.getAttributeValue("name"), module);
         c.addModule(module);
+        // if (module instanceof Circuit && !(module instanceof Circuit)) {
+        // factory.getLayouter().layout((Circuit) module);
+        // }
     }
 
     /**
