@@ -274,13 +274,13 @@ public class StandardElementDrawer implements ElementDrawer {
     private void drawCircuitPortNames(Circuit circuit) {
         LOG.debug("Draw Portnames");
         g.setColor(ANNOTATION_COLOR);
-        FontRenderContext frc = ((Graphics2D) g).getFontRenderContext();
         for (Port inPort : circuit.getInPorts()) {
             if (inPort.getAnnotation() != null) {
                 LOG.debug("Port has Annotation");
                 int portAnnY = inPort.getRectangle().y + inPort.getRectangle().height / 2;
                 int portAnnX = inPort.getRectangle().x + inPort.getRectangle().width + PORT_ANNOTATION_LEFT_PADDING;
-                TextLayout layout = new TextLayout(inPort.getAnnotation(), ANNOTATION_FONT, frc);
+                TextLayout layout = new TextLayout(inPort.getAnnotation(), ANNOTATION_FONT,
+                        ((Graphics2D) g).getFontRenderContext());
                 layout.draw(((Graphics2D) g), (float) portAnnX, portAnnY + (float) layout.getBounds().getHeight() / 2);
             }
         }
@@ -290,7 +290,8 @@ public class StandardElementDrawer implements ElementDrawer {
                 LOG.debug("Port has Annotation");
                 int portAnnY = outPort.getRectangle().y + outPort.getRectangle().height / 2;
                 int portAnnX = outPort.getRectangle().x - outPort.getRectangle().width;
-                TextLayout layout = new TextLayout(outPort.getAnnotation(), ANNOTATION_FONT, frc);
+                TextLayout layout = new TextLayout(outPort.getAnnotation(), ANNOTATION_FONT,
+                        ((Graphics2D) g).getFontRenderContext());
                 layout.draw(((Graphics2D) g), (float) portAnnX - (float) layout.getBounds().getWidth(), portAnnY
                         + (float) layout.getBounds().getHeight() / 2);
             }

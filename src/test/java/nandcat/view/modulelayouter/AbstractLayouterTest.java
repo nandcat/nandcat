@@ -23,6 +23,8 @@ public abstract class AbstractLayouterTest {
 
     Dimension GATE_DIMENSION;
 
+    Dimension CIRCUIT_DIMENSION;
+
     Dimension LAMP_DIMENSION;
 
     void applyFields() throws Exception {
@@ -38,6 +40,9 @@ public abstract class AbstractLayouterTest {
 
         GATE_DIMENSION = (Dimension) ReflectionUtil.getPrivateField(StandardModuleLayouter.class, null,
                 "GATE_DIMENSION");
+
+        CIRCUIT_DIMENSION = (Dimension) ReflectionUtil.getPrivateField(StandardModuleLayouter.class, null,
+                "CIRCUIT_DIMENSION");
 
         LAMP_DIMENSION = (Dimension) ReflectionUtil.getPrivateField(StandardModuleLayouter.class, null,
                 "LAMP_DIMENSION");

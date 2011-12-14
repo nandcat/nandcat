@@ -88,6 +88,6 @@ public class StandardModuleLayouterDimensionTest extends AbstractLayouterTest {
     @Test
     public void testDimensionsCircuit() {
         Module mod = factory.getCircuitBuilder().build();
-        assertEquals(GATE_DIMENSION, mod.getRectangle().getSize());
+        assertEquals(CIRCUIT_DIMENSION, mod.getRectangle().getSize());
     }
 }
