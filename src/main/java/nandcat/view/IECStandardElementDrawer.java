@@ -31,6 +31,11 @@ import org.apache.log4j.Logger;
 public class IECStandardElementDrawer implements ElementDrawer {
 
     /**
+     * Padding used to indent ports annotation left to its port.
+     */
+    private static final int PORT_ANNOTATION_LEFT_PADDING = 5;
+
+    /**
      * Debug: Amount of objects needed to reach to print progress.
      */
     private static final int DEBUG_PRINT_THRESHOLD = 100;
@@ -260,6 +265,37 @@ public class IECStandardElementDrawer implements ElementDrawer {
         drawModulePorts(circuit);
         if (circuit.getName() != null && !circuit.getName().isEmpty()) {
             drawLabel(circuit.getName(), circuit.getRectangle(), circuit.isSelected());
+        }
+        drawCircuitPortNames(circuit);
+    }
+
+    /**
+     * Draws the Circuits port names if available.
+     * 
+     * @param circuit
+     *            Circuit to draw port names of.
+     */
+    private void drawCircuitPortNames(Circuit circuit) {
+        g.setColor(ANNOTATION_COLOR);
+        for (Port inPort : circuit.getInPorts()) {
+            if (inPort.getAnnotation() != null) {
+                int portAnnY = inPort.getRectangle().y + inPort.getRectangle().height / 2;
+                int portAnnX = inPort.getRectangle().x + inPort.getRectangle().width + PORT_ANNOTATION_LEFT_PADDING;
+                TextLayout layout = new TextLayout(inPort.getAnnotation(), ANNOTATION_FONT,
+                        ((Graphics2D) g).getFontRenderContext());
+                layout.draw(((Graphics2D) g), (float) portAnnX, portAnnY + (float) layout.getBounds().getHeight() / 2);
+            }
+        }
+
+        for (Port outPort : circuit.getOutPorts()) {
+            if (outPort.getAnnotation() != null) {
+                int portAnnY = outPort.getRectangle().y + outPort.getRectangle().height / 2;
+                int portAnnX = outPort.getRectangle().x - outPort.getRectangle().width;
+                TextLayout layout = new TextLayout(outPort.getAnnotation(), ANNOTATION_FONT,
+                        ((Graphics2D) g).getFontRenderContext());
+                layout.draw(((Graphics2D) g), (float) portAnnX - (float) layout.getBounds().getWidth(), portAnnY
+                        + (float) layout.getBounds().getHeight() / 2);
+            }
         }
     }
 
