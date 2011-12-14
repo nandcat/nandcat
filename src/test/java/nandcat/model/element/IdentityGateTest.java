@@ -37,7 +37,6 @@ public class IdentityGateTest {
      * @param iGate
      *            gate to test
      */
-    @Test
     public void checkConnectedIgate(IdentityGate iGate) {
         Lamp lamp1 = new Lamp();
         Lamp lamp2 = new Lamp();
