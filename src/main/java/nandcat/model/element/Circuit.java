@@ -3,7 +3,8 @@ package nandcat.model.element;
 import java.awt.Rectangle;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +13,7 @@ import javax.swing.ImageIcon;
 import nandcat.model.Clock;
 import nandcat.model.ClockListener;
 import nandcat.model.FastDeepCopy;
+import org.apache.log4j.Logger;
 
 /**
  * This class represents a circuit. It could be a customized Module or the main circuit displayed in the GUI. A circuit
@@ -35,7 +37,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     /**
      * Hashmap storing the Modules that got stripped during the addition of the circuit to the circuit (yo dawg).
      */
-    private HashMap<Port, Module> strippedModules;
+    private LinkedHashMap<Port, Module> strippedModules;
 
     /**
      * Default version uid.
@@ -83,6 +85,11 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     private String uuid;
 
     /**
+     * Class logger instance.
+     */
+    private static final Logger LOG = Logger.getLogger(Circuit.class);
+
+    /**
      * Usual constructor for circuits. The UUID will be extracted from the Importer.
      * 
      * @param uuid
@@ -101,8 +108,8 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         rectangle = new Rectangle();
         symbol = null;
         selected = false;
-        strippedModules = new HashMap<Port, Module>();
-        hiddenPorts = new HashSet<Port>();
+        strippedModules = new LinkedHashMap<Port, Module>();
+        hiddenPorts = new LinkedHashSet<Port>();
         original = null;
     }
 
@@ -154,7 +161,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      * @return Set containing all Modules
      */
     public Set<Module> getModules() {
-        Set<Module> modsAt = new HashSet<Module>();
+        Set<Module> modsAt = new LinkedHashSet<Module>();
         for (Element e : getElements()) {
             if (e instanceof Module) {
                 Module c = (Module) e;
@@ -170,7 +177,7 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      * @return Set containing all Connections
      */
     public Set<Connection> getConnections() {
-        Set<Connection> consAt = new HashSet<Connection>();
+        Set<Connection> consAt = new LinkedHashSet<Connection>();
         for (Element e : getElements()) {
             if (e instanceof Connection) {
                 Connection c = (Connection) e;
@@ -388,15 +395,17 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      *            Module to add
      */
     public void addModule(Module m) {
+        LOG.trace("Module added: " + m.getClass().getCanonicalName() + ": " + m.getName());
+
         if (m instanceof Circuit && !(m instanceof FlipFlop)) {
             ((Circuit) m).deconstruct();
         }
 
         // one module may not appear more than once in elements (guaranteed by Set<>)
         elements.add(m);
-        // scan for new potential in/outPorts
-        createInPorts();
-        createOutPorts();
+        // // scan for new potential in/outPorts
+        // createInPorts();
+        // createOutPorts();
     }
 
     /**
