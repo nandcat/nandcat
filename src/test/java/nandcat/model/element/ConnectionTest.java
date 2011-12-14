@@ -1,35 +1,20 @@
 package nandcat.model.element;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  * Unit test for Connection.
  */
-public class ConnectionTest extends TestCase {
-
-    /**
-     * Create the test case.
-     * 
-     * @param testName
-     *            name of the test case
-     */
-    public ConnectionTest(String testName) {
-        super(testName);
-    }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(ConnectionTest.class);
-    }
+public class ConnectionTest {
 
     /**
      * Test: Impy->Lamp.
      */
-    @SuppressWarnings("unused")
+    @Test
     public void testConnection() {
         ImpulseGenerator impy = new ImpulseGenerator(0);
         Lamp lamp = new Lamp();
@@ -53,14 +38,14 @@ public class ConnectionTest extends TestCase {
         // test (failing) NULL initialisation
         boolean failed = false;
         try {
-            Connection fail = new Connection(impy.getOutPorts().get(0), null);
+            new Connection(impy.getOutPorts().get(0), null);
         } catch (Exception e) {
             failed = true;
         }
         assertTrue(failed);
         failed = false;
         try {
-            Connection fail = new Connection(null, impy.getOutPorts().get(0));
+            new Connection(null, impy.getOutPorts().get(0));
         } catch (Exception e) {
             failed = true;
         }

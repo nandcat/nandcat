@@ -1,34 +1,19 @@
 package nandcat.model.element;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  * Unit test for ANDGate.
  */
-public class AndGateTest extends TestCase {
-
-    /**
-     * Create the test case.
-     * 
-     * @param testName
-     *            name of the test case
-     */
-    public AndGateTest(String testName) {
-        super(testName);
-    }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(AndGateTest.class);
-    }
+public class AndGateTest {
 
     /**
      * Test: TRUE,TRUE->AND->LAMP.
      */
+    @Test
     public void testApp() {
         AndGate and = new AndGate(2, 1);
         Lamp lamp = new Lamp();

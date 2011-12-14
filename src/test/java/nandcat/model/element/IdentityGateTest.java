@@ -1,34 +1,18 @@
 package nandcat.model.element;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  * Unit test for simple App.
  */
-public class IdentityGateTest extends TestCase {
-
-    /**
-     * Create the test case.
-     * 
-     * @param testName
-     *            name of the test case
-     */
-    public IdentityGateTest(String testName) {
-        super(testName);
-    }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(IdentityGateTest.class);
-    }
+public class IdentityGateTest {
 
     /**
      * Test default constructor.
      */
+    @Test
     public void testDefaultGate() {
         IdentityGate iGate = new IdentityGate(2);
         assertFalse(iGate.isValidInBoundary(0));
@@ -41,6 +25,7 @@ public class IdentityGateTest extends TestCase {
     /**
      * Test advanced constructor.
      */
+    @Test
     public void testAdvancedGate() {
         IdentityGate iGate = new IdentityGate(2);
         checkConnectedIgate(iGate);
@@ -52,6 +37,7 @@ public class IdentityGateTest extends TestCase {
      * @param iGate
      *            gate to test
      */
+    @Test
     public void checkConnectedIgate(IdentityGate iGate) {
         Lamp lamp1 = new Lamp();
         Lamp lamp2 = new Lamp();
