@@ -440,6 +440,9 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
             if (m instanceof Lamp) {
                 if (m.getInPorts().get(0) != null && m.getInPorts().get(0).getConnection() != null) {
 
+                    // Set Portname
+                    m.getInPorts().get(0).getConnection().getInPort().setAnnotation(m.getName());
+
                     /*
                      * just in case someone wants to take a look at it, but it is highly discouraged: map stores
                      * Port-Module pairs, where the port is the port the connection from the module was leading to/from
@@ -466,6 +469,10 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
                 }
             } else if (m instanceof ImpulseGenerator) {
                 if (m.getOutPorts().get(0) != null && m.getOutPorts().get(0).getConnection() != null) {
+
+                    // Set Portname
+                    m.getOutPorts().get(0).getConnection().getOutPort().setAnnotation(m.getName());
+
                     if (m.getOutPorts().get(0).getConnection().getOutPort().getModule() instanceof Lamp) {
                         Module target = m.getOutPorts().get(0).getConnection().getOutPort().getModule();
                         strippedModules.put(m.getOutPorts().get(0).getConnection().getOutPort(), m);

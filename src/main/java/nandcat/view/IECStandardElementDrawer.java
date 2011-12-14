@@ -198,7 +198,7 @@ public class IECStandardElementDrawer implements ElementDrawer {
     /**
      * Class logger instance.
      */
-    private static final Logger LOG = Logger.getLogger(StandardElementDrawer.class);
+    private static final Logger LOG = Logger.getLogger(IECStandardElementDrawer.class);
 
     /**
      * Label for FlipFlop.

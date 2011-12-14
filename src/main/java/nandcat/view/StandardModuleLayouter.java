@@ -21,6 +21,16 @@ import nandcat.model.element.factory.ModuleLayouter;
 public class StandardModuleLayouter implements ModuleLayouter {
 
     /**
+     * Port height used to calculate circuits dimensions dynamically.
+     */
+    private static final int CIRCUIT_SCALE_PORT_HEIGHT = 13;
+
+    /**
+     * Amount of ports to start scaling circuits dimensions dynamically.
+     */
+    private static final int CIRCUIT_SCALE_PORT_THRESHOLD = 4;
+
+    /**
      * Left margin of the port inside the bounds.
      */
     private static final int PORT_MARGIN_LEFT = 2;
@@ -44,6 +54,11 @@ public class StandardModuleLayouter implements ModuleLayouter {
      * Default gate dimension.
      */
     private static final Dimension GATE_DIMENSION = new Dimension(60, 40);
+
+    /**
+     * Default circuit dimension.
+     */
+    private static final Dimension CIRCUIT_DIMENSION = new Dimension(80, 40);
 
     /**
      * Default lamp dimension.
@@ -115,8 +130,24 @@ public class StandardModuleLayouter implements ModuleLayouter {
      * {@inheritDoc}
      */
     public void layout(Circuit m) {
-        setGateDimension(m);
+        setCircuitDimension(m);
         layoutPorts(m);
+    }
+
+    /**
+     * Sets the dimension of the circuit. Scales dynamic depending on amount of ports.
+     * 
+     * @param c
+     *            Circuit to set dimension of.
+     */
+    private void setCircuitDimension(Circuit c) {
+        int maxPorts = Math.max(c.getInPorts().size(), c.getOutPorts().size());
+        if (maxPorts < CIRCUIT_SCALE_PORT_THRESHOLD) {
+            c.getRectangle().setSize(CIRCUIT_DIMENSION);
+        } else {
+            int height = maxPorts * CIRCUIT_SCALE_PORT_HEIGHT;
+            c.getRectangle().setSize(new Dimension(CIRCUIT_DIMENSION.width, height));
+        }
     }
 
     /**

@@ -22,6 +22,11 @@ public class Port implements Serializable {
     private boolean state;
 
     /**
+     * Port's annotation got from connected lamp or impulse generator.
+     */
+    private String annotation;
+
+    /**
      * Representing the bounds of the Port. The Rectangle's coordinates are <b>not relative</b> to the Module this Port
      * is attached to, but absolute. This Rectangle should have a default value, so
      */
@@ -143,7 +148,9 @@ public class Port implements Serializable {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the string representation of the port.
+     * 
+     * @return String representation.
      */
     public String toString() {
         if (bounds == null) {
@@ -151,5 +158,24 @@ public class Port implements Serializable {
         }
         // beware of getState
         return "[" + this.getState() + "]";
+    }
+
+    /**
+     * Gets the annotation of the port.
+     * 
+     * @return the annotation
+     */
+    public String getAnnotation() {
+        return annotation;
+    }
+
+    /**
+     * Sets the annotation of the port.
+     * 
+     * @param annotation
+     *            the annotation to set
+     */
+    public void setAnnotation(String annotation) {
+        this.annotation = annotation;
     }
 }

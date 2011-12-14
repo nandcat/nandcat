@@ -31,6 +31,11 @@ import org.apache.log4j.Logger;
 public class StandardElementDrawer implements ElementDrawer {
 
     /**
+     * Padding used to indent ports annotation left to its port.
+     */
+    private static final int PORT_ANNOTATION_LEFT_PADDING = 5;
+
+    /**
      * Debug: Amount of objects needed to reach to print progress.
      */
     private static final int DEBUG_PRINT_THRESHOLD = 100;
@@ -257,6 +262,39 @@ public class StandardElementDrawer implements ElementDrawer {
         if (circuit.getName() != null && !circuit.getName().isEmpty()) {
             drawLabel(circuit.getName(), circuit.getRectangle(), circuit.isSelected());
         }
+        drawCircuitPortNames(circuit);
+    }
+
+    /**
+     * Draws the Circuits port names if available.
+     * 
+     * @param circuit
+     *            Circuit to draw port names of.
+     */
+    private void drawCircuitPortNames(Circuit circuit) {
+        LOG.debug("Draw Portnames");
+        g.setColor(ANNOTATION_COLOR);
+        FontRenderContext frc = ((Graphics2D) g).getFontRenderContext();
+        for (Port inPort : circuit.getInPorts()) {
+            if (inPort.getAnnotation() != null) {
+                LOG.debug("Port has Annotation");
+                int portAnnY = inPort.getRectangle().y + inPort.getRectangle().height / 2;
+                int portAnnX = inPort.getRectangle().x + inPort.getRectangle().width + PORT_ANNOTATION_LEFT_PADDING;
+                TextLayout layout = new TextLayout(inPort.getAnnotation(), ANNOTATION_FONT, frc);
+                layout.draw(((Graphics2D) g), (float) portAnnX, portAnnY + (float) layout.getBounds().getHeight() / 2);
+            }
+        }
+
+        for (Port outPort : circuit.getOutPorts()) {
+            if (outPort.getAnnotation() != null) {
+                LOG.debug("Port has Annotation");
+                int portAnnY = outPort.getRectangle().y + outPort.getRectangle().height / 2;
+                int portAnnX = outPort.getRectangle().x - outPort.getRectangle().width;
+                TextLayout layout = new TextLayout(outPort.getAnnotation(), ANNOTATION_FONT, frc);
+                layout.draw(((Graphics2D) g), (float) portAnnX - (float) layout.getBounds().getWidth(), portAnnY
+                        + (float) layout.getBounds().getHeight() / 2);
+            }
+        }
     }
 
     /**
@@ -475,9 +513,6 @@ public class StandardElementDrawer implements ElementDrawer {
         g.setColor(ANNOTATION_COLOR);
         FontRenderContext frc = ((Graphics2D) g).getFontRenderContext();
         TextLayout layout = new TextLayout(text, ANNOTATION_FONT, frc);
-        // Text Above
-        // layout.draw(((Graphics2D) g), (float)recWidthCenter-(float) layout.getBounds().getWidth()/2,
-        // (float)bounds.getY());
         layout.draw(((Graphics2D) g), (float) recWidthCenter - (float) layout.getBounds().getWidth() / 2,
                 (float) bounds.getY() + (float) bounds.getHeight() + (float) layout.getBounds().getHeight()
                         + ANNOTATION_PADDING);
