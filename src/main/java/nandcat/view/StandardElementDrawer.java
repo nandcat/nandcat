@@ -272,11 +272,9 @@ public class StandardElementDrawer implements ElementDrawer {
      *            Circuit to draw port names of.
      */
     private void drawCircuitPortNames(Circuit circuit) {
-        LOG.debug("Draw Portnames");
         g.setColor(ANNOTATION_COLOR);
         for (Port inPort : circuit.getInPorts()) {
             if (inPort.getAnnotation() != null) {
-                LOG.debug("Port has Annotation");
                 int portAnnY = inPort.getRectangle().y + inPort.getRectangle().height / 2;
                 int portAnnX = inPort.getRectangle().x + inPort.getRectangle().width + PORT_ANNOTATION_LEFT_PADDING;
                 TextLayout layout = new TextLayout(inPort.getAnnotation(), ANNOTATION_FONT,
@@ -287,7 +285,6 @@ public class StandardElementDrawer implements ElementDrawer {
 
         for (Port outPort : circuit.getOutPorts()) {
             if (outPort.getAnnotation() != null) {
-                LOG.debug("Port has Annotation");
                 int portAnnY = outPort.getRectangle().y + outPort.getRectangle().height / 2;
                 int portAnnX = outPort.getRectangle().x - outPort.getRectangle().width;
                 TextLayout layout = new TextLayout(outPort.getAnnotation(), ANNOTATION_FONT,
