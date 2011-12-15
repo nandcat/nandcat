@@ -36,6 +36,14 @@ public final class Nandcat {
      *            Command-line arguments.
      */
     public static void main(final String[] args) {
+
+        // Handle all exceptions with log4j
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+
+            public void uncaughtException(Thread t, Throwable e) {
+                LOG.error("Exception caught in Thread: " + t.toString(), e);
+            }
+        });
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
