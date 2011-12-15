@@ -8,17 +8,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import nandcat.I18N;
+import nandcat.I18N.I18NBundle;
 import nandcat.model.Model;
+import nandcat.model.ModelEvent;
+import nandcat.model.ModelListener;
+import nandcat.model.ModelListenerAdapter;
 import nandcat.model.ViewModule;
 import nandcat.model.element.DrawElement;
-import nandcat.model.element.DrawModule;
 import nandcat.model.element.IdentityGate;
 import nandcat.model.element.Port;
 import nandcat.view.View;
@@ -88,6 +92,11 @@ public class CreateTool implements Tool {
     private static final Dimension MOUSE_TOLERANCE = new Dimension(10, 10);
 
     /**
+     * Translation unit.
+     */
+    private I18NBundle i18n = I18N.getBundle("toolcreate");
+
+    /**
      * Port representing the source of a new Connection. NULL if the user did not click on an Element to create a
      * Connection.
      */
@@ -113,10 +122,28 @@ public class CreateTool implements Tool {
         this.controller = controller;
         this.view = controller.getView();
         this.model = controller.getModel();
+        this.model.addListener(getModelListener());
         represent = new LinkedList<String>();
         represent.add("createButton");
         represent.add("selectModule");
         represent.add("loaddef");
+    }
+
+    /**
+     * Gets the model listener to register on model events.
+     * 
+     * @return ModelListener.
+     */
+    private ModelListener getModelListener() {
+        return new ModelListenerAdapter() {
+
+            @Override
+            public void addCircuitFailedRecursion(ModelEvent e) {
+                JOptionPane.showMessageDialog(controller.getView(), i18n.getString("dialog.addcircuitfail.text"),
+                        i18n.getString("dialog.addcircuitfail.title"), JOptionPane.WARNING_MESSAGE);
+            }
+
+        };
     }
 
     /**

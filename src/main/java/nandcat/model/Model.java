@@ -267,9 +267,17 @@ public class Model implements ClockListener {
      */
     public void addModule(Module m, Point p) {
         moveBy(m, new Point(m.getRectangle().x - p.x, m.getRectangle().y - p.y));
-        circuit.addModule(m);
-        notifyForChangedElems();
-        dirty = true;
+        if (m instanceof Circuit && ((Circuit) m).getUuid().equals(circuit.getUuid())) {
+            ModelEvent event = new ModelEvent();
+            event.setCircuitUuid(((Circuit) m).getUuid());
+            for (ModelListener l : listeners) {
+                l.addCircuitFailedRecursion(event);
+            }
+        } else {
+            circuit.addModule(m);
+            notifyForChangedElems();
+            dirty = true;
+        }
     }
 
     /**

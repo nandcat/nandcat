@@ -103,4 +103,12 @@ public interface ModelListener {
      *            ModelEvent which holds event information.
      */
     void newCircuitCreated(ModelEvent e);
+
+    /**
+     * Invoked when an circuit couldn't be added.
+     * 
+     * @param e
+     *            ModelEvent which holds event information.
+     */
+    void addCircuitFailedRecursion(ModelEvent e);
 }
