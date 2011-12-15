@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.AndGate;
 import nandcat.model.element.Circuit;
+import nandcat.model.element.IdentityGate;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Lamp;
 import nandcat.model.element.factory.ModuleBuilderFactory;
@@ -24,7 +25,7 @@ public class FeedbackCheckTest {
     }
 
     /**
-     * Flipflop is TOPLEVELCIRCUIT
+     * Flipflop is TOPLEVELCIRCUIT.
      */
     @Test
     public void testFlipFlop() {
@@ -36,7 +37,7 @@ public class FeedbackCheckTest {
     }
 
     /**
-     * FlipFlop will be 2ndLevel
+     * FlipFlop will be 2ndLevel.
      */
     @Test
     public void test2ndLevelFlop() {
@@ -77,4 +78,22 @@ public class FeedbackCheckTest {
         assertFalse(check.test(top));
     }
 
+    /**
+     * This test must return false if there is a feedback from an identity gate to another one and back.
+     */
+    @Test
+    public void testIdGateFeedback() {
+        Circuit circuit = (Circuit) factory.getCircuitBuilder().build();
+        AndGate andGate = (AndGate) factory.getAndGateBuilder().build();
+        IdentityGate id = (IdentityGate) factory.getIdentityGateBuilder().build();
+
+        circuit.addModule(andGate);
+        circuit.addModule(id);
+
+        circuit.addConnection(andGate.getOutPorts().get(0), id.getInPorts().get(0));
+        circuit.addConnection(id.getOutPorts().get(0), andGate.getInPorts().get(0));
+
+        CircuitCheck check = new FeedbackCheck();
+        assertFalse(check.test(circuit));
+    }
 }
