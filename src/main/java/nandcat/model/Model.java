@@ -654,6 +654,7 @@ public class Model implements ClockListener {
             newCircuit();
 
         } else {
+            dirty = false;
             for (ModelListener l : listeners) {
                 l.importSucceeded(e2);
             }
@@ -749,6 +750,7 @@ public class Model implements ClockListener {
                 return;
             }
         }
+        dirty = false;
         this.circuit = (Circuit) factory.getCircuitBuilder().build();
         notifyForChangedElems();
     }
