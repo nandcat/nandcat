@@ -39,8 +39,10 @@ public interface Importer {
      * Imports circuit from file.
      * 
      * @return True iff circuit was correctly imported.
+     * @throws RecursionException
+     *             Used to detect a violation of the allowed recursion depth.
      */
-    boolean importCircuit();
+    boolean importCircuit() throws RecursionException;
 
     /**
      * Gets the supported file extensions mapped with a description of the format.

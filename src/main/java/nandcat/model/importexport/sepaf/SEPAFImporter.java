@@ -19,6 +19,7 @@ import nandcat.model.importexport.ExternalCircuitSource;
 import nandcat.model.importexport.FormatErrorHandler;
 import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
+import nandcat.model.importexport.RecursionException;
 import nandcat.model.importexport.XsdValidation;
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
@@ -39,9 +40,19 @@ import org.xml.sax.SAXParseException;
 public class SEPAFImporter implements Importer {
 
     /**
+     * Max allowed recursion depth of circuits.
+     */
+    private static final int RECURSION_DEPTH_MAX = 64;
+
+    /**
      * Debug: Threshold of imported components/connections to debug.
      */
     private static final int DEBUG_THRESHOLD = 100;
+
+    /**
+     * Recursion counter shared in this instance, reseted after successful import.
+     */
+    private int recursionCounter = 0;
 
     /**
      * Class logger instance.
@@ -152,14 +163,20 @@ public class SEPAFImporter implements Importer {
     /**
      * {@inheritDoc}
      */
-    public boolean importCircuit() {
-        if (file == null) {
-            throw new IllegalArgumentException("File not set");
-        }
-        if (factory == null) {
-            throw new IllegalArgumentException("Factory not set");
-        }
+    public boolean importCircuit() throws RecursionException {
         try {
+            if (file == null) {
+                throw new IllegalArgumentException("File not set");
+            }
+            if (factory == null) {
+                throw new IllegalArgumentException("Factory not set");
+            }
+            if (recursionCounter > RECURSION_DEPTH_MAX) {
+                throw new RecursionException("Recursion of circuits too deep (" + recursionCounter
+                        + ")! Stopped while importing file: " + file.getAbsolutePath());
+            }
+            recursionCounter++;
+
             LOG.debug("Validating XML starting");
             if (validateXML()) {
                 LOG.debug("Validating XML finished");
@@ -189,12 +206,20 @@ public class SEPAFImporter implements Importer {
                 throwFatalError(new FormatException("XML Validation failed"));
                 return false;
             }
+            return true;
         } catch (FormatException e) {
             // Exception already handled through error handler.
             return false;
+        } finally {
+            resetRecursionCounter();
         }
-        return true;
+    }
 
+    /**
+     * Resets the recursion counter.
+     */
+    private void resetRecursionCounter() {
+        recursionCounter = 0;
     }
 
     /**
@@ -204,8 +229,10 @@ public class SEPAFImporter implements Importer {
      *            Document used for import.
      * @throws FormatException
      *             if format is not valid.
+     * @throws RecursionException
+     *             Used to detect a violation of the recursion depth.
      */
-    private void importFromDocument(Document doc) throws FormatException {
+    private void importFromDocument(Document doc) throws FormatException, RecursionException {
         Element root = doc.getRootElement();
         String mainCircuitName = root.getAttributeValue("main");
         this.importedCircuit = buildCircuit(mainCircuitName, doc);
@@ -222,9 +249,11 @@ public class SEPAFImporter implements Importer {
      * @return Constructed circuit with all sub elements.
      * @throws FormatException
      *             if format is not valid.
+     * @throws RecursionException
+     *             Used to detect a violation of the recursion depth.
      */
     @SuppressWarnings("rawtypes")
-    private Circuit buildCircuit(String name, Document doc) throws FormatException {
+    private Circuit buildCircuit(String name, Document doc) throws FormatException, RecursionException {
         if (name == null) {
             throw new IllegalArgumentException();
         }
@@ -315,8 +344,11 @@ public class SEPAFImporter implements Importer {
      *            Index of modules to add the parsed module to.
      * @throws FormatException
      *             if format is not valid.
+     * @throws RecursionException
+     *             Used to detect a violation of the recursion depth.
      */
-    private void buildModule(Circuit c, Element el, Document doc, Map<String, Module> index) throws FormatException {
+    private void buildModule(Circuit c, Element el, Document doc, Map<String, Module> index) throws FormatException,
+            RecursionException {
         if (el == null) {
             throw new IllegalArgumentException();
         }
@@ -454,7 +486,8 @@ public class SEPAFImporter implements Importer {
                 if (externalCircuit != null) {
                     module = (Circuit) FastDeepCopy.copy(externalCircuit);
                 } else {
-                    throwError(new FormatException("External circuit cannot be found: " + externalIdentifier));
+                    throwError(new FormatException("External circuit cannot be found: " + externalIdentifier + "rec: "
+                            + recursionCounter));
                     return;
                 }
             } else {

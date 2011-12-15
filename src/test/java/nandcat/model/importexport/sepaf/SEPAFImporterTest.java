@@ -29,6 +29,7 @@ import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.FormatErrorHandler;
 import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
+import nandcat.model.importexport.RecursionException;
 import nandcat.model.importexport.XsdValidation;
 import nandcat.view.StandardModuleLayouter;
 import org.apache.log4j.Logger;
@@ -76,7 +77,7 @@ public class SEPAFImporterTest {
     }
 
     @Test
-    public void testLocation() {
+    public void testLocation() throws RecursionException {
         File file = getFile("../formattest/sepaf-example-valid-fewcomponents.xml");
         importer.setFile(file);
 
@@ -151,7 +152,7 @@ public class SEPAFImporterTest {
     }
 
     @Test
-    public void testConnections() {
+    public void testConnections() throws RecursionException {
         File file = getFile("../formattest/sepaf-example-valid-connectedcomponents.xml");
         importer.setFile(file);
         assertTrue(importer.importCircuit());
@@ -203,7 +204,7 @@ public class SEPAFImporterTest {
     }
 
     @Test
-    public void testRecursiveCircuits() {
+    public void testRecursiveCircuits() throws RecursionException {
         File file = getFile("../formattest/sepaf-example-valid-recursivecircuits.xml");
         importer.setFile(file);
         assertTrue(importer.importCircuit());
@@ -214,7 +215,7 @@ public class SEPAFImporterTest {
     }
 
     @Test
-    public void testExportedCircuit() throws FileNotFoundException, SAXException, IOException {
+    public void testExportedCircuit() throws FileNotFoundException, SAXException, IOException, RecursionException {
         File file = getFile("../formattest/sepaf-example-valid-fewcomponentsexported.xml");
         testValidOutput(file);
         importer.setFile(file);
@@ -226,7 +227,7 @@ public class SEPAFImporterTest {
     }
 
     @Test
-    public void testDoubleRefCircuits() {
+    public void testDoubleRefCircuits() throws RecursionException {
         File file = getFile("../formattest/sepaf-example-valid-doublerefcircuits.xml");
         importer.setFile(file);
         assertTrue(importer.importCircuit());

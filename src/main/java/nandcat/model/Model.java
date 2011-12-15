@@ -32,6 +32,7 @@ import nandcat.model.importexport.ExternalCircuitSource;
 import nandcat.model.importexport.FormatErrorHandler;
 import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
+import nandcat.model.importexport.RecursionException;
 import nandcat.model.importexport.sepaf.SEPAFExporter;
 import nandcat.model.importexport.sepaf.SEPAFImporter;
 import nandcat.view.ElementDrawer;
@@ -173,6 +174,16 @@ public class Model implements ClockListener {
     };
 
     /**
+     * External Circuitsource used to import missing circuits while importing a circuit from file.
+     */
+    private ExternalCircuitSource externalCircuitSource = new ExternalCircuitSource() {
+
+        public Circuit getExternalCircuit(String identifier) throws RecursionException {
+            return importFromFile(new File(identifier));
+        }
+    };
+
+    /**
      * The constructor for the model class.
      */
     public Model() {
@@ -273,7 +284,15 @@ public class Model implements ClockListener {
         Module module = null;
         // spawn new circuit / element _object_
         if (m.getFileName() != "") {
-            module = importFromFile(new File(m.getFileName()));
+            try {
+                module = importFromFile(new File(m.getFileName()));
+            } catch (RecursionException e) {
+                ModelEvent e2 = new ModelEvent();
+                e2.setMessage("Recursion too deep");
+                for (ModelListener l : listeners) {
+                    l.importFailed(e2);
+                }
+            }
             Circuit c = (Circuit) module;
 
             // if there's no symbol and no annotation add filename as annotation.
@@ -363,8 +382,14 @@ public class Model implements ClockListener {
             Map<String, String> uuid2filename = new HashMap<String, String>();
             for (ViewModule v : viewModules) {
                 if (!v.getFileName().equals("")) {
-                    Circuit tmp = importFromFile(new File(v.getFileName()));
-                    uuid2filename.put(tmp.getUuid(), v.getFileName());
+
+                    try {
+                        Circuit tmp = importFromFile(new File(v.getFileName()));
+                        uuid2filename.put(tmp.getUuid(), v.getFileName());
+                    } catch (RecursionException e) {
+                        LOG.warn("Recursion too deep");
+                    }
+
                 }
             }
 
@@ -387,7 +412,7 @@ public class Model implements ClockListener {
                     l.exportSucceeded(e);
                 }
             } else {
-                LOG.warn("File import failed! File: " + file.getAbsolutePath());
+                LOG.warn("File export failed! File: " + file.getAbsolutePath());
                 StringBuilder errorMsgBuilder = new StringBuilder();
                 for (String msg : importExportErrorMessages) {
                     errorMsgBuilder.append(msg);
@@ -646,7 +671,15 @@ public class Model implements ClockListener {
             }
         }
         importExportErrorMessages = new LinkedList<String>();
-        this.circuit = importFromFile(file);
+        try {
+            this.circuit = importFromFile(file);
+        } catch (RecursionException recException) {
+            ModelEvent e2 = new ModelEvent();
+            e2.setMessage(recException.getLocalizedMessage());
+            for (ModelListener l : listeners) {
+                l.importFailed(e2);
+            }
+        }
         LOG.debug("Import finished");
         ModelEvent e2 = new ModelEvent();
         e2.setFile(file);
@@ -1138,28 +1171,33 @@ public class Model implements ClockListener {
                 if (formats.containsKey(getFileExtension(f))) {
                     importer.setFile(f);
                     importExportErrorMessages = new LinkedList<String>();
-                    ExternalCircuitSource ecs = new ExternalCircuitSource() {
+                    importer.setExternalCircuitSource(externalCircuitSource);
+                    boolean importSuccess = false;
+                    try {
+                        importSuccess = importer.importCircuit();
+                        if (importSuccess) {
+                            viewModules.add(new ViewModule(f.getName(), null, f.getName()));
+                        } else {
+                            LOG.warn("File import failed! File: " + f.getAbsolutePath());
+                            StringBuilder errorMsgBuilder = new StringBuilder();
+                            errorMsgBuilder.append(f.getAbsolutePath());
+                            errorMsgBuilder.append(":\n");
+                            for (String msg : importExportErrorMessages) {
+                                errorMsgBuilder.append(msg);
+                                errorMsgBuilder.append("\n");
+                            }
+                            ModelEvent e = new ModelEvent();
+                            e.setMessage(errorMsgBuilder.toString());
+                            for (ModelListener l : listeners) {
+                                l.importCustomCircuitFailed(e);
+                            }
+                        }
 
-                        public Circuit getExternalCircuit(String identifier) {
-                            return importFromFile(new File(identifier));
-                        }
-                    };
-                    importer.setExternalCircuitSource(ecs);
-                    if (importer.importCircuit()) {
-                        viewModules.add(new ViewModule(f.getName(), null, f.getName()));
-                    } else {
-                        LOG.warn("File import failed! File: " + f.getAbsolutePath());
-                        StringBuilder errorMsgBuilder = new StringBuilder();
-                        errorMsgBuilder.append(f.getAbsolutePath());
-                        errorMsgBuilder.append(":\n");
-                        for (String msg : importExportErrorMessages) {
-                            errorMsgBuilder.append(msg);
-                            errorMsgBuilder.append("\n");
-                        }
-                        ModelEvent e = new ModelEvent();
-                        e.setMessage(errorMsgBuilder.toString());
+                    } catch (RecursionException e1) {
+                        ModelEvent e2 = new ModelEvent();
+                        e2.setMessage(e1.getLocalizedMessage());
                         for (ModelListener l : listeners) {
-                            l.importCustomCircuitFailed(e);
+                            l.importCustomCircuitFailed(e2);
                         }
                     }
                 }
@@ -1213,8 +1251,12 @@ public class Model implements ClockListener {
      * @param file
      *            File to import Circuit from
      * @return Circuit created by parsing given file. <b>Note:</b> May be null
+     * @throws RecursionException
+     *             Throws a RecursionException, should only be caught if it's the highest level (last step at the model
+     *             layer), internals should throw this, like at externalCircuitSource where this is needed to detect
+     *             recursion.
      */
-    private Circuit importFromFile(File file) {
+    private Circuit importFromFile(File file) throws RecursionException {
         if (file == null) {
             throw new IllegalArgumentException();
         }
@@ -1225,13 +1267,7 @@ public class Model implements ClockListener {
             im.setFile(file);
             importExportErrorMessages = new LinkedList<String>();
             im.setErrorHandler(importExportErrorHandler);
-            ExternalCircuitSource ecs = new ExternalCircuitSource() {
-
-                public Circuit getExternalCircuit(String identifier) {
-                    return importFromFile(new File(identifier));
-                }
-            };
-            im.setExternalCircuitSource(ecs);
+            im.setExternalCircuitSource(externalCircuitSource);
             if (im.importCircuit()) {
                 m = im.getCircuit();
                 if (m == null) {
