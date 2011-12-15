@@ -1,13 +1,21 @@
 package nandcat.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import javax.swing.JFileChooser;
+import nandcat.view.View;
+import org.apache.log4j.Logger;
 
 /**
  * Utilities for import export functionality.
  */
 public final class ImportExportUtils {
+
+    /**
+     * Class logger instance.
+     */
+    private static final Logger LOG = Logger.getLogger(ImportExportUtils.class);
 
     /**
      * Private constructor for utility class.
@@ -34,6 +42,26 @@ public final class ImportExportUtils {
 
         for (Map.Entry<String, String> entry : formats.entrySet()) {
             fc.addChoosableFileFilter(new ExtensionFileFilter(entry.getKey(), entry.getValue()));
+        }
+    }
+
+    /**
+     * Sets a new title to the view with the filename.
+     * 
+     * @param view
+     *            View to set title of.
+     * @param file
+     *            File to get filename to set from.
+     */
+    public static void setViewTitle(View view, File file) {
+        try {
+            if (file != null) {
+                view.setNewTitle(file.getCanonicalPath());
+            } else {
+                view.setNewTitle(null);
+            }
+        } catch (IOException e) {
+            LOG.debug("Title cannot be set because of exception", e);
         }
     }
 

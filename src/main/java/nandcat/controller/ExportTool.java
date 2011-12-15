@@ -138,6 +138,11 @@ public class ExportTool implements Tool {
                 JOptionPane.showMessageDialog(controller.getView(), i18n.getString("dialog.exportfail.text") + " \n "
                         + e.getMessage(), i18n.getString("dialog.exportfail.title"), JOptionPane.WARNING_MESSAGE);
             }
+
+            @Override
+            public void exportSucceeded(ModelEvent e) {
+                ImportExportUtils.setViewTitle(controller.getView(), e.getFile());
+            }
         };
     }
 

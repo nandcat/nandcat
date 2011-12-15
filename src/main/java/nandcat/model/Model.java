@@ -390,6 +390,14 @@ public class Model implements ClockListener {
             if (ex.exportCircuit()) {
                 LOG.debug("File exported successfully");
                 dirty = false;
+                ModelEvent e = new ModelEvent();
+                e.setFile(file);
+                if (drawer != null) {
+                    e.setDrawerExport(true);
+                }
+                for (ModelListener l : listeners) {
+                    l.exportSucceeded(e);
+                }
             } else {
                 LOG.warn("File import failed! File: " + file.getAbsolutePath());
                 StringBuilder errorMsgBuilder = new StringBuilder();
@@ -399,6 +407,10 @@ public class Model implements ClockListener {
                 }
                 ModelEvent e = new ModelEvent();
                 e.setMessage(errorMsgBuilder.toString());
+                e.setFile(file);
+                if (drawer != null) {
+                    e.setDrawerExport(true);
+                }
                 for (ModelListener l : listeners) {
                     l.exportFailed(e);
                 }
@@ -648,6 +660,7 @@ public class Model implements ClockListener {
         this.circuit = importFromFile(file);
         LOG.debug("Import finished");
         ModelEvent e2 = new ModelEvent();
+        e2.setFile(file);
         // import failed
         if (circuit == null) {
             // Listeners already notified in 'importFromFile(..)'
@@ -752,6 +765,9 @@ public class Model implements ClockListener {
         }
         dirty = false;
         this.circuit = (Circuit) factory.getCircuitBuilder().build();
+        for (ModelListener l : listeners) {
+            l.newCircuitCreated(e);
+        }
         notifyForChangedElems();
     }
 

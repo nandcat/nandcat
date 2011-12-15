@@ -1,5 +1,6 @@
 package nandcat.model;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 import nandcat.model.check.CircuitCheck;
@@ -14,6 +15,16 @@ public class ModelEvent {
      * Boolean for tests.
      */
     private boolean checksPassed;
+
+    /**
+     * File used for export and import events.
+     */
+    private File file;
+
+    /**
+     * Used to mark that the export was a export using a drawer.
+     */
+    private boolean isDrawerExport = false;
 
     /**
      * Elements relevant for the fired event.
@@ -121,5 +132,43 @@ public class ModelEvent {
      */
     public void setElements(Set<DrawElement> elements) {
         this.elements = elements;
+    }
+
+    /**
+     * Gets the file of the event.
+     * 
+     * @return File of the event.
+     */
+    public File getFile() {
+        return file;
+    }
+
+    /**
+     * Sets the file for the event.
+     * 
+     * @param file
+     *            File to set.
+     */
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    /**
+     * Checks if the export was made using a drawer.
+     * 
+     * @return True if export was made using a drawer.
+     */
+    public boolean isDrawerExport() {
+        return isDrawerExport;
+    }
+
+    /**
+     * Sets if the export was made using a drawer.
+     * 
+     * @param isDrawerExport
+     *            if exporter was a drawer.
+     */
+    public void setDrawerExport(boolean isDrawerExport) {
+        this.isDrawerExport = isDrawerExport;
     }
 }

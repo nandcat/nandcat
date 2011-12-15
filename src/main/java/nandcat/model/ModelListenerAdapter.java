@@ -73,4 +73,10 @@ public class ModelListenerAdapter implements ModelListener {
      */
     public void importCustomCircuitFailed(ModelEvent e) {
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void newCircuitCreated(ModelEvent e) {
+    }
 }
