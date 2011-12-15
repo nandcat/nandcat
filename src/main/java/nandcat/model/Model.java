@@ -44,6 +44,11 @@ import org.apache.log4j.Logger;
 public class Model implements ClockListener {
 
     /**
+     * Allowed length of an Annotation generated from the filename of a circuit.
+     */
+    private static final int FILENAME_AS_ANNOTATION_LENGTH = 8;
+
+    /**
      * Set of {@link ImpulseGenerator}s that got toggled by the user. Those will keep their status even if the
      * simulation stopped.
      */
@@ -179,7 +184,6 @@ public class Model implements ClockListener {
         exportFormats = new HashMap<String, String>();
         importers = new HashMap<String, Importer>();
         exporters = new HashMap<String, Exporter>();
-        // TODO: factory has no layouter at this moment!
         circuit = (Circuit) factory.getCircuitBuilder().build();
         clock = new Clock(0, this);
         dirty = false;
@@ -272,6 +276,18 @@ public class Model implements ClockListener {
             module = importFromFile(new File(m.getFileName()));
             Circuit c = (Circuit) module;
 
+            // if there's no symbol and no annotation add filename as annotation.
+            if (c.getSymbol() == null && c.getName() == null) {
+                String filename = new File(m.getFileName()).getName();
+                int sep = filename.lastIndexOf(".");
+                if (sep != -1) {
+                    filename = filename.substring(0, sep);
+                }
+                if (filename.length() > FILENAME_AS_ANNOTATION_LENGTH) {
+                    filename = filename.substring(0, FILENAME_AS_ANNOTATION_LENGTH) + "..";
+                }
+                c.setName(filename);
+            }
             // // Strip lamps and impulsegenerators of the circuit
             // List<Element> destroy = new LinkedList<Element>();
             // for (Element e : c.getElements()) {
@@ -282,7 +298,7 @@ public class Model implements ClockListener {
             // for (Element e : destroy) {
             // removeElement(e);
             // }
-            c.deconstruct();
+            // c.deconstruct();
 
             factory.getLayouter().layout(c);
         } else {
@@ -290,6 +306,14 @@ public class Model implements ClockListener {
         }
         if (module != null) {
             addModule(module, p);
+
+            /*
+             * Circuit has to be layouted after inserted using circuit.addModule, because thats the point it gets
+             * deconstructed.
+             */
+            if (module instanceof Circuit) {
+                factory.getLayouter().layout((Circuit) module);
+            }
         }
     }
 
@@ -630,6 +654,7 @@ public class Model implements ClockListener {
             newCircuit();
 
         } else {
+            dirty = false;
             for (ModelListener l : listeners) {
                 l.importSucceeded(e2);
             }
@@ -725,6 +750,7 @@ public class Model implements ClockListener {
                 return;
             }
         }
+        dirty = false;
         this.circuit = (Circuit) factory.getCircuitBuilder().build();
         notifyForChangedElems();
     }

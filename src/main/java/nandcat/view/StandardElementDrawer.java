@@ -240,7 +240,7 @@ public class StandardElementDrawer implements ElementDrawer {
      * {@inheritDoc}
      */
     public void setGraphics(Graphics g) {
-        LOG.debug("Set new Graphics object");
+        LOG.trace("Set new Graphics object");
         objectCounter = 0;
         this.g = g;
     }

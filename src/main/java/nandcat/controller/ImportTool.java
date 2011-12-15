@@ -159,7 +159,7 @@ public class ImportTool implements Tool {
                 LOG.debug("Importing: " + file.getName());
                 this.lastLoadedFile = file;
                 model.importRootFromFile(file);
-                if(controller.getView().getWorkspace().getGridEnable()) {
+                if (controller.getView().getWorkspace().getGridEnable()) {
                     model.adaptAllToGrid(controller.getView().getWorkspace().getGridSize());
                 }
             } else {

@@ -34,7 +34,6 @@ public class SEPAFExporterSingleTest {
         file = File.createTempFile("export", ".xml");
         exporter.setFile(file);
         factory = new ModuleBuilderFactory();
-        // FIXME Defaults sollten die SEPAFDefaults sein
         factory.setDefaults(new ModelElementDefaults());
         c = (Circuit) factory.getCircuitBuilder().build();
     }
@@ -94,7 +93,8 @@ public class SEPAFExporterSingleTest {
         assertTrue(content.contains("name=\""));
         assertTrue(content.contains("type=\"and\""));
         assertFalse(content.contains("nandcat:ports_in"));
-        assertTrue(content.contains("nandcat:ports_out=\"" + (SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_AND + 2) + "\""));
+        assertTrue(content
+                .contains("nandcat:ports_out=\"" + (SEPAFFormat.GATEDEFAULTS.DEFAULT_OUTPORTS_AND + 2) + "\""));
     }
 
     @Test
