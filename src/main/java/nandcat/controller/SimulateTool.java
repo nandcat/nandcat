@@ -160,6 +160,8 @@ public class SimulateTool implements Tool {
                     model.startSimulation();
                     if (stepSim) {
                         model.pause();
+                        model.unpause();
+                        model.pause();
                     }
                 }
             }
@@ -216,18 +218,22 @@ public class SimulateTool implements Tool {
                     if (paused) {
                         model.unpause();
                         paused = false;
+                        view.setEnableSaveAs(false);
                     } else {
                         model.pause();
                         paused = true;
+                        view.setEnableSaveAs(true);
                     }
                 } else if (e.getActionCommand().equals("step")) {
                     if (simToStart) {
                         if (paused) {
                             model.unpause();
                             model.pause();
+                            view.setEnableSaveAs(true);
                         } else {
                             model.pause();
                             paused = true;
+                            view.setEnableSaveAs(true);
                         }
                     } else {
                         controller.requestActivation(simulateTool);
@@ -237,11 +243,6 @@ public class SimulateTool implements Tool {
                         startCheckManager();
                         model.startChecks();
                         view.focuseButton("nothing");
-                    }
-                } else if (e.getActionCommand().equals("step")) {
-                    if (paused) {
-                        model.unpause();
-                        model.pause();
                     }
                 } else if (e.getActionCommand().equals("reset")) {
                     model.resetActiveImpulseGenerators();

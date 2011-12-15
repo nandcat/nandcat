@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.help.CSH;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.swing.ImageIcon;
@@ -40,7 +41,6 @@ import javax.swing.event.ChangeListener;
 import nandcat.I18N;
 import nandcat.I18N.I18NBundle;
 import nandcat.Nandcat;
-import javax.help.CSH;
 import nandcat.controller.Help.DisplayHelpAfterTracking;
 import nandcat.model.Model;
 import nandcat.model.ModelEvent;
@@ -280,6 +280,11 @@ public class View extends JFrame {
     private DisplayHelpAfterTracking helpListener;
 
     /**
+     * JMenuItem msave2 the Save As MenuItem.
+     */
+    private JMenuItem msave2;
+
+    /**
      * Constructs the view.
      * 
      * @param model
@@ -454,9 +459,9 @@ public class View extends JFrame {
         JMenuItem msave = new JMenuItem(i18n.getString("menu.file.save"), KeyEvent.VK_S);
         msave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
         disableElements.add(msave);
-        JMenuItem msave2 = new JMenuItem(i18n.getString("menu.file.saveas"), KeyEvent.VK_A);
+        msave2 = new JMenuItem(i18n.getString("menu.file.saveas"), KeyEvent.VK_A);
         msave2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
-        disableElements.add(msave2);
+        // disableElements.add(msave2);
         JMenuItem msave3 = new JMenuItem(i18n.getString("menu.file.saveselectedas"), KeyEvent.VK_A);
         msave3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.SHIFT_MASK));
         disableElements.add(msave3);
@@ -489,11 +494,10 @@ public class View extends JFrame {
         cycle.setText(i18n.getString("cycle.stand"));
         JMenuItem miec = new JMenuItem(i18n.getString("menu.layout.iec"), KeyEvent.VK_2);
         miec.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.CTRL_MASK));
-        disableElements.add(miec); 
+        disableElements.add(miec);
         JMenuItem mstandard = new JMenuItem(i18n.getString("menu.layout.standard"), KeyEvent.VK_1);
         mstandard.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.CTRL_MASK));
         disableElements.add(mstandard);
-
         /*
          * check if there are functionalities given for the MenuItems.
          */
@@ -871,6 +875,7 @@ public class View extends JFrame {
         // Enables all Elements.
         for (JComponent enable : disableElements) {
             enable.setEnabled(true);
+            msave2.setEnabled(true);
         }
         for (JComponent enable : reverseDisableElements) {
             enable.setEnabled(false);
@@ -885,11 +890,22 @@ public class View extends JFrame {
         // Disables all Elements in the List of Elements to be disabled.
         for (JComponent enable : disableElements) {
             enable.setEnabled(false);
+            msave2.setEnabled(false);
         }
         for (JComponent enable : reverseDisableElements) {
             enable.setEnabled(true);
         }
         modules.setEnabled(false);
+    }
+
+    /**
+     * Set the msave2 (Save As Button) en/disabled.
+     * 
+     * @param state
+     *            boolean state to be set.
+     */
+    public void setEnableSaveAs(boolean state) {
+        msave2.setEnabled(state);
     }
 
     /**
