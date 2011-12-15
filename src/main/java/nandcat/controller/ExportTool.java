@@ -298,6 +298,9 @@ public class ExportTool implements Tool {
                 if (response == JOptionPane.CANCEL_OPTION) {
                     LOG.debug("Save command cancelled by user.");
                     return;
+                } else if (response == JOptionPane.NO_OPTION) {
+                    actionSaveAs();
+                    return;
                 }
             }
 
@@ -386,6 +389,9 @@ public class ExportTool implements Tool {
                 if (response == JOptionPane.CANCEL_OPTION) {
                     LOG.debug("Save command cancelled by user.");
                     return;
+                } else if (response == JOptionPane.NO_OPTION) {
+                    actionSaveSelectedAs();
+                    return;
                 }
             }
 
@@ -419,8 +425,10 @@ public class ExportTool implements Tool {
      * @return Response code (JOptionPane).
      */
     private int showFileOverwriteConfirmation() {
-        return JOptionPane.showConfirmDialog(null, i18n.getString("dialog.override.text"),
-                i18n.getString("dialog.override.title"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        return JOptionPane
+                .showConfirmDialog(null, i18n.getString("dialog.override.text"),
+                        i18n.getString("dialog.override.title"), JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
     }
 
     /**
