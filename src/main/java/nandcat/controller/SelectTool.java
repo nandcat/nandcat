@@ -183,7 +183,7 @@ public class SelectTool implements Tool {
                     p.x -= MOUSE_TOLERANCE.getWidth() / 2;
                     p.y -= MOUSE_TOLERANCE.getHeight() / 2;
                     model.deselectAll();
-                    notEmpty = model.selectElements(new Rectangle(p, MOUSE_TOLERANCE));
+                    notEmpty = model.selectElement(new Rectangle(p, MOUSE_TOLERANCE));
                 }
             };
         }

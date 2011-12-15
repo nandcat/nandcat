@@ -887,6 +887,29 @@ public class Model implements ClockListener {
     }
 
     /**
+     * Selects one single element from the circuit. Connections have higher priority than other elements. An element is
+     * selected when it lies within a given rectangle. Note that does not deselect previously selected elements! Use
+     * this for multiple selections, e.g. via SHIFT.
+     * 
+     * @param rect
+     *            The Rectangle defining the zone where elements are selected
+     * @return true iff one element has been selected
+     */
+    public boolean selectElement(Rectangle rect) {
+        for (Element e : getConnsAt(rect)) {
+            e.setSelected(true);
+            notifyForChangedElems();
+            return true;
+        }
+        for (Element e : getElementsAt(rect)) {
+            e.setSelected(true);
+            notifyForChangedElems();
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Set the Module layouter.
      * 
      * @param layouter
