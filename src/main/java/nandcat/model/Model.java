@@ -288,19 +288,6 @@ public class Model implements ClockListener {
                 }
                 c.setName(filename);
             }
-            // // Strip lamps and impulsegenerators of the circuit
-            // List<Element> destroy = new LinkedList<Element>();
-            // for (Element e : c.getElements()) {
-            // if (e instanceof Lamp || e instanceof ImpulseGenerator) {
-            // destroy.add(e);
-            // }
-            // }
-            // for (Element e : destroy) {
-            // removeElement(e);
-            // }
-            // c.deconstruct();
-
-            factory.getLayouter().layout(c);
         } else {
             module = m.getModule();
         }
