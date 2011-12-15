@@ -55,4 +55,20 @@ public final class ImportExportUtils {
         }
         return ext;
     }
+
+    /**
+     * Gets the path of a file without the filename appended.
+     * 
+     * @param file
+     *            File to get path of.
+     * @return Path of a file.
+     */
+    public static String getFilePath(File file) {
+        int sep = file.getAbsolutePath().lastIndexOf(File.separator);
+        if (sep == -1) {
+            return file.getAbsolutePath();
+        } else {
+            return file.getAbsolutePath().substring(0, sep);
+        }
+    }
 }

@@ -260,7 +260,17 @@ public class ExportTool implements Tool {
 
         JFileChooser fc = buildExportFileChooser();
         if (saveLastFile != null) {
-            fc.setSelectedFile(saveLastFile);
+            if (saveLastUUID.equals(model.getCircuit().getUuid())) {
+                fc.setSelectedFile(saveLastFile);
+            } else {
+                File dir = new File(ImportExportUtils.getFilePath(saveLastFile));
+                if (dir.isDirectory()) {
+                    fc.setCurrentDirectory(dir);
+                } else {
+                    fc.setSelectedFile(saveLastFile);
+                }
+            }
+
         }
         int returnVal = fc.showSaveDialog(controller.getView());
 
