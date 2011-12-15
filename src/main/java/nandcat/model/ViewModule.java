@@ -1,6 +1,7 @@
 package nandcat.model;
 
 import nandcat.model.element.Module;
+import org.apache.log4j.Logger;
 
 /**
  * View-friendly representation of all available module objects. Contains no logic.
@@ -27,6 +28,11 @@ public class ViewModule {
     private final Module module;
 
     /**
+     * Class logger instance.
+     */
+    private static final Logger LOG = Logger.getLogger(ViewModule.class);
+
+    /**
      * Default constructor.
      * 
      * @param name
@@ -35,8 +41,6 @@ public class ViewModule {
      *            Module this viewmodule represents. May be null. (for circuits)
      * @param fileName
      *            String ViewModule's file name. May be empty. (for standard gates)
-     * @param symbol
-     *            bytearray containing ViewModule's symbol
      */
     protected ViewModule(String name, Module module, String fileName) {
         this.name = name;
@@ -85,6 +89,7 @@ public class ViewModule {
         try {
             return (Module) FastDeepCopy.copy(module);
         } catch (Exception e) {
+            LOG.warn("Fast deep copy exception", e);
         }
         return null;
     }
