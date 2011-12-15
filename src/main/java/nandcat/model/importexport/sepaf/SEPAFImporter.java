@@ -42,7 +42,7 @@ public class SEPAFImporter implements Importer {
     /**
      * Max allowed recursion depth of circuits.
      */
-    private static final int RECURSION_DEPTH_MAX = 64;
+    private static final int RECURSION_DEPTH_MAX = 10;
 
     /**
      * Debug: Threshold of imported components/connections to debug.
