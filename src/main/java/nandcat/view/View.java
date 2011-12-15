@@ -346,7 +346,7 @@ public class View extends JFrame {
                 allModulesInSight(set);
             }
         });
-        setTitle(FRAME_TITLE);
+        setTitle(FRAME_TITLE + " - " + i18n.getString("new"));
         setIconImage(CAT);
         setSize(FRAME_SIZE);
         setLocation(frameLocation);
