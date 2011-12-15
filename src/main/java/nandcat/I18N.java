@@ -61,6 +61,8 @@ public final class I18N {
     public static void setLocale(Locale l) {
         LOG.debug("Locale set to: " + l.getDisplayName());
         locale = l;
+        Locale.setDefault(l);
+        ResourceBundle.clearCache();
     }
 
     /**
@@ -71,8 +73,7 @@ public final class I18N {
      */
     public static void setLocale(String language) {
         Locale l = new Locale(language);
-        LOG.debug("Locale set to: " + l.getDisplayName());
-        locale = l;
+        setLocale(l);
     }
 
     /**
