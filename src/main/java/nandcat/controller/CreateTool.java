@@ -77,7 +77,7 @@ public class CreateTool implements Tool {
     /**
      * Size of a gate.
      */
-    private static final Dimension GATE_SIZE = new Dimension(60, 40);
+    private static final Dimension GATE_SIZE = new Dimension(80, 40);
 
     /**
      * Tolerance used if mouse clicked.

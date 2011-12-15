@@ -1076,6 +1076,8 @@ public class View extends JFrame {
     public void setNewTitle(String title) {
         if (title != null) {
             this.setTitle(FRAME_TITLE + " - " + title);
+        } else {
+            this.setTitle(FRAME_TITLE + " - " + i18n.getString("unsaved"));
         }
     }
 
