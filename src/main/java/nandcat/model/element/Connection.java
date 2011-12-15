@@ -176,9 +176,7 @@ public class Connection implements Element, DrawConnection {
      * @return Line2D representing the connection's shape
      */
     public Line2D getLine() {
-        // TODO exact enough? -> maybe better: public Point inPort.getModuleBoundary()
         Line2D.Double line = null;
-        // TODO recheck for NP-exception
         if (inPort != null && inPort.getRectangle() != null && outPort != null && outPort.getRectangle() != null) {
             line = new Line2D.Double(inPort.getRectangle().getLocation(), outPort.getRectangle().getLocation());
         }

@@ -10,6 +10,7 @@ import nandcat.model.ModelElementDefaults;
 import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.FormatErrorHandler;
 import nandcat.model.importexport.FormatException;
+import nandcat.model.importexport.RecursionException;
 import nandcat.view.StandardModuleLayouter;
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -78,7 +79,7 @@ public class SEPAFImporterFailTest {
     }
 
     @Test
-    public void testFailFlipFlopWrongPort() {
+    public void testFailFlipFlopWrongPort() throws RecursionException {
         importer.setFile(getFile("../formattest/sepaf-example-invalid-flipflopwrongsourceport.xml"));
         assertFalse(importer.importCircuit());
         assertTrue(countFatal > 0 || countErr > 0);

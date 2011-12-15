@@ -10,6 +10,7 @@ import nandcat.model.element.factory.ModuleBuilderFactory;
 import nandcat.model.importexport.FormatErrorHandler;
 import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
+import nandcat.model.importexport.RecursionException;
 import nandcat.view.StandardModuleLayouter;
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -53,7 +54,7 @@ public class SEPAFNumberOfPortTest {
     }
 
     @Test
-    public void testLocation() {
+    public void testLocation() throws RecursionException {
         File file = getFile("../formattest/derpina.xml");
         importer.setFile(file);
 

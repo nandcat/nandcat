@@ -79,4 +79,10 @@ public class ModelListenerAdapter implements ModelListener {
      */
     public void newCircuitCreated(ModelEvent e) {
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addCircuitFailedRecursion(ModelEvent e) {
+    }
 }

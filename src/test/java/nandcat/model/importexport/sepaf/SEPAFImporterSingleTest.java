@@ -19,6 +19,7 @@ import nandcat.model.importexport.Exporter;
 import nandcat.model.importexport.FormatErrorHandler;
 import nandcat.model.importexport.FormatException;
 import nandcat.model.importexport.Importer;
+import nandcat.model.importexport.RecursionException;
 import nandcat.view.StandardModuleLayouter;
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -83,7 +84,7 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
-    public void testDefaultAndGate() {
+    public void testDefaultAndGate() throws RecursionException {
         ModuleBuilder andB = factory.getAndGateBuilder();
         andB.setLocation(new Point(10, 20));
         exportC.addModule(andB.build());
@@ -96,7 +97,7 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
-    public void testMultiAndGate() {
+    public void testMultiAndGate() throws RecursionException {
         ModuleBuilder andB = factory.getAndGateBuilder();
         andB.setInPorts(3);
         andB.setOutPorts(4);
@@ -112,7 +113,7 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
-    public void testDefaultOrGate() {
+    public void testDefaultOrGate() throws RecursionException {
         ModuleBuilder orB = factory.getOrGateBuilder();
         orB.setLocation(new Point(10, 20));
         exportC.addModule(orB.build());
@@ -125,7 +126,7 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
-    public void testMultiOrGate() {
+    public void testMultiOrGate() throws RecursionException {
         ModuleBuilder orB = factory.getOrGateBuilder();
         orB.setInPorts(4);
         orB.setOutPorts(3);
@@ -140,7 +141,7 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
-    public void testDefaultNotGate() {
+    public void testDefaultNotGate() throws RecursionException {
         ModuleBuilder notB = factory.getNotGateBuilder();
         notB.setLocation(new Point(10, 20));
         exportC.addModule(notB.build());
@@ -153,7 +154,7 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
-    public void testMultiNotGate() {
+    public void testMultiNotGate() throws RecursionException {
         ModuleBuilder notB = factory.getNotGateBuilder();
         notB.setLocation(new Point(10, 20));
         notB.setOutPorts(10);
@@ -167,7 +168,7 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
-    public void testDefaultIdentityGate() {
+    public void testDefaultIdentityGate() throws RecursionException {
         ModuleBuilder idB = factory.getIdentityGateBuilder();
         idB.setLocation(new Point(10, 20));
         exportC.addModule(idB.build());
@@ -180,7 +181,7 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
-    public void testMultiIdentityGate() {
+    public void testMultiIdentityGate() throws RecursionException {
         ModuleBuilder idB = factory.getIdentityGateBuilder();
         idB.setLocation(new Point(10, 20));
         idB.setOutPorts(10);
@@ -194,7 +195,7 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
-    public void testDefaultLamp() {
+    public void testDefaultLamp() throws RecursionException {
         ModuleBuilder builder = factory.getLampBuilder();
         builder.setLocation(new Point(10, 20));
         exportC.addModule(builder.build());
@@ -207,7 +208,7 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
-    public void testDefaultFlipFlop() {
+    public void testDefaultFlipFlop() throws RecursionException {
         ModuleBuilder builder = factory.getFlipFlopBuilder();
         builder.setLocation(new Point(10, 20));
         exportC.addModule(builder.build());
@@ -220,7 +221,7 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
-    public void testDefaultClock() throws IOException {
+    public void testDefaultClock() throws IOException, RecursionException {
         ModuleBuilder builder = factory.getClockBuilder();
         builder.setLocation(new Point(10, 20));
         exportC.addModule(builder.build());
@@ -233,7 +234,7 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
-    public void testDefaultSwitch() throws IOException {
+    public void testDefaultSwitch() throws IOException, RecursionException {
         ModuleBuilder builder = factory.getSwitchBuilder();
         builder.setLocation(new Point(10, 20));
         exportC.addModule(builder.build());
@@ -248,7 +249,7 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
-    public void testCircuit() {
+    public void testCircuit() throws RecursionException {
         ModuleBuilder builder = factory.getCircuitBuilder();
         builder.setLocation(new Point(10, 20));
         Circuit innerC = (Circuit) builder.build();
@@ -265,7 +266,7 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
-    public void testMultipleGates() {
+    public void testMultipleGates() throws RecursionException {
         ModuleBuilder notB = factory.getNotGateBuilder();
         notB.setLocation(new Point(10, 20));
         notB.setOutPorts(10);
@@ -286,7 +287,7 @@ public class SEPAFImporterSingleTest {
     }
 
     @Test
-    public void testConnection() {
+    public void testConnection() throws RecursionException {
         ModuleBuilder notB = factory.getNotGateBuilder();
         notB.setLocation(new Point(10, 20));
         notB.setOutPorts(10);

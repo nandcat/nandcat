@@ -13,6 +13,8 @@ public interface ExternalCircuitSource {
      * @param identifier
      *            Identifier used to reference the needed circuit.
      * @return The external circuit, otherwise null.
+     * @throws RecursionException
+     *             Used to detect a violation of the allowed recursion depth.
      */
-    Circuit getExternalCircuit(String identifier);
+    Circuit getExternalCircuit(String identifier) throws RecursionException;
 }

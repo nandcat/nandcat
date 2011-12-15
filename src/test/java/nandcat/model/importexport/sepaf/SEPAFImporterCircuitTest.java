@@ -84,7 +84,7 @@ public class SEPAFImporterCircuitTest {
     }
 
     @Test
-    public void testExternalCircuit() throws IOException {
+    public void testExternalCircuit() throws Exception {
         ModuleBuilder andB = factory.getAndGateBuilder();
         andB.setLocation(new Point(10, 20));
         exportC.addModule(andB.build());
