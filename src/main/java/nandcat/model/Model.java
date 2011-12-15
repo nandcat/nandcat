@@ -272,6 +272,18 @@ public class Model implements ClockListener {
             module = importFromFile(new File(m.getFileName()));
             Circuit c = (Circuit) module;
 
+            // if there's no symbol and no annotation add filename as annotation.
+            if (c.getSymbol() == null && c.getName() == null) {
+                String filename = new File(m.getFileName()).getName();
+                int sep = filename.lastIndexOf(".");
+                if (sep != -1) {
+                    filename = filename.substring(0, sep);
+                }
+                if (filename.length() > 8) {
+                    filename = filename.substring(0, 8) + "..";
+                }
+                c.setName(filename);
+            }
             // // Strip lamps and impulsegenerators of the circuit
             // List<Element> destroy = new LinkedList<Element>();
             // for (Element e : c.getElements()) {
