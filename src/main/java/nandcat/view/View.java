@@ -449,7 +449,7 @@ public class View extends JFrame {
         disableElements.add(mstartcheck);
         JMenuItem meditcheck = new JMenuItem(i18n.getString("menu.test.manage"), KeyEvent.VK_V);
         meditcheck.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
-        disableElements.add(meditcheck);
+        noDisableElements.add(meditcheck);
         JMenuItem mnew = new JMenuItem(i18n.getString("menu.file.new"), KeyEvent.VK_N);
         mnew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
         disableElements.add(mnew);
@@ -461,7 +461,6 @@ public class View extends JFrame {
         disableElements.add(msave);
         msave2 = new JMenuItem(i18n.getString("menu.file.saveas"), KeyEvent.VK_A);
         msave2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
-        // disableElements.add(msave2);
         JMenuItem msave3 = new JMenuItem(i18n.getString("menu.file.saveselectedas"), KeyEvent.VK_A);
         msave3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.SHIFT_MASK));
         disableElements.add(msave3);
