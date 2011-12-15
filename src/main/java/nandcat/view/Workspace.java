@@ -461,13 +461,13 @@ public class Workspace extends JPanel {
         boolean isInView = false;
         if (elem instanceof Connection) {
             // Connections must be painted if one of the Modules it connects is in sight.
-            if (viewPortRect.intersects(((Connection) elem).getNextModule().getRectangle())) {
+            if (viewPortRect.intersects(((Connection) elem).getInPort().getRectangle())) {
                 isInView = true;
-            } else if (viewPortRect.intersects(((Connection) elem).getPreviousModule().getRectangle())) {
+            } else if (viewPortRect.intersects(((Connection) elem).getOutPort().getRectangle())) {
                 isInView = true;
-            } else if (viewPortRect.contains(((Connection) elem).getPreviousModule().getRectangle())) {
+            } else if (viewPortRect.contains(((Connection) elem).getInPort().getRectangle())) {
                 isInView = true;
-            } else if (viewPortRect.contains(((Connection) elem).getNextModule().getRectangle())) {
+            } else if (viewPortRect.contains(((Connection) elem).getOutPort().getRectangle())) {
                 isInView = true;
             }
         }
