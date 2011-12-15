@@ -79,10 +79,13 @@ public class LayoutTool implements Tool {
                 activate();
                 if (e.getActionCommand().equals("iec")) {
                     view.getWorkspace().setDrawer(new IECStandardElementDrawer());
+                    controller.setLastToolActive();
                 } else if (e.getActionCommand().equals("standard")) {
                     view.getWorkspace().setDrawer(new StandardElementDrawer());
+                    controller.setLastToolActive();
                 } else if (e.getActionCommand().equals("ansi")) {
                     view.getWorkspace().setDrawer(new ANSIStandardElementDrawer());
+                    controller.setLastToolActive();
                 }
                 view.getWorkspace().redraw();
             }

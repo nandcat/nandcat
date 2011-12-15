@@ -85,7 +85,7 @@ public class Controller {
             throw new IllegalArgumentException();
         }
         if (activeTool != null) {
-            if (tool instanceof SimulateTool) {
+            if (tool instanceof SimulateTool || tool instanceof LayoutTool) {
                 lastTool = activeTool;
             } else if (tool instanceof SelectTool) {
                 lastTool = tool;
