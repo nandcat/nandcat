@@ -113,6 +113,11 @@ public class SimulateTool implements Tool {
     private boolean stepSim = false;
 
     /**
+     * Represents if the Simulation is started yet.
+     */
+    private boolean simStarted;
+
+    /**
      * Integer by which the simulation speed is raised or reduced.
      */
     private static final int SPEED_STEPS = 100;
@@ -158,9 +163,19 @@ public class SimulateTool implements Tool {
                 if (e.allChecksPassed() && simToStart) {
                     // checkManager.setVisible(false);
                     model.startSimulation();
+                    simStarted = true;
                     if (stepSim) {
+                        paused = true;
                         model.pause();
                         model.unpause();
+                        // sent to sleep cause otherwise 1. step won´t be made cause commands to fast.
+                        for (int i = 0; i < model.getClock().getSleepTime() / 2; i++) {
+                            try {
+                                Thread.sleep(1);
+                            } catch (InterruptedException ee) {
+                                System.out.println(ee.getCause());
+                            }
+                        }
                         model.pause();
                     }
                 }
@@ -192,6 +207,7 @@ public class SimulateTool implements Tool {
                     view.focuseButton("nothing");
                 } else if (e.getActionCommand().equals("stop")) {
                     model.stopSimulation();
+                    simStarted = false;
                     simToStart = false;
                     stepSim = false;
                     paused = false;
@@ -225,7 +241,7 @@ public class SimulateTool implements Tool {
                         view.setEnableSaveAs(true);
                     }
                 } else if (e.getActionCommand().equals("step")) {
-                    if (simToStart) {
+                    if (simStarted) {
                         if (paused) {
                             model.unpause();
                             model.pause();
@@ -239,7 +255,6 @@ public class SimulateTool implements Tool {
                         controller.requestActivation(simulateTool);
                         simToStart = true;
                         stepSim = true;
-                        paused = true;
                         startCheckManager();
                         model.startChecks();
                         view.focuseButton("nothing");
