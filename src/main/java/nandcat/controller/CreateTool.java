@@ -23,7 +23,6 @@ import nandcat.model.ModelListener;
 import nandcat.model.ModelListenerAdapter;
 import nandcat.model.ViewModule;
 import nandcat.model.element.DrawElement;
-import nandcat.model.element.IdentityGate;
 import nandcat.model.element.Port;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
@@ -244,8 +243,7 @@ public class CreateTool implements Tool {
                 }
             } else {
                 Port targetPort = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
-                if ((targetPort != null) && !(targetPort.getModule().equals(sourcePort.getModule()))
-                        && !isConnectedToSelf(targetPort)) {
+                if ((targetPort != null) && !(targetPort.getModule().equals(sourcePort.getModule()))) {
                     if (!sourcePort.isOutPort() && targetPort.isOutPort()) {
                         model.addConnection(targetPort, sourcePort);
                         sourcePort = null;
@@ -278,54 +276,6 @@ public class CreateTool implements Tool {
     }
 
     /**
-     * This method checks if there is a feedback from a module to its self over identity gates.
-     * 
-     * @param port
-     *            Port currently lying under the cursor.
-     * @return TRUE if there is a feedback of the gate to its self. FALSE otherwise.
-     */
-    private boolean isConnectedToSelf(Port port) {
-        if (port.getModule() instanceof IdentityGate) {
-            return findFeedback(port, sourcePort);
-        } else if (sourcePort.getModule() instanceof IdentityGate) {
-            return findFeedback(sourcePort, port);
-        }
-        return false;
-    }
-
-    /**
-     * Find a feedback from the given current port to the source port. If a preceeding or following module is an
-     * identity gate call the method recursively.
-     * 
-     * @param current
-     *            Port of circuit on which is currently checked if it has a connection to the source.
-     * @param source
-     *            Port representing source of setting a new connection.
-     * @return TRUE if there is a feedback from the current port to the source port. FALSE otherwise.
-     */
-    private boolean findFeedback(Port current, Port source) {
-        for (Port p : current.getModule().getInPorts()) {
-            if (p.getConnection() != null) {
-                if (p.getConnection().getPreviousModule().equals(source.getModule())) {
-                    return true;
-                } else if (p.getConnection().getPreviousModule() instanceof IdentityGate) {
-                    return findFeedback(p.getConnection().getInPort(), source);
-                }
-            }
-        }
-        for (Port p : current.getModule().getOutPorts()) {
-            if (p.getConnection() != null) {
-                if (p.getConnection().getNextModule().equals(source.getModule())) {
-                    return true;
-                } else if (p.getConnection().getNextModule() instanceof IdentityGate) {
-                    return findFeedback(p.getConnection().getOutPort(), source);
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
      * Change the cursor when its moved. Show error symbol if the cursor is at an invalid position. Draw a preview of
      * the connection to be set by the user.
      * 
@@ -343,7 +293,7 @@ public class CreateTool implements Tool {
             Set<DrawElement> elements = model.getDrawElementsAt(new Rectangle(point, MOUSE_TOLERANCE));
             Port portAt = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
             if (!elements.isEmpty() && portAt != null) {
-                if (!isValidPort(portAt) || isConnectedToSelf(portAt)) {
+                if (!isValidPort(portAt)) {
                     view.setCursor(new Cursor(Cursor.WAIT_CURSOR));
                 }
             } else {
