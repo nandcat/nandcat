@@ -66,6 +66,11 @@ public class ExportTool implements Tool {
     private String saveLastUUID = "";
 
     /**
+     * Holds file handle to last saved circuit file using "save selected".
+     */
+    private File saveSelectedLastFile = null;
+
+    /**
      * Holds file handle to last saved circuit file.
      */
     private File saveLastFile = null;
@@ -347,8 +352,18 @@ public class ExportTool implements Tool {
             return;
         }
         JFileChooser fc = buildExportFileChooser();
-        if (saveLastFile != null) {
-            fc.setSelectedFile(saveLastFile.getParentFile().getAbsoluteFile());
+
+        // If no last save is available use last save path.
+        if (saveSelectedLastFile == null && saveLastFile != null) {
+            saveSelectedLastFile = saveLastFile;
+        }
+        if (saveSelectedLastFile != null) {
+            File dir = new File(ImportExportUtils.getFilePath(saveSelectedLastFile));
+            if (dir.isDirectory()) {
+                fc.setCurrentDirectory(dir);
+            } else {
+                fc.setSelectedFile(saveSelectedLastFile);
+            }
         }
         int returnVal = fc.showSaveDialog(controller.getView());
 
@@ -390,7 +405,7 @@ public class ExportTool implements Tool {
             }
 
             LOG.debug("Exporting: " + file.getName());
-            saveLastFile = file;
+            saveSelectedLastFile = file;
             model.exportToFile(c, file, controller.getView().getDrawer());
 
         } else {
