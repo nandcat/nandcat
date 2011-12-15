@@ -15,10 +15,6 @@ public final class I18N {
      */
     private static Locale locale = Locale.GERMAN;
 
-    static {
-        Locale.setDefault(Locale.GERMAN);
-    }
-
     /**
      * Class logger instance.
      */
