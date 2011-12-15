@@ -44,6 +44,11 @@ import org.apache.log4j.Logger;
 public class Model implements ClockListener {
 
     /**
+     * Allowed length of an Annotation generated from the filename of a circuit.
+     */
+    private static final int FILENAME_AS_ANNOTATION_LENGTH = 8;
+
+    /**
      * Set of {@link ImpulseGenerator}s that got toggled by the user. Those will keep their status even if the
      * simulation stopped.
      */
@@ -179,7 +184,6 @@ public class Model implements ClockListener {
         exportFormats = new HashMap<String, String>();
         importers = new HashMap<String, Importer>();
         exporters = new HashMap<String, Exporter>();
-        // TODO: factory has no layouter at this moment!
         circuit = (Circuit) factory.getCircuitBuilder().build();
         clock = new Clock(0, this);
         dirty = false;
@@ -279,8 +283,8 @@ public class Model implements ClockListener {
                 if (sep != -1) {
                     filename = filename.substring(0, sep);
                 }
-                if (filename.length() > 8) {
-                    filename = filename.substring(0, 8) + "..";
+                if (filename.length() > FILENAME_AS_ANNOTATION_LENGTH) {
+                    filename = filename.substring(0, FILENAME_AS_ANNOTATION_LENGTH) + "..";
                 }
                 c.setName(filename);
             }
