@@ -282,7 +282,7 @@ public class Model implements ClockListener {
             // for (Element e : destroy) {
             // removeElement(e);
             // }
-            c.deconstruct();
+            // c.deconstruct();
 
             factory.getLayouter().layout(c);
         } else {
@@ -290,6 +290,14 @@ public class Model implements ClockListener {
         }
         if (module != null) {
             addModule(module, p);
+
+            /*
+             * Circuit has to be layouted after inserted using circuit.addModule, because thats the point it gets
+             * deconstructed.
+             */
+            if (module instanceof Circuit) {
+                factory.getLayouter().layout((Circuit) module);
+            }
         }
     }
 
