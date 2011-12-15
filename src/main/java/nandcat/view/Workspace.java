@@ -2,7 +2,9 @@ package nandcat.view;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -289,17 +291,19 @@ public class Workspace extends JPanel {
 
     @Override
     public void paint(Graphics g) {
-        super.paint(g);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        super.paint(g2);
         if (grid) {
-            g.setColor(Color.lightGray);
+            g2.setColor(Color.lightGray);
             for (int i = gridSize; i < this.getWidth(); i += gridSize) {
-                g.drawLine(i, 0, i, this.getHeight());
+                g2.drawLine(i, 0, i, this.getHeight());
             }
             for (int i = gridSize; i < this.getWidth(); i += gridSize) {
-                g.drawLine(0, i, this.getWidth(), i);
+                g2.drawLine(0, i, this.getWidth(), i);
             }
         }
-        elementDrawer.setGraphics(g);
+        elementDrawer.setGraphics(g2);
         List<DrawElement> elementsToDraw = model.getDrawElements();
         List<Connection> cachedConnections = new LinkedList<Connection>();
         for (DrawElement elem : elementsToDraw) {
