@@ -167,16 +167,6 @@ public class SimulateTool implements Tool {
                     if (stepSim) {
                         paused = true;
                         model.pause();
-                        model.unpause();
-                        // sent to sleep cause otherwise 1. step won´t be made cause commands to fast.
-                        for (int i = 0; i < model.getClock().getSleepTime() / 2; i++) {
-                            try {
-                                Thread.sleep(1);
-                            } catch (InterruptedException ee) {
-                                System.out.println(ee.getCause());
-                            }
-                        }
-                        model.pause();
                     }
                 }
             }
