@@ -149,7 +149,9 @@ public class AnnotationTool implements Tool {
         }
         if (toAnnotate != null) {
             String newAnnotation = askForAnnotation(toAnnotate.getName());
-            toAnnotate.setName(newAnnotation);
+            if (newAnnotation != null) {
+                toAnnotate.setName(newAnnotation);
+            }
             view.repaint();
         }
     }
