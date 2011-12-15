@@ -143,6 +143,12 @@ public class ExportTool implements Tool {
             public void exportSucceeded(ModelEvent e) {
                 ImportExportUtils.setViewTitle(controller.getView(), e.getFile());
             }
+
+            @Override
+            public void importSucceeded(ModelEvent e) {
+                saveLastFile = e.getFile();
+                saveLastUUID = e.getCircuitUuid();
+            }
         };
     }
 

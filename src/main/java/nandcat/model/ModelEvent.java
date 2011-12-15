@@ -22,6 +22,11 @@ public class ModelEvent {
     private File file;
 
     /**
+     * UUid of the circuit.
+     */
+    private String circuitUuid;
+
+    /**
      * Used to mark that the export was a export using a drawer.
      */
     private boolean isDrawerExport = false;
@@ -170,5 +175,24 @@ public class ModelEvent {
      */
     public void setDrawerExport(boolean isDrawerExport) {
         this.isDrawerExport = isDrawerExport;
+    }
+
+    /**
+     * Gets the circuits UUID.
+     * 
+     * @return the circuits UUID.
+     */
+    public String getCircuitUuid() {
+        return circuitUuid;
+    }
+
+    /**
+     * Sets the circuits UUID.
+     * 
+     * @param circuitUuid
+     *            the circuit UUID to set
+     */
+    public void setCircuitUuid(String circuitUuid) {
+        this.circuitUuid = circuitUuid;
     }
 }

@@ -379,6 +379,7 @@ public class Model implements ClockListener {
                 dirty = false;
                 ModelEvent e = new ModelEvent();
                 e.setFile(file);
+                e.setCircuitUuid(c.getUuid());
                 if (drawer != null) {
                     e.setDrawerExport(true);
                 }
@@ -395,6 +396,7 @@ public class Model implements ClockListener {
                 ModelEvent e = new ModelEvent();
                 e.setMessage(errorMsgBuilder.toString());
                 e.setFile(file);
+                e.setCircuitUuid(c.getUuid());
                 if (drawer != null) {
                     e.setDrawerExport(true);
                 }
@@ -655,6 +657,7 @@ public class Model implements ClockListener {
 
         } else {
             dirty = false;
+            e2.setCircuitUuid(this.circuit.getUuid());
             for (ModelListener l : listeners) {
                 l.importSucceeded(e2);
             }
@@ -752,6 +755,7 @@ public class Model implements ClockListener {
         }
         dirty = false;
         this.circuit = (Circuit) factory.getCircuitBuilder().build();
+        e.setCircuitUuid(this.circuit.getUuid());
         for (ModelListener l : listeners) {
             l.newCircuitCreated(e);
         }
