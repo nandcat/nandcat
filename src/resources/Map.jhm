@@ -4,7 +4,7 @@
 <mapID target="toplevelfolder" url="images/toplevel.gif" >
       <mapID target="start" url="handbuch.html#start" />
       <mapID target="create" url="handbuch.html#create"/>
-      <mapID target="move" url="handbuch.html#move" />
+      <mapID target="move" url="handbuch.html#bildbereich" />
       <mapID target="stop" url="handbuch.html#stop" />
       <mapID target="step" url="handbuch.html#pause" />
       <mapID target="faster" url="handbuch.html#speed" />
@@ -14,9 +14,9 @@
       <mapID target="annotate" url="handbuch.html#annotate" />
       <mapID target="pause" url="handbuch.html#pause" />
       <mapID target="workspace" url="handbuch.html#Oberfläche" />
-        <mapID target="toolbar" url="handbuch.html#toolbar" />
-        <mapID target="menubar" url="handbuch.html#menu" />
-        <mapID target="app" url="handbuch.html#Einleitung" />
+      <mapID target="toolbar" url="handbuch.html#toolbar" />
+      <mapID target="menubar" url="handbuch.html#menu" />
+      <mapID target="app" url="handbuch.html#Einleitung" />
       <mapID target="checkmanager" url="handbuch.html#checkmanager" />
       <mapID target="check" url="handbuch.html#checks" />
       <mapID target="new" url="handbuch.html#new" />

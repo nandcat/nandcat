@@ -10,6 +10,7 @@
 <meta http-equiv="Content-Style-Type" content="text/css">
 <style type="text/css">
 @charset "utf-8";
+<!-- p.sansserif{font-family:Arial,Helvetica,sans-serif;}-->
 <!--
   pre.display { font-family:inherit }
   pre.format  { font-family:inherit }
@@ -30,26 +31,30 @@
 <ul>
 <li><a name="toc_Top" href="#Top">NANDcat</a>
 <li><a name="toc_Einleitung" href="#Einleitung">1 Einleitung</a>
-<li><a name="toc_Programmbenutzung" href="#Zielgruppen">2 Programmbenutzung</a>
-<li><a name="toc_Zielgruppen" href="#Zielgruppen">3 Zielgruppen</a>
-<li><a name="toc_Oberfläche" href="#Oberfläche">4 Oberfläche</a>
+
+<li><a name="toc_Zielgruppen" href="#Zielgruppen">2 Zielgruppen</a>
+<li><a name="toc_Programmbenutzung" href="#Programmbenutzung">3 Programmbenutzung</a>
+<li><a name="toc_Systemvoraussetzung" href="#system" >4 Systemvoraussetzungen</a>
+<li><a name="toc_Oberfläche" href="#Oberfläche">5 Oberfläche</a>
 <ul>
-<li><a href="#Erstellen-von-Schaltungen">4.1 Erstellen von Schaltungen</a>
-<li><a href="#Bearbeiten-von-Schaltungen">4.2 Bearbeiten von Schaltungen</a>
-<li><a href="#Speichern-und-Laden">4.3 Speichern und Laden</a>
+<li><a href="#Erstellen-von-Schaltungen">5.1 Erstellen von Schaltungen</a>
+<li><a href="#Bearbeiten-von-Schaltungen">5.2 Bearbeiten von Schaltungen</a>
+<li><a href="#Speichern-und-Laden">5.3 Speichern und Laden</a>
 <ul>
-<li><a href="#Schaltungen-speichern-und-laden">4.3.1 Schaltungen speichern und Laden</a>
-<li><a href="#Schaltungen-als-Baustein-speichern">4.3.2 Schaltungen als Baustein speichern</a>
-<li><a href="#Benutzerdefinierte-Bausteine-laden">4.3.3 Benutzerdefinierte Bausteine laden</a>
+<li><a href="#Schaltungen-speichern-und-laden">5.3.1 Schaltungen speichern und Laden</a>
+<li><a href="#Schaltungen-als-Baustein-speichern">5.3.2 Schaltungen als Baustein speichern</a>
+<li><a href="#Benutzerdefinierte-Bausteine-laden">5.3.3 Benutzerdefinierte Bausteine laden</a>
 </li></ul>
-<li><a href="#Simulation">4.4 Simulation</a>
+<li><a href="#bildbereich" >5.4 Verändern des angezeigten Bildbereichs</a></li>
+<li><a href="#Simulation">5.5 Simulation</a>
 <ul>
-<li><a href="#simulieren">4.4.1 Simulation durchführen</a>
-<li><a href="#anzeige">4.4.2 Was bedeutet die Anzeige der Simulation</a>
-<li><a href="#checkmanager">4.4.3 Der Checkmanager</a>
+<li><a href="#simulieren">5.5.1 Simulation durchführen</a>
+<li><a href="#anzeige">5.5.2 Was bedeutet die Anzeige der Simulation</a>
+<li><a href="#checkmanager">5.5.3 Der Checkmanager</a>
 </li></ul>
 </li></ul>
-<li><a name="toc_Abgrenzung" href="abgrenzung">5 Was NANDcat nicht kann</a></li>
+<li><a name="toc_Abgrenzung" href="#abgrenzung">6 Was NANDcat nicht kann</a></li>
+<li><a name="toc_Haftungsauschluss" href="#ausschluss">7 Haftungsausschluss</a></li>
 </ul>
 </div>
 
@@ -89,12 +94,24 @@ im Wintersemester 2011/12 an der Universität Passau entwickelt.
 NANDcat ist ein grafisches Simulationsprogramm, mit dem logische Schaltungen
 erstellt, modifiziert und simuliert werden können.
 
+
 <div class="node">
 <p><hr>
 <a name="Zielgruppen"></a>
 </div>
 
-<h2 class="chapter">2 Programmbenutzung</h2>
+<h2 class="chapter">2 Zielgruppen</h2>
+NANDcat richtet sich vor allem an Schüler und Studierende aus den Bereichen
+Informatik und Elektrotechnik, die sich mit Schaltnetzen und -werken
+beschäftigen wollen, um bereits vorhandenes Wissen in diesem Bereich zu
+erproben, erweitern und zu vertiefen.
+
+<div class="node">
+<p><hr>
+<a name="Programmbenutzung"></a>
+</div>
+
+<h2 class="chapter">3 Programmbenutzung</h2>
 NANDcat wurde in JAVA programmiert uns ist somit lauffähig auf jedem Betribebs-
 system mit einer Java Virtual Machine. Die Anwendung öffnet sich sobald sie mit
 Hilfe einer JVM ausgeführt wird.
@@ -108,21 +125,32 @@ verwerfen oder zum Programm zurückzukehren.<br>
 
 <div class="node">
 <p><hr>
-<a name="Zielgruppen"></a>
+<a name="system"></a>
 </div>
 
-<h2 class="chapter">3 Zielgruppen</h2>
-NANDcat richtet sich vor allem an Schüler und Studierende aus den Bereichen
-Informatik und Elektrotechnik, die sich mit Schaltnetzen und -werken
-beschäftigen wollen, um bereits vorhandenes Wissen in diesem Bereich zu
-erproben, erweitern und zu vertiefen.
+<h2 class="chapter">4 Systemvoraussetzungen</h2>
+Der Rechner auf dem NANDcat ausgeführt muss mindestens folgende
+Systemanforderungen erfüllen.
+<ul>
+<li>Java Runtime Environment 1.6.0 installiert</li>
+<li>Grundsätzlich alle <a href="http://oracle.com/technetwork/java/javase/system-configurations-135212.html" >hier</a> aufgelisteten Konfigurationen werden für
+das Betriebssystem unterstützt.</li>
+<li>Hardware
+<ul>
+<li>Prozessor mit Leistungsdimension ähnlich einer x86 CPU mit mindestens 
+2.0GHz Taktrate
+<li>512MB Arbeitsspeicher
+<li>Monitor mit einer Mindestauflösung von 1024x768 Bildpunkten
+<li>Maus und Tastatur
+</ul></li>
+</ul>
 
 <div class="node">
 <p><hr>
 <a name="Oberfläche"></a>
 </div>
 
-<h2 class="chapter">4 Oberfläche</h2>
+<h2 class="chapter">5 Oberfläche</h2>
 Die Benutzerobefläche wurde durch Java Swing realisiert und ist einfach und
 intuitiv zu Benutzen.<br>
 
@@ -160,9 +188,9 @@ Die Tests können aktiviert und deaktiviert werden und beim durchführen
 der Tests wird der aktuelle Zustand angezeigt.<br>
 
 <ul class="menu">
-<li><a href="#Erstellen-von-Schaltungen">4.1 Erstellen von Schaltungen</a>
-<li><a href="#Bearbeiten-von-Schaltungen">4.2 Bearbeiten von Schaltungen</a>
-<li><a href="#Speichern-und-Laden">4.3 Speichern und Laden</a>
+<li><a href="#Erstellen-von-Schaltungen">5.1 Erstellen von Schaltungen</a>
+<li><a href="#Bearbeiten-von-Schaltungen">5.2 Bearbeiten von Schaltungen</a>
+<li><a href="#Speichern-und-Laden">5.3 Speichern und Laden</a>
 </ul>
 
 <div class="node">
@@ -170,7 +198,7 @@ der Tests wird der aktuelle Zustand angezeigt.<br>
 <a name="Erstellen-von-Schaltungen"></a>
 </div>
 
-<h3 class="section">4.1 Erstellen von Schaltungen</h3>
+<h3 class="section">5.1 Erstellen von Schaltungen</h3>
 Zum Erstellen von Schaltungen bietet das Programm folgende Funktionen an:
 <br>
 <a name="new"></a>
@@ -185,7 +213,7 @@ Außerdem kann die aktuelle Schaltung durch Drücken von F5 neu geladen werden.
 Zunächst muss das Programm in den Erstellenmodus versetzt werden.<br> 
 <img src="bilder/createmiddle.png" width="15" height="14" alt="" /> Dazu muss der "Erstellen"-Knopf gedrückt,<br>
 der Menüpunkt gewählt oder die Tastenkombination Strg+E betätigt werden.
-Daraufhin kann in der Liste über dem Erstellenknopf ein Baustein ausgewählt
+Daraufhin kann in der Liste über dem Auswahlknopf ein Baustein ausgewählt
 werden.<br>
 <img src="bilder/bausteine.PNG" width="161" height="196" alt="" align="middle" />
 Mit einem Mausklick auf der Arbeitsfläche wird der Baustein dann an der
@@ -239,7 +267,7 @@ gesetzt werde. Eine Verbindung zu sich selbst ist also nicht möglich.</li>
 <a name="Bearbeiten-von-Schaltungen"></a>
 </div>
 
-<h3 class="section">4.2 Bearbeiten von Schaltungen</h3>
+<h3 class="section">5.2 Bearbeiten von Schaltungen</h3>
 Sobald der erste Baustein auf der Arbeitsfläche platziert ist, kann die
 Schaltung modifiziert werden. Dazu muss das Programm in den entsprechenden
 Modus gesetzt werden. <br>
@@ -309,7 +337,7 @@ nächsten drei das Signal "an", bis er schließlich wieder das Signal wechselt.
 <a name="Speichern-und-Laden"></a>
 </div>
 
-<h3 class="section">4.3 Speichern und Laden</h3>
+<h3 class="section">5.3 Speichern und Laden</h3>
 
 <ul class="menu">
 <li><a href="#Schaltungen-speichern-und-laden">4.3.1 Schaltungen speichern und Laden</a>
@@ -322,7 +350,7 @@ nächsten drei das Signal "an", bis er schließlich wieder das Signal wechselt.
 <a name="Schaltungen-speichern-und-laden"></a>
 </div>
 
-<h3 class="section">4.3.1 Schaltungen speichern und laden</h3>
+<h3 class="section">5.3.1 Schaltungen speichern und laden</h3>
 Eine erstellte Schaltung kann über folgende Menüpunkte und Tastenkürzel
 abgespeichert werden:
 <ul>
@@ -349,7 +377,7 @@ aus dem abgespeicherten Verzeichnis geladen und wieder vollständig
 <a name="Schaltungen-als-Baustein-speichern"></a>
 </div>
 
-<h3 class="section">4.3.2 Schaltungen als Baustein speichern</h3>
+<h3 class="section">5.3.2 Schaltungen als Baustein speichern</h3>
 Eine Schaltung kann in einem neuen Schaltplan als eigener Baustein verwendet
 werden. Dazu muss die Schaltung entsprechend abgespeichert werden.
 
@@ -358,16 +386,37 @@ werden. Dazu muss die Schaltung entsprechend abgespeichert werden.
 <a name="Benutzerdefinierte-Bausteine-laden"></a>
 </div>
 
-<h3 class="section">4.3.3 Benutzerdefinierte Bausteine laden</h3>
+<h3 class="section">5.3.3 Benutzerdefinierte Bausteine laden</h3>
 Sobald eine Schaltung als Baustein gespeichert wurde, wird sie in die Liste
 der Bausteine aufgenommen und kann wie jeder andere Baustein verwendet werden.
+
+<div class="node">
+<p><hr>
+<a name="bildbereich"></a>
+</div>
+
+<h3 class="section">5.4 Verändern des angezeigten Bildbereichs</h3>
+Der aktuelle Bildbereich, der dem Benutzer auf der Anwendung angezeigt wird kann
+folgendermaßen verändert werden:
+<ul>
+<li>Betätigen der Scrollbalken mit der Maus.<br>
+Dadurch wird das Bild entsprechend den Bildlaufleisten angepasst.</li>
+<li>Benutzen des Scrollrades auf der Maus.<br>
+Bei einfachem Scrollen wird der Bildbereich vertical verschoben. Drückt man
+gleichzeitig die Shift-Taste wird der Bildbereich horizontal verschoben.</li>
+<li>Mit Hilfe des "Bewegen"-Werkzeugs:<br>
+<img src="movemiddle.png" width="17" height="17" alt="" />  Durch Drücken des entprechenden Knopfes <br>
+oder über die Tastenkombination Strg+B wird das Werkzeug aktiviert. Mit
+gedrückter Maustaste kann nun der Bildbereich nach belieben bewegt werden und
+die Ansicht wird dem aktuellen Bildbereich angepasst.</li>
+</ul>
 
 <div class="node">
 <p><hr>
 <a name="Simulation"></a>
 </div>
 
-<h3 class="section">4.4 Simulation</h3>
+<h3 class="section">5.5 Simulation</h3>
 
 Das Verhalten der erstellten Schaltung kann simuliert werden. Simulation
 bedeutet, dass der aktuelle Zustand der Elemente, also der Bausteine und ihrer
@@ -375,9 +424,9 @@ Verbindungen zu den verschiedenen Taktzyklen angezeigt wird. Der Zustand
 kann hierbei entweder logisch 1 oder logisch 0 sein.
 
 <ul class="menu">
-<li><a href="#simulieren">4.4.1 Simulation durchführen</a>
-<li><a href="#anzeige">4.4.2 Was bedeutet die Anzeige der Simulation</a>
-<li><a href="#checkmanager">4.4.3 Der Checkmanager</a>
+<li><a href="#simulieren">5.5.1 Simulation durchführen</a>
+<li><a href="#anzeige">5.5.2 Was bedeutet die Anzeige der Simulation</a>
+<li><a href="#checkmanager">5.5.3 Der Checkmanager</a>
 </ul>
 
 <div class="node">
@@ -385,7 +434,7 @@ kann hierbei entweder logisch 1 oder logisch 0 sein.
 <a name="simulieren"></a>
 </div>
 
-<h3 class="section">4.4.1 Simulation durchführen</h3>
+<h3 class="section">5.5.1 Simulation durchführen</h3>
 Die Simulation der Schaltung kann auf folgende Weisen gesteuert werden:
 <ul>
 <br>
@@ -438,7 +487,7 @@ durch Drücken der Tastenkombination Strg+Minus/Strg+Plus.</li>
 <a name="anzeige"></a>
 </div>
 
-<h3 class="section">4.4.2 Was bedeutet die Anzeige der Simulation</h3>
+<h3 class="section">5.5.2 Was bedeutet die Anzeige der Simulation</h3>
 <ul>
 <li>Taktgeber:
 Die Tagtgeber können entweder an oder aus sein. Das bedeutet
@@ -479,7 +528,7 @@ die ausgendenden Leitungen weiterzuleiten.</li>
 <a name="checkmanager"></a>
 </div>
 
-<h3 class="section">4.4.3 Der Checkmanager</h3>
+<h3 class="section">5.5.3 Der Checkmanager</h3>
 Der Checkmanager ist ein Fenster, das eine Liste aller Tests die auf der
 Schaltung durchgeführt werden können. Durch anklicken eines Tests kann dieser
 aktiviert und deaktiviert werden. Ein aktiver Test ist an dem Haken in dem
@@ -532,7 +581,7 @@ Ergebnisse der Tests wie oben beschrieben an.<br>
 <a name="abgrenzung"></a>
 </div>
 
-<h3 class="chapter">5 Was NANDcat nicht kann</h3>
+<h3 class="chapter">6 Was NANDcat nicht kann</h3>
 <ul>
 <li>In der Anwendung kann immer nur eine einzige Schaltung bearbeitet werden.
 Es gibt nicht die Möglichkeit eine weitere Schaltung in einem neuen Fenster oder
@@ -542,6 +591,29 @@ Tab zu öffnen.
 Funktionen zu generieren.</li>
 <li>Physikalische Effekte, die in der Realität auftreten können (z.B. Fanout-
 Beschränkungen) werden nicht berücksichtigt.</li></ul>
+
+<div class="node">
+<p><hr>
+<a name="ausschluss"></a>
+</div>
+
+<h3 class="chapter">7 Haftungsausschluss</h3>
+
+Die Software wurde mit größter Sorgfalt entwickelt und auf verschiedenen
+Rechnersystemen sorgfältig getestet. Dabei waren für die freigegebene
+Produktversion keine Fehler festzustellen. Es kann aber nicht garantiert
+werden, dass die Software auf jedem Zielsystem hundertprozentig fehlerfrei
+läuft. Eine vollständig fehlerfreie Software ist nach dem heutigen Stand der
+Technik nicht möglich. Deshalb übernehmen wir keine Haftung für
+Unverträglichkeiten mit Hardwarekomponenten und anderen Softwareprodukten oder
+deren Komponenten. Die Software wird wie sie ist ("as is") zur Verfügung
+gestellt, ohne jede Garantie für die Brauchbarkeit für einen bestimmten
+Anwendungsfall. Das gesamte Risiko, das aus der Nutzung der Software entsteht,
+liegt beim Anwender der Software. Für Schäden, die direkt oder indirekt aus der
+Nutzung der Software resultieren, sind wir unter keinen Umständen haftbar zu
+machen, es sei denn, es liegt ein vorsätzliches oder grob fahrlässiges
+Verhalten unsererseits vor. Die beiliegende Dokumentation/Hilfe der Software
+erhebt keinen Anspruch auf Richtigkeit und Vollständigkeit.
 
 </body>
 </html>

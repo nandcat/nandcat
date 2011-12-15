@@ -61,13 +61,19 @@ public class OrphanCheck implements CircuitCheck {
         Set<Element> elements = new LinkedHashSet<Element>();
 
         informListeners(State.RUNNING, elements);
-        Set<Module> modules = circuit.getModules();
-        Iterator<Module> iter = circuit.getModules().iterator();
+        Set<Module> modules = new HashSet<Module>();
+        modules = getModules(circuit, modules);
+        for (Module e : modules) {
+            System.out.println(e);
+        }
+        Iterator<Module> iter = modules.iterator();
         // Start with any Module you can get
         Module start = null;
         if (iter.hasNext()) {
             start = (Module) iter.next();
         }
+        System.out.println("Start: " + start);
+        System.out.println();
         Queue<Module> queue = new LinkedList<Module>();
         // Remember if a Port has already been visited.
         Set<Port> visited = new HashSet<Port>();
@@ -75,18 +81,18 @@ public class OrphanCheck implements CircuitCheck {
             queue.offer(start);
         }
         // Put all preceding and following Modules of the current Module into the queue. Mark the Ports of the
-        // Modules as visited, and remove the Modules from the set of all Modules of the circuit.
+        // Module as visited, and remove the Module from the set of all Modules of the circuit.
         while (!queue.isEmpty()) {
             Module current = queue.poll();
             modules.remove(current);
             for (Port p : current.getInPorts()) {
-                if (!visited.contains(p) && (p.getConnection() != null)) {
+                if ((!visited.contains(p)) && (p.getConnection() != null)) {
                     queue.add(p.getConnection().getPreviousModule());
                     visited.add(p);
                 }
             }
             for (Port p : current.getOutPorts()) {
-                if (!visited.contains(p) && (p.getConnection() != null)) {
+                if ((!visited.contains(p)) && (p.getConnection() != null)) {
                     queue.add(p.getConnection().getNextModule());
                     visited.add(p);
                 }
@@ -101,6 +107,27 @@ public class OrphanCheck implements CircuitCheck {
         }
         informListeners(State.SUCCEEDED, elements);
         return true;
+    }
+
+    /**
+     * This method returns the inner modules of a circuit. If the circuit contains another circuit the method is called
+     * recursively.
+     * 
+     * @param circuit
+     *            Circuit from which the modules are taken.
+     * @param modules
+     *            Set of Modules containing previous selected modules.
+     * @return Set of all modules in the circuit.
+     */
+    private Set<Module> getModules(Circuit circuit, Set<Module> modules) {
+        for (Module m : circuit.getModules()) {
+            if (m instanceof Circuit) {
+                getModules((Circuit) m, modules);
+            } else {
+                modules.add(m);
+            }
+        }
+        return modules;
     }
 
     /**
