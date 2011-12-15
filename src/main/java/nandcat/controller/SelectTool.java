@@ -66,7 +66,7 @@ public class SelectTool implements Tool {
     /**
      * Tolerance used if mouse clicked.
      */
-    private static final Dimension MOUSE_TOLERANCE = new Dimension(15, 15);
+    private static final Dimension MOUSE_TOLERANCE = new Dimension(14, 14);
 
     /**
      * Size of one Grid-Cell height and width.
@@ -131,8 +131,11 @@ public class SelectTool implements Tool {
                 @Override
                 public void mousePressed(WorkspaceEvent e) {
                     startPoint = e.getLocation();
+                    Point p = e.getLocation();
+                    p.x -= MOUSE_TOLERANCE.getWidth() / 2;
+                    p.y -= MOUSE_TOLERANCE.getHeight() / 2;
                     Set<DrawElement> elements = model
-                            .getDrawElementsAt(new Rectangle(e.getLocation(), MOUSE_TOLERANCE));
+                            .getDrawElementsAt(new Rectangle(p, MOUSE_TOLERANCE));
                     if (elements.isEmpty()) {
                         rect = new Rectangle(e.getLocation());
                         isSelect = true;
@@ -148,12 +151,12 @@ public class SelectTool implements Tool {
                                 isSelect = false;
                             } else {
                                 model.deselectAll();
-                                notEmpty = model.selectElements(new Rectangle(e.getLocation(), MOUSE_TOLERANCE));
+                                notEmpty = model.selectElements(new Rectangle(p, MOUSE_TOLERANCE));
                                 isSelect = false;
                             }
                         } else {
                             model.deselectAll();
-                            notEmpty = model.selectElements(new Rectangle(e.getLocation(), MOUSE_TOLERANCE));
+                            notEmpty = model.selectElements(new Rectangle(p, MOUSE_TOLERANCE));
                             isSelect = false;
                         }
                     }
