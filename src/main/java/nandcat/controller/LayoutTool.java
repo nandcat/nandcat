@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
+import nandcat.view.ANSIStandardElementDrawer;
 import nandcat.view.IECStandardElementDrawer;
 import nandcat.view.StandardElementDrawer;
 import nandcat.view.View;
@@ -40,6 +41,7 @@ public class LayoutTool implements Tool {
         {
             add("iec");
             add("standard");
+            add("ansi");
         }
     };
 
@@ -79,6 +81,8 @@ public class LayoutTool implements Tool {
                     view.getWorkspace().setDrawer(new IECStandardElementDrawer());
                 } else if (e.getActionCommand().equals("standard")) {
                     view.getWorkspace().setDrawer(new StandardElementDrawer());
+                } else if (e.getActionCommand().equals("ansi")) {
+                    view.getWorkspace().setDrawer(new ANSIStandardElementDrawer());
                 }
                 view.getWorkspace().redraw();
             }

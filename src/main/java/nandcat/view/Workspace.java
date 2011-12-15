@@ -106,6 +106,11 @@ public class Workspace extends JPanel {
     private int gridSize;
 
     /**
+     * Representing if a Shadow of a Element is drawn or not.
+     */
+    private boolean shadow;
+
+    /**
      * Constructs the workspace.
      * 
      * @param model
@@ -184,7 +189,8 @@ public class Workspace extends JPanel {
      * @param rect
      *            Rectangle size and position of the "seeking-rectangle".
      */
-    public void redraw(Rectangle rect) {
+    public void redraw(Rectangle rect, boolean shadow) {
+        this.shadow = shadow;
         this.selectRect = rect;
         repaint();
     }
@@ -333,7 +339,11 @@ public class Workspace extends JPanel {
             elementDrawer.draw(connection);
         }
         if (selectRect != null) {
+            if (shadow) {
+                g2.setColor(Color.gray);
+            }
             elementDrawer.draw(selectRect);
+            g2.setColor(Color.black);
         }
         if (connectLine != null) {
             elementDrawer.draw(connectLine);

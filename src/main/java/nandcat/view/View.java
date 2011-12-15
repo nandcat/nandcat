@@ -497,12 +497,18 @@ public class View extends JFrame {
         disableElements.add(miec);
         JMenuItem mstandard = new JMenuItem(i18n.getString("menu.layout.standard"), KeyEvent.VK_1);
         mstandard.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.CTRL_MASK));
-        disableElements.add(mstandard);
+        disableElements.add(mstandard);        
+        JMenuItem mansi = new JMenuItem(i18n.getString("menu.layout.ansi"), KeyEvent.VK_3);
+        mansi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3, ActionEvent.CTRL_MASK));
+        disableElements.add(mansi);
         /*
          * check if there are functionalities given for the MenuItems.
          */
         if (toolFunctionalities.containsKey("help")) {
             setupMenuItem(mhelp, "help");
+        }
+        if (toolFunctionalities.containsKey("ansi")) {
+            setupMenuItem(mansi, "ansi");
         }
         if (toolFunctionalities.containsKey("iec")) {
             setupMenuItem(miec, "iec");
@@ -589,8 +595,9 @@ public class View extends JFrame {
         menubar.add(edit);
         menubar.add(sim);
         menubar.add(help);
-        layout.add(miec);
         layout.add(mstandard);
+        layout.add(miec);
+        layout.add(mansi);
         sim.add(mstart);
         sim.add(mstep);
         sim.add(mpause);

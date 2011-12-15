@@ -134,7 +134,7 @@ public class CreateTool implements Tool {
             removeListeners();
             isYetActive = false;
             Rectangle rect = null;
-            view.getWorkspace().redraw(rect);
+            view.getWorkspace().redraw(rect, true);
         }
     }
 
@@ -269,10 +269,10 @@ public class CreateTool implements Tool {
             rect.setLocation(offset);
             Set<DrawElement> elementsAt = model.getDrawElementsAt(rect);
             if (elementsAt.isEmpty()) {
-                view.getWorkspace().redraw(rect);
+                view.getWorkspace().redraw(rect, true);
             } else {
                 rect = null;
-                view.getWorkspace().redraw(rect);
+                view.getWorkspace().redraw(rect, true);
             }
         }
     }

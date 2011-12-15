@@ -165,7 +165,7 @@ public class SelectTool implements Tool {
                         model.adaptToGrid(GRID_SIZE);
                     }
                     rect = null;
-                    view.getWorkspace().redraw(rect);
+                    view.getWorkspace().redraw(rect, false);
                 }
 
                 @Override
@@ -207,7 +207,7 @@ public class SelectTool implements Tool {
     private void selectElements(Point point) {
         model.deselectAll();
         rect.setFrameFromDiagonal(point, this.startPoint);
-        view.getWorkspace().redraw(rect);
+        view.getWorkspace().redraw(rect, false);
         notEmpty = model.selectElements(rect);
     }
 
