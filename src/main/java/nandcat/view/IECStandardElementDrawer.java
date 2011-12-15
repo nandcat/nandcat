@@ -194,7 +194,7 @@ public class IECStandardElementDrawer implements ElementDrawer {
      * Color of rectangle.
      */
     private static final Color RECTANGLE_COLOR = Color.BLACK;
-    
+
     /**
      * Color of the line drawn using draw(Line).
      */
@@ -286,7 +286,6 @@ public class IECStandardElementDrawer implements ElementDrawer {
                 layout.draw(((Graphics2D) g), (float) portAnnX, portAnnY + (float) layout.getBounds().getHeight() / 2);
             }
         }
-
         for (Port outPort : circuit.getOutPorts()) {
             if (outPort.getAnnotation() != null) {
                 int portAnnY = outPort.getRectangle().y + outPort.getRectangle().height / 2;

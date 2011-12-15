@@ -497,7 +497,7 @@ public class View extends JFrame {
         disableElements.add(miec);
         JMenuItem mstandard = new JMenuItem(i18n.getString("menu.layout.standard"), KeyEvent.VK_1);
         mstandard.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.CTRL_MASK));
-        disableElements.add(mstandard);        
+        disableElements.add(mstandard);
         JMenuItem mansi = new JMenuItem(i18n.getString("menu.layout.ansi"), KeyEvent.VK_3);
         mansi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3, ActionEvent.CTRL_MASK));
         disableElements.add(mansi);

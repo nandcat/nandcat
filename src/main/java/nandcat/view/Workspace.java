@@ -188,6 +188,8 @@ public class Workspace extends JPanel {
      * 
      * @param rect
      *            Rectangle size and position of the "seeking-rectangle".
+     * @param shadow
+     *            Boolean representing if shadow or select rect to draw.
      */
     public void redraw(Rectangle rect, boolean shadow) {
         this.shadow = shadow;
