@@ -221,6 +221,11 @@ public class ANSIStandardElementDrawer implements ElementDrawer {
     private static final Color IG_COLOR_DEFAULT = Color.WHITE;
 
     /**
+     * Color of rectangle.
+     */
+    private static final Color RECTANGLE_COLOR = Color.BLACK;
+
+    /**
      * Fill color of an active impulse generator.
      */
     private static final Color IG_COLOR_ACTIVE = Color.YELLOW;
@@ -768,6 +773,7 @@ public class ANSIStandardElementDrawer implements ElementDrawer {
         if (r == null) {
             throw new IllegalArgumentException();
         }
+        g.setColor(RECTANGLE_COLOR);
         g.drawRect(r.x, r.y, r.width, r.height);
     }
 

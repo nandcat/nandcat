@@ -341,8 +341,10 @@ public class Workspace extends JPanel {
         if (selectRect != null) {
             if (shadow) {
                 g2.setColor(Color.gray);
+                g2.drawRect(selectRect.x, selectRect.y, selectRect.width, selectRect.height);
+            } else {
+                elementDrawer.draw(selectRect);
             }
-            elementDrawer.draw(selectRect);
             g2.setColor(Color.black);
         }
         if (connectLine != null) {

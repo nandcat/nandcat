@@ -191,6 +191,11 @@ public class IECStandardElementDrawer implements ElementDrawer {
     private static final Color GATE_FILL_COLOR = Color.WHITE;
 
     /**
+     * Color of rectangle.
+     */
+    private static final Color RECTANGLE_COLOR = Color.BLACK;
+    
+    /**
      * Color of the line drawn using draw(Line).
      */
     private static final Color LINE_COLOR = Color.BLACK;
@@ -613,6 +618,7 @@ public class IECStandardElementDrawer implements ElementDrawer {
         if (r == null) {
             throw new IllegalArgumentException();
         }
+        g.setColor(RECTANGLE_COLOR);
         g.drawRect(r.x, r.y, r.width, r.height);
     }
 

@@ -181,6 +181,11 @@ public class StandardElementDrawer implements ElementDrawer {
     private static final Color IG_COLOR_ACTIVE = Color.YELLOW;
 
     /**
+     * Color of rectangle.
+     */
+    private static final Color RECTANGLE_COLOR = Color.BLACK;
+
+    /**
      * Fill color of gates.
      */
     private static final Color GATE_FILL_COLOR = Color.WHITE;
@@ -607,6 +612,7 @@ public class StandardElementDrawer implements ElementDrawer {
         if (r == null) {
             throw new IllegalArgumentException();
         }
+        g.setColor(RECTANGLE_COLOR);
         g.drawRect(r.x, r.y, r.width, r.height);
     }
 
