@@ -1068,6 +1068,18 @@ public class View extends JFrame {
     }
 
     /**
+     * set a new Title to the Frame.
+     * 
+     * @param title
+     *            the new Title add.
+     */
+    public void setNewTitle(String title) {
+        if (title != null) {
+            this.setTitle(FRAME_TITLE + " - " + title);
+        }
+    }
+
+    /**
      * Extension of JComboBox to ensure the PopupMenu of the ComoBox is wide enough to Display the full names of the
      * Elements.
      */
