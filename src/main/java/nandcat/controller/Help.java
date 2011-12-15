@@ -50,8 +50,8 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.tree.TreePath;
 
 /**
- * 
- *
+ * This class extends the CSH class from the javax.help package. It makes sure that there is context-sensitive help
+ * in the checkmanager.
  */
 public class Help extends CSH {
 
