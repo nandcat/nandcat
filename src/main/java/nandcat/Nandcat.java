@@ -1,5 +1,6 @@
 package nandcat;
 
+import java.util.Locale;
 import javax.swing.SwingUtilities;
 import nandcat.controller.Controller;
 import nandcat.model.Model;
@@ -44,10 +45,10 @@ public final class Nandcat {
                 LOG.error("Exception caught in Thread: " + t.toString(), e);
             }
         });
+        setLocales(args);
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                setLocales(args);
                 initApp();
             }
         });
@@ -78,7 +79,9 @@ public final class Nandcat {
             I18N.setLocale(args[0]);
         } else {
             LOG.debug("Locale got from system property");
-            I18N.setLocale(System.getProperty("user.language"));
+
+            // java -Duser.language=fr/de/en
+            I18N.setLocale(Locale.getDefault());
         }
     }
 }
