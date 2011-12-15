@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,8 @@ import javax.swing.JComboBox;
 import nandcat.model.Model;
 import nandcat.model.ViewModule;
 import nandcat.model.element.DrawElement;
+import nandcat.model.element.DrawModule;
+import nandcat.model.element.IdentityGate;
 import nandcat.model.element.Port;
 import nandcat.view.View;
 import nandcat.view.WorkspaceEvent;
@@ -201,6 +204,8 @@ public class CreateTool implements Tool {
                 model.addModule(selectedModule, offset);
             }
         } else {
+            // If the user clicked on a module he wants to create a connection. Get the underlying port - if not null
+            // and start a new connection.
             point.x -= MOUSE_TOLERANCE.height / 2;
             point.y -= MOUSE_TOLERANCE.width / 2;
             if (sourcePort == null) {
@@ -212,7 +217,8 @@ public class CreateTool implements Tool {
                 }
             } else {
                 Port targetPort = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
-                if ((targetPort != null) && !(targetPort.getModule().equals(sourcePort.getModule()))) {
+                if ((targetPort != null) && !(targetPort.getModule().equals(sourcePort.getModule()))
+                        && !isConnectedToSelf(targetPort)) {
                     if (!sourcePort.isOutPort() && targetPort.isOutPort()) {
                         model.addConnection(targetPort, sourcePort);
                         sourcePort = null;
@@ -226,8 +232,75 @@ public class CreateTool implements Tool {
     }
 
     /**
-     * Change the cursor when its moved. Show error symbol if the cursor is at a position, where an inport would be
-     * connected with another inport and vice versa. Draw a preview of the connection to be set by the user.
+     * Checks if a connection to a port is valid. Valid means there's no connection from an incoming port to another
+     * incoming one. The same goes for outgoing ports. In addition a connection cannot be set within the same gate.
+     * 
+     * @param port
+     *            Port to which a connection has to be proven valid.
+     * @return TRUE if a connection to this port is valid. FALSE otherwise.
+     */
+    private boolean isValidPort(Port port) {
+        if ((sourcePort.isOutPort() && port.isOutPort())) {
+            return false;
+        } else if (!sourcePort.isOutPort() && !port.isOutPort()) {
+            return false;
+        } else if (sourcePort.getModule().equals(port.getModule())) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * This method checks if there is a feedback from a module to its self over identity gates.
+     * 
+     * @param port
+     *            Port currently lying under the cursor.
+     * @return TRUE if there is a feedback of the gate to its self. FALSE otherwise.
+     */
+    private boolean isConnectedToSelf(Port port) {
+        if (port.getModule() instanceof IdentityGate) {
+            return findFeedback(port, sourcePort);
+        } else if (sourcePort.getModule() instanceof IdentityGate) {
+            return findFeedback(sourcePort, port);
+        }
+        return false;
+    }
+
+    /**
+     * Find a feedback from the given current port to the source port. If a preceeding or following module is an
+     * identity gate call the method recursively.
+     * 
+     * @param current
+     *            Port of circuit on which is currently checked if it has a connection to the source.
+     * @param source
+     *            Port representing source of setting a new connection.
+     * @return TRUE if there is a feedback from the current port to the source port. FALSE otherwise.
+     */
+    private boolean findFeedback(Port current, Port source) {
+        for (Port p : current.getModule().getInPorts()) {
+            if (p.getConnection() != null) {
+                if (p.getConnection().getPreviousModule().equals(source.getModule())) {
+                    return true;
+                } else if (p.getConnection().getPreviousModule() instanceof IdentityGate) {
+                    return findFeedback(p.getConnection().getInPort(), source);
+                }
+            }
+        }
+        for (Port p : current.getModule().getOutPorts()) {
+            if (p.getConnection() != null) {
+                if (p.getConnection().getNextModule().equals(source.getModule())) {
+                    return true;
+                } else if (p.getConnection().getNextModule() instanceof IdentityGate) {
+                    return findFeedback(p.getConnection().getOutPort(), source);
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Change the cursor when its moved. Show error symbol if the cursor is at an invalid position. Draw a preview of
+     * the connection to be set by the user.
      * 
      * @param point
      *            Point representing the location of the mouse cursor.
@@ -243,8 +316,7 @@ public class CreateTool implements Tool {
             Set<DrawElement> elements = model.getDrawElementsAt(new Rectangle(point, MOUSE_TOLERANCE));
             Port portAt = model.getPortAt(new Rectangle(point, MOUSE_TOLERANCE));
             if (!elements.isEmpty() && portAt != null) {
-                if ((sourcePort.isOutPort() && portAt.isOutPort()) || (!sourcePort.isOutPort() && !portAt.isOutPort())
-                        || (sourcePort.getModule().equals(portAt.getModule()))) {
+                if (!isValidPort(portAt) || isConnectedToSelf(portAt)) {
                     view.setCursor(new Cursor(Cursor.WAIT_CURSOR));
                 }
             } else {
