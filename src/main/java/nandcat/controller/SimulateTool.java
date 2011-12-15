@@ -201,6 +201,7 @@ public class SimulateTool implements Tool {
                     simToStart = false;
                     stepSim = false;
                     paused = false;
+                    controller.setLastToolActive();
                 } else if (e.getActionCommand().equals("faster")) {
                     // reduce clock sleep time -> faster simulation.
                     Clock clock = model.getClock();

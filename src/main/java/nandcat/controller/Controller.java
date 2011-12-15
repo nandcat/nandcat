@@ -27,6 +27,11 @@ public class Controller {
     private Tool activeTool = null;
 
     /**
+     * Tool active before the now active one.
+     */
+    private Tool lastTool = null;
+
+    /**
      * Current View instance.
      */
     private View view = null;
@@ -80,10 +85,26 @@ public class Controller {
             throw new IllegalArgumentException();
         }
         if (activeTool != null) {
+            if (tool instanceof SimulateTool) {
+                lastTool = activeTool;
+            } else if (tool instanceof SelectTool) {
+                lastTool = tool;
+            }
             activeTool.setActive(false);
         }
         activeTool = tool;
         activeTool.setActive(true);
+    }
+
+    /**
+     * Sets the last used Tool before the now active one active.
+     */
+    public void setLastToolActive() {
+        if (lastTool != null) {
+            activeTool.setActive(false);
+            activeTool = lastTool;
+            lastTool.setActive(true);
+        }
     }
 
     /**
