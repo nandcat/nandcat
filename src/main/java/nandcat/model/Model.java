@@ -288,19 +288,6 @@ public class Model implements ClockListener {
                 }
                 c.setName(filename);
             }
-            // // Strip lamps and impulsegenerators of the circuit
-            // List<Element> destroy = new LinkedList<Element>();
-            // for (Element e : c.getElements()) {
-            // if (e instanceof Lamp || e instanceof ImpulseGenerator) {
-            // destroy.add(e);
-            // }
-            // }
-            // for (Element e : destroy) {
-            // removeElement(e);
-            // }
-            // c.deconstruct();
-
-            factory.getLayouter().layout(c);
         } else {
             module = m.getModule();
         }
@@ -390,6 +377,15 @@ public class Model implements ClockListener {
             if (ex.exportCircuit()) {
                 LOG.debug("File exported successfully");
                 dirty = false;
+                ModelEvent e = new ModelEvent();
+                e.setFile(file);
+                e.setCircuitUuid(c.getUuid());
+                if (drawer != null) {
+                    e.setDrawerExport(true);
+                }
+                for (ModelListener l : listeners) {
+                    l.exportSucceeded(e);
+                }
             } else {
                 LOG.warn("File import failed! File: " + file.getAbsolutePath());
                 StringBuilder errorMsgBuilder = new StringBuilder();
@@ -399,6 +395,11 @@ public class Model implements ClockListener {
                 }
                 ModelEvent e = new ModelEvent();
                 e.setMessage(errorMsgBuilder.toString());
+                e.setFile(file);
+                e.setCircuitUuid(c.getUuid());
+                if (drawer != null) {
+                    e.setDrawerExport(true);
+                }
                 for (ModelListener l : listeners) {
                     l.exportFailed(e);
                 }
@@ -648,6 +649,7 @@ public class Model implements ClockListener {
         this.circuit = importFromFile(file);
         LOG.debug("Import finished");
         ModelEvent e2 = new ModelEvent();
+        e2.setFile(file);
         // import failed
         if (circuit == null) {
             // Listeners already notified in 'importFromFile(..)'
@@ -655,6 +657,7 @@ public class Model implements ClockListener {
 
         } else {
             dirty = false;
+            e2.setCircuitUuid(this.circuit.getUuid());
             for (ModelListener l : listeners) {
                 l.importSucceeded(e2);
             }
@@ -752,6 +755,10 @@ public class Model implements ClockListener {
         }
         dirty = false;
         this.circuit = (Circuit) factory.getCircuitBuilder().build();
+        e.setCircuitUuid(this.circuit.getUuid());
+        for (ModelListener l : listeners) {
+            l.newCircuitCreated(e);
+        }
         notifyForChangedElems();
     }
 

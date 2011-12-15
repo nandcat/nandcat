@@ -378,13 +378,6 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
     public Connection addConnection(Port inPort, Port outPort) {
         Connection connection = new Connection(inPort, outPort);
         elements.add(connection);
-        // check if a rescan for in/outPorts is needed
-        if (inPort != null && elements.contains(inPort.getModule())) {
-            createOutPorts();
-        }
-        if (outPort != null && elements.contains(outPort.getModule())) {
-            createInPorts();
-        }
         return connection;
     }
 
@@ -403,9 +396,6 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
 
         // one module may not appear more than once in elements (guaranteed by Set<>)
         elements.add(m);
-        // // scan for new potential in/outPorts
-        // createInPorts();
-        // createOutPorts();
     }
 
     /**
@@ -520,23 +510,6 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
      * @return a Circuit beeing the original of this circuit
      */
     public Circuit reconstruct() {
-        // Circuit result = (Circuit) FastDeepCopy.copy(this);
-        // for (Port p : strippedModules.keySet()) {
-        // Module mod = strippedModules.get(p);
-        // result.addModule(mod);
-        // }
-        // // 2 loops because impy->lamp would be omgwtf otherwise
-        // for (Port p : result.strippedModules.keySet()) {
-        // Module mod = strippedModules.get(p);
-        // if (mod instanceof Lamp) {
-        // result.addConnection(p, mod.getInPorts().get(0));
-        // } else if (mod instanceof ImpulseGenerator) {
-        // result.addConnection(mod.getOutPorts().get(0), p);
-        // }
-        // result.strippedModules.clear();
-        // result.hiddenPorts.clear();
-        // }
-        // return result;
         if (original != null) {
             return original;
         } else {
@@ -569,25 +542,4 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         }
         return x + "-----------------------------------------------------------------------";
     }
-
-    // /**
-    // * DO NEVER EVER USE THIS METHOD Set new inports
-    // *
-    // * @param inProts
-    // * new list of inports
-    // */
-    // protected void overrideInPorts(List<Port> inProts) {
-    // this.inPorts = inProts;
-    // }
-    //
-    // /**
-    // * DO NEVER EVER USE THIS METHOD Set new outports
-    // *
-    // * @param outProts
-    // * new list of outports
-    // */
-    // protected void overrideOutPorts(List<Port> outProts) {
-    // this.outPorts = outProts;
-    // }
-
 }

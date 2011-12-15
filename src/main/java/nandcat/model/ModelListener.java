@@ -95,4 +95,12 @@ public interface ModelListener {
      *            ModelEvent which holds changes.
      */
     void exportFailed(ModelEvent e);
+
+    /**
+     * Invoked when a new circuit was created.
+     * 
+     * @param e
+     *            ModelEvent which holds event information.
+     */
+    void newCircuitCreated(ModelEvent e);
 }

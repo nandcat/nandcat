@@ -103,6 +103,16 @@ public class ImportTool implements Tool {
                         JOptionPane.WARNING_MESSAGE);
             }
 
+            @Override
+            public void importSucceeded(ModelEvent e) {
+                ImportExportUtils.setViewTitle(controller.getView(), e.getFile());
+            }
+
+            @Override
+            public void newCircuitCreated(ModelEvent e) {
+                ImportExportUtils.setViewTitle(controller.getView(), null);
+            }
+
         };
     }
 
