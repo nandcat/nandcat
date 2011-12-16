@@ -29,13 +29,13 @@
 <div class="contents">
 <h2>Inhaltsverzeichnis</h2>
 <ul>
-<li><a name="toc_Top" href="#Top">NANDcat</a>
-<li><a name="toc_Einleitung" href="#Einleitung">1 Einleitung</a>
+<li><a href="#Top">NANDcat</a>
+<li><a href="#Einleitung">1 Einleitung</a>
 
-<li><a name="toc_Zielgruppen" href="#Zielgruppen">2 Zielgruppen</a>
-<li><a name="toc_Programmbenutzung" href="#Programmbenutzung">3 Programmbenutzung</a>
-<li><a name="toc_Systemvoraussetzung" href="#system" >4 Systemvoraussetzungen</a>
-<li><a name="toc_Oberfläche" href="#Oberfläche">5 Oberfläche</a>
+<li><a href="#Zielgruppen">2 Zielgruppen</a>
+<li><a href="#Programmbenutzung">3 Starten und Beenden des Programms</a>
+<li><a href="#system" >4 Systemvoraussetzungen</a>
+<li><a href="#Oberfläche">5 Oberfläche</a>
 <ul>
 <li><a href="#Erstellen-von-Schaltungen">5.1 Erstellen von Schaltungen</a>
 <li><a href="#Bearbeiten-von-Schaltungen">5.2 Bearbeiten von Schaltungen</a>
@@ -52,9 +52,10 @@
 <li><a href="#anzeige">5.5.2 Was bedeutet die Anzeige der Simulation</a>
 <li><a href="#checkmanager">5.5.3 Der Checkmanager</a>
 </li></ul>
+<li><a href="#hilfe" >5.6 Kontextsensitive Hilfe</a></li>
 </li></ul>
-<li><a name="toc_Abgrenzung" href="#abgrenzung">6 Was NANDcat nicht kann</a></li>
-<li><a name="toc_Haftungsauschluss" href="#ausschluss">7 Haftungsausschluss</a></li>
+<li><a href="#abgrenzung">6 Was NANDcat nicht kann</a></li>
+<li><a href="#ausschluss">7 Haftungsausschluss</a></li>
 </ul>
 </div>
 
@@ -68,7 +69,7 @@
 <BR>
 NANDcat</H2>
 <PRE>
-<B>Ein Programm zur Simulation von logischen Schaltungen</B>
+<h2><B>Ein Programm zur Simulation von logischen Schaltungen</B></h2>
 
 <DL>
 <DT>Dies ist das Handbuch zur Anwendung NANDcat.</DL>
@@ -111,7 +112,7 @@ erproben, erweitern und zu vertiefen.
 <a name="Programmbenutzung"></a>
 </div>
 
-<h2 class="chapter">3 Programmbenutzung</h2>
+<h2 class="chapter">3 Starten und Beenden des Programms</h2>
 NANDcat wurde in JAVA programmiert uns ist somit lauffähig auf jedem Betribebs-
 system mit einer Java Virtual Machine. Die Anwendung öffnet sich sobald sie mit
 Hilfe einer JVM ausgeführt wird.
@@ -151,34 +152,36 @@ das Betriebssystem unterstützt.</li>
 </div>
 
 <h2 class="chapter">5 Oberfläche</h2>
-Die Benutzerobefläche wurde durch Java Swing realisiert und ist einfach und
-intuitiv zu Benutzen.<br>
+Die Benutzerobefläche wurde mit Hilfe von Java Swing realisiert und ist einfach
+und intuitiv zu bedienen.<br>
 
-<img src="bilder/ganzes_Programm.PNG" width="550" height="370" alt="" />
+<img src="bilder/whole_program.png" width="550" height="370" alt="" />
 <br>
 <br>
 <a name="menu"></a>
-Im Hauptarbeitsfenster gibt es eine Menüleiste,
-die sämtliche Aktionen, die das Programm anbietet, enthält.<br>
+Im Hauptarbeitsfenster gibt es eine Menüleiste, die sämtliche Aktionen, die
+das Programm anbietet, enthält.<br>
 
 <ul>
 <li>Datei: Dieser Reiter enthält sämtliche Funktionen um die Datei zu
 bearbeiten. Hierzu gehören das Speichern und (neu-)Laden einer Schaltung.<br>
-<img src="bilder/menudatei.PNG" width="364" height="146" alt="" /></li>
+<img src="bilder/menudatei.PNG" width="357" height="167" alt="" />
 <li>Bearbeiten: Unter diesem Menüpunkt sind alle Funktionen aufgelistet, die
 benötigt werden um eine Schaltung zu bearbeiten.<br>
-<img src="bilder/menubearbeiten.PNG" width="360" height="165" alt="" /></li>
+<img src="bilder/menubearbeiten.PNG" width="363" height="235" alt="" />
 <li>Simulation: Hier finden sich alle Funktionen die für die Simulation von
 Bedeutung sind, unter anderem Starten und Stoppen der Simulation - ebenso wie
 der Checkmanager.<br>
-<img src="bilder/menusimulation.PNG" width="392" height="190" alt="" /></li>
+<img src="bilder/menusimulation.PNG" width="392" height="190" alt="" />
+<li>Der Letzte Reiter der Menüleiste bietet eine kontextsensitive Hilfe an.<br>
+<img src="bilder/menuhelp.png" width="360" height="75" alt="" />
 </ul>
 <br>
 <a name="toolbar"></a>
 Des weiteren befindet sich auf der linken Seite des Fensters eine Werkzeugleiste,
 die  die wichtigsten Werkzeuge zum Erstellen und Bearbeiten von Schaltungen und
 deren Simulation enthält.<br>
-<img src="bilder/werkzeugleiste.PNG" width="81" height="488" alt="" longdesc="Werkzeugleiste" />
+<img src="bilder/toolbar.png" width="82" height="611" alt="" /><br>
 Die Funktion der Werkzeuge ist zum einen an den
 Symbolen auf den Knöpfen zu erkennen, zum anderen wird sie in einem Textfenster
 angezeigt, wenn man mit der Maus auf dem Knopf verweilt.<br>
@@ -211,32 +214,41 @@ Außerdem kann die aktuelle Schaltung durch Drücken von F5 neu geladen werden.
 <a name="create"></a>
 <li>Platzieren eines Bausteines:<br>
 Zunächst muss das Programm in den Erstellenmodus versetzt werden.<br> 
-<img src="bilder/createmiddle.png" width="15" height="14" alt="" /> Dazu muss der "Erstellen"-Knopf gedrückt,<br>
+<img src="createmiddle.png" width="15" height="14" alt="" /> Dazu muss der "Erstellen"-Knopf gedrückt,<br>
 der Menüpunkt gewählt oder die Tastenkombination Strg+E betätigt werden.
 Daraufhin kann in der Liste über dem Auswahlknopf ein Baustein ausgewählt
 werden.<br>
 <img src="bilder/bausteine.PNG" width="161" height="196" alt="" align="middle" />
-Mit einem Mausklick auf der Arbeitsfläche wird der Baustein dann an der
-gewünschten Stelle erstellt.
-Vom Programm werden folgende Bausteine angeboten:
+Bewegt man nun die Maus über die Arbeitsfläche erscheint ein Vorschaurechteck,
+das anzeigt wo der Baustein plaziert wird.<br>
+<img src="bilder/shadow.png" width="61" height="41" alt="" /><br>
+Mit einem Mausklick auf die Arbeitsfläche wird der Baustein dann an der
+gewünschten Stelle erstellt. Überschneidungen zwischen Bausteinen sind nicht
+zulässig. Darum wird das Vorschaurechteck auch nicht angezeigt wenn ein
+platzieren des Bausteines an der aktuellen Position des Mauszeigers wegen
+Überschneidungen nicht möglich ist.
+Die Anwendung bietet drei verschiedene Darstellungsformen der Bausteine an.
+Diese kann über den Menüpunkt Layout ausgewählt werden.<br>
+<img src="bilder/menulayouts.png" width="530" height="72" alt="" /><br>
+Vom Programm werden folgende Bausteine standardmäßig angeboten:<br>
+      NANDcat   IEC-Standard  ANSI-Standard
 <ul>
 <li>Nicht/Not<br>
-<img src="bilder/notgate.PNG" width="67" height="47" alt="" /></li>
-<li>Und/And (mit 2 und 3 Eingängen)<br>
-<img src="bilder/andgate.PNG" width="67" height="47" alt="" /> <img src="bilder/anddreifach.PNG" width="67" height="47" alt="" /></li>
-<li>Oder/Or (mit 2 und 3 Eingängen)<br>
-<img src="bilder/orgate.PNG" width="68" height="47" alt="" /> <img src="bilder/ordreifach.PNG" width="67" height="47" alt="" /></li>
+<img src="bilder/notgate.PNG" width="67" height="47" alt="" />  <img src="bilder/IEC_not.png" width="69" height="49" alt="" />  <img src="bilder/ansi_not.png" width="69" height="53" alt="" /></li>
+<li>Und/And<br>
+<img src="bilder/andgate.PNG" width="67" height="47" alt="" />  <img src="bilder/IEC_and.png" width="69" height="46" alt="" />  <img src="bilder/ansi_and.png" width="65" height="47" alt="" /></li>
+<li>Oder/Or<br>
+<img src="bilder/orgate.PNG" width="68" height="47" alt="" />  <img src="bilder/IEC_or.png" width="71" height="50" alt="" />  <img src="bilder/ansi_or.png" width="65" height="49" alt="" /></li>
 <li>Identität: Zum aufspalten einer Leitung.
-Der Eingangswert wird auf zwei ausgehende Leitungen gelegt. (mit 2 und 3
-Ausgängen)<br>
-<img src="bilder/iddreifach.PNG" width="67" height="47" alt="" /> <img src="bilder/iddreifach.PNG" width="67" height="47" alt="" /></li>
+Der Eingangswert wird auf zwei ausgehende Leitungen gelegt.<br>
+<img src="bilder/ideinfach.PNG" width="67" height="47" alt="" />  <img src="bilder/ideinfach.PNG" width="67" height="47" alt="" />  <img src="bilder/ansi_id.png" width="73" height="49" alt="" /></li>
 <li>RS-FlipFlop<br>
-<img src="bilder/flipflop.PNG" width="67" height="47" alt="" align="middle" /></li>
+<img src="bilder/flipflop.PNG" width="67" height="47" alt=""/>  <img src="bilder/flipflop.PNG" width="67" height="47" alt=""/>  <img src="bilder/ansi_flipflop.png" width="66" height="55" alt="" /></li>
 <li>Taktgeber: Der Standardtakt ist 1 und beim Erstellen
 ist das Signal auf "aus".<br>
-<img src="bilder/taktgeber.PNG" width="69" height="50" alt="" align="middle" /></li>
+<img src="bilder/taktgeber.PNG" width="69" height="50" alt=""/>  <img src="bilder/taktgeber.PNG" width="69" height="50" alt=""/>  <img src="bilder/ansi_impy.png" width="63" height="49" alt="" /></li>
 <li>Lampe<br>
-<img src="bilder/lampe.PNG" width="54" height="48" alt="" align="middle"/></li>
+ <img src="bilder/lampe.PNG" width="54" height="48" alt=""/>   <img src="bilder/IEC_lamp.png" width="53" height="48" alt="" />   <img src="bilder/IEC_lamp.png" width="53" height="48" alt="" /></li>
 </ul>
 <li>Erstellen einer Verbindung: Eine Verbindung kann zwischen zwei Ports
 erstellt werden. Dazu muss das Programm wieder im Erstellenmodus sein.
@@ -244,9 +256,9 @@ Als erstes klickt man auf den Port, von dem aus die Verbindung gezogen werden
 soll.<br>
 <img src="bilder/verbindunganfang.PNG" width="279" height="178" alt="" />
 Wenn man jetzt die Maus bewegt sieht man eine Vorschaulinie,
-die man zum nächsten Port ziehen kann, zu dem die Verbindung verlaufen soll.
+die man zum nächsten Port ziehen kann, zu dem die Verbindung verlaufen soll.<br>
 <img src="bilder/verbindunggezogen.PNG" width="278" height="177" alt="" />
-Mit einem zweiten Klick wird die Verbindung erstellt.
+Mit einem zweiten Klick wird die Verbindung erstellt.<br>
 <img src="bilder/verbindung.PNG" width="279" height="177" alt="" align="middle"/>
 <dt><b>Achtung:</b><dt>
 Es sind nicht alle Verbindungen zulässig.
@@ -257,8 +269,10 @@ Ein Klick auf diesen Port bewirkt nichts. </li>
 <li>Ein Port kann jeweils nur mit einem einzigen anderen Port in Verbindung
 stehen. Wenn auf einen Port geklickt wird, der bereits verbunden
 ist, wird die bestehende Verbindung durch die neue ersetzt.</li>
-<li>Innerhalb eines Bausteines können keine Verbindungen zwischen Ports
-gesetzt werde. Eine Verbindung zu sich selbst ist also nicht möglich.</li>
+<li>Innerhalb eines Gatters können keine Verbindungen zwischen Ports
+gesetzt werde. Eine Verbindung zu sich selbst ist also nicht möglich. Ebenso
+ist es auch nicht möglich ein Gatter mit Hilfe von Identitätsgattern mit sich
+selbst zu verbinden.</li>
 </ul>
 </ul>
 
@@ -271,7 +285,7 @@ gesetzt werde. Eine Verbindung zu sich selbst ist also nicht möglich.</li>
 Sobald der erste Baustein auf der Arbeitsfläche platziert ist, kann die
 Schaltung modifiziert werden. Dazu muss das Programm in den entsprechenden
 Modus gesetzt werden. <br>
-<img src="bilder/selectmiddle.png" width="15" height="18" alt="" /> Dies geschieht durch Klicken auf den "Auswahl"-Knopf,<br>
+<img src="selectmiddle.png" width="15" height="18" alt="" /> Dies geschieht durch Klicken auf den "Auswahl"-Knopf,<br>
 Wählen des Menüpunktes oder durch Drücken der Tasten Strg+W.
 In diesem Modus werden die Bausteine zunächst ausgewählt um dann entsprechend
 bearbeitet werden zu können.
@@ -303,12 +317,12 @@ wird nach dem Löschen zu:<br>
 <img src="bilder/schaltunggelöscht.PNG" width="249" height="148" alt="" /><br>
 <a name="annotate"></a>
 <li>Bennenen von Bausteinen:<br>
-<img src="bilder/annotatemiddle.png" width="15" height="15" alt="" /> Mit Hilfe des "Benennen"-Werkzeuges,<br>
+<img src="annotatemiddle.png" width="15" height="15" alt="" /> Mit Hilfe des "Benennen"-Werkzeuges,<br>
 des Menüpunktes oder über die Tastenkombination Strg+A können Bausteine benannt
 werden. Dazu einfach das Werkzeug auswählen und auf den zu benennenden Baustein
 klicken. Daraufhin erscheint ein Dialogfenster in dem die Benennung eingetragen
 werden kann.<br>
-<img src="bilder/benennenbeispiel.PNG" width="265" height="149" alt="" />
+<img src="bilder/benennenbeispiel.PNG" width="265" height="149" alt="" /><br>
 Diese erscheint daraufhin unterhalb des Bausteins und kann durch erneutes
 Auswählen mit Hilfe des Werkzeugs bearbeitet werden.<br>
 <img src="bilder/andbenannt.PNG" width="67" height="57" alt="" /></li>
@@ -322,7 +336,9 @@ Durch Drücken der linken Maustaste auf einen Taktgeber verändert sich dessen
 Zustand. War das ausgehende Signal zunächst an, ist es jetzt aus und andersherum.
 Drückt man mit der rechten Maustaste auf den Taktgeber erscheint ein
 Dialogfenster in das man die gewünschte Taktfrequenz für den Taktgeber eingeben
-kann.Standardmäßig ist der Taktgeber auf "aus" eingestellt und hat die Takt-
+kann.<br>
+<img src="bilder/frequenz.PNG" width="282" height="150" alt="" /><br>
+Standardmäßig ist der Taktgeber auf "aus" eingestellt und hat die Takt-
 frequenz 1.<br>
 <dt><b>Taktfrequenz:</b><dt>
 Die Zahl die die Taktfrequenz angibt legt fest wie lange der Taktgeber sein
@@ -330,6 +346,14 @@ aktuelles Signal hält. Bei einer Taktfrequenz von 3 und bei Startzustand "aus"
 gibt der Taktgeber für die ersten drei Takte kein Signal weiter, für die
 nächsten drei das Signal "an", bis er schließlich wieder das Signal wechselt.
 </li>
+<li>Anordnen der Bausteine mittels eines Gitters:
+Über den Menüpunkt "Gitter ein-/ausblenden" oder die Tastenkombination Strg+G
+wird ein Gitter auf der Arbeitsfläche eingeblendet anhand dessen sich die
+Bausteine ausrichten. Solange das Gitter sichtbar ist werden alle neu
+platzierten Bausteine daran angepasst.<br>
+<img src="bilder/after_layout.png" width="352" height="132" alt="" /><br>
+Bei erneuter Auswahl der Option wird das Gitter ausgeblendet. Die aktuelle
+Ausrichtung der Bausteine bleibt jedoch bestehen.</li>
 </ul>
 
 <div class="node">
@@ -357,11 +381,27 @@ abgespeichert werden:
 <li>"Speichern", Strg+S: Speichert die Schaltung in der zuletzt verwendeten
 Datei. Wenn für die Schaltung noch keine Datei verwendet wurde erscheint ein
 Verzeichnismanager, mit dem der Zielordner und der Name der Datei bestimmt
-werden kann. Der Name der Datei muss eindeutig gewählt werden.</li>
+werden kann. Der Name der Datei muss eindeutig gewählt werden. Ebenfalls muss
+ein Dateiformat ausgewählt werden. Zur Verfügung stehen:
+<ul>
+<li>Das SEPAF (SEP-Austauschformat):
+Beim Speichern der Schaltung in dieses Format ist ein späteres bearbeiten der
+Schaltung oder verwenden als Baustein möglich.</li>
+<li>PNG:
+Die aktuelle Schaltung wird als Bild im PNG-Format exportiert. Sie kann dann
+nicht mehr in die Anwendung importiert und bearbeitet werden.</li>
+</ul></li>
 <li>"Speichern unter", Strg+A: Hier kann direkt das Verzeichnis in der die
 Datei liegen soll und ihr Name bestimmt werden, auch wenn die Datei bereits
 vorher in einem anderen Verzeichnis oder unter einem anderen Namen abgelegt
 wurde.</li>
+<li>"Ausgewählte speichern unter", Umschalt+A: Mit Hilfe dieser Option werden
+nur die vom Benutzer selektierten und rot markierten Bausteine im Zielordner
+gespeichert. Markierte Verbindungen werden nur mitgespeichert, wenn sie zwei
+selektierte Bausteine miteinander verbinden.
+Sind keine Bausteine selektiert erscheint eine Fehlermeldung und der Export
+wird nicht durchgeführt.<br>
+<img src="bilder/Export Fehler.png" width="344" height="148" alt="" /></li>
 <li>Des Weiteren gibt es die Möglichkeit die Schaltung zu speichern, bevor eine
 neue Schaltung erstellt wird, oder die Anwendung geschlossen wird. In diesen
 Fällen erscheint eine Warnmeldung falls ungespeicherte Änderungen bestehen.</li>
@@ -370,7 +410,10 @@ Fällen erscheint eine Warnmeldung falls ungespeicherte Änderungen bestehen.</l
 <a name="load"></a>
 Eine gespeicherte Schaltung kann über dem Menüpunkt "Laden" oder über Strg+L
 aus dem abgespeicherten Verzeichnis geladen und wieder vollständig
-überarbeitet werden.
+überarbeitet werden. Sollte die ausgewählte Datei nicht dem von der Anwendung
+vorgesehenem SEPAF (SEP-Austauschformat) genügen, erscheint eine Fehlermeldung
+und der Import wird nicht ausgeführt.<br>
+<img src="bilder/Fehler beim Import eines benutzerdefinierten Bausteins_007.png" width="560" height="190" alt="" />
 
 <div class="node">
 <p><hr>
@@ -379,7 +422,18 @@ aus dem abgespeicherten Verzeichnis geladen und wieder vollständig
 
 <h3 class="section">5.3.2 Schaltungen als Baustein speichern</h3>
 Eine Schaltung kann in einem neuen Schaltplan als eigener Baustein verwendet
-werden. Dazu muss die Schaltung entsprechend abgespeichert werden.
+werden. Dazu muss die Schaltung entsprechend abgespeichert werden. Man wählt die
+Option "Speichern unter" und legt die Datei im SEPAF (SEP-Austauschformat) in
+den Ordner ab, der die Anwendung NANDcat enthält.
+Daraufhin erscheint ein Dialogfenster mit Hilfe dessen ein Bild im PNG-Format
+ausgwählt werden kann, das dann als Symbol auf dem Baustein erscheint.<br>
+<img src="bilder/Schaltungsbild.png" width="450" height="148" alt="" />
+<dt><b>Achtung:</b><dt>
+Wichtig zu beachten ist, dass beim Speichern einer Schaltung als Baustein die
+Taktgeber zu den eingehenden Ports des Bausteins umgewandelt werden und die
+Lampen zu den ausgehenden Ports. Sind an Ports keine Taktgeber oder Lampen
+angelegt, so kann auf diese Ports im benutzerdefinierten Baustein auch nicht
+zugegriffen werden.
 
 <div class="node">
 <p><hr>
@@ -387,8 +441,20 @@ werden. Dazu muss die Schaltung entsprechend abgespeichert werden.
 </div>
 
 <h3 class="section">5.3.3 Benutzerdefinierte Bausteine laden</h3>
-Sobald eine Schaltung als Baustein gespeichert wurde, wird sie in die Liste
-der Bausteine aufgenommen und kann wie jeder andere Baustein verwendet werden.
+Bausteine die bereits vor dem Programmstart als benutzerdefinierte Bausteine
+abgespeichert wurden werden direkt beim Programmstart in der Liste der Bausteine
+mit aufgeführt und können wie jeder andere Baustein verwendet werden.
+Wird eine Schaltung zur Laufzeit des Programms als Baustein abgespeichert können
+die Schaltungsdefinitionen über den Menüpunkt "Schaltungsdefinition neu laden"
+oder durch Drücken der F5-Taste neu geladen werden.
+Wurde ein Bild für die Schaltung ausgewählt so erscheint dieses als Symbol auf
+dem platzierten Baustein.<br>
+<img src="bilder/my_module.png" width="86" height="58" alt="" /><br>
+Wurde keines ausgewählt so wird der Name der Schaltung angezeigt.<br>
+<img src="bilder/baustein.png" width="88" height="58" alt="" /><br>
+Sollte es beim importieren dieser Schaltungen Probleme geben, erscheint wie
+beim Laden ein Warnfenster und der Import wird abgebrochen. Der Baustein steht
+dann nicht zur Verfügung.
 
 <div class="node">
 <p><hr>
@@ -440,24 +506,27 @@ Die Simulation der Schaltung kann auf folgende Weisen gesteuert werden:
 <br>
 <a name="start"></a>
 <li>Simulation starten:<br>
-<img src="bilder/startmiddle.png" width="15" height="15" alt="" /> Erfolgt entweder über Drücken des "Simulation starten" Knopfes in der
+<img src="startmiddle.png" width="15" height="15" alt="" /> Erfolgt entweder über Drücken des "Simulation starten" Knopfes in der
 Werkzeugleiste.<br>
-Auswählen des Menüpunktes "Simulation starten" oder Drücken
-der 'S' Taste. Vor dem Start der Simulation werden die ausgewählten
-Schaltungstests durchgeführt. Sobald einer dieser Tests fehlschlägt wird die
-Simulation nicht durchgeführt. Die Ergebnisse der Tests lassen sich im
-Checkmanager ablesen. Sind alle Tests erfolgreich durchlaufen startet die
-Simulation und wird auf der Arbeitsfläche angezeigt. In der oberen Menüleiste
-läuft ein Zähler "Simulationsdurchlauf", der die Nummer des aktuellen Taktes
-wiedergibt. Während der Simulation ist das Bearbeiten der Schaltung nicht
-möglich. Es können einzig Bausteine verschoben werden. Die Funktionen zum
-Erstellen, Löschen oder Setzen von Schaltern werden nicht angeboten und die
-entsprechenden Knöpfe und Menüpunkte sind ausgegraut und können nicht angewält
-werden.</li>
+Auswählen des Menüpunktes "Simulation starten" oder Drücken der 'S' Taste.
+Vor dem Start der Simulation werden die ausgewählten Schaltungstests
+durchgeführt. Sobald einer dieser Tests fehlschlägt wird die Simulation nicht
+durchgeführt. Die Ergebnisse der Tests lassen sich im Checkmanager ablesen.
+Sind alle Tests erfolgreich durchlaufen startet die Simulation und wird auf der
+Arbeitsfläche angezeigt. In der oberen Menüleiste läuft ein Zähler
+"Simulationsdurchlauf", der die Nummer des aktuellen Taktes wiedergibt.<br>
+<img src="bilder/simulationsdurchlauf.PNG" width="180" height="18" alt="" /><br>
+Während der Simulation ist das Bearbeiten der Schaltung nicht möglich. Es
+können einzig Bausteine verschoben werden und die Schaltung kann als Bild
+exportiert werden und somit einen bestimmten Takt im Simulaitonszyklus
+festzuhalten.. Die Funktionen zum Erstellen, Löschen oder Setzen von Schaltern
+werden nicht angeboten und die entsprechenden Knöpfe und Menüpunkte sind
+ausgegraut und können nicht angewält werden.
+</li>
 <br>
 <a name="stop"></a>
 <li>Simulation beenden:
-<img src="bilder/stopmiddle.png" width="15" height="15" alt="" /> Beendet wird die Simulation entweder über Betätigen des "Simulation stoppen"
+<img src="stopmiddle.png" width="15" height="15" alt="" /> Beendet wird die Simulation entweder über Betätigen des "Simulation stoppen"
 Knopfes,<br>
 Auswahl des Menüpunktes "Simulation beenden" oder Drücken der 'E'
 Taste auf der Tastatur. Daraufhin wird die Simulation beendet und keine
@@ -466,20 +535,23 @@ Schaltung möglich und die Simulation kann erneut gestartet werden.</li>
 <br>
 <a name="pause"></a>
 <li>Pause der Simulation:<br>
-<img src="bilder/pausemiddle.png" width="15" height="15" alt="" /> Über die Pausetaste,
-den Menüpunkt oder die Tastenkombination kann die Simulation vorübergehend
-pausiert werden. Die Schaltung zeigt während der Pause die aktuellen Belegungen
+<img src="pausemiddle.png" width="15" height="15" alt="" /> Über die Pausetaste, den Menüpunkt oder die Tastenkombination<br>
+kann die Simulation vorübergehend pausiert werden. Die Schaltung zeigt
+während der Pause die aktuellen Belegungen
 der Elemente an.<br>
-<img src="bilder/stepmiddle.png" width="15" height="15" alt="" /> Mit Hilfe des "Fortfahren"-Knopfes
+<img src="stepmiddle.png" width="15" height="15" alt="" /> Mit Hilfe des "Fortfahren"-Knopfes<br>
 oder durch Drücken der  'x'-Taste wird der nächste Schritt der Simulation
 berechnet und angezeigt. Durch Stoppen wird sie beendet.</li>
 <br>
 <a name="speed"></a>
 <li>Erhöhen und Verringern der Simulationsgeschwindigkeit:
 Die Geschwindigkeit der Simulation kann verringert/erhöht werden durch <br>
- <img src="bilder/minusmiddle.png" width="15" height="14" alt="" /> / <img src="bilder/plusmiddle.png" width="15" height="14" alt="" /> Drücken der "-"-/"+"-Taste, <br>
+ <img src="minusmiddle.png" width="15" height="14" alt="" /> / <img src="plusmiddle.png" width="15" height="14" alt="" /> Drücken der "-"-/"+"-Taste, <br>
 Auswählen des Menüpunktes "Schneller"/"Langsamer" oder
-durch Drücken der Tastenkombination Strg+Minus/Strg+Plus.</li>
+durch Drücken der Tastenkombination Strg+Minus/Strg+Plus.
+Die Simulationsgeschwindigkeit kann wieder auf die Standardgeschwindigkeit
+gesetzt werden, über den Menüpunkt "Setze Standardsimulationsgeschw" oder die
+Tastenkombination Strg+O.</li>
 </ul>
 
 <div class="node">
@@ -501,7 +573,9 @@ auf logisch 0.
 <li>Tagtgeber mit Signal 1:<br>
 <img src="bilder/schalteran.PNG" width="68" height="47" alt="" />
 </li>
-</ul></li>
+</ul>
+Mit Hilfe des Menüpunkts "Setze alle Schalter auf Aus" oder durch Drücken der
+Tasten Strg+R werden alle Taktgeber auf den Zustand logisch 0 gesetzt.</li>
 <li>Ports und Leitungen:
 Sind die Ports oder die Leitungen mit dem Signal logisch 1 belegt, so werden
 diese gelb angezeigt - ansonsten schwarz.<br>
@@ -538,16 +612,16 @@ Beim Programmstart sind zunächst alle Tests selektiert und es wurde noch
 keiner ausgeführt.<br>
 <img src="bilder/checkmanager.PNG" width="621" height="301" alt="" /><br>
 <ul>
-<li><img src="bilder/Questionmark.png" width="16" height="16" alt="" />
+<img src="help.jpg" width="16" height="16" alt="" /><br>
 Das Fragezeichen bedeutet, dass der Test noch nicht auf der aktuellen Schaltung
 ausgeführt wurde und das Ergebnis nicht bekannt ist.</li>
-<li><img src="bilder/exclamation_mark.png" width="16" height="21" alt="" />
+<li><img src="exclamation_mark.png" width="16" height="21" alt="" /><br>
 Das Ausrufezeichen zeigt an, dass der Test gerade ausgeführt wird, jedoch noch
 nicht zu Ende gerechnet wurde und das Ergebnis noch nicht feststeht.</li>
-<li><img src="bilder/check-icon.gif" width="16" height="16" alt="" />
+<li><img src="check-icon.gif" width="16" height="16" alt="" /><br>
 Der grüne Haken bedeutet, dass der Test ausgeführt und erfolgreich bestanden
 wurde.</li>
-<li><img src="bilder/cross_icon1.gif" width="16" height="16" alt="" />
+<li><img src="cross_icon1.gif" width="16" height="16" alt="" /><br>
 Das rote Kreuz bedeutet, dass der Test ausgeführt, jedoch nicht bestanden
 wurde.
 </ul>
@@ -557,9 +631,9 @@ Die Anwendung bietet folgende Tests auf der Schaltung an:
 <ul>
 <li>Rückkopplungstest: Schlägt fehlt, sobald eine Rückkopplung innerhalb der
 Schaltung vorliegt.</li>
-<li>Test auf unzulässige Verbindungen: Testet ob es eine Verbindung von einem
+<!--<li>Test auf unzulässige Verbindungen: Testet ob es eine Verbindung von einem
 eingehenden zu einem weiteren eingehenden Port gibt und umgekehrt. Ebenfalls
-wird getestet ob es eine Verbindung ohne Zielport gibt.</li>
+wird getestet ob es eine Verbindung ohne Zielport gibt.</li>-->
 <li>Test auf mehrfache Verbindungen: Testet ob es mehrere eingehende Verbindungen
 in einen Eingangsport gibt.</li>
 <li>Verwaisungstest: Prüft ob es einzelne Bausteine gibt, die mit keinem weiteren
@@ -575,6 +649,22 @@ das Fenster geschlossen. Bei Betätigen des "Starten"-Knopfes werden die ausgew�
 Tests durchgeführt. Hierbei bleibt der Checkmanager geöffnet und zeigt die
 Ergebnisse der Tests wie oben beschrieben an.<br>
 <img src="bilder/checkmanagermanipuliert.PNG" width="622" height="302" alt="" />
+
+
+<div class="node">
+<p><hr>
+<a name="hilfe"></a>
+</div>
+
+<h3 class="chapter">5.6 Kontextsensitive Hilfe</h3>
+NANDcat bietet eine Funktion zur kontextsensitiven Hilfe an. Um diese zu
+aktivieren kann man entweder den Menüpunkt "Hilfe" auswählen, die
+Tastenkombination Strg+I betätigen <br>
+<img src="Questionmark.png" width="17" height="17" alt="" />  oder einfach auf den entsprechenden Knopf drücken. <br>
+Daraufhin verändert sich der Mauszeiger und zeigt ein Fragezeichen neben dem
+Pfeil an. Nun kann man auf einen beliebigen Teil der Anwendung klicken und es
+erscheint ein Fenster, das einen entsprechenden Eintrag aus dem Handbuch
+enthält, der die Programmkomponente erklärt.
 
 <div class="node">
 <p><hr>

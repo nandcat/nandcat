@@ -733,6 +733,7 @@ public class View extends JFrame {
         help.setPreferredSize(buttonDim);
         help.setToolTipText(i18n.getString("tooltip.help"));
         help.addActionListener(helpListener);
+        CSH.setHelpIDString(help, "help");
         // Check if there are Functionalities for the Buttons and if yes calling the setup.
         if (toolFunctionalities.containsKey("help")) {
             setupButton(help, "help");

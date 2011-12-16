@@ -21,5 +21,6 @@
       <mapID target="check" url="handbuch.html#checks" />
       <mapID target="new" url="handbuch.html#new" />
       <mapID target="load" url="handbuch.html#load" />
+      <mapID target="help" url="handbuch.html#hilfe" />
 </mapID>
 </map>
