@@ -120,6 +120,11 @@ public class SEPAFImporter implements Importer {
     private int connectionCounter = 0;
 
     /**
+     * Current recursive depth.
+     */
+    private int currentRecursiveDepth = 0;
+
+    /**
      * Sets the instance up.
      */
     public SEPAFImporter() {
@@ -171,12 +176,10 @@ public class SEPAFImporter implements Importer {
             if (factory == null) {
                 throw new IllegalArgumentException("Factory not set");
             }
-            if (recursionCounter > RECURSION_DEPTH_MAX) {
-                throw new RecursionException("Recursion of circuits too deep (" + recursionCounter
+            if (currentRecursiveDepth > RECURSION_DEPTH_MAX) {
+                throw new RecursionException("Recursion of circuits too deep (" + currentRecursiveDepth
                         + ")! Stopped while importing file: " + file.getAbsolutePath());
             }
-            recursionCounter++;
-
             LOG.debug("Validating XML starting");
             if (validateXML()) {
                 LOG.debug("Validating XML finished");
@@ -210,16 +213,7 @@ public class SEPAFImporter implements Importer {
         } catch (FormatException e) {
             // Exception already handled through error handler.
             return false;
-        } finally {
-            resetRecursionCounter();
         }
-    }
-
-    /**
-     * Resets the recursion counter.
-     */
-    private void resetRecursionCounter() {
-        recursionCounter = 0;
     }
 
     /**
@@ -482,7 +476,8 @@ public class SEPAFImporter implements Importer {
         } else if (aType.getValue().equals("missing-circuit")) {
             String externalIdentifier = el.getAttributeValue("type2");
             if (externalCircuitSource != null) {
-                Circuit externalCircuit = externalCircuitSource.getExternalCircuit(externalIdentifier);
+                Circuit externalCircuit = externalCircuitSource.getExternalCircuit(externalIdentifier,
+                        currentRecursiveDepth + 1);
                 if (externalCircuit != null) {
                     module = (Circuit) FastDeepCopy.copy(externalCircuit);
                 } else {
@@ -745,5 +740,13 @@ public class SEPAFImporter implements Importer {
             throw new IllegalArgumentException();
         }
         this.errorHandler = h;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setCurrentRecursiveDepth(int depth) {
+        this.currentRecursiveDepth = depth;
+
     }
 }

@@ -45,6 +45,14 @@ public interface Importer {
     boolean importCircuit() throws RecursionException;
 
     /**
+     * Sets the current recursive depth. Used to indicate recursive traps. If importing top level start with 0.
+     * 
+     * @param depth
+     *            Recursive depth, increases for each recursion level.
+     */
+    void setCurrentRecursiveDepth(int depth);
+
+    /**
      * Gets the supported file extensions mapped with a description of the format.
      * 
      * @return Map of supported file extensions mapped with a description of the format.

@@ -105,7 +105,7 @@ public class SEPAFImporterCircuitTest {
         exporter.exportCircuit();
         importer.setExternalCircuitSource(new ExternalCircuitSource() {
 
-            public Circuit getExternalCircuit(String identifier) {
+            public Circuit getExternalCircuit(String identifier, int depth) {
                 if (identifier.equals("external-name-of-circuit")) {
                     return innercircuit;
                 } else {

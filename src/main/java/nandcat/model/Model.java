@@ -179,8 +179,8 @@ public class Model implements ClockListener {
      */
     private ExternalCircuitSource externalCircuitSource = new ExternalCircuitSource() {
 
-        public Circuit getExternalCircuit(String identifier) throws RecursionException {
-            return importFromFile(new File(identifier));
+        public Circuit getExternalCircuit(String identifier, int depth) throws RecursionException {
+            return importFromFile(new File(identifier), depth);
         }
     };
 
@@ -294,9 +294,11 @@ public class Model implements ClockListener {
         // spawn new circuit / element _object_
         if (m.getFileName() != "") {
             try {
-                module = importFromFile(new File(m.getFileName()));
+                module = importFromFile(new File(m.getFileName()), 0);
             } catch (RecursionException e) {
                 ModelEvent e2 = new ModelEvent();
+                e2.setMessage("Starting file was: " + new File(m.getFileName()).getAbsolutePath() + "\n"
+                        + e.getLocalizedMessage());
                 e2.setMessage("Recursion too deep");
                 for (ModelListener l : listeners) {
                     l.importFailed(e2);
@@ -393,7 +395,7 @@ public class Model implements ClockListener {
                 if (!v.getFileName().equals("")) {
 
                     try {
-                        Circuit tmp = importFromFile(new File(v.getFileName()));
+                        Circuit tmp = importFromFile(new File(v.getFileName()), 0);
                         uuid2filename.put(tmp.getUuid(), v.getFileName());
                     } catch (RecursionException e) {
                         LOG.warn("Recursion too deep");
@@ -680,20 +682,22 @@ public class Model implements ClockListener {
             }
         }
         importExportErrorMessages = new LinkedList<String>();
+        boolean recursiveError = false;
         try {
-            this.circuit = importFromFile(file);
+            this.circuit = importFromFile(file, 0);
         } catch (RecursionException recException) {
             ModelEvent e2 = new ModelEvent();
-            e2.setMessage(recException.getLocalizedMessage());
+            e2.setMessage("Starting file was: " + file.getAbsolutePath() + "\n" + recException.getLocalizedMessage());
             for (ModelListener l : listeners) {
                 l.importFailed(e2);
             }
+            recursiveError = true;
         }
         LOG.debug("Import finished");
         ModelEvent e2 = new ModelEvent();
         e2.setFile(file);
         // import failed
-        if (circuit == null) {
+        if (circuit == null || recursiveError) {
             // Listeners already notified in 'importFromFile(..)'
             newCircuit();
 
@@ -1204,7 +1208,7 @@ public class Model implements ClockListener {
 
                     } catch (RecursionException e1) {
                         ModelEvent e2 = new ModelEvent();
-                        e2.setMessage(e1.getLocalizedMessage());
+                        e2.setMessage("Starting file was: " + f.getAbsolutePath() + "\n" + e1.getLocalizedMessage());
                         for (ModelListener l : listeners) {
                             l.importCustomCircuitFailed(e2);
                         }
@@ -1259,13 +1263,15 @@ public class Model implements ClockListener {
      * 
      * @param file
      *            File to import Circuit from
+     * @param depth
+     *            Recursive Depth to start with. This number should increase if recursively called.
      * @return Circuit created by parsing given file. <b>Note:</b> May be null
      * @throws RecursionException
      *             Throws a RecursionException, should only be caught if it's the highest level (last step at the model
      *             layer), internals should throw this, like at externalCircuitSource where this is needed to detect
      *             recursion.
      */
-    private Circuit importFromFile(File file) throws RecursionException {
+    private Circuit importFromFile(File file, int depth) throws RecursionException {
         if (file == null) {
             throw new IllegalArgumentException();
         }
@@ -1274,6 +1280,7 @@ public class Model implements ClockListener {
         if (importers.containsKey(ext)) {
             Importer im = importers.get(ext);
             im.setFile(file);
+            im.setCurrentRecursiveDepth(depth);
             importExportErrorMessages = new LinkedList<String>();
             im.setErrorHandler(importExportErrorHandler);
             im.setExternalCircuitSource(externalCircuitSource);
