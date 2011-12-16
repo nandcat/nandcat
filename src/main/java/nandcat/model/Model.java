@@ -1367,7 +1367,7 @@ public class Model implements ClockListener {
     }
 
     /**
-     * Return filename without file extension
+     * Return filename without file extension.
      * 
      * @param fileName
      *            String containing the file's name
