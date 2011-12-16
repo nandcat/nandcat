@@ -21,6 +21,7 @@ import nandcat.model.element.Circuit;
 import nandcat.model.element.Connection;
 import nandcat.model.element.DrawElement;
 import nandcat.model.element.Element;
+import nandcat.model.element.FlipFlop;
 import nandcat.model.element.ImpulseGenerator;
 import nandcat.model.element.Module;
 import nandcat.model.element.Port;
@@ -325,7 +326,7 @@ public class Model implements ClockListener {
              * Circuit has to be layouted after inserted using circuit.addModule, because thats the point it gets
              * deconstructed.
              */
-            if (module instanceof Circuit) {
+            if (module instanceof Circuit && !(module instanceof FlipFlop)) {
                 factory.getLayouter().layout((Circuit) module);
             }
         }
