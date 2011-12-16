@@ -265,7 +265,6 @@ public class Model implements ClockListener {
         outPort.setConnection(connection);
         notifyForChangedElems();
         dirty = true;
-        // System.out.println(circuit);
     }
 
     /**
