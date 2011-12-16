@@ -180,7 +180,19 @@ public class Model implements ClockListener {
     private ExternalCircuitSource externalCircuitSource = new ExternalCircuitSource() {
 
         public Circuit getExternalCircuit(String identifier, int depth) throws RecursionException {
-            return importFromFile(new File(identifier), depth);
+            File dir = new File(CIRCUIT_PATH);
+            for (File f : dir.listFiles()) {
+                if (f.isFile() && f.canRead() && identifier.equals(getFileWithOutExtension(f.getName()))) {
+                    return importFromFile(f, depth);
+                }
+            }
+            // backward-compat: try even harder to find the file (missing-circuit has identifier + file-extension)
+            for (File f : dir.listFiles()) {
+                if (f.isFile() && f.canRead() && identifier.equals(f.getName())) {
+                    return importFromFile(f, depth);
+                }
+            }
+            return null;
         }
     };
 
@@ -393,10 +405,9 @@ public class Model implements ClockListener {
             Map<String, String> uuid2filename = new HashMap<String, String>();
             for (ViewModule v : viewModules) {
                 if (!v.getFileName().equals("")) {
-
                     try {
                         Circuit tmp = importFromFile(new File(v.getFileName()), 0);
-                        uuid2filename.put(tmp.getUuid(), v.getFileName());
+                        uuid2filename.put(tmp.getUuid(), getFileWithOutExtension(v.getFileName()));
                     } catch (RecursionException e) {
                         LOG.warn("Recursion too deep");
                     }
@@ -1353,5 +1364,23 @@ public class Model implements ClockListener {
             importers.put(format.getKey(), sepafImporter);
         }
         importFormats = sepafFormats;
+    }
+
+    /**
+     * Return filename without file extension.
+     * 
+     * @param fileName
+     *            String containing the file's name
+     * @return filename without file extension
+     */
+    private String getFileWithOutExtension(String fileName) {
+        if (fileName == null) {
+            return "";
+        }
+        int pos = fileName.lastIndexOf(".");
+        if (pos == -1) {
+            return fileName;
+        }
+        return fileName.substring(0, pos);
     }
 }
