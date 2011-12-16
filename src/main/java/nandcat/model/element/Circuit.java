@@ -284,8 +284,6 @@ public class Circuit implements ClockListener, Module, DrawCircuit, Serializable
         selected = b;
     }
 
-    // NOTE nice to have: durchlauf sortiert nach Y-Koordinate, sodass die in/outPorts entsprechend
-    // als Ein/Ausgaenge eines (Circuit)Bausteins auftauchen
     /**
      * Returns the "first" Modules in this Circuit.
      * 
