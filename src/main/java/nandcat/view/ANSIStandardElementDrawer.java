@@ -426,6 +426,9 @@ public class ANSIStandardElementDrawer implements ElementDrawer {
             g.drawLine(port.getRectangle().x + 2, port.getRectangle().y + port.getRectangle().height / 2,
                     port.getRectangle().x - N_8 / 2, port.getRectangle().y + port.getRectangle().height / 2);
         }
+        if (gate.getName() != null && !gate.getName().isEmpty()) {
+            drawAnnotation(gate.getName(), gate.getRectangle());
+        }
     }
 
     /**
@@ -473,6 +476,9 @@ public class ANSIStandardElementDrawer implements ElementDrawer {
             g.drawLine(port.getRectangle().x + 2, port.getRectangle().y + port.getRectangle().height / 2,
                     port.getRectangle().x - N_4, port.getRectangle().y + port.getRectangle().height / 2);
         }
+        if (gate.getName() != null && !gate.getName().isEmpty()) {
+            drawAnnotation(gate.getName(), gate.getRectangle());
+        }
     }
 
     /**
@@ -518,6 +524,9 @@ public class ANSIStandardElementDrawer implements ElementDrawer {
             }
             g.drawLine(port.getRectangle().x + 2, port.getRectangle().y + port.getRectangle().height / 2,
                     port.getRectangle().x - N_4, port.getRectangle().y + port.getRectangle().height / 2);
+        }
+        if (gate.getName() != null && !gate.getName().isEmpty()) {
+            drawAnnotation(gate.getName(), gate.getRectangle());
         }
     }
 
