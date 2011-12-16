@@ -4,7 +4,7 @@
 
 	<groupId>nandcat</groupId>
 	<artifactId>nandcat</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 
 	<name>nandcat</name>

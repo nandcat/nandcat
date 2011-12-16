@@ -42,7 +42,7 @@ public final class Nandcat {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 
             public void uncaughtException(Thread t, Throwable e) {
-                LOG.error("Exception caught in Thread: " + t.toString(), e);
+                LOG.warn("Exception caught in Thread: " + t.toString(), e);
             }
         });
         setLocales(args);
