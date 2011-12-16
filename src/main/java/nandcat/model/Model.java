@@ -13,7 +13,6 @@ import java.util.Set;
 import nandcat.model.check.CircuitCheck;
 import nandcat.model.check.CountCheck;
 import nandcat.model.check.FeedbackCheck;
-import nandcat.model.check.IllegalConnectionCheck;
 import nandcat.model.check.OrphanCheck;
 import nandcat.model.check.SinkCheck;
 import nandcat.model.check.SourceCheck;
@@ -154,7 +153,6 @@ public class Model implements ClockListener {
                 addMessage("Reason: " + exception.getCause().getMessage());
             }
             throw exception;
-
         }
 
         public void error(FormatException exception) throws FormatException {
@@ -317,7 +315,6 @@ public class Model implements ClockListener {
                 }
             }
             Circuit c = (Circuit) module;
-
             // if there's no symbol and no annotation add filename as annotation.
             if (c.getSymbol() == null && c.getName() == null) {
                 String filename = new File(m.getFileName()).getName();
@@ -335,7 +332,6 @@ public class Model implements ClockListener {
         }
         if (module != null) {
             addModule(module, p);
-
             /*
              * Circuit has to be layouted after inserted using circuit.addModule, because thats the point it gets
              * deconstructed.
@@ -411,10 +407,8 @@ public class Model implements ClockListener {
                     } catch (RecursionException e) {
                         LOG.warn("Recursion too deep");
                     }
-
                 }
             }
-
             ex.setExternalCircuits(uuid2filename);
             ex.setCircuit(c);
             importExportErrorMessages = new LinkedList<String>();
@@ -711,7 +705,6 @@ public class Model implements ClockListener {
         if (circuit == null || recursiveError) {
             // Listeners already notified in 'importFromFile(..)'
             newCircuit();
-
         } else {
             dirty = false;
             e2.setCircuitUuid(this.circuit.getUuid());
@@ -1216,7 +1209,6 @@ public class Model implements ClockListener {
                                 l.importCustomCircuitFailed(e);
                             }
                         }
-
                     } catch (RecursionException e1) {
                         ModelEvent e2 = new ModelEvent();
                         e2.setMessage("Starting file was: " + f.getAbsolutePath() + "\n" + e1.getLocalizedMessage());
@@ -1323,7 +1315,7 @@ public class Model implements ClockListener {
     private void initChecks() {
         checks.add(new CountCheck());
         checks.add(new FeedbackCheck());
-        checks.add(new IllegalConnectionCheck());
+        // checks.add(new IllegalConnectionCheck()); // actually not needed!
         checks.add(new OrphanCheck());
         checks.add(new SinkCheck());
         checks.add(new SourceCheck());

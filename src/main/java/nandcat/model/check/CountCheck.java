@@ -16,7 +16,7 @@ public class CountCheck implements CircuitCheck {
     /**
      * Number of gates at which user will be warned.
      */
-    private static final int THRESHOLD = 1000;
+    private static final int THRESHOLD = 10000;
 
     /**
      * Listeners for this check.
