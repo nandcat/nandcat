@@ -211,7 +211,6 @@ public class Clock implements Runnable {
                 cycle();
                 synchronized (this) {
                     if (paused) {
-                        System.out.println("paused");
                         this.wait();
                     }
                 }

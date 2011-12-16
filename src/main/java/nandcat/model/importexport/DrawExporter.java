@@ -174,7 +174,6 @@ public class DrawExporter implements Exporter {
             throw new IllegalArgumentException();
         }
         try {
-            System.out.println("Export drawer");
             Point minPoint = getLeftTop(circuit.getElements());
             Dimension dim = getRightBottom(circuit.getElements());
             dim.height = dim.height + MARGIN;
