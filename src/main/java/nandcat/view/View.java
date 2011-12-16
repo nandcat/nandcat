@@ -320,8 +320,7 @@ public class View extends JFrame {
             // nothing to do here.
             return;
         } catch (ExceptionInInitializerError ex) {
-            System.err.println("initialization error:");
-            ex.getException().printStackTrace();
+            // do nothing
         }
         hb = hs.createHelpBroker();
     }
