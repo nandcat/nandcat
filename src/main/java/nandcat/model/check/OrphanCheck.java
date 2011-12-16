@@ -63,17 +63,12 @@ public class OrphanCheck implements CircuitCheck {
         informListeners(State.RUNNING, elements);
         Set<Module> modules = new HashSet<Module>();
         modules = getModules(circuit, modules);
-        for (Module e : modules) {
-            System.out.println(e);
-        }
         Iterator<Module> iter = modules.iterator();
         // Start with any Module you can get
         Module start = null;
         if (iter.hasNext()) {
             start = (Module) iter.next();
         }
-        System.out.println("Start: " + start);
-        System.out.println();
         Queue<Module> queue = new LinkedList<Module>();
         // Remember if a Port has already been visited.
         Set<Port> visited = new HashSet<Port>();

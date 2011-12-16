@@ -16,8 +16,8 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
@@ -50,8 +50,8 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.tree.TreePath;
 
 /**
- * This class extends the CSH class from the javax.help package. It makes sure that there is context-sensitive help
- * in the checkmanager.
+ * This class extends the CSH class from the javax.help package. It makes sure that there is context-sensitive help in
+ * the checkmanager.
  */
 public class Help extends CSH {
 
@@ -232,8 +232,7 @@ public class Help extends CSH {
                         } else if (event instanceof MouseEvent) {
                             MouseEvent e = (MouseEvent) event;
                             int eID = e.getID();
-                            if ((eID == MouseEvent.MOUSE_CLICKED || eID == MouseEvent.MOUSE_PRESSED
-                                    || eID == MouseEvent.MOUSE_RELEASED)
+                            if ((eID == MouseEvent.MOUSE_CLICKED || eID == MouseEvent.MOUSE_PRESSED || eID == MouseEvent.MOUSE_RELEASED)
                                     && SwingUtilities.isLeftMouseButton(e)) {
                                 if (eID == MouseEvent.MOUSE_CLICKED) {
                                     if (eventNumber == 0) {
@@ -253,8 +252,6 @@ public class Help extends CSH {
                         if (event instanceof InputEvent) {
                             ((InputEvent) event).consume();
                         }
-                    } else {
-                        System.err.println("unable to dispatch event: " + event);
                     }
                 }
             }
@@ -280,8 +277,6 @@ public class Help extends CSH {
             ((Component) src).dispatchEvent(event);
         } else if (src instanceof MenuComponent) {
             ((MenuComponent) src).dispatchEvent(event);
-        } else {
-            System.err.println("unable to dispatch event: " + event);
         }
     }
 
@@ -990,8 +985,5 @@ public class Help extends CSH {
      *            Error message
      */
     private static void debug(Object msg) {
-        if (DEBUG) {
-            System.err.println("CSH: " + msg);
-        }
     }
 }

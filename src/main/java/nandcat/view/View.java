@@ -303,7 +303,6 @@ public class View extends JFrame {
         } catch (Exception e) {
             // No catch needed cause if Nimbus is not installed the standard
             // LookAndFeel will be used.
-            System.out.println("No Nimbus Look and Feel found!");
         }
         setUpHelp();
         setupGui(model);
@@ -318,11 +317,10 @@ public class View extends JFrame {
             URL url = HelpSet.findHelpSet(cl, "HelpSet");
             hs = new HelpSet(cl, url);
         } catch (Exception ee) {
-            System.out.println("Help Set not found");
+            // nothing to do here.
             return;
         } catch (ExceptionInInitializerError ex) {
-            System.err.println("initialization error:");
-            ex.getException().printStackTrace();
+            // do nothing
         }
         hb = hs.createHelpBroker();
     }
@@ -378,7 +376,7 @@ public class View extends JFrame {
                 try {
                     Thread.sleep(SPLASH_THREAD_SLEEP);
                 } catch (InterruptedException e) {
-                    System.out.println(e.getCause());
+                    // nothing to do here.
                 }
             }
             splash.close();

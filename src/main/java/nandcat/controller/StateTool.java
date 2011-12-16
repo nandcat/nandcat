@@ -170,7 +170,7 @@ public class StateTool implements Tool {
                             worked = false;
                         }
                     } catch (Exception e) {
-                        System.out.println(e.getMessage());
+                        // nothing to do here.
                     }
                     worked = model.setFrequency(ig, freq);
                     if (!worked) {
